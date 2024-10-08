@@ -1,0 +1,8 @@
+{
+    "name": "avermate",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ]
+}
