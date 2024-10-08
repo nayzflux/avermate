@@ -1,0 +1,1 @@
+# Avermate: The best average calculator known to man
