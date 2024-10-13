@@ -1,0 +1,29 @@
+{
+  "name": "api",
+  "module": "src/index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "drizzle-kit": "^0.25.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.4.1",
+    "@libsql/client": "^0.14.0",
+    "@t3-oss/env-core": "^0.11.1",
+    "arctic": "^1.9.2",
+    "drizzle-orm": "^0.34.1",
+    "hono": "^4.6.3",
+    "ky": "^1.7.2",
+    "nanoid": "^5.0.7",
+    "zod": "^3.23.8"
+  },
+  "scripts": {
+    "dev": "bun run --hot src/index.ts ",
+    "start": "bun run src/index.ts",
+    "db:push": "bun drizzle-kit push",
+    "db:studio": "bun drizzle-kit studio"
+  }
+}
