@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { z } from "zod";
+import { z, ZodSchema } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useMutation } from "@tanstack/react-query";
+import ky from "ky";
 
 const signInSchema = z.object({
   firstName: z.string().min(2).max(32),
@@ -26,6 +28,15 @@ const signInSchema = z.object({
 type SignInSchema = z.infer<typeof signInSchema>;
 
 export const SignInForm = () => {
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["sign-in"],
+    mutationFn: async (values: SignInSchema) => {
+      const res = await ky.post("http://localhost:5000/api/auth/sign-in", {
+        json: values,
+      });
+    },
+  });
+
   // 1. Define your form.
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
@@ -40,6 +51,7 @@ export const SignInForm = () => {
   // 2. Define a submit handler.
   const onSubmit = (values: SignInSchema) => {
     console.log(values);
+    mutate(values);
   };
 
   return (
@@ -112,7 +124,9 @@ export const SignInForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button className="w-full" type="submit" disabled={isPending}>
+            Sign In
+          </Button>
         </form>
       </Form>
     </div>
