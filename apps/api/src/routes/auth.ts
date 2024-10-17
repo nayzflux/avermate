@@ -62,41 +62,35 @@ const signInSchema = z.object({
 app.post("/sign-in", zValidator("json", signInSchema), async (c) => {
   const { email, password } = c.req.valid("json");
 
-  try {
-    // Get user
-    const user = await db.query.users.findFirst({
-      where: eq(users.email, email),
-    });
+  // Get user
+  const user = await db.query.users.findFirst({
+    where: eq(users.email, email),
+  });
 
-    if (!user) throw new HTTPException(403);
-    if (!user.password) throw new HTTPException(403);
+  if (!user) throw new HTTPException(403);
+  if (!user.password) throw new HTTPException(403);
 
-    // Verify password
-    if (!(await Bun.password.verify(password, user.password)))
-      throw new HTTPException(403);
+  // Verify password
+  if (!(await Bun.password.verify(password, user.password)))
+    throw new HTTPException(403);
 
-    // Create session
-    const sessionToken = generateSessionToken();
-    const session = await createSession(sessionToken, user.id);
-    setSession(c, sessionToken, session.expiresAt);
+  // Create session
+  const sessionToken = generateSessionToken();
+  const session = await createSession(sessionToken, user.id);
+  setSession(c, sessionToken, session.expiresAt);
 
-    return c.json(
-      {
-        user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          createdAt: user.createdAt,
-        },
+  return c.json(
+    {
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        createdAt: user.createdAt,
       },
-      200
-    );
-  } catch (e) {
-    // TODO: Error handling
-    console.log(e);
-    throw new HTTPException(500);
-  }
+    },
+    200
+  );
 });
 
 export default app;
