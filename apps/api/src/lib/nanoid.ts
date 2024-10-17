@@ -1,6 +1,6 @@
 import { customAlphabet } from "nanoid";
 
-type Prefix = "u" | "s" | "n" | "a";
+type Prefix = "u" | "subject" | "grade" | "a";
 
 const ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyz";
 
