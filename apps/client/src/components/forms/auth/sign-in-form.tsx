@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import ky from "ky";
+import { useRouter } from "next/navigation";
 
 const signInSchema = z.object({
   password: z.string().min(8).max(2048),
@@ -34,7 +35,13 @@ export const SignInForm = () => {
         credentials: "include",
       });
     },
+    onSuccess: () => {
+      // Redirect to the sign-in page.
+      router.push("/app/dashboard");
+    }
   });
+
+  const router = useRouter();
 
   // 1. Define your form.
   const form = useForm<SignInSchema>({
@@ -93,6 +100,12 @@ export const SignInForm = () => {
           </Button>
         </form>
       </Form>
+
+      <div className="mt-4 text-center">
+        <a href="/auth/sign-up">
+          Don't have an account? Sign up here
+        </a>
+      </div>
     </div>
   );
 };
