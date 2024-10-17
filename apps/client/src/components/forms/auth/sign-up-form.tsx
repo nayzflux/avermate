@@ -18,35 +18,38 @@ import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import ky from "ky";
 
-const signInSchema = z.object({
+const signUpSchema = z.object({
+  firstName: z.string().min(2).max(32),
+  lastName: z.string().min(2).max(32),
   password: z.string().min(8).max(2048),
   email: z.string().email().max(320),
 });
 
-type SignInSchema = z.infer<typeof signInSchema>;
+type SignUpSchema = z.infer<typeof signUpSchema>;
 
-export const SignInForm = () => {
+export const SignUpForm = () => {
   const { mutate, isPending } = useMutation({
-    mutationKey: ["sign-in"],
-    mutationFn: async (values: SignInSchema) => {
-      const res = await ky.post("http://localhost:5000/api/auth/sign-in", {
+    mutationKey: ["sign-up"],
+    mutationFn: async (values: SignUpSchema) => {
+      const res = await ky.post("http://localhost:5000/api/auth/sign-up", {
         json: values,
-        credentials: "include",
       });
     },
   });
 
   // 1. Define your form.
-  const form = useForm<SignInSchema>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<SignUpSchema>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
+      firstName: "Bob",
+      lastName: "Lenon",
       password: "fuckyou",
       email: "idontcare@gmail.com",
     },
   });
 
   // 2. Define a submit handler.
-  const onSubmit = (values: SignInSchema) => {
+  const onSubmit = (values: SignUpSchema) => {
     console.log(values);
     mutate(values);
   };
@@ -55,6 +58,39 @@ export const SignInForm = () => {
     <div className="md:min-w-[500px] w-[80%]">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>First Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="shadcn" {...field} />
+                </FormControl>
+                {/* <FormDescription>
+                This is your public display name.
+              </FormDescription> */}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="shadcn" {...field} />
+                </FormControl>
+                {/* <FormDescription>
+                This is your public display name.
+              </FormDescription> */}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="email"
@@ -89,7 +125,7 @@ export const SignInForm = () => {
             )}
           />
           <Button className="w-full" type="submit" disabled={isPending}>
-            Sign In
+            Sign Up
           </Button>
         </form>
       </Form>

@@ -37,7 +37,7 @@ const Home: FC = () => {
             className="px-6 py-3 text-lg bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-200 transition"
             onClick={() => {
               // Navigate to the /auth/sign-in page
-              router.push("/auth/sign-in");
+              router.push("/auth/sign-up");
             }}
           >
             Start Calculating
