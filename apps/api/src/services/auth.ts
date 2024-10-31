@@ -1,14 +1,14 @@
 import { db } from "@/db";
-import { users, type InsertUser } from "@/db/schemas/users";
+import { users, type InsertUser } from "@/db/schema";
 
 /**
  * Insert user in database
  */
 export async function createUser({
+  id,
   email,
   firstName,
   lastName,
-  id,
   password,
   createdAt,
 }: InsertUser) {
