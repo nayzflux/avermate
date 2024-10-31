@@ -1,5 +1,4 @@
-import * as sessions from "@/db/schemas/sessions";
-import * as users from "@/db/schemas/users";
+import * as schema from "@/db/schema";
 import { env } from "@/lib/env";
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
@@ -13,5 +12,5 @@ const client = createClient({
 // Create drizzle client
 export const db = drizzle(client, {
   casing: "snake_case",
-  schema: { ...users, ...sessions },
+  schema,
 });

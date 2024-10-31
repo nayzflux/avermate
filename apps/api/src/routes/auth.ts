@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { users } from "@/db/schemas/users";
+import { users } from "@/db/schema";
 import { createSession, generateSessionToken, setSession } from "@/lib/auth";
 import { createUser } from "@/services/auth";
 import { zValidator } from "@hono/zod-validator";

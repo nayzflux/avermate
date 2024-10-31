@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { sessions } from "@/db/schemas/sessions";
+import { sessions } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import type { Context } from "hono";
 import { getCookie, setCookie } from "hono/cookie";

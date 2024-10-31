@@ -1,26 +1,36 @@
-"use client";
+import SocialAuth from "@/components/buttons/auth/social-auth";
+import Consent from "@/components/paragraphs/auth/consent";
+import { Separator } from "@/components/ui/separator";
+import { ReactNode } from "react";
 
-import React, { ReactNode } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-
-const AuthLayout = ({ children }: { children: ReactNode }) => {
+export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <AnimatePresence>
-      <motion.div
-        className="h-screen w-screen grid md:grid-cols-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        {children}
-        <div className="bg-blue-500 text-white md:flex flex-col justify-center items-center hidden">
-          <h1 className="text-4xl font-bold">Welcome to AverageCalc</h1>
-          <p className="text-lg">Please sign in to continue</p>
-        </div>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
+    <div className="px-8 py-8 grid grid-cols-1 lg:grid-cols-2 h-screen">
+      {/* Left */}
+      <div className="flex flex-col items-center justify-center">
+        <main className="flex flex-col gap-8 w-[300px] md:w-[475px] mb-32">
+          {children}
 
-export default AuthLayout;
+          <div className="grid grid-cols-3 items-center gap-4">
+            <Separator className="col-span-1" />
+
+            <p className="text-center text-sm text-muted-foreground">
+              Or continue with
+            </p>
+
+            <Separator className="col-span-1" />
+          </div>
+
+          {/* Social Auth */}
+          <SocialAuth />
+
+          {/* Consent */}
+          <Consent />
+        </main>
+      </div>
+
+      {/* Right */}
+      <div className="relative hidden lg:flex"></div>
+    </div>
+  );
+}
