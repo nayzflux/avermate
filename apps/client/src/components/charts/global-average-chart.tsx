@@ -60,10 +60,10 @@ export default function GlobalAverageChart() {
       </CardHeader>
 
       <CardContent>
-        <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-4">
+        <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
           {/* Area Chart Section */}
           <div className="flex flex-col items-center lg:items-start grow min-w-0 max-h-[332px] my-0 mx-auto w-[100%]">
-            <CardDescription>
+            <CardDescription className="pb-8">
               Visualiser l'évolution de votre moyenne générale sur ce trimestre
             </CardDescription>
             <ChartContainer config={chartConfig} className="h-[302px] w-[100%]">
@@ -125,7 +125,7 @@ export default function GlobalAverageChart() {
           />
 
           {/* Radar Chart Section */}
-          <div className="flex flex-col items-center lg:space-y-2 lg:w-[300px] w-fit m-auto">
+          <div className="flex flex-col items-center lg:space-y-2 lg:w-[300px] w-fit m-auto lg:pt-0 pt-8">
             <CardDescription>
               Visualisere votre moyenne par matière
             </CardDescription>
