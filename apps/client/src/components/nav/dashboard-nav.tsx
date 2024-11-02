@@ -3,15 +3,20 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import path from "path";
 
 const routes = [
   {
-    label: "Overview",
+    label: "Dashboard",
     path: "/dashboard",
   },
   {
-    label: "Notes",
+    label: "Grades",
     path: "/dashboard/grades",
+  },
+  {
+    label: "Graphs",
+    path: "/dashboard/graphs",
   },
 ];
 
@@ -19,14 +24,16 @@ export default function DashboardNav() {
   const path = usePathname();
 
   return (
-    <nav className="sticky px-4 sm:px-16 lg:px-32 xl:px-64 2xl:px-96">
-      <ul className="flex items-center border-b">
+    <nav>
+      <ul className="flex items-center">
         {routes.map((route) => (
           <Link key={route.path} href={route.path}>
             <li
               className={cn(
-                "p-4 text-sm border-b-2 border-transparent hover:border-black dark:hover:border-white transition-all",
-                path === route.path && "border-black dark:border-white"
+                "p-4 text-sm border-transparent hover:border-black dark:hover:border-white transition-all cursor-pointer",
+                path === route.path
+                  ? "dark:text-white text-black"
+                  : "text-[#64748B]"
               )}
             >
               {route.label}

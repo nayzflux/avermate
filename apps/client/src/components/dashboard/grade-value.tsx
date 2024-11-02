@@ -18,9 +18,8 @@ export default function GradeValue({
           size === "xl" && "text-3xl"
         )}
       >
-        13.5
+        13.5<span className="text-sm text-muted-foreground align-sub">/20</span>
       </p>
-      <p className="text-sm text-muted-foreground">/20</p>
     </div>
   );
 }

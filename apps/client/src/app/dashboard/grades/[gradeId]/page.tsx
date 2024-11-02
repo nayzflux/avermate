@@ -7,9 +7,9 @@ import Link from "next/link";
 
 export default function GradePage() {
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 m-auto max-w-[2000px]">
       <div>
-        <Button variant="link" className="text-blue-500" asChild>
+        <Button asChild>
           <Link href="/dashboard">
             <ArrowLeftIcon className="size-4 mr-2" />
             Retour
