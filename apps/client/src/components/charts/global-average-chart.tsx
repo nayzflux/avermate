@@ -55,14 +55,14 @@ const chartConfig = {
 export default function GlobalAverageChart() {
   return (
     <Card className="lg:col-span-5 h-fit lg:h-auto">
-      <CardHeader>
+      <CardHeader className="pb-0">
         <CardTitle>Overview</CardTitle>
       </CardHeader>
 
       <CardContent>
-        <div className="flex items-start space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[40px]">
+        <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-4">
           {/* Area Chart Section */}
-          <div className="flex flex-col items-start space-y-2 grow min-w-0 max-h-[332px]">
+          <div className="flex flex-col items-center lg:items-start grow min-w-0 max-h-[332px] my-0 mx-auto w-[100%]">
             <CardDescription>
               Visualiser l'évolution de votre moyenne générale sur ce trimestre
             </CardDescription>
@@ -125,11 +125,14 @@ export default function GlobalAverageChart() {
           />
 
           {/* Radar Chart Section */}
-          <div className="flex flex-col items-start space-y-2 w-[300px]">
+          <div className="flex flex-col items-center lg:space-y-2 lg:w-[300px] w-fit m-auto">
             <CardDescription>
               Visualisere votre moyenne par matière
             </CardDescription>
-            <ChartContainer config={chartConfig} className="h-[332px] w-[100%]">
+            <ChartContainer
+              config={chartConfig}
+              className="h-[332px] lg:w-[100%] max-w-[300px] m-auto w-fit"
+            >
               <RadarChart
                 cx={150}
                 cy={150}

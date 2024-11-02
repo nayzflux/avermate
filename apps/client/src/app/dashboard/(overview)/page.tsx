@@ -5,6 +5,7 @@ import RecentGradesCard from "@/components/dashboard/recent-grades";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import dataIcons from "@/components/icons/data-icons";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 /**
  * Vue d'ensemble des notes
@@ -14,19 +15,24 @@ export default function OverviewPage() {
     <main className="flex flex-col gap-4 m-auto max-w-[2000px]">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-inter font-medium">Dashboard</h1>
-        <h1 className="text-2xl font-inter font-medium">
+        <h1 className="text-2xl font-inter font-medium hidden sm:block">
           Welcome back INSERT NAME!👋
         </h1>
       </div>
 
       {/* Statistiques */}
       <Tabs defaultValue="1">
-        <TabsList>
-          <TabsTrigger value="1">1st Trimester</TabsTrigger>
-          <TabsTrigger value="2">2nd Trimester</TabsTrigger>
-          <TabsTrigger value="3">3rd Trimester</TabsTrigger>
-          <TabsTrigger value="f">Full Year</TabsTrigger>
-        </TabsList>
+          <ScrollArea>
+            <div className="w-full relative h-10">
+              <TabsList className="flex absolute">
+                <TabsTrigger value="1">1st Trimester</TabsTrigger>
+                <TabsTrigger value="2">2nd Trimester</TabsTrigger>
+                <TabsTrigger value="3">3rd Trimester</TabsTrigger>
+                <TabsTrigger value="f">Full Year</TabsTrigger>
+              </TabsList>
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         <TabsContent value="1">
           <div className="grid grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
             <DataCard
