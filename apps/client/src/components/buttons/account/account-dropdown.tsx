@@ -29,7 +29,7 @@ export default function AccountDropdown() {
         </div>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent>
+      <DropdownMenuContent className="mt-2 mr-2">
         <DropdownMenuLabel className="flex gap-2 items-center">
           {" "}
           <Avatar

@@ -1,3 +1,5 @@
+"use client";
+
 import DataCard from "@/components/dashboard/data-card";
 import GradeValue from "@/components/dashboard/grade-value";
 import { Button } from "@/components/ui/button";
