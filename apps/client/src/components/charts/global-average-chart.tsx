@@ -125,30 +125,24 @@ export default function GlobalAverageChart() {
           />
 
           {/* Radar Chart Section */}
-          <div className="flex flex-col items-center lg:space-y-2 lg:w-[300px] w-fit m-auto lg:pt-0 pt-8">
+          <div className="flex flex-col items-center lg:space-y-2 lg:w-[40%] m-auto lg:pt-0 pt-8 w-[100%]">
             <CardDescription>
               Visualisere votre moyenne par matière
             </CardDescription>
             <ChartContainer
               config={chartConfig}
-              className="h-[332px] lg:w-[100%] max-w-[300px] m-auto w-fit"
+              className="h-[332px] w-[100%] m-auto !aspect-auto"
             >
-              <RadarChart
-                cx={150}
-                cy={150}
-                outerRadius={100}
-                width={300}
-                height={300}
-                data={radarData}
-              >
-                <PolarGrid />
+              <RadarChart data={radarData}>
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent />}
+                />
                 <PolarAngleAxis dataKey="subject" />
-                <PolarRadiusAxis />
+                <PolarGrid />
                 <Radar
-                  name="Mike"
                   dataKey="A"
-                  stroke="var(--color-desktop)"
-                  fill="#2662d9"
+                  fill="var(--color-desktop)"
                   fillOpacity={0.6}
                 />
               </RadarChart>
