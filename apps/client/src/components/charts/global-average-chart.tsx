@@ -62,7 +62,7 @@ export default function GlobalAverageChart() {
       <CardContent>
         <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
           {/* Area Chart Section */}
-          <div className="flex flex-col items-center lg:items-start grow min-w-0 max-h-[332px] my-0 mx-auto w-[100%]">
+          <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%]">
             <CardDescription className="pb-8">
               Visualiser l'évolution de votre moyenne générale sur ce trimestre
             </CardDescription>
