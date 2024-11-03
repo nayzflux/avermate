@@ -54,9 +54,18 @@ const chartConfig = {
 
 export default function GlobalAverageChart() {
   return (
+<<<<<<< HEAD
     <Card className="lg:col-span-5 h-fit lg:h-auto">
       <CardHeader className="pb-0">
         <CardTitle>Overview</CardTitle>
+=======
+    <Card className="lg:col-span-5">
+      <CardHeader>
+        <CardTitle>Moyenne Générale</CardTitle>
+        <CardDescription>
+          Visualiser l&apos;évolution de votre moyenne générale sur ce trimestre
+        </CardDescription>
+>>>>>>> 7933c06 (feat: notes tabs)
       </CardHeader>
 
       <CardContent>
@@ -82,12 +91,20 @@ export default function GlobalAverageChart() {
                   tickMargin={8}
                   tickFormatter={(value) => value.slice(0, 3)}
                 />
+<<<<<<< HEAD
                 <YAxis
                   tickLine={false}
                   axisLine={false}
                   domain={[0, 20]}
                   tickMargin={8}
                   tickCount={5}
+=======
+
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-desktop)"
+                  stopOpacity={0.1}
+>>>>>>> 7933c06 (feat: notes tabs)
                 />
                 <ChartTooltip
                   cursor={false}

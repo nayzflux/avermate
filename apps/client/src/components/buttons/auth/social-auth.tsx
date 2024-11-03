@@ -1,17 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { env } from "@/lib/env";
+import { BoxIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 
 const providers = [
   {
     id: "google",
     label: "Google",
-    // icon: <div></div>,
+    icon: BoxIcon,
   },
   {
     id: "microsoft",
-    label: "Google",
-    // icon: <div></div>,
+    label: "Microsoft",
+    icon: BoxIcon,
   },
 ];
 

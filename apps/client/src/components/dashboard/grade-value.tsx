@@ -27,9 +27,15 @@ export default function GradeValue({
         size === "sm" && "text-xs"
         )}
       >
+<<<<<<< HEAD
         /{outOf}
       </span>
       </p>
+=======
+        {value}
+      </p>
+      <p className="text-sm text-muted-foreground">/{outOf}</p>
+>>>>>>> 7933c06 (feat: notes tabs)
     </div>
   );
 }
