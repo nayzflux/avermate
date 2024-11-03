@@ -1,3 +1,5 @@
+"use client";
+
 import GlobalAverageChart from "@/components/charts/global-average-chart";
 import DataCard from "@/components/dashboard/data-card";
 import GradeValue from "@/components/dashboard/grade-value";

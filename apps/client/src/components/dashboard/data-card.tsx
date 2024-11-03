@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Card } from "../ui/card";
+import { useState, useEffect } from "react";
 
 export default function DataCard({
   title,
@@ -11,7 +12,16 @@ export default function DataCard({
   description: string;
   children: ReactNode;
   icon: any;
-}) {
+  }) {
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+      setIsMounted(true);
+    }, []);
+
+    if (!isMounted) {
+      return null; // Don't render anything until mounted
+    }
   return (
     <Card className="p-6 rounded-lg">
       <div className="flex flex-col gap-2">
