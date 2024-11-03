@@ -13,22 +13,22 @@ export default function GradeValue({
   // decimals is giving the number of decimal detected in the value
   const decimals = value.toString().split(".")[1]?.length || 0;
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1 whitespace-nowrap">
       <p
+      className={cn(
+        size === "sm" && "text-l font-normal",
+        size === "xl" && "text-3xl font-bold"
+      )}
+      >
+      <NumberTicker decimalPlaces={decimals} value={value} />
+      <span
         className={cn(
-          size === "sm" && "text-l font-normal",
-          size === "xl" && "text-3xl font-bold"
+        "text-sm text-muted-foreground align-sub",
+        size === "sm" && "text-xs"
         )}
       >
-        <NumberTicker decimalPlaces={decimals} value={value} />
-        <span
-          className={cn(
-            "text-sm text-muted-foreground align-sub",
-            size === "sm" && "text-xs"
-          )}
-        >
-          /{outOf}
-        </span>
+        /{outOf}
+      </span>
       </p>
     </div>
   );
