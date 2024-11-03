@@ -36,7 +36,7 @@ export default function OverviewPage() {
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
         <TabsContent value="1">
-          <div className="grid grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
+          <div className="grid grids-cols-1 xs:grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
             <DataCard
               title="Overall average"
               icon={(props: any) => <DataIcons iconId="1" {...props} />}
