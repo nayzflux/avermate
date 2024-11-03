@@ -1,0 +1,37 @@
+[
+  {
+    "id": "1",
+    "name": "Mathématiques",
+    "parentId": null
+  },
+  {
+    "id": "2",
+    "name": "Maths Oral",
+    "parentId": "1"
+  },
+  {
+    "id": "3",
+    "name": "Maths Ecrit",
+    "parentId": "1"
+  },
+  {
+    "id": "4",
+    "name": "Physique",
+    "parentId": null
+  },
+  {
+    "id": "5",
+    "name": "Physique Oral",
+    "parentId": "4"
+  },
+  {
+    "id": "6",
+    "name": "Physique Ecrit",
+    "parentId": "4"
+  },
+  {
+    "id": "7",
+    "name": "Physique TP",
+    "parentId": "4"
+  }
+]
