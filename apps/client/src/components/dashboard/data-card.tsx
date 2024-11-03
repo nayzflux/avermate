@@ -13,17 +13,17 @@ export default function DataCard({
   icon: any;
 }) {
   return (
-    <Card className="p-4 rounded-lg">
+    <Card className="p-6 rounded-lg">
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-2">
           <p className="font-semibold">{title}</p>
-          <Icon className="w-8 h-8" />
+          <Icon/>
         </div>
 
         <div className="flex flex-col gap-0.5">
           {children}
 
-          <p className="text-sm text-muted-foreground">{description}</p>
+          <p className="text-xs text-muted-foreground font-light">{description}</p>
         </div>
       </div>
     </Card>

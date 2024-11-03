@@ -11,7 +11,7 @@ export default function RecentGradesCard() {
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
-        <CardTitle className="text-xl">Notes récentes</CardTitle>
+        <CardTitle className="text-l">Notes récentes</CardTitle>
 
         <CardDescription>
           Vous avez reçu 3 nouvelles notes cette semaine !

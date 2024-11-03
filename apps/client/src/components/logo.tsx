@@ -16,7 +16,7 @@ export default function Logo() {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1">
       <svg
         width="24"
         height="24"
@@ -81,7 +81,7 @@ export default function Logo() {
         </defs>
       </svg>
 
-      <h1 className="text-2xl font-inter">Avermate</h1>
+      <h1 className=" font-bold text-lg">Avermate</h1>
     </div>
   );
 }

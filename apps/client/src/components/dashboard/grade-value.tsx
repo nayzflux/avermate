@@ -1,24 +1,34 @@
 import { cn } from "@/lib/utils";
+import NumberTicker from "@/components/ui/number-ticker";
 
 export default function GradeValue({
   value,
   outOf,
-  size = "sm",
+  size = "xl",
 }: {
   value: number;
   outOf: number;
   size?: "sm" | "xl";
 }) {
+  // decimals is giving the number of decimal detected in the value
+  const decimals = value.toString().split(".")[1]?.length || 0;
   return (
     <div className="flex items-center gap-1">
       <p
         className={cn(
-          "font-bold",
-          size === "sm" && "text-xl",
-          size === "xl" && "text-3xl"
+          size === "sm" && "text-l font-normal",
+          size === "xl" && "text-3xl font-bold"
         )}
       >
-        13.5<span className="text-sm text-muted-foreground align-sub">/20</span>
+        <NumberTicker decimalPlaces={decimals} value={value} />
+        <span
+          className={cn(
+            "text-sm text-muted-foreground align-sub",
+            size === "sm" && "text-xs"
+          )}
+        >
+          /{outOf}
+        </span>
       </p>
     </div>
   );

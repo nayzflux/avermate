@@ -12,7 +12,7 @@ export default function RecentGradeItem() {
           </p>
         </div>
 
-        <GradeValue value={15} outOf={20} />
+        <GradeValue value={15} outOf={20} size="sm"/>
       </div>
     </Link>
   );

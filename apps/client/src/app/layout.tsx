@@ -15,15 +15,29 @@ import "./globals.css";
 
 import { cn } from "@/lib/utils";
 import ThemeProvider from "@/providers/theme-provider";
-import { Gabarito } from "next/font/google";
+import { Inter } from "next/font/google";
 
-const gabarito = Gabarito({
+const inter = Inter({
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   title: "Avermate",
   description: "Tracks your average grades",
+  icons: {
+    icon: [
+      {
+        media: '(prefers-color-scheme: light)',
+        url: '/images/favicon-light.png',
+        href: '/images/favicon-light.png',
+      },
+      {
+        media: '(prefers-color-scheme: dark)',
+        url: '/images/favicon-dark.png',
+        href: '/images/favicon-dark.png',
+      },
+    ]
+  }
 };
 
 export default function RootLayout({
@@ -33,7 +47,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn("", gabarito.className)}>
+      <body className={cn("", inter.className)}>
         <QueryProvider>
           <ThemeProvider>{children}</ThemeProvider>
         </QueryProvider>
