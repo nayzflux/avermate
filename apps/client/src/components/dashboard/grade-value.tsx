@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import NumberTicker from "@/components/ui/number-ticker";
+import { cn } from "@/lib/utils";
 
 export default function GradeValue({
   value,
@@ -15,27 +15,21 @@ export default function GradeValue({
   return (
     <div className="flex items-center gap-1 whitespace-nowrap">
       <p
-      className={cn(
-        size === "sm" && "text-l font-normal",
-        size === "xl" && "text-3xl font-bold"
-      )}
-      >
-      <NumberTicker decimalPlaces={decimals} value={value} />
-      <span
         className={cn(
-        "text-sm text-muted-foreground align-sub",
-        size === "sm" && "text-xs"
+          size === "sm" && "text-l font-normal",
+          size === "xl" && "text-3xl font-bold"
         )}
       >
-<<<<<<< HEAD
-        /{outOf}
-      </span>
+        <NumberTicker decimalPlaces={decimals} value={value} />
+        <span
+          className={cn(
+            "text-sm text-muted-foreground align-sub",
+            size === "sm" && "text-xs"
+          )}
+        >
+          /{outOf}
+        </span>
       </p>
-=======
-        {value}
-      </p>
-      <p className="text-sm text-muted-foreground">/{outOf}</p>
->>>>>>> 7933c06 (feat: notes tabs)
     </div>
   );
 }

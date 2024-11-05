@@ -83,7 +83,7 @@ export default function DashboardNav() {
     //     </NavigationMenuList>
     //   </NavigationMenu>
     // </div>
-    
+
     <nav className="sticky px-4 sm:px-16 lg:px-32 2xl:px-64 3xl:px-96">
       <ul className="flex items-center border-b">
         {routes.map((route) => (
