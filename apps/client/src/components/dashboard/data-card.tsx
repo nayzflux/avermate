@@ -1,5 +1,7 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode } from "react";
 import { Card } from "../ui/card";
+
+// TODO: Fix tambouille
 
 export default function DataCard({
   title,
@@ -12,15 +14,16 @@ export default function DataCard({
   children: ReactNode;
   icon: any;
 }) {
-  const [isMounted, setIsMounted] = useState(false);
+  // const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  // useEffect(() => {
+  //   setIsMounted(true);
+  // }, []);
 
-  if (!isMounted) {
-    return null; // Don't render anything until mounted
-  }
+  // if (!isMounted) {
+  //   return null; // Don't render anything until mounted
+  // }
+
   return (
     <Card className="p-6 rounded-lg">
       <div className="flex flex-col gap-2">

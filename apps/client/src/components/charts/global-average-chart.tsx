@@ -17,13 +17,12 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
-  XAxis,
-  YAxis,
+  PolarAngleAxis,
+  PolarGrid,
   Radar,
   RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
+  XAxis,
+  YAxis,
 } from "recharts";
 
 import { Separator } from "@/components/ui/separator";
@@ -52,20 +51,16 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+// TODO: Fix la tambouille avec les width et height
+
 export default function GlobalAverageChart() {
   return (
-<<<<<<< HEAD
-    <Card className="lg:col-span-5 h-fit lg:h-auto">
-      <CardHeader className="pb-0">
-        <CardTitle>Overview</CardTitle>
-=======
     <Card className="lg:col-span-5">
       <CardHeader>
         <CardTitle>Moyenne Générale</CardTitle>
-        <CardDescription>
+        {/* <CardDescription>
           Visualiser l&apos;évolution de votre moyenne générale sur ce trimestre
-        </CardDescription>
->>>>>>> 7933c06 (feat: notes tabs)
+        </CardDescription> */}
       </CardHeader>
 
       <CardContent>
@@ -91,21 +86,14 @@ export default function GlobalAverageChart() {
                   tickMargin={8}
                   tickFormatter={(value) => value.slice(0, 3)}
                 />
-<<<<<<< HEAD
                 <YAxis
                   tickLine={false}
                   axisLine={false}
                   domain={[0, 20]}
                   tickMargin={8}
                   tickCount={5}
-=======
-
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-desktop)"
-                  stopOpacity={0.1}
->>>>>>> 7933c06 (feat: notes tabs)
                 />
+
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent />}
