@@ -52,7 +52,7 @@ export default function GradesTable() {
               <div className="flex gap-4 flex-wrap">
                 {Array.from({ length: Math.random() * 10 + 2 }).map(
                   (_, index) => (
-                    <GradeBadge />
+                    <GradeBadge key={index} />
                   )
                 )}
               </div>
