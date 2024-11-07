@@ -8,12 +8,13 @@ export default function SignUpPage() {
       <div className="flex flex-col gap-2">
         <p className="text-3xl md:text-4xl font-bold">Sign Up</p>
 
-        <p className="text-sm md:text-base text-muted-foreground">
-          Log in to stay on top of your averages and reach your goals.{" "}
+        <div className="flex flex-col gap-0.5 text-sm md:text-base text-muted-foreground">
+          <p>Log in to stay on top of your averages and reach your goals.</p>
+
           <Link href="/auth/sign-in" className="underline">
             I already have an account
           </Link>
-        </p>
+        </div>
       </div>
 
       {/* Form */}
