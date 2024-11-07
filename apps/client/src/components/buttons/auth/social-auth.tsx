@@ -1,18 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { env } from "@/lib/env";
-import { BoxIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
+import { FaGoogle, FaMicrosoft } from "react-icons/fa";
 
 const providers = [
   {
     id: "google",
     label: "Google",
-    icon: BoxIcon,
+    icon: FaGoogle,
   },
   {
     id: "microsoft",
     label: "Microsoft",
-    icon: BoxIcon,
+    icon: FaMicrosoft,
   },
 ];
 
@@ -22,7 +22,7 @@ export default function SocialAuth() {
       {providers.map(({ id, label, icon: Icon }) => (
         <Button key={id} variant="outline" asChild>
           <Link href={`${env.NEXT_PUBLIC_API_URL}auth/${id}`}>
-            {/* <Icon className="size-4 mr-2" /> */}
+            <Icon className="size-4 mr-2" />
             {label}
           </Link>
         </Button>
