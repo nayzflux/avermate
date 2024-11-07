@@ -3,28 +3,26 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
+    // Database
     DATABASE_URL: z.string().url(),
-    ORIGIN_URL: z.string().url(),
+
+    // Better Auth
+    BETTER_AUTH_URL: z.string().url(),
+    BETTER_AUTH_SECRET: z.string().min(32),
+
+    // Client
+    CLIENT_URL: z.string().url(),
+
+    // OAuth
+
+    // Microsoft OAuth
+    MICROSOFT_CLIENT_ID: z.string(),
+    MICROSOFT_CLIENT_SECRET: z.string(),
+
+    // Google OAuth
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
   },
-
-  /**
-   * What object holds the environment variables at runtime. This is usually
-   * `process.env` or `import.meta.env`.
-   */
-  runtimeEnv: Bun.env,
-
-  /**
-   * By default, this library will feed the environment variables directly to
-   * the Zod validator.
-   *
-   * This means that if you have an empty string for a value that is supposed
-   * to be a number (e.g. `PORT=` in a ".env" file), Zod will incorrectly flag
-   * it as a type mismatch violation. Additionally, if you have an empty string
-   * for a value that is supposed to be a string with a default value (e.g.
-   * `DOMAIN=` in an ".env" file), the default value will never be applied.
-   *
-   * In order to solve these issues, we recommend that all new projects
-   * explicitly specify this option as true.
-   */
+  runtimeEnv: process.env,
   emptyStringAsUndefined: true,
 });

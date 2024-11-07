@@ -3,10 +3,9 @@ import { env } from "@/lib/env";
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 
-// Create sqlite client
+// Create libsql client
 const client = createClient({
-  url: env.DATABASE_URL!,
-  // authToken: "",
+  url: env.DATABASE_URL,
 });
 
 // Create drizzle client

@@ -4,5 +4,8 @@
     "workspaces": [
         "apps/*",
         "packages/*"
-    ]
+    ],
+    "dependencies": {
+        "better-auth": "^0.7.5-beta.8"
+    }
 }
