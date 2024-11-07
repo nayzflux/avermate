@@ -1,99 +1,113 @@
 import { db } from "@/db";
-import { sessions } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import type { Context } from "hono";
-import { getCookie, setCookie } from "hono/cookie";
+import { env } from "@/lib/env";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
-const SESSION_EXPIRES_IN = 30 * 60 * 60 * 24 * 1000;
+export const auth = betterAuth({
+  appName: "Avermate",
 
-const SESSION_COOKIE = "session";
+  // Database
+  database: drizzleAdapter(db, {
+    provider: "sqlite",
+    usePlural: true,
 
-export function generateSessionToken(): string {
-  const bytes = new Uint8Array(20);
-  crypto.getRandomValues(bytes);
-  const token = Buffer.from(bytes).toString("hex");
-  return token;
-}
+    // Don't generate ID
+    generateId: false,
+  }),
 
-export async function createSession(token: string, userId: string) {
-  const sessionId = Bun.SHA256.hash(token).toString();
+  // Client URL
+  trustedOrigins: [env.CLIENT_URL],
 
-  const session = await db
-    .insert(sessions)
-    .values({
-      id: sessionId,
-      userId: userId,
-      expiresAt: new Date(Date.now() + SESSION_EXPIRES_IN),
-    })
-    .returning()
-    .get();
+  // Session
+  session: {
+    // 7 days
+    expiresIn: 7 * 24 * 60 * 60,
+    // 1 day
+    updateAge: 24 * 60 * 60,
 
-  return session;
-}
+    // fields: {
+    //   expiresAt: "expires_at",
+    //   ipAddress: "ip_address",
+    //   userAgent: "user_agent",
+    //   userId: "user_id",
+    // },
+  },
 
-export async function validateSessionToken(token: string) {
-  // Hash token
-  const sessionId = Bun.SHA256.hash(token).toString();
+  // User
+  user: {
+    fields: {
+      image: "avatarUrl",
+      // updatedAt: "updated_at",
+      // createdAt: "created_at",
+      // emailVerified: "email_verified",
+    },
+  },
 
-  // Get session from db
-  const session = await db.query.sessions.findFirst({
-    where: eq(sessions.id, sessionId),
-    with: {
-      user: {
-        columns: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          createdAt: true,
-          password: false,
-        },
+  // Account
+  // account: {
+  //   fields: {
+  //     userId: "user_id",
+  //     refreshToken: "refresh_token",
+  //     accessToken: "access_token",
+  //     idToken: "id_token",
+  //     expiresAt: "expires_at",
+  //     accountId: "account_id",
+  //     providerId: "provider_id",
+  //   },
+  // },
+
+  // Rate limiting 10 req each 10 minutes
+  rateLimit: {
+    window: 10 * 60,
+    max: 10,
+  },
+
+  // Email / Password
+  emailAndPassword: {
+    enabled: true,
+
+    password: {
+      // Hash password using Argon2id
+      async hash(password) {
+        const hash = await Bun.password.hash(password, "argon2id");
+        return hash;
+      },
+
+      // Verify password
+      async verify(hash, password) {
+        const isMatching = await Bun.password.verify(
+          password,
+          hash,
+          "argon2id"
+        );
+        return isMatching;
       },
     },
-  });
+  },
 
-  // If session not found
-  if (!session) return null;
+  // OAuth
+  socialProviders: {
+    // Google
+    google: {
+      enabled: true,
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    },
 
-  // If session expired
-  if (Date.now() >= session.expiresAt.getTime()) {
-    // Delete the session
-    await db.delete(sessions).where(eq(sessions.id, session.id));
-    return null;
-  }
+    // Microsoft
+    microsoft: {
+      enabled: true,
+      clientId: env.MICROSOFT_CLIENT_ID,
+      clientSecret: env.MICROSOFT_CLIENT_SECRET,
+    },
+  },
 
-  // If session expires in less than 15 days
-  if (Date.now() >= session.expiresAt.getTime() - 1000 * 60 * 60 * 24 * 15) {
-    // Update session expires at
-    await db
-      .update(sessions)
-      .set({
-        expiresAt: new Date(Date.now() + SESSION_EXPIRES_IN),
-      })
-      .where(eq(sessions.id, session.id));
-  }
+  // Cookie
+  advanced: {
+    cookiePrefix: "avermate",
 
-  return session;
-}
-
-export async function invalidateSession(sessionId: string) {
-  await db.delete(sessions).where(eq(sessions.id, sessionId));
-}
-
-export function setSession(c: Context, token: string, expiresAt: Date) {
-  setCookie(c, SESSION_COOKIE, token, {
-    sameSite: "strict",
-    httpOnly: true,
-    path: "/",
-    secure: Bun.env.NODE_ENV === "development" ? false : true,
-    expires: expiresAt,
-  });
-}
-
-export function getSession(c: Context) {
-  const sessionToken = getCookie(c, SESSION_COOKIE);
-
-  if (!sessionToken) return null;
-
-  return validateSessionToken(sessionToken);
-}
+    defaultCookieAttributes: {
+      sameSite: "strict",
+    },
+  },
+});
