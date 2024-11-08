@@ -13,8 +13,10 @@ import { useSession } from "@/lib/auth";
 import {
   Cog6ToothIcon,
   LifebuoyIcon,
+  ShieldCheckIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
+import Link from "next/link";
 import { LuGithub } from "react-icons/lu";
 import SignOutButton from "../sign-out-button";
 import ThemeSwitchButton from "../theme-switch-button";
@@ -58,13 +60,23 @@ export default function AccountDropdown() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <UserIcon className="size-4 mr-2" />
-          Profile
+        <DropdownMenuItem asChild>
+          <Link href="/profile">
+            <UserIcon className="size-4 mr-2" />
+            Profile
+          </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Cog6ToothIcon className="size-4 mr-2" />
-          Settings
+        <DropdownMenuItem asChild>
+          <Link href="/profile/account">
+            <ShieldCheckIcon className="size-4 mr-2" />
+            Account
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/profile/settings">
+            <Cog6ToothIcon className="size-4 mr-2" />
+            Settings
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuLabel>Appearance</DropdownMenuLabel>
         <DropdownMenuSeparator />

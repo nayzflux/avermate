@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 
 export default function Avatar({
   src,
@@ -11,7 +10,7 @@ export default function Avatar({
   className?: string;
 }) {
   return (
-    <Image
+    <img
       src={src}
       alt="User avatar"
       width={size}
