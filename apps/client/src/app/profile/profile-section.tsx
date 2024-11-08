@@ -17,7 +17,7 @@ export default function ProfileSection({
   children: React.ReactNode;
 }) {
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>

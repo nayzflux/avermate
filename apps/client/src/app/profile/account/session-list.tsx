@@ -1,5 +1,6 @@
 "use client";
 
+import RevokeSessionButton from "@/components/buttons/revoke-session-button";
 import { authClient, useSession } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -82,6 +83,10 @@ export default function SessionList() {
             <div className="flex gap-1 text-muted-foreground">
               {session.userAgent && <p>{session.userAgent}</p>}
               {session.ipAddress && <p>{session.ipAddress}</p>}
+            </div>
+
+            <div className="flex justify-end">
+              <RevokeSessionButton sessionId={session.id} />
             </div>
           </div>
         ))}

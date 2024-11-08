@@ -7,19 +7,22 @@ import RecentGradesCard from "@/components/dashboard/recent-grades";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useSession } from "@/lib/auth";
 import { BoxIcon } from "@radix-ui/react-icons";
 
 /**
  * Vue d'ensemble des notes
  */
 export default function OverviewPage() {
-  const name = "Ferréol";
+  const { data: session } = useSession();
 
   return (
     <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
       <div className="flex flex-wrap items-center justify-between">
         <h1 className="text-3xl font-bold">Vue d&apos;ensemble</h1>
-        <h1 className="text-3xl font-normal">Welcome back {name}!👋</h1>
+        <h1 className="text-3xl font-normal">
+          Welcome back {session?.user?.name.split(" ")[0]} 👋!
+        </h1>
       </div>
 
       <Separator />
