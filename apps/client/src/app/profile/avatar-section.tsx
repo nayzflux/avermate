@@ -15,7 +15,7 @@ export default function AvatarSection() {
     <ProfileSection title="Avatar" description="Change your avatar">
       <div className="flex mt-2">
         <Avatar
-          className="size-64"
+          className="size-32 lg:size-64"
           size={256}
           src={
             session?.user?.image ||

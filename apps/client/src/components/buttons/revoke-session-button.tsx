@@ -56,7 +56,7 @@ export default function RevokeSessionButton({
       });
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["sessions"] });
+      queryClient.invalidateQueries({ queryKey: ["sessions-list"] });
     },
   });
 

@@ -14,20 +14,20 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Avermate",
   description: "Tracks your average grades",
-  icons: {
-    icon: [
-      {
-        media: "(prefers-color-scheme: light)",
-        url: "/images/favicon-light.png",
-        href: "/images/favicon-light.png",
-      },
-      {
-        media: "(prefers-color-scheme: dark)",
-        url: "/images/favicon-dark.png",
-        href: "/images/favicon-dark.png",
-      },
-    ],
-  },
+  // icons: {
+  //   icon: [
+  //     {
+  //       media: "(prefers-color-scheme: light)",
+  //       url: "/images/favicon-light.png",
+  //       href: "/images/favicon-light.png",
+  //     },
+  //     {
+  //       media: "(prefers-color-scheme: dark)",
+  //       url: "/images/favicon-dark.png",
+  //       href: "/images/favicon-dark.png",
+  //     },
+  //   ],
+  // },
 };
 
 export default function RootLayout({

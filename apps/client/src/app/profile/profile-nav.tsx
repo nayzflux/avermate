@@ -39,7 +39,7 @@ export default function ProfileNav() {
 
   return (
     <nav>
-      <ul className="flex flex-col gap-4">
+      <ul className="flex flex-col gap-1 md:gap-4">
         {routes.map((route) => (
           <li key={route.path}>
             <Button
@@ -52,7 +52,7 @@ export default function ProfileNav() {
             >
               <Link href={route.path}>
                 <route.icon className="size-4 mr-2" />
-                {route.label}
+                <p className="hidden lg:inline">{route.label}</p>
               </Link>
             </Button>
           </li>

@@ -17,13 +17,15 @@ export default function ProfileSection({
   children: React.ReactNode;
 }) {
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
+    <Card className="p-6 w-full">
+      <div className="flex flex-col gap-6">
+        <CardHeader className="p-0">
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </CardHeader>
 
-      <CardContent>{children}</CardContent>
+        <CardContent className="p-0">{children}</CardContent>
+      </div>
     </Card>
   );
 }

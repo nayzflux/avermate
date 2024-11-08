@@ -26,7 +26,7 @@ export default function SessionList() {
     isError,
     isPending,
   } = useQuery({
-    queryKey: ["sessions"],
+    queryKey: ["sessions-list"],
     queryFn: async () => {
       const sessions = (await authClient.listSessions()) satisfies Session[];
       return sessions;
@@ -47,7 +47,7 @@ export default function SessionList() {
       description="Manage and watch all your active sessions."
     >
       <div className="flex flex-col gap-4">
-        {sesssions.map((session) => (
+        {sesssions?.map((session) => (
           <div
             key={session.id}
             className="flex flex-col gap-2 border-t text-sm px-2 pt-4"
