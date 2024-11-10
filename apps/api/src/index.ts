@@ -2,8 +2,10 @@ import { type Session, type User } from "@/lib/auth";
 import { env } from "@/lib/env";
 import authRoutes from "@/routes/auth";
 import gradesRoutes from "@/routes/grades";
+import subjectsRoutes from "@/routes/subjects";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { logger } from "hono/logger";
 
 const app = new Hono<{
   Variables: {
@@ -11,6 +13,9 @@ const app = new Hono<{
     session: Session | null;
   };
 }>().basePath("/api");
+
+// Logger
+app.use(logger());
 
 // CORS
 app.use(
@@ -24,6 +29,8 @@ app.use(
 app.route("/auth", authRoutes);
 
 app.route("/grades", gradesRoutes);
+
+app.route("/subjects", subjectsRoutes);
 
 export default {
   fetch: app.fetch,

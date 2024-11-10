@@ -1,4 +1,5 @@
 import { generateId } from "@/lib/nanoid";
+import { relations } from "drizzle-orm";
 import {
   foreignKey,
   integer,
@@ -23,7 +24,7 @@ export const subjects = sqliteTable(
     createdAt: integer({ mode: "timestamp" }).notNull(),
     userId: text()
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
   },
   (t) => ({
     parentReference: foreignKey({
@@ -33,6 +34,20 @@ export const subjects = sqliteTable(
     }),
   })
 );
+
+export const subjectsRelations = relations(subjects, ({ one, many }) => ({
+  parent: one(subjects, {
+    fields: [subjects.parentId],
+    references: [subjects.id],
+    relationName: "parent_relation",
+  }),
+  childrens: many(subjects, { relationName: "parent_relation" }),
+  grades: many(grades),
+  user: one(users, {
+    fields: [subjects.userId],
+    references: [users.id],
+  }),
+}));
 
 export const grades = sqliteTable("grades", {
   id: text()
@@ -51,11 +66,25 @@ export const grades = sqliteTable("grades", {
 
   subjectId: text()
     .notNull()
-    .references(() => subjects.id),
+    .references(() => subjects.id, {
+      onUpdate: "cascade",
+      onDelete: "cascade",
+    }),
   userId: text()
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
 });
+
+export const gradesRelations = relations(grades, ({ one }) => ({
+  subject: one(subjects, {
+    fields: [grades.subjectId],
+    references: [subjects.id],
+  }),
+  user: one(users, {
+    fields: [grades.userId],
+    references: [users.id],
+  }),
+}));
 
 export const users = sqliteTable("users", {
   id: text()
@@ -74,6 +103,13 @@ export const users = sqliteTable("users", {
   createdAt: integer({ mode: "timestamp" }).notNull(),
 });
 
+export const usersRelations = relations(users, ({ many }) => ({
+  subjects: many(subjects),
+  grades: many(grades),
+  sessions: many(sessions),
+  accounts: many(accounts),
+}));
+
 export const sessions = sqliteTable("sessions", {
   id: text()
     .notNull()
@@ -87,8 +123,15 @@ export const sessions = sqliteTable("sessions", {
 
   userId: text()
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
 });
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, {
+    fields: [sessions.userId],
+    references: [users.id],
+  }),
+}));
 
 export const accounts = sqliteTable("accounts", {
   id: text()
@@ -102,7 +145,7 @@ export const accounts = sqliteTable("accounts", {
 
   userId: text()
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
 
   accessToken: text(),
   refreshToken: text(),
@@ -112,6 +155,13 @@ export const accounts = sqliteTable("accounts", {
 
   password: text(),
 });
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, {
+    fields: [accounts.userId],
+    references: [users.id],
+  }),
+}));
 
 export const verifications = sqliteTable("verifications", {
   id: text()
