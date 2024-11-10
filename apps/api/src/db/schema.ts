@@ -21,6 +21,9 @@ export const subjects = sqliteTable(
     coefficient: integer().notNull(),
 
     createdAt: integer({ mode: "timestamp" }).notNull(),
+    userId: text()
+      .notNull()
+      .references(() => users.id),
   },
   (t) => ({
     parentReference: foreignKey({
@@ -43,7 +46,15 @@ export const grades = sqliteTable("grades", {
   outOf: integer().notNull(),
   coefficient: integer().notNull(),
 
+  passedAt: integer({ mode: "timestamp" }).notNull(),
   createdAt: integer({ mode: "timestamp" }).notNull(),
+
+  subjectId: text()
+    .notNull()
+    .references(() => subjects.id),
+  userId: text()
+    .notNull()
+    .references(() => users.id),
 });
 
 export const users = sqliteTable("users", {

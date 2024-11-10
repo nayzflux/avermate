@@ -1,6 +1,7 @@
-import { auth, type Session, type User } from "@/lib/auth";
+import { type Session, type User } from "@/lib/auth";
 import { env } from "@/lib/env";
 import authRoutes from "@/routes/auth";
+import gradesRoutes from "@/routes/grades";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 
@@ -20,22 +21,9 @@ app.use(
   })
 );
 
-// Session Middleware
-app.use("*", async (c, next) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
-
-  if (!session) {
-    c.set("user", null);
-    c.set("session", null);
-    return next();
-  }
-
-  c.set("user", session.user);
-  c.set("session", session.session);
-  return next();
-});
-
 app.route("/auth", authRoutes);
+
+app.route("/grades", gradesRoutes);
 
 export default {
   fetch: app.fetch,
