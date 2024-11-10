@@ -18,18 +18,18 @@ const createGradeSchema = z.object({
     .number()
     .min(0)
     .max(1000 * 10)
-    .int(),
+    .transform((f) => Math.round(f * 100)),
   value: z
     .number()
     .min(0)
     .max(1000 * 10)
-    .int(),
+    .transform((f) => Math.round(f * 100)),
   coefficient: z
     .number()
     .min(0)
     .max(1000 * 10)
-    .int(),
-  passedAt: z.date().max(new Date()).optional().default(new Date()),
+    .transform((f) => Math.round(f * 100)),
+  passedAt: z.coerce.date().max(new Date()).optional().default(new Date()),
   subjectId: z.string().min(1).max(64),
 });
 
@@ -78,7 +78,6 @@ const getGradeSchema = z.object({
 
 app.get("/:gradeId", zValidator("json", getGradeSchema), async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
-
   if (!session) throw new HTTPException(401);
 
   const { gradeId } = c.req.valid("json");
@@ -86,7 +85,7 @@ app.get("/:gradeId", zValidator("json", getGradeSchema), async (c) => {
   const grade = await db.query.grades.findFirst({
     where: eq(grades.id, gradeId),
     with: {
-      subjects: true,
+      subject: true,
     },
   });
 
@@ -105,19 +104,19 @@ const updateGradeBodySchema = z.object({
     .number()
     .min(0)
     .max(1000 * 10)
-    .int()
+    .transform((f) => Math.round(f * 100))
     .optional(),
   value: z
     .number()
     .min(0)
     .max(1000 * 10)
-    .int()
+    .transform((f) => Math.round(f * 100))
     .optional(),
   coefficient: z
     .number()
     .min(0)
     .max(1000 * 10)
-    .int()
+    .transform((f) => Math.round(f * 100))
     .optional(),
 });
 
