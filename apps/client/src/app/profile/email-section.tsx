@@ -1,10 +1,10 @@
 "use client";
 import { UpdateEmailForm } from "@/components/forms/profile/update-email-form";
-import { useSession } from "@/lib/auth";
+import { authClient } from "@/lib/auth";
 import ProfileSection from "./profile-section";
 
 export default function EmailSection() {
-  const { data: session, isPending } = useSession();
+  const { data: session, isPending } = authClient.useSession();
 
   if (isPending) {
     return null;

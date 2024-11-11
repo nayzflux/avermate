@@ -1,7 +1,7 @@
 "use client";
 
 import RevokeSessionButton from "@/components/buttons/revoke-session-button";
-import { authClient, useSession } from "@/lib/auth";
+import { authClient } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -19,7 +19,7 @@ type Session = {
 };
 
 export default function SessionList() {
-  const { data: currentSession } = useSession();
+  const { data: currentSession } = authClient.useSession();
 
   const {
     data: sesssions,
