@@ -1,3 +1,5 @@
+"use client";
+
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -6,18 +8,23 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import {
+  EllipsisVerticalIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/24/outline";
 
 export default function MoreButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Button size="icon"></Button>
+        <Button size="icon" variant="outline">
+          <EllipsisVerticalIcon className="size-4" />
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent onClick={(e) => e.preventDefault()}>
         <AddSubjectDialog>
           <DropdownMenuItem>
-            <PlusIcon className="size-4 mr-2" />
+            <PlusCircleIcon className="size-4 mr-2" />
             Ajouter une matière
           </DropdownMenuItem>
         </AddSubjectDialog>

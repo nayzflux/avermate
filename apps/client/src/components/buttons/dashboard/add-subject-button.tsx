@@ -5,7 +5,7 @@ export default function AddSubjectButton() {
   return (
     <Button>
       <PlusCircleIcon className="size-4 mr-2" />
-      Ajouter une note
+      Ajouter une matière
     </Button>
   );
 }
