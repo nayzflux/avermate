@@ -1,11 +1,11 @@
 "use client";
 
 import Avatar from "@/components/buttons/account/avatar";
-import { useSession } from "@/lib/auth";
+import { authClient } from "@/lib/auth";
 import ProfileSection from "./profile-section";
 
 export default function AvatarSection() {
-  const { data: session, isPending } = useSession();
+  const { data: session, isPending } = authClient.useSession();
 
   if (isPending) {
     return null;

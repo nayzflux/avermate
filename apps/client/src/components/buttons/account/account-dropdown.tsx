@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSession } from "@/lib/auth";
+import { authClient } from "@/lib/auth";
 import {
   Cog6ToothIcon,
   LifebuoyIcon,
@@ -23,7 +23,7 @@ import ThemeSwitchButton from "../theme-switch-button";
 import Avatar from "./avatar";
 
 export default function AccountDropdown() {
-  const { data, isPending } = useSession();
+  const { data, isPending } = authClient.useSession();
 
   return (
     <DropdownMenu>

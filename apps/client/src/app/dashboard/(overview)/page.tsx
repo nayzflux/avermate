@@ -7,14 +7,14 @@ import RecentGradesCard from "@/components/dashboard/recent-grades";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSession } from "@/lib/auth";
+import { authClient } from "@/lib/auth";
 import { BoxIcon } from "@radix-ui/react-icons";
 
 /**
  * Vue d'ensemble des notes
  */
 export default function OverviewPage() {
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
 
   return (
     <main className="flex flex-col gap-8 m-auto max-w-[2000px]">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useToast } from "@/hooks/use-toast";
-import { authClient, useSession } from "@/lib/auth";
+import { authClient } from "@/lib/auth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -27,7 +27,7 @@ export default function RevokeSessionButton({
 
   const router = useRouter();
 
-  const { data: currentSession } = useSession();
+  const { data: currentSession } = authClient.useSession();
 
   const queryClient = useQueryClient();
 
