@@ -21,9 +21,9 @@ export default function MoreButton() {
           <EllipsisVerticalIcon className="size-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent onClick={(e) => e.preventDefault()}>
+      <DropdownMenuContent>
         <AddSubjectDialog>
-          <DropdownMenuItem>
+          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
             <PlusCircleIcon className="size-4 mr-2" />
             Ajouter une matière
           </DropdownMenuItem>
