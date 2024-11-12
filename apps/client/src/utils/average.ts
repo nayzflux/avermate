@@ -283,54 +283,31 @@ function calculateAverageForSubject(
   let totalWeightedPercentages = 0;
   let totalCoefficients = 0;
 
-  // Ajuster le coefficient de la matière (diviser par 100)
-  const subjectCoefficient = (subject.coefficient ?? 100) / 100;
-
-  // Calculer le pourcentage des notes de la matière actuelle
+  // Calculer les notes directes de la matière
   if (subject.grades && subject.grades.length > 0) {
-    let subjectTotalWeightedPercentages = 0;
-    let subjectTotalCoefficients = 0;
-
     for (const grade of subject.grades) {
-      // Ajuster les valeurs (diviser par 100)
       const gradeValue = grade.value / 100;
       const outOf = grade.outOf / 100;
-      const coefficient = grade.coefficient / 100;
+      const gradeCoefficient = grade.coefficient / 100;
 
-      // Vérifier que outOf n'est pas zéro pour éviter une division par zéro
       if (outOf === 0) continue;
 
-      // Calculer le pourcentage de la note
       const percentage = gradeValue / outOf;
 
-      // Appliquer le coefficient de la note
-      subjectTotalWeightedPercentages += percentage * coefficient;
-      subjectTotalCoefficients += coefficient;
-    }
-
-    if (subjectTotalCoefficients > 0) {
-      // Calculer la moyenne pondérée des pourcentages pour la matière
-      const subjectAveragePercentage =
-        subjectTotalWeightedPercentages / subjectTotalCoefficients;
-
-      // Appliquer le coefficient de la matière
-      totalWeightedPercentages += subjectAveragePercentage * subjectCoefficient;
-      totalCoefficients += subjectCoefficient;
+      totalWeightedPercentages += percentage * gradeCoefficient;
+      totalCoefficients += gradeCoefficient;
     }
   }
 
-  // Calculer la moyenne des enfants
+  // Calculer les moyennes des sous-matières
   const childSubjects = subjects.filter((s) => s.parentId === subject.id);
+
   for (const child of childSubjects) {
     const childAverage = calculateAverageForSubject(child, subjects);
     if (childAverage !== null) {
-      // Convertir la moyenne de l'enfant en pourcentage (puisque c'est sur 20)
       const childPercentage = childAverage / 20;
-
-      // Ajuster le coefficient de la matière enfant (diviser par 100)
       const childCoefficient = (child.coefficient ?? 100) / 100;
 
-      // Ajouter la moyenne pondérée de l'enfant
       totalWeightedPercentages += childPercentage * childCoefficient;
       totalCoefficients += childCoefficient;
     }
@@ -344,9 +321,13 @@ function calculateAverageForSubject(
   // Calculer la moyenne pondérée des pourcentages
   const averagePercentage = totalWeightedPercentages / totalCoefficients;
 
-  // Convertir le pourcentage moyen en note sur 20
+    // Convertir le pourcentage moyen en note sur 20
+    
+  console.log(averagePercentage * 20, subject.name)
+
   return averagePercentage * 20;
 }
+
 
 
 
@@ -380,4 +361,3 @@ function calculateAverageForSubjects(
 
   return averagePercentage * 20;
 }
-
