@@ -31,7 +31,8 @@ import {
 
 const addSubjectSchema = z.object({
   name: z.string().min(1).max(64),
-  coefficient: z.coerce.number().int().min(1).max(1000),
+  // Coefficient is a float number
+  coefficient: z.coerce.number().min(0).max(1000),
   parentId: z
     .string()
     .max(64)

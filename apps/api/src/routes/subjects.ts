@@ -16,11 +16,11 @@ const createSubjectSchema = z.object({
   name: z.string().min(1).max(64),
   coefficient: z
     .number()
-    .int()
     .min(1)
     .max(1000)
     .transform((f) => Math.round(f * 100)),
   parentId: z.string().min(1).max(64).optional(),
+  depth: z.number().int().min(0).max(1000).optional(),
 });
 
 app.post("/", zValidator("json", createSubjectSchema), async (c) => {
@@ -29,6 +29,8 @@ app.post("/", zValidator("json", createSubjectSchema), async (c) => {
 
   const { name, coefficient, parentId } = c.req.valid("json");
 
+  let depth = 0;
+
   if (parentId) {
     const parentSubject = await db.query.subjects.findFirst({
       where: eq(subjects.id, parentId),
@@ -36,6 +38,8 @@ app.post("/", zValidator("json", createSubjectSchema), async (c) => {
 
     if (!parentSubject) throw new HTTPException(404);
     if (parentSubject.userId !== session.user.id) throw new HTTPException(403);
+
+    depth = parentSubject.depth + 1;
   }
 
   // TODO: Error Handling
@@ -45,6 +49,7 @@ app.post("/", zValidator("json", createSubjectSchema), async (c) => {
       name,
       coefficient,
       parentId,
+      depth,
       createdAt: new Date(),
       userId: session.user.id,
     })
@@ -107,12 +112,12 @@ const updateSubjectBodySchema = z.object({
   name: z.string().min(1).max(64).optional(),
   coefficient: z
     .number()
-    .int()
     .min(1)
     .max(1000)
     .transform((f) => Math.round(f * 100))
     .optional(),
   parentId: z.string().min(1).max(64).optional(),
+  depth: z.number().int().min(0).max(1000).optional(),
 });
 
 const updateSubjectParamSchema = z.object({
@@ -130,7 +135,42 @@ app.patch(
     const { subjectId } = c.req.valid("param");
     const data = c.req.valid("json");
 
-    const subject = await db
+    // Get the subject to be updated
+    const subject = await db.query.subjects.findFirst({
+      where: eq(subjects.id, subjectId),
+    });
+
+    if (!subject) throw new HTTPException(404);
+    if (subject.userId !== session.user.id) throw new HTTPException(403);
+
+    // If parentId is being updated
+    if (data.parentId !== undefined) {
+      const newParentId = data.parentId;
+
+      if (newParentId) {
+        // Prevent self-parenting
+        if (newParentId === subjectId) {
+          throw new HTTPException(400);
+        }
+
+        // Get the new parent subject
+        const parentSubject = await db.query.subjects.findFirst({
+          where: eq(subjects.id, newParentId),
+        });
+
+        if (!parentSubject) throw new HTTPException(404);
+        if (parentSubject.userId !== session.user.id) throw new HTTPException(403);
+
+        // Compute new depth
+        data.depth = parentSubject.depth + 1;
+      } else {
+        // ParentId is null, depth is 0
+        data.depth = 0;
+      }
+    }
+
+    // Update the subject
+    const updatedSubject = await db
       .update(subjects)
       .set(data)
       .where(
@@ -139,7 +179,7 @@ app.patch(
       .returning()
       .get();
 
-    return c.json({ subject });
+    return c.json({ subject: updatedSubject });
   }
 );
 

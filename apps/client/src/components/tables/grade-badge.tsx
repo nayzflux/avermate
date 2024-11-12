@@ -25,6 +25,8 @@ export default function GradeBadge({
       )}
     >
       <p className="text-center align-middle">{value / 100}</p>
+    <sub className="ml-1">/{outOf/100}</sub>
+    <span className="ml-2">({coefficient/100})</span>
     </span>
   );
 }

@@ -21,6 +21,8 @@ export const subjects = sqliteTable(
 
     coefficient: integer().notNull(),
 
+    depth: integer().notNull().default(0),
+
     createdAt: integer({ mode: "timestamp" }).notNull(),
     userId: text()
       .notNull()

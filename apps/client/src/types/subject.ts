@@ -5,6 +5,7 @@ export type Subject = {
   id: string;
   createdAt: Date;
   userId: string;
+  depth: number;
   grades: {
     name: string;
     coefficient: number;
