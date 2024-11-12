@@ -31,13 +31,12 @@ import {
 
 const addSubjectSchema = z.object({
   name: z.string().min(1).max(64),
-  coefficient: z.number().int().min(1).max(1000),
+  coefficient: z.coerce.number().int().min(1).max(1000),
   parentId: z
     .string()
-    .min(1)
     .max(64)
     .optional()
-    .transform((s) => (s === "" ? undefined : s)),
+    .transform((val) => (val === "" ? undefined : val)),
 });
 
 type AddSubjectSchema = z.infer<typeof addSubjectSchema>;
@@ -61,7 +60,7 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
   const { mutate, isPending } = useMutation({
     mutationKey: ["create-Subject"],
     mutationFn: async ({ name, coefficient, parentId }: AddSubjectSchema) => {
-      const res = await apiClient.post("Subjects", {
+      const res = await apiClient.post("subjects", {
         json: {
           name,
           coefficient,
@@ -78,11 +77,6 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
         title: `Matière ajouter avec succès !`,
         description:
           "Ajouter des notes à cette matière pour commencer à suivre votre progression.",
-        action: (
-          <AddSubjectDialog>
-            <AddSubjectButton />
-          </AddSubjectDialog>
-        ),
       });
 
       close();
