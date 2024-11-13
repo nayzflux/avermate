@@ -3,7 +3,7 @@
 import GlobalAverageChart from "@/components/charts/global-average-chart";
 import DataCard from "@/components/dashboard/data-card";
 import GradeValue from "@/components/dashboard/grade-value";
-import RecentGradesCard from "@/components/dashboard/recent-grades";
+import RecentGradesCard from "@/components/dashboard/recent-grades/recent-grades";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -42,13 +42,13 @@ export default function OverviewPage() {
         </ScrollArea>
 
         <TabsContent value="1">
-          <div className="grid grids-cols-1 xs:grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
+          <div className="grid grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
             <DataCard
               title="Overall average"
               icon={BoxIcon}
               description="+7% since the beginning"
             >
-              <GradeValue value={15.35} outOf={20} size="xl" />
+              <GradeValue value={1535} outOf={2000} size="xl" />
             </DataCard>
 
             <DataCard
@@ -56,7 +56,7 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="In maths, impressive !"
             >
-              <GradeValue value={20} outOf={20} size="xl" />
+              <GradeValue value={2000} outOf={2000} size="xl" />
             </DataCard>
 
             <DataCard
@@ -64,7 +64,7 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="English is 5% higher than other subjects"
             >
-              <GradeValue value={15.35} outOf={20} size="xl" />
+              <GradeValue value={1535} outOf={2000} size="xl" />
             </DataCard>
 
             <DataCard
@@ -72,14 +72,14 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="In SI, Yep that’s bad"
             >
-              <GradeValue value={2} outOf={20} size="xl" />
+              <GradeValue value={200} outOf={2000} size="xl" />
             </DataCard>
             <DataCard
               title="Worst subject"
               icon={BoxIcon}
               description="SI is 50% lower than other subjects"
             >
-              <GradeValue value={8.75} outOf={20} size="xl" />
+              <GradeValue value={875} outOf={2000} size="xl" />
             </DataCard>
           </div>
 
@@ -99,7 +99,7 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="+7% since the beginning"
             >
-              <GradeValue value={15.35} outOf={20} size="xl" />
+              <GradeValue value={1535} outOf={2000} size="xl" />
             </DataCard>
 
             <DataCard
@@ -107,7 +107,7 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="In maths, impressive !"
             >
-              <GradeValue value={20} outOf={20} size="xl" />
+              <GradeValue value={2000} outOf={2000} size="xl" />
             </DataCard>
 
             <DataCard
@@ -115,7 +115,7 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="English is 5% higher than other subjects"
             >
-              <GradeValue value={15.35} outOf={20} size="xl" />
+              <GradeValue value={1535} outOf={2000} size="xl" />
             </DataCard>
 
             <DataCard
@@ -123,14 +123,14 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="In SI, Yep that’s bad"
             >
-              <GradeValue value={2} outOf={20} size="xl" />
+              <GradeValue value={200} outOf={2000} size="xl" />
             </DataCard>
             <DataCard
               title="Worst subject"
               icon={BoxIcon}
               description="SI is 50% lower than other subjects"
             >
-              <GradeValue value={8.75} outOf={20} size="xl" />
+              <GradeValue value={875} outOf={2000} size="xl" />
             </DataCard>
           </div>
 
@@ -150,7 +150,7 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="+7% since the beginning"
             >
-              <GradeValue value={15.35} outOf={20} size="xl" />
+              <GradeValue value={1535} outOf={2000} size="xl" />
             </DataCard>
 
             <DataCard
@@ -158,7 +158,7 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="In maths, impressive !"
             >
-              <GradeValue value={20} outOf={20} size="xl" />
+              <GradeValue value={2000} outOf={2000} size="xl" />
             </DataCard>
 
             <DataCard
@@ -166,7 +166,7 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="English is 5% higher than other subjects"
             >
-              <GradeValue value={15.35} outOf={20} size="xl" />
+              <GradeValue value={1535} outOf={2000} size="xl" />
             </DataCard>
 
             <DataCard
@@ -174,14 +174,14 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="In SI, Yep that’s bad"
             >
-              <GradeValue value={2} outOf={20} size="xl" />
+              <GradeValue value={200} outOf={2000} size="xl" />
             </DataCard>
             <DataCard
               title="Worst subject"
               icon={BoxIcon}
               description="SI is 50% lower than other subjects"
             >
-              <GradeValue value={8.75} outOf={20} size="xl" />
+              <GradeValue value={875} outOf={2000} size="xl" />
             </DataCard>
           </div>
 
@@ -201,7 +201,7 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="+7% since the beginning"
             >
-              <GradeValue value={15.35} outOf={20} size="xl" />
+              <GradeValue value={1535} outOf={2000} size="xl" />
             </DataCard>
 
             <DataCard
@@ -209,7 +209,7 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="In maths, impressive !"
             >
-              <GradeValue value={20} outOf={20} size="xl" />
+              <GradeValue value={2000} outOf={2000} size="xl" />
             </DataCard>
 
             <DataCard
@@ -217,7 +217,7 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="English is 5% higher than other subjects"
             >
-              <GradeValue value={15.35} outOf={20} size="xl" />
+              <GradeValue value={1535} outOf={2000} size="xl" />
             </DataCard>
 
             <DataCard
@@ -225,14 +225,14 @@ export default function OverviewPage() {
               icon={BoxIcon}
               description="In SI, Yep that’s bad"
             >
-              <GradeValue value={2} outOf={20} size="xl" />
+              <GradeValue value={200} outOf={2000} size="xl" />
             </DataCard>
             <DataCard
               title="Worst subject"
               icon={BoxIcon}
               description="SI is 50% lower than other subjects"
             >
-              <GradeValue value={8.75} outOf={20} size="xl" />
+              <GradeValue value={875} outOf={2000} size="xl" />
             </DataCard>
           </div>
 

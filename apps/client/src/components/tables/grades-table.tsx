@@ -22,6 +22,8 @@ import AddSubjectDialog from "../dialogs/add-subject-dialog";
 import { Card } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import GradeBadge from "./grade-badge";
+import { average } from "@/utils/average";
+import React from "react";
 
 export default function GradesTable() {
   const {
@@ -78,63 +80,88 @@ export default function GradesTable() {
 
   return (
     <Table>
-      <TableCaption>1er trimerstre</TableCaption>
+      <TableCaption>1er trimestre</TableCaption>
 
       <TableHeader>
         <TableRow>
           <TableHead className="w-[50px] md:w-[200px]">Matières</TableHead>
-
           <TableHead className="w-[50px] md:w-[100px] text-center">
             Moyennes
           </TableHead>
-
           <TableHead>Notes</TableHead>
         </TableRow>
       </TableHeader>
 
-      <TableBody>
-        {subjects.map((subject) => (
-          <TableRow key={subject.id}>
-            <TableCell
-              className={cn(
-                "font-medium",
-                subject.parentId !== null && "text-right"
-              )}
-            >
-              <Link
-                href={`/dashboard/subjects/${subject.id}`}
-                className="border-b border-dotted border-white"
-              >
-                {subject.name}
-              </Link>
-            </TableCell>
-
-            <TableCell className="text-center font-semibold">14.38</TableCell>
-
-            <TableCell>
-              <div className="flex gap-4 flex-wrap">
-                {subject.grades.map((grade) => (
-                  <GradeBadge
-                    key={grade.id}
-                    value={grade.value}
-                    outOf={grade.outOf}
-                    coefficient={grade.coefficient}
-                  />
-                ))}
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
+      <TableBody>{renderSubjects(subjects)}</TableBody>
 
       <TableFooter>
         <TableRow>
           <TableCell colSpan={2}>Moyenne générale</TableCell>
-          <TableCell className="text-right">14.38</TableCell>
+          <TableCell className="text-right">
+            {average(undefined, subjects) !== null
+              ? average(undefined, subjects)?.toFixed(2)
+              : "—"}
+          </TableCell>
         </TableRow>
       </TableFooter>
     </Table>
   );
+}
+
+function getPaddingClass(depth: number) {
+  switch (depth) {
+    case 1:
+      return "pl-8";
+    case 2:
+      return "pl-12";
+    case 3:
+      return "pl-16";
+    case 4:
+      return "pl-18";
+    default:
+      return "";
+  }
+}
+
+
+function renderSubjects(subjects: Subject[], parentId: string | null = null) {
+  return subjects
+    .filter((subject) => subject.parentId === parentId)
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((subject) => (
+      <React.Fragment key={subject.id}>
+        <TableRow>
+          <TableCell
+            className={cn("font-medium", getPaddingClass(subject.depth))}
+          >
+            <Link
+              href={`/dashboard/subjects/${subject.id}`}
+              className="border-b border-dotted border-white"
+            >
+              {subject.name + ` (`+subject.coefficient/100+`)`}
+            </Link>
+          </TableCell>
+          <TableCell className="text-center font-semibold">
+            {average(subject.id, subjects) !== null
+              ? average(subject.id, subjects)?.toFixed(2)
+              : "—"}
+          </TableCell>
+          <TableCell>
+            <div className="flex gap-4 flex-wrap">
+              {subject.grades.map((grade) => (
+                <GradeBadge
+                  key={grade.id}
+                  value={grade.value}
+                  outOf={grade.outOf}
+                  coefficient={grade.coefficient}
+                />
+              ))}
+            </div>
+          </TableCell>
+        </TableRow>
+        {renderSubjects(subjects, subject.id)}
+      </React.Fragment>
+    ));
 }
 
 function LoadingTable() {
