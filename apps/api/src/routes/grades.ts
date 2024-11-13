@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { grades, subjects } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq, gte, lte } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
@@ -67,6 +67,43 @@ app.post("/", zValidator("json", createGradeSchema), async (c) => {
     .get();
 
   return c.json({ grade }, 201);
+});
+
+/**
+ * Get all grades
+ */
+
+const getGradesQuerySchema = z.object({
+  from: z.coerce.date().optional(),
+  to: z.coerce.date().optional(),
+  limit: z.coerce.number().int().optional(),
+});
+
+app.get("/", zValidator("query", getGradesQuerySchema), async (c) => {
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  if (!session) throw new HTTPException(401);
+
+  const { from, to, limit } = c.req.valid("query");
+
+  const allGrades = await db.query.grades.findMany({
+    where: and(
+      eq(grades.userId, session.user.id),
+      from && gte(grades.createdAt, from),
+      to && lte(grades.createdAt, to)
+    ),
+    orderBy: asc(grades.passedAt),
+    limit: limit,
+    with: {
+      subject: {
+        columns: {
+          id: true,
+          name: true,
+        }
+      }
+    },
+  });
+
+  return c.json({ grades: allGrades });
 });
 
 /**

@@ -1,3 +1,5 @@
+import { PartialGrade } from "./grade";
+
 export type Subject = {
   name: string;
   coefficient: number;
@@ -6,15 +8,7 @@ export type Subject = {
   createdAt: Date;
   userId: string;
   depth: number;
-  grades: {
-    name: string;
-    coefficient: number;
-    value: number;
-    id: string;
-    createdAt: Date;
-    userId: string;
-    outOf: number;
-    passedAt: Date;
-    subjectId: string;
-  }[];
+  grades: PartialGrade[];
 };
+
+export type PartialSubject = Omit<Subject, "grades" | "coefficient" | "depth" | "createdAt" | "parentId" | "userId">;

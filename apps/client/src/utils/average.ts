@@ -1,5 +1,7 @@
 // // import { Subject } from "@/types/subject";
 
+import { Subject } from "@/types/subject";
+
 // // // This util function calculates the average of an array of numbers
 // // export function average(subject: Subject, subjects: Subject[]): number {
 // //     // Calculate subject average

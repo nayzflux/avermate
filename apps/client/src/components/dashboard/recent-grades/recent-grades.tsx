@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import RecentGradeItem from "./recent-grade-item";
+import RecentGradesList from "./recent-grades-list";
 
 export default function RecentGradesCard() {
   return (
@@ -19,13 +19,7 @@ export default function RecentGradesCard() {
       </CardHeader>
 
       <CardContent>
-        <div className="grid grid-cols-1 gap-0.5">
-          <RecentGradeItem />
-          <RecentGradeItem />
-          <RecentGradeItem />
-          <RecentGradeItem />
-          <RecentGradeItem />
-        </div>
+        <RecentGradesList />
       </CardContent>
     </Card>
   );

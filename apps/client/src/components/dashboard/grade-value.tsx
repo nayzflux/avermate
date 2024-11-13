@@ -1,5 +1,6 @@
 import NumberTicker from "@/components/ui/number-ticker";
 import { cn } from "@/lib/utils";
+import { formatGradeValue } from "@/utils/format";
 
 export default function GradeValue({
   value,
@@ -20,14 +21,17 @@ export default function GradeValue({
           size === "xl" && "text-3xl font-bold"
         )}
       >
-        <NumberTicker decimalPlaces={decimals} value={value} />
+        <NumberTicker
+          decimalPlaces={decimals}
+          value={formatGradeValue(value)}
+        />
         <span
           className={cn(
             "text-sm text-muted-foreground align-sub",
             size === "sm" && "text-xs"
           )}
         >
-          /{outOf}
+          /{formatGradeValue(outOf)}
         </span>
       </p>
     </div>
