@@ -5,6 +5,7 @@ import { Grade } from "@/types/grade";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import RecentGradeItem from "./recent-grade-item";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RecentGradesList() {
   // Fetch recent grades
@@ -25,7 +26,70 @@ export default function RecentGradesList() {
     },
   });
 
-  if (isPending) return <div>Loading...</div>;
+  if (isPending) return (
+    <div>
+      <div className="flex items-center justify-between gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2">
+        <div className="flex flex-col gap-0.5 w-[80%]">
+          <p className="font-semibold">
+            <Skeleton className="w-36 h-6" />
+          </p>
+          <p className="text-sm text-muted-foreground truncate">
+            <Skeleton className="w-24 h-5" />
+          </p>
+        </div>
+
+        <Skeleton className="w-20 h-6" />
+      </div>
+      <div className="flex items-center justify-between gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2">
+        <div className="flex flex-col gap-0.5 w-[80%]">
+          <p className="font-semibold">
+            <Skeleton className="w-36 h-6" />
+          </p>
+          <p className="text-sm text-muted-foreground truncate">
+            <Skeleton className="w-24 h-5" />
+          </p>
+        </div>
+
+        <Skeleton className="w-20 h-6" />
+      </div>
+      <div className="flex items-center justify-between gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2">
+        <div className="flex flex-col gap-0.5 w-[80%]">
+          <p className="font-semibold">
+            <Skeleton className="w-36 h-6" />
+          </p>
+          <p className="text-sm text-muted-foreground truncate">
+            <Skeleton className="w-24 h-5" />
+          </p>
+        </div>
+
+        <Skeleton className="w-20 h-6" />
+      </div>
+      <div className="flex items-center justify-between gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2">
+        <div className="flex flex-col gap-0.5 w-[80%]">
+          <p className="font-semibold">
+            <Skeleton className="w-36 h-6" />
+          </p>
+          <p className="text-sm text-muted-foreground truncate">
+            <Skeleton className="w-24 h-5" />
+          </p>
+        </div>
+
+        <Skeleton className="w-20 h-6" />
+      </div>
+      <div className="flex items-center justify-between gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2">
+        <div className="flex flex-col gap-0.5 w-[80%]">
+          <p className="font-semibold">
+            <Skeleton className="w-36 h-6" />
+          </p>
+          <p className="text-sm text-muted-foreground truncate">
+            <Skeleton className="w-24 h-5" />
+          </p>
+        </div>
+
+        <Skeleton className="w-20 h-6" />
+      </div>
+    </div>
+  );
 
   if (isError) return <div>Error!</div>;
 
