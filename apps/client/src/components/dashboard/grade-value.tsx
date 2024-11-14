@@ -12,7 +12,7 @@ export default function GradeValue({
   size?: "sm" | "xl";
 }) {
   // decimals is giving the number of decimal detected in the value
-  const decimals = value.toString().split(".")[1]?.length || 0;
+  const decimals = formatGradeValue(value).toString().split(".")[1]?.length || 0;
   return (
     <div className="flex items-center gap-1 whitespace-nowrap">
       <p
