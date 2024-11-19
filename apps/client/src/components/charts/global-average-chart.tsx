@@ -202,9 +202,9 @@ export default function GlobalAverageChart() {
               config={chartConfig}
               className="h-[332px] w-[100%] m-auto !aspect-auto"
             >
-              <RadarChart data={radarData}>
+                <RadarChart data={radarData} outerRadius="100%">
                 <PolarGrid />
-                <PolarAngleAxis dataKey="subject" />
+                <PolarAngleAxis dataKey="subject" tick={false} />
                 <PolarRadiusAxis angle={30} domain={[0, 20]} tickCount={5} />
                 <Radar
                   dataKey="average"
@@ -213,7 +213,7 @@ export default function GlobalAverageChart() {
                   fillOpacity={0.6}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
-              </RadarChart>
+                </RadarChart>
             </ChartContainer>
           </div>
         </div>
