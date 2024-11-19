@@ -103,3 +103,19 @@ function calculateAverageForSubjects(
 
   return averagePercentage * 20;
 }
+
+// average over time
+export function averageOverTime(
+  subjects: Subject[],
+  subjectId: string | undefined,
+  dates: Date[],
+): number[] {
+  return dates.map((date) => {
+    const subjectsWithGrades = subjects.map((subject) => {
+      const grades = subject.grades.filter((grade) => new Date(grade.passedAt) <= date);
+      return { ...subject, grades };
+    });
+
+    return average(subjectId, subjectsWithGrades) ?? 0;
+  });
+}
