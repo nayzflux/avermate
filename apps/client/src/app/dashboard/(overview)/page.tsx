@@ -21,7 +21,8 @@ export default function OverviewPage() {
       <div className="flex flex-wrap items-center justify-between">
         <h1 className="text-3xl font-bold">Vue d&apos;ensemble</h1>
         <h1 className="text-3xl font-normal">
-          Welcome back {session?.user?.name.split(" ")[0]} 👋!
+          Welcome back{" "}
+          {session?.user?.name ? session?.user?.name.split(" ")[0] : ""} 👋!
         </h1>
       </div>
 

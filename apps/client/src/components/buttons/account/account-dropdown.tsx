@@ -35,8 +35,9 @@ export default function AccountDropdown() {
             <Avatar
               size={32}
               src={
-                data?.user?.image ||
-                `https://avatar.vercel.sh/${data?.user?.id}?size=32`
+                data?.user?.image
+                  ? data?.user?.image
+                  : `https://avatar.vercel.sh/${data?.user?.id}?size=32`
               }
             />
           )}
@@ -48,8 +49,9 @@ export default function AccountDropdown() {
           <Avatar
             size={32}
             src={
-              data?.user?.image ||
-              `https://avatar.vercel.sh/${data?.user?.id}?size=32`
+              data?.user?.image
+                ? data?.user?.image
+                : `https://avatar.vercel.sh/${data?.user?.id}?size=32`
             }
           />
           <div className="flex flex-col">
