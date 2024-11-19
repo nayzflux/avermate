@@ -17,6 +17,9 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
   Radar,
   RadarChart,
   XAxis,
@@ -55,6 +58,7 @@ export default function GlobalAverageChart() {
   const allGrades = subjects.flatMap((subject) =>
     subject.grades.map((grade) => ({
       ...grade,
+      subjectName: subject.name,
       passedAt: new Date(grade.passedAt),
     }))
   );
@@ -77,7 +81,7 @@ export default function GlobalAverageChart() {
     dates.push(new Date(dt));
   }
 
-  // Compute cumulative averages
+  // Compute cumulative averages for area chart
   let sum = 0;
   let count = 0;
   let gradeIndex = 0;
@@ -112,6 +116,27 @@ export default function GlobalAverageChart() {
       color: "#2662d9",
     },
   };
+
+  // Calculate average grades per subject for radar chart
+  const subjectAverages = subjects.map((subject) => {
+    const grades = subject.grades;
+    const total = grades.reduce((acc, grade) => {
+      return acc + (grade.value / grade.outOf) * 20 * grade.coefficient;
+    }, 0);
+    const totalCoefficient = grades.reduce(
+      (acc, grade) => acc + grade.coefficient,
+      0
+    );
+    const average = totalCoefficient > 0 ? total / totalCoefficient : 0;
+
+    return {
+      subject: subject.name,
+      average: average,
+      fullMark: 20,
+    };
+  });
+
+  const radarData = subjectAverages;
 
   return (
     <Card className="lg:col-span-5">
@@ -174,7 +199,28 @@ export default function GlobalAverageChart() {
           />
 
           {/* Radar Chart Section */}
-          {/* ... Keep the radar chart as it is or modify similarly ... */}
+          <div className="flex flex-col items-center lg:space-y-2 lg:w-[40%] m-auto lg:pt-0 pt-8 w-[100%]">
+            <CardDescription>
+              Visualiser votre moyenne par matière
+            </CardDescription>
+            <ChartContainer
+              config={chartConfig}
+              className="h-[332px] w-[100%] m-auto !aspect-auto"
+            >
+              <RadarChart data={radarData}>
+                <PolarGrid />
+                <PolarAngleAxis dataKey="subject" />
+                <PolarRadiusAxis angle={30} domain={[0, 20]} tickCount={5} />
+                <Radar
+                  dataKey="average"
+                  stroke="#2662d9"
+                  fill="#2662d9"
+                  fillOpacity={0.6}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+              </RadarChart>
+            </ChartContainer>
+          </div>
         </div>
       </CardContent>
     </Card>
