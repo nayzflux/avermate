@@ -11,8 +11,6 @@ export default function GradeValue({
   outOf: number;
   size?: "sm" | "xl";
 }) {
-  // decimals is giving the number of decimal detected in the value
-  const decimals = value.toString().split(".")[1]?.length || 0;
   return (
     <div className="flex items-center gap-1 whitespace-nowrap">
       <p
@@ -21,10 +19,7 @@ export default function GradeValue({
           size === "xl" && "text-3xl font-bold"
         )}
       >
-        <NumberTicker
-          decimalPlaces={decimals}
-          value={formatGradeValue(value)}
-        />
+        <NumberTicker decimalPlaces={2} value={formatGradeValue(value)} />
         <span
           className={cn(
             "text-sm text-muted-foreground align-sub",
