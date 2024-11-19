@@ -1,6 +1,6 @@
+import { Grade } from "@/types/grade";
 import Link from "next/link";
 import GradeValue from "../grade-value";
-import { Grade } from "@/types/grade";
 
 export default function RecentGradeItem({ grade }: { grade: Grade }) {
   return (

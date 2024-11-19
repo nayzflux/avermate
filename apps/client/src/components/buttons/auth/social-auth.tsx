@@ -27,9 +27,8 @@ export default function SocialAuth() {
   async function handleSignIn(provider: "google" | "microsoft") {
     const data = await authClient.signIn.social({
       provider: provider,
-      callbackURL: "/dashboard",
+      callbackURL: `${env.NEXT_PUBLIC_CLIENT_URL}/dashboard`,
     });
-
   }
 
   return (
