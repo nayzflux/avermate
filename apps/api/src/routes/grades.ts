@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { grades, subjects } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
-import { and, asc, eq, gte, lte } from "drizzle-orm";
+import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
@@ -91,7 +91,7 @@ app.get("/", zValidator("query", getGradesQuerySchema), async (c) => {
       from && gte(grades.createdAt, from),
       to && lte(grades.createdAt, to)
     ),
-    orderBy: asc(grades.passedAt),
+    orderBy: desc(grades.passedAt),
     limit: limit,
     with: {
       subject: {
