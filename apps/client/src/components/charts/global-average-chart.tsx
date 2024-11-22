@@ -77,8 +77,7 @@ export default function GlobalAverageChart() {
         </CardHeader>
 
         <CardContent>
-          <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
-          </div>
+          <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2"></div>
         </CardContent>
       </Card>
     );
@@ -114,18 +113,67 @@ export default function GlobalAverageChart() {
     },
   };
 
-  // Calculate average grades per subject for radar chart
-  const subjectAverages = subjects.map((subject) => {
-    const averageGrade = average(subject.id, subjects);
-    const validAverage = averageGrade ?? 0;
-    return {
-      subject: subject.name,
-      average: validAverage,
-      fullMark: 20,
-    };
-  });
+  // Calculate average grades per subject for radar chart, only if it is a main subject
+  const subjectAverages = subjects
+    .filter((subject) => subject.isMainSubject)
+    .map((subject) => {
+      const averageGrade = average(subject.id, subjects);
+      const validAverage = averageGrade ?? 0;
+      return {
+        subject: subject.name,
+        average: validAverage,
+        fullMark: 20,
+      };
+    });
 
   const radarData = subjectAverages;
+
+  const renderPolarAngleAxis = ({ payload, x, y, cx, cy, ...rest }) => {
+    // Calculate the angle in radians between the label position and the center
+    const radius = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+    const angle = Math.atan2(y - cy, x - cx);
+
+    // Determine the truncate length based on screen width
+
+  const truncateLength =
+    window.innerWidth < 450
+      ? 5
+      : window.innerWidth < 1024
+      ? 10
+      : window.innerWidth < 1300
+      ? 5
+      : window.innerWidth < 2100
+      ? 9
+      : 12;
+
+    const truncatedLabel =
+      payload.value.length > truncateLength
+        ? `${payload.value.slice(0, truncateLength)}...`
+        : payload.value;
+
+    // Adjust the radius to move the labels inside
+    const labelRadius = radius - truncatedLabel.length * 3 + 10; // Adjust this value based on text length
+
+    // Calculate new label positions
+    const nx = cx + labelRadius * Math.cos(angle);
+    const ny = cy + labelRadius * Math.sin(angle);
+
+    // Convert angle to degrees for rotation
+    const rotation = (angle * 180) / Math.PI;
+
+    return (
+      <text
+        x={nx}
+        y={ny}
+        textAnchor="middle"
+        transform={`rotate(${rotation}, ${nx}, ${ny})`}
+        fontSize={12}
+        fill="#a1a1aa"
+      >
+        {truncatedLabel}
+      </text>
+    );
+  };
 
   return (
     <Card className="lg:col-span-5">
@@ -136,7 +184,7 @@ export default function GlobalAverageChart() {
       <CardContent>
         <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
           {/* Area Chart Section */}
-          <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%]">
+          <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%] lg:w-[60%]">
             <CardDescription className="pb-8">
               Visualiser l'évolution de votre moyenne générale sur ce trimestre
             </CardDescription>
@@ -202,9 +250,9 @@ export default function GlobalAverageChart() {
               config={chartConfig}
               className="h-[332px] w-[100%] m-auto !aspect-auto"
             >
-                <RadarChart data={radarData} outerRadius="100%">
+              <RadarChart data={radarData} outerRadius="90%">
                 <PolarGrid />
-                <PolarAngleAxis dataKey="subject" tick={false} />
+                <PolarAngleAxis dataKey="subject" tick={renderPolarAngleAxis} />
                 <PolarRadiusAxis angle={30} domain={[0, 20]} tickCount={5} />
                 <Radar
                   dataKey="average"
@@ -213,7 +261,7 @@ export default function GlobalAverageChart() {
                   fillOpacity={0.6}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                </RadarChart>
+              </RadarChart>
             </ChartContainer>
           </div>
         </div>

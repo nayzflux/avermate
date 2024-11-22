@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { subjects } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, is, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
@@ -21,13 +21,14 @@ const createSubjectSchema = z.object({
     .transform((f) => Math.round(f * 100)),
   parentId: z.string().min(1).max(64).optional(),
   depth: z.number().int().min(0).max(1000).optional(),
+  isMainSubject: z.boolean().optional(),
 });
 
 app.post("/", zValidator("json", createSubjectSchema), async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   if (!session) throw new HTTPException(401);
 
-  const { name, coefficient, parentId } = c.req.valid("json");
+  const { name, coefficient, parentId, isMainSubject } = c.req.valid("json");
 
   let depth = 0;
 
@@ -50,6 +51,7 @@ app.post("/", zValidator("json", createSubjectSchema), async (c) => {
       coefficient,
       parentId,
       depth,
+      isMainSubject: false,
       createdAt: new Date(),
       userId: session.user.id,
     })
@@ -118,6 +120,7 @@ const updateSubjectBodySchema = z.object({
     .optional(),
   parentId: z.string().min(1).max(64).optional(),
   depth: z.number().int().min(0).max(1000).optional(),
+  isMainSubject: z.boolean().optional(),
 });
 
 const updateSubjectParamSchema = z.object({

@@ -23,6 +23,8 @@ export const subjects = sqliteTable(
 
     depth: integer().notNull().default(0),
 
+    isMainSubject: integer({ mode: "boolean" }).notNull(),
+
     createdAt: integer({ mode: "timestamp" }).notNull(),
     userId: text()
       .notNull()
