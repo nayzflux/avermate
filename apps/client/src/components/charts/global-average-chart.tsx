@@ -128,7 +128,19 @@ export default function GlobalAverageChart() {
 
   const radarData = subjectAverages;
 
-  const renderPolarAngleAxis = ({ payload, x, y, cx, cy, ...rest }) => {
+  const renderPolarAngleAxis = ({
+    payload,
+    x,
+    y,
+    cx,
+    cy,
+  }: {
+    payload: { value: string };
+    x: number;
+    y: number;
+    cx: number;
+    cy: number;
+  }) => {
     // Calculate the angle in radians between the label position and the center
     const radius = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
     const angle = Math.atan2(y - cy, x - cx);
