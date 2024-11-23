@@ -26,6 +26,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { format, isBefore, isWithinInterval, startOfDay } from "date-fns";
+import { Subject } from "@/types/subject";
 
 const addPeriodSchema = z.object({
   name: z.string().min(1).max(64),
@@ -57,7 +58,11 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
   const queryClient = useQueryClient();
 
   // Fetch existing periods to prevent overlapping
-  const { data: periods = [], isError, isPending:isPeriodPending } = useQuery({
+  const {
+    data: periods,
+    isError,
+    isPending: isPeriodPending,
+  } = useQuery({
     queryKey: ["periods"],
     queryFn: async () => {
       const res = await apiClient.get("periods");
@@ -66,7 +71,7 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
         throw new Error("Failed to fetch periods");
       }
 
-      const data = await res.json();
+      const data = await res.json<{ periods: Period[] }>();
 
       if (!data || !data.periods) {
         return [];
@@ -193,7 +198,6 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
             )}
           />
 
-          {/* Date Range Picker */}
           <FormField
             control={form.control}
             name="dateRange"
@@ -201,40 +205,46 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
               <FormItem>
                 <FormLabel>Date de la période</FormLabel>
                 <FormControl>
-                  <Popover modal>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={
-                          !field.value?.from ? "text-muted-foreground" : ""
-                        }
-                      >
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    {!isPeriodPending && (
-                      <PopoverContent className="w-auto p-0" align="start">
+                  <div className="flex flex-col gap-2">
+                    <Popover modal>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={
+                            !field.value?.from ? "text-muted-foreground" : ""
+                          }
+                        >
+                          {field.value?.from ? (
+                            field.value.to ? (
+                              `${format(field.value.from, "PPP")} - ${format(
+                                field.value.to,
+                                "PPP"
+                              )}`
+                            ) : (
+                              format(field.value.from, "PPP")
+                            )
+                          ) : (
+                            <span>Sélectionner une plage de dates</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="center">
                         <Calendar
-                          initialFocus
+                          weekStartsOn={1}
+                          excludeDisabled
                           mode="range"
                           selected={field.value}
                           onSelect={field.onChange}
                           numberOfMonths={3}
-                          disabled={(date) => {
-                            for (const period of periods) {
-                              if (
-                                period.startAt <= date &&
-                                period.endAt >= date
-                              ) {
-                                return true;
-                              }
-                            }
-                            return false;
-                          }}
+                          disabled={periods.map((period) => ({
+                            from: period.startAt,
+                            to: period.endAt,
+                          }))}
                         />
                       </PopoverContent>
-                    )}
-                  </Popover>
+                    </Popover>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
