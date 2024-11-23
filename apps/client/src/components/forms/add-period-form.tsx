@@ -57,7 +57,7 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
   const queryClient = useQueryClient();
 
   // Fetch existing periods to prevent overlapping
-  const { data: periods = [], isError } = useQuery({
+  const { data: periods = [], isError, isPending:isPeriodPending } = useQuery({
     queryKey: ["periods"],
     queryFn: async () => {
       const res = await apiClient.get("periods");
@@ -105,7 +105,6 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
     onSuccess: (data) => {
       // Send toast notification
       toaster.toast({
-        title: Période ajoutée avec succès !,
         description:
           "Vous pouvez maintenant organiser vos activités dans cette période.",
       });
@@ -160,7 +159,6 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
     if (overlappingPeriod) {
       toaster.toast({
         title: "Conflit de période",
-        description: La période "${overlappingPeriod.name}" chevauche la période que vous essayez de créer.,
         variant: "destructive",
       });
       return;
@@ -211,33 +209,31 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
                           !field.value?.from ? "text-muted-foreground" : ""
                         }
                       >
-                        {field.value?.from ? (
-                          field.value.to ? (
-                            ${format(field.value.from, "PPP")} - ${format(
-                              field.value.to,
-                              "PPP"
-                            )}
-                          ) : (
-                            format(field.value.from, "PPP")
-                          )
-                        ) : (
-                          <span>Sélectionner une plage de dates</span>
-                        )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        initialFocus
-                        mode="range"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        numberOfMonths={3}
-                        disabled={(date) =>
-                          date > new Date("2024-09-08") && date < new Date("2024-12-12")
-                        }
-                      />
-                    </PopoverContent>
+                    {!isPeriodPending && (
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          initialFocus
+                          mode="range"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          numberOfMonths={3}
+                          disabled={(date) => {
+                            for (const period of periods) {
+                              if (
+                                period.startAt <= date &&
+                                period.endAt >= date
+                              ) {
+                                return true;
+                              }
+                            }
+                            return false;
+                          }}
+                        />
+                      </PopoverContent>
+                    )}
                   </Popover>
                 </FormControl>
                 <FormMessage />
