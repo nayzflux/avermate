@@ -25,7 +25,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { isWithinInterval, startOfDay, format } from "date-fns";
+import { format, isBefore, isWithinInterval, startOfDay } from "date-fns";
 
 const addPeriodSchema = z.object({
   name: z.string().min(1).max(64),
@@ -53,116 +53,130 @@ const addPeriodSchema = z.object({
 type AddPeriodSchema = z.infer<typeof addPeriodSchema>;
 
 export const AddPeriodForm = ({ close }: { close: () => void }) => {
-  // const toaster = useToast();
-  // const queryClient = useQueryClient();
+  const toaster = useToast();
+  const queryClient = useQueryClient();
 
-  // // Fetch existing periods to prevent overlapping
-  // const { data: periods = [], isError } = useQuery({
-  //   queryKey: ["periods"],
-  //   queryFn: async () => {
-  //     const res = await apiClient.get("periods");
+  // Fetch existing periods to prevent overlapping
+  const { data: periods = [], isError } = useQuery({
+    queryKey: ["periods"],
+    queryFn: async () => {
+      const res = await apiClient.get("periods");
 
-  //     if (!res.ok) {
-  //       throw new Error("Failed to fetch periods");
-  //     }
+      if (!res.ok) {
+        throw new Error("Failed to fetch periods");
+      }
 
-  //     const data = await res.json();
+      const data = await res.json();
 
-  //     if (!data || !data.periods) {
-  //       return [];
-  //     }
+      if (!data || !data.periods) {
+        return [];
+      }
 
-  //     // Parse and normalize dates
-  //     const periods = data.periods.map((period) => ({
-  //       ...period,
-  //       startAt: startOfDay(new Date(period.startAt)),
-  //       endAt: startOfDay(new Date(period.endAt)),
-  //     }));
+      // Parse and normalize dates
+      const periods = data.periods.map((period) => ({
+        ...period,
+        startAt: startOfDay(new Date(period.startAt)),
+        endAt: startOfDay(new Date(period.endAt)),
+      }));
 
-  //     return periods;
-  //   },
-  //   initialData: [],
-  // });
+      return periods;
+    },
+    initialData: [],
+  });
 
-  // const { mutate, isPending } = useMutation({
-  //   mutationKey: ["create-Period"],
-  //   mutationFn: async ({ name, dateRange }: AddPeriodSchema) => {
-  //     const res = await apiClient.post("periods", {
-  //       json: {
-  //         name,
-  //         startAt: dateRange.from,
-  //         endAt: dateRange.to,
-  //       },
-  //     });
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["create-Period"],
+    mutationFn: async ({ name, dateRange }: AddPeriodSchema) => {
+      const res = await apiClient.post("periods", {
+        json: {
+          name,
+          startAt: dateRange.from,
+          endAt: dateRange.to,
+        },
+      });
 
-  //     if (!res.ok) {
-  //       throw new Error("Failed to create period");
-  //     }
+      if (!res.ok) {
+        throw new Error("Failed to create period");
+      }
 
-  //     const data = await res.json();
-  //     return data;
-  //   },
-  //   onSuccess: (data) => {
-  //     // Send toast notification
-  //     toaster.toast({
-  //       title: `Période ajoutée avec succès !`,
-  //       description:
-  //         "Vous pouvez maintenant organiser vos activités dans cette période.",
-  //     });
+      const data = await res.json();
+      return data;
+    },
+    onSuccess: (data) => {
+      // Send toast notification
+      toaster.toast({
+        title: Période ajoutée avec succès !,
+        description:
+          "Vous pouvez maintenant organiser vos activités dans cette période.",
+      });
 
-  //     close();
+      close();
 
-  //     queryClient.invalidateQueries({
-  //       queryKey: ["periods"],
-  //     });
-  //   },
+      queryClient.invalidateQueries({
+        queryKey: ["periods"],
+      });
+    },
 
-  //   onError: (err) => {
-  //     // Handle error
-  //     toaster.toast({
-  //       title: "Échec de l'ajout",
-  //       description: "Une erreur est survenue. Veuillez réessayer.",
-  //       variant: "destructive",
-  //     });
-  //   },
-  // });
+    onError: (err) => {
+      // Handle error
+      toaster.toast({
+        title: "Échec de l'ajout",
+        description: "Une erreur est survenue. Veuillez réessayer.",
+        variant: "destructive",
+      });
+    },
+  });
 
-  // const form = useForm<AddPeriodSchema>({
-  //   resolver: zodResolver(addPeriodSchema),
-  //   defaultValues: {
-  //     name: "",
-  //     dateRange: {
-  //       from: undefined,
-  //       to: undefined,
-  //     },
-  //   },
-  // });
+  const form = useForm<AddPeriodSchema>({
+    resolver: zodResolver(addPeriodSchema),
+    defaultValues: {
+      name: "",
+      dateRange: {
+        from: undefined,
+        to: undefined,
+      },
+    },
+  });
 
-  // const onSubmit = (data: AddPeriodSchema) => {
-  //   mutate(data);
-  // };
+  const onSubmit = (values: AddPeriodSchema) => {
+    const { from: startAt, to: endAt } = values.dateRange;
 
-  // // Generate an array of all dates within existing periods
-  // const disabledDates = periods.flatMap((period) => {
-  //   const dates = [];
-  //   let currentDate = new Date(period.startAt);
+    const normalizedStartAt = startOfDay(startAt);
+    const normalizedEndAt = startOfDay(endAt);
 
-  //   while (currentDate <= period.endAt) {
-  //     dates.push(new Date(currentDate));
-  //     currentDate.setDate(currentDate.getDate() + 1);
-  //   }
+    const overlappingPeriod = periods.find(
+      (period) =>
+        isWithinInterval(normalizedStartAt, {
+          start: period.startAt,
+          end: period.endAt,
+        }) ||
+        isWithinInterval(normalizedEndAt, {
+          start: period.startAt,
+          end: period.endAt,
+        }) ||
+        (period.startAt >= normalizedStartAt && period.endAt <= normalizedEndAt)
+    );
 
-  //   return dates;
-  // });
+    if (overlappingPeriod) {
+      toaster.toast({
+        title: "Conflit de période",
+        description: La période "${overlappingPeriod.name}" chevauche la période que vous essayez de créer.,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    mutate(values);
+  };
 
   return (
     <div className="">
-      {/* <Form {...form}>
+      <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-8"
         >
-
+          {/* Name Field */}
           <FormField
             control={form.control}
             name="name"
@@ -181,7 +195,7 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
             )}
           />
 
-
+          {/* Date Range Picker */}
           <FormField
             control={form.control}
             name="dateRange"
@@ -199,10 +213,10 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
                       >
                         {field.value?.from ? (
                           field.value.to ? (
-                            `${format(field.value.from, "PPP")} - ${format(
+                            ${format(field.value.from, "PPP")} - ${format(
                               field.value.to,
                               "PPP"
-                            )}`
+                            )}
                           ) : (
                             format(field.value.from, "PPP")
                           )
@@ -219,7 +233,9 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
                         selected={field.value}
                         onSelect={field.onChange}
                         numberOfMonths={3}
-                        disabled={disabledDates}
+                        disabled={(date) =>
+                          date > new Date("2024-09-08") && date < new Date("2024-12-12")
+                        }
                       />
                     </PopoverContent>
                   </Popover>
@@ -229,12 +245,13 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
             )}
           />
 
+          {/* Submit Button */}
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2Icon className="animate-spin mr-2 h-4 w-4" />}
             Ajouter une période
           </Button>
         </form>
-      </Form> */}
+      </Form>
     </div>
   );
 };
