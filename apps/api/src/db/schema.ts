@@ -53,6 +53,23 @@ export const subjectsRelations = relations(subjects, ({ one, many }) => ({
   }),
 }));
 
+export const periods = sqliteTable("periods", {
+  id: text()
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => generateId("per")),
+
+  name: text().notNull(),
+
+  startAt: integer({ mode: "timestamp" }).notNull(),
+  endAt: integer({ mode: "timestamp" }).notNull(),
+
+  createdAt: integer({ mode: "timestamp" }).notNull(),
+  userId: text()
+    .notNull()
+    .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
+});
+
 export const grades = sqliteTable("grades", {
   id: text()
     .notNull()
