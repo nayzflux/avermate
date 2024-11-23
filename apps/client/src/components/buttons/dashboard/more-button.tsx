@@ -1,6 +1,7 @@
 "use client";
 
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
+import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,12 +23,18 @@ export default function MoreButton() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <AddSubjectDialog>
-          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          <AddSubjectDialog>
             <PlusCircleIcon className="size-4 mr-2" />
             Ajouter une matière
-          </DropdownMenuItem>
-        </AddSubjectDialog>
+          </AddSubjectDialog>
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          <AddPeriodDialog>
+            <PlusCircleIcon className="size-4 mr-2" />
+            Ajouter une période
+          </AddPeriodDialog>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

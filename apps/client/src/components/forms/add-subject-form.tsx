@@ -18,8 +18,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import AddSubjectButton from "../buttons/dashboard/add-subject-button";
-import AddSubjectDialog from "../dialogs/add-subject-dialog";
 import { Badge } from "../ui/badge";
 import {
   Select,
