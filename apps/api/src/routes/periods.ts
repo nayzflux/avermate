@@ -26,24 +26,27 @@ app.post("/", zValidator("json", createPeriodSchema), async (c) => {
 
   if (!session) throw new HTTPException(401);
 
-    const { name, startAt, endAt } = c.req.valid("json");
-    
-    if (startAt > endAt) {
-      throw new HTTPException(400);
-    }
+  const { name, startAt, endAt } = c.req.valid("json");
 
-    const period = await db
-      .insert(periods)
-      .values({
-        name,
-        startAt: startAt.getTime(),
-        endAt: endAt.getTime(),
-      })
-      .returning()
-        .get();
-    
-    return c.json(period);
+  if (startAt > endAt) {
+    throw new HTTPException(400);
+  }
+
+  const period = await db
+    .insert(periods)
+    .values({
+      name,
+      startAt: new Date(startAt.getTime()), // Correction ici
+      endAt: new Date(endAt.getTime()),     // Correction ici
+      userId: session.user.id,
+      createdAt: new Date(), // Ajout d'un timestamp pour la création
+    })
+    .returning()
+    .get();
+
+  return c.json(period);
 });
+
 
 /**
  * Get all periods
@@ -89,10 +92,10 @@ app.put("/:periodId", zValidator("param", getPeriodSchema), zValidator("json", u
 
   const period = await db
     .update(periods)
-    .set({
-      name,
-      startAt: startAt?.getTime(),
-      endAt: endAt?.getTime(),
+      .set({
+        name,
+        startAt: startAt ? new Date(startAt.getTime()) : undefined,
+        endAt: endAt ? new Date(endAt.getTime()) : undefined,
     })
     .where(and(eq(periods.id, periodId), eq(periods.userId, session.user.id)))
     .returning()
