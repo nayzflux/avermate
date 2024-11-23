@@ -9,6 +9,7 @@ export type Subject = {
   userId: string;
   depth: number;
   grades: PartialGrade[];
+  isMainSubject: boolean;
 };
 
 export type PartialSubject = Omit<Subject, "grades" | "coefficient" | "depth" | "createdAt" | "parentId" | "userId">;

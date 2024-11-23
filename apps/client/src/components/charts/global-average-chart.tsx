@@ -29,6 +29,7 @@ import { apiClient } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { Subject } from "@/types/subject";
 import { Separator } from "@/components/ui/separator";
+import { averageOverTime, average } from "@/utils/average";
 
 export const description = "A simple area chart";
 
@@ -47,24 +48,40 @@ export default function GlobalAverageChart() {
   });
 
   if (isPending) {
-    return <div>Loading...</div>;
+    return (
+      <Card className="lg:col-span-5">
+        <CardHeader>
+          <CardTitle>Moyenne Générale</CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
+            {/* Area Chart Section */}
+            <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%]">
+              <CardDescription className="pb-8">
+                Visualiser l'évolution de votre moyenne générale sur ce
+                trimestre
+              </CardDescription>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   if (isError) {
-    return <div>Error</div>;
+    return (
+      <Card className="lg:col-span-5">
+        <CardHeader>
+          <CardTitle>Error</CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2"></div>
+        </CardContent>
+      </Card>
+    );
   }
-
-  // Collect all grades from the subjects
-  const allGrades = subjects.flatMap((subject) =>
-    subject.grades.map((grade) => ({
-      ...grade,
-      subjectName: subject.name,
-      passedAt: new Date(grade.passedAt),
-    }))
-  );
-
-  // Sort the grades by the passedAt date
-  allGrades.sort((a, b) => a.passedAt - b.passedAt);
 
   // Calculate the start and end dates
   const endDate = new Date();
@@ -81,34 +98,13 @@ export default function GlobalAverageChart() {
     dates.push(new Date(dt));
   }
 
-  // Compute cumulative averages for area chart
-  let sum = 0;
-  let count = 0;
-  let gradeIndex = 0;
-  const avgData = [];
+  // Calculate the average grades over time
+  const averages = averageOverTime(subjects, undefined, dates);
 
-  for (let i = 0; i < dates.length; i++) {
-    const date = dates[i];
-
-    while (
-      gradeIndex < allGrades.length &&
-      allGrades[gradeIndex].passedAt <= date
-    ) {
-      // Adjust the grade value to a scale of 0 to 20
-      sum += (allGrades[gradeIndex].value / allGrades[gradeIndex].outOf) * 20;
-      count++;
-      gradeIndex++;
-    }
-
-    const average = count > 0 ? sum / count : 0;
-
-    avgData.push({
-      date: date.toISOString().slice(0, 10), // Format: YYYY-MM-DD
-      average: average,
-    });
-  }
-
-  const chartData = avgData;
+  const chartData = dates.map((date, index) => ({
+    date: date.toISOString(),
+    average: averages[index],
+  }));
 
   const chartConfig = {
     average: {
@@ -117,26 +113,67 @@ export default function GlobalAverageChart() {
     },
   };
 
-  // Calculate average grades per subject for radar chart
-  const subjectAverages = subjects.map((subject) => {
-    const grades = subject.grades;
-    const total = grades.reduce((acc, grade) => {
-      return acc + (grade.value / grade.outOf) * 20 * grade.coefficient;
-    }, 0);
-    const totalCoefficient = grades.reduce(
-      (acc, grade) => acc + grade.coefficient,
-      0
-    );
-    const average = totalCoefficient > 0 ? total / totalCoefficient : 0;
-
-    return {
-      subject: subject.name,
-      average: average,
-      fullMark: 20,
-    };
-  });
+  // Calculate average grades per subject for radar chart, only if it is a main subject
+  const subjectAverages = subjects
+    .filter((subject) => subject.isMainSubject)
+    .map((subject) => {
+      const averageGrade = average(subject.id, subjects);
+      const validAverage = averageGrade ?? 0;
+      return {
+        subject: subject.name,
+        average: validAverage,
+        fullMark: 20,
+      };
+    });
 
   const radarData = subjectAverages;
+
+  const renderPolarAngleAxis = ({ payload, x, y, cx, cy, ...rest }) => {
+    // Calculate the angle in radians between the label position and the center
+    const radius = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+    const angle = Math.atan2(y - cy, x - cx);
+
+    // Determine the truncate length based on screen width
+
+  const truncateLength =
+    window.innerWidth < 450
+      ? 5
+      : window.innerWidth < 1024
+      ? 10
+      : window.innerWidth < 1300
+      ? 5
+      : window.innerWidth < 2100
+      ? 9
+      : 12;
+
+    const truncatedLabel =
+      payload.value.length > truncateLength
+        ? `${payload.value.slice(0, truncateLength)}...`
+        : payload.value;
+
+    // Adjust the radius to move the labels inside
+    const labelRadius = radius - truncatedLabel.length * 3 + 10; // Adjust this value based on text length
+
+    // Calculate new label positions
+    const nx = cx + labelRadius * Math.cos(angle);
+    const ny = cy + labelRadius * Math.sin(angle);
+
+    // Convert angle to degrees for rotation
+    const rotation = (angle * 180) / Math.PI;
+
+    return (
+      <text
+        x={nx}
+        y={ny}
+        textAnchor="middle"
+        transform={`rotate(${rotation}, ${nx}, ${ny})`}
+        fontSize={12}
+        fill="#a1a1aa"
+      >
+        {truncatedLabel}
+      </text>
+    );
+  };
 
   return (
     <Card className="lg:col-span-5">
@@ -147,7 +184,7 @@ export default function GlobalAverageChart() {
       <CardContent>
         <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
           {/* Area Chart Section */}
-          <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%]">
+          <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%] lg:w-[60%]">
             <CardDescription className="pb-8">
               Visualiser l'évolution de votre moyenne générale sur ce trimestre
             </CardDescription>
@@ -176,6 +213,12 @@ export default function GlobalAverageChart() {
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent />}
+                  labelFormatter={(value) =>
+                    new Date(value).toLocaleDateString("fr-FR", {
+                      month: "short",
+                      day: "numeric",
+                    })
+                  }
                 />
                 <defs>
                   <linearGradient id="fillAverage" x1="0" y1="0" x2="0" y2="1">
@@ -207,9 +250,9 @@ export default function GlobalAverageChart() {
               config={chartConfig}
               className="h-[332px] w-[100%] m-auto !aspect-auto"
             >
-              <RadarChart data={radarData}>
+              <RadarChart data={radarData} outerRadius="90%">
                 <PolarGrid />
-                <PolarAngleAxis dataKey="subject" />
+                <PolarAngleAxis dataKey="subject" tick={renderPolarAngleAxis} />
                 <PolarRadiusAxis angle={30} domain={[0, 20]} tickCount={5} />
                 <Radar
                   dataKey="average"

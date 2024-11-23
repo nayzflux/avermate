@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { Switch } from "@/components/ui/switch";
 
 const addSubjectSchema = z.object({
   name: z.string().min(1).max(64),
@@ -38,6 +39,7 @@ const addSubjectSchema = z.object({
     .max(64)
     .optional()
     .transform((val) => (val === "" ? undefined : val)),
+  isMainSubject: z.boolean().optional(),
 });
 
 type AddSubjectSchema = z.infer<typeof addSubjectSchema>;
@@ -60,12 +62,13 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["create-Subject"],
-    mutationFn: async ({ name, coefficient, parentId }: AddSubjectSchema) => {
+    mutationFn: async ({ name, coefficient, parentId, isMainSubject }: AddSubjectSchema) => {
       const res = await apiClient.post("subjects", {
         json: {
           name,
           coefficient,
           parentId,
+          isMainSubject,
         },
       });
 
@@ -154,6 +157,21 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
                   />
                 </FormControl>
 
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="isMainSubject"
+            render={({ field }) => (
+              <FormItem className="col-span-2 flex flex-row gap-4 items-center">
+                <FormLabel>Matière principale</FormLabel>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
                 <FormMessage />
               </FormItem>
             )}

@@ -254,6 +254,7 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
                         date > new Date() || date < new Date("2023-01-02")
                       }
                       initialFocus
+                      weekStartsOn={1}
                     />
                   </PopoverContent>
                 </Popover>
