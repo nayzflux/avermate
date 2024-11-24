@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { periods } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
-import { and, desc, eq, gte, lte } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
@@ -16,7 +16,7 @@ const app = new Hono();
 const createPeriodSchema = z.object({
   name: z.string().min(1).max(64),
   startAt: z.coerce.date().optional().default(new Date()),
-    endAt: z.coerce.date().optional().default(new Date()),
+  endAt: z.coerce.date().optional().default(new Date()),
 });
 
 app.post("/", zValidator("json", createPeriodSchema), async (c) => {
@@ -37,7 +37,7 @@ app.post("/", zValidator("json", createPeriodSchema), async (c) => {
     .values({
       name,
       startAt: new Date(startAt.getTime()), // Correction ici
-      endAt: new Date(endAt.getTime()),     // Correction ici
+      endAt: new Date(endAt.getTime()), // Correction ici
       userId: session.user.id,
       createdAt: new Date(), // Ajout d'un timestamp pour la création
     })
@@ -46,7 +46,6 @@ app.post("/", zValidator("json", createPeriodSchema), async (c) => {
 
   return c.json(period);
 });
-
 
 /**
  * Get all periods
@@ -59,18 +58,18 @@ app.get("/", async (c) => {
   if (!session) throw new HTTPException(401);
 
   const allPeriods = await db.query.periods.findMany({
-      where: eq(periods.userId, session.user.id),
-    orderBy: desc(periods.startAt),
+    where: eq(periods.userId, session.user.id),
+    orderBy: asc(periods.startAt),
   });
 
   return c.json({
     periods: allPeriods,
-    });
+  });
 });
 
 /**
  * Update a period by id
-*/
+ */
 
 const getPeriodSchema = z.object({
   periodId: z.string().min(1).max(64),
@@ -82,38 +81,43 @@ const updatePeriodSchema = z.object({
   endAt: z.coerce.date().optional(),
 });
 
-app.put("/:periodId", zValidator("param", getPeriodSchema), zValidator("json", updatePeriodSchema), async (c) => {
-  const session = await auth.api.getSession({
-    headers: c.req.raw.headers,
-  });
+app.put(
+  "/:periodId",
+  zValidator("param", getPeriodSchema),
+  zValidator("json", updatePeriodSchema),
+  async (c) => {
+    const session = await auth.api.getSession({
+      headers: c.req.raw.headers,
+    });
 
-  if (!session) throw new HTTPException(401);
+    if (!session) throw new HTTPException(401);
 
-  const { periodId } = c.req.valid("param");
-  const { name, startAt, endAt } = c.req.valid("json");
+    const { periodId } = c.req.valid("param");
+    const { name, startAt, endAt } = c.req.valid("json");
 
-  const period = await db
-    .update(periods)
+    const period = await db
+      .update(periods)
       .set({
         name,
         startAt: startAt ? new Date(startAt.getTime()) : undefined,
         endAt: endAt ? new Date(endAt.getTime()) : undefined,
-    })
-    .where(and(eq(periods.id, periodId), eq(periods.userId, session.user.id)))
-    .returning()
-    .get();
+      })
+      .where(and(eq(periods.id, periodId), eq(periods.userId, session.user.id)))
+      .returning()
+      .get();
 
-  if (!period) throw new HTTPException(404);
+    if (!period) throw new HTTPException(404);
 
-  return c.json(period);
-});
+    return c.json(period);
+  }
+);
 
 /**
  * Delete a period by id
  */
 
 const deletePeriodSchema = z.object({
-    periodId: z.string().min(1).max(64),
+  periodId: z.string().min(1).max(64),
 });
 
 app.delete("/:periodId", zValidator("param", deletePeriodSchema), async (c) => {
@@ -127,9 +131,7 @@ app.delete("/:periodId", zValidator("param", deletePeriodSchema), async (c) => {
 
   const period = await db
     .delete(periods)
-    .where(
-      and(eq(periods.id, periodId), eq(periods.userId, session.user.id))
-    )
+    .where(and(eq(periods.id, periodId), eq(periods.userId, session.user.id)))
     .returning()
     .get();
 
