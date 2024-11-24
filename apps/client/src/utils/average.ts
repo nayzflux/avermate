@@ -67,9 +67,6 @@ function calculateAverageForSubject(
   return averagePercentage * 20;
 }
 
-
-
-
 function calculateAverageForSubjects(
   subjects: Subject[],
   allSubjects: Subject[]
@@ -101,7 +98,6 @@ function calculateAverageForSubjects(
   return averagePercentage * 20;
 }
 
-// average over time
 export function averageOverTime(
   subjects: Subject[],
   subjectId: string | undefined,
@@ -321,4 +317,148 @@ export function getWorstGrade(subjects: Subject[]): { grade: number; outOf: numb
   return worstGrade
     ? { grade: worstGrade.grade, outOf: worstGrade.outOf, subject: worstGrade.subject, name: worstGrade.name }
     : null;
+}
+
+// Get the best grade inside a specific subject and its childrens
+export function getBestGradeInSubject(subjects: Subject[], subjectId: string): { grade: number; outOf: number; subject: Subject; name: String } | null {
+  const subject = subjects.find((s) => s.id === subjectId);
+  if (!subject) return null;
+
+  const childrenIds = getChildren(subjects, subjectId);
+  const children = subjects.filter((s) => childrenIds.includes(s.id));
+
+  const bestGrade = getBestGrade([subject, ...children]);
+
+  return bestGrade;
+}
+
+// Get the worst grade inside a specific subject and its childrens
+export function getWorstGradeInSubject(subjects: Subject[], subjectId: string): { grade: number; outOf: number; subject: Subject; name: String } | null {
+  const subject = subjects.find((s) => s.id === subjectId);
+  if (!subject) return null;
+
+  const childrenIds = getChildren(subjects, subjectId);
+  const children = subjects.filter((s) => childrenIds.includes(s.id));
+
+  const worstGrade = getWorstGrade([subject, ...children]);
+  return worstGrade;
+}
+
+// A function that retruns an array of the id of the children of a subject (remember that a subject can have n children)
+export function getChildren(subjects: Subject[], subjectId: string): string[] {
+  const directChildren = subjects.filter((s) => s.parentId === subjectId);
+  let childrenIds = directChildren.map((child) => child.id);
+
+  for (const child of directChildren) {
+    childrenIds = childrenIds.concat(getChildren(subjects, child.id));
+  }
+
+  return childrenIds;
+}
+
+
+
+// Utility function to deep clone the subjects array
+function deepCloneSubjects(subjects: Subject[]): Subject[] {
+  return subjects.map((subject) => ({
+    ...subject,
+    grades: subject.grades.map((grade) => ({ ...grade })),
+  }));
+}
+
+// Function to calculate the impact of a grade on the average
+export function gradeImpact(
+  gradeId: string,
+  subjectId: string | undefined,
+  subjects: Subject[]
+): { difference: number; percentageChange: number | null } | null {
+  // Deep clone the subjects array to prevent mutations
+  const subjectsCopy = deepCloneSubjects(subjects);
+
+  // Find the subject and index of the grade
+  let gradeSubject: Subject | null = null;
+  let gradeIndex = -1;
+
+  for (const subject of subjectsCopy) {
+    const index = subject.grades.findIndex((grade) => grade.id === gradeId);
+    if (index !== -1) {
+      gradeSubject = subject;
+      gradeIndex = index;
+      break;
+    }
+  }
+
+  if (!gradeSubject || gradeIndex === -1) {
+    // Grade not found
+    return null;
+  }
+
+  // Compute the average with the grade included
+  const averageWithGrade = average(subjectId, subjectsCopy);
+
+  // Remove the grade from the grades array
+  gradeSubject.grades.splice(gradeIndex, 1);
+
+  // Compute the average without the grade
+  const averageWithoutGrade = average(subjectId, subjectsCopy);
+
+  // Compute the impact
+  if (averageWithGrade !== null && averageWithoutGrade !== null) {
+    const difference = averageWithGrade - averageWithoutGrade;
+    let percentageChange: number | null = null;
+    if (averageWithoutGrade !== 0) {
+      percentageChange = (difference / averageWithoutGrade) * 100;
+    }
+    return { difference, percentageChange };
+  } else {
+    return null;
+  }
+}
+
+// Function to calculate the impact of a subject on the general average
+export function subjectImpact(
+  subjectId: string,
+  subjects: Subject[]
+): { difference: number; percentageChange: number | null } | null {
+  // Deep clone the subjects array to prevent mutations
+  const subjectsCopy = deepCloneSubjects(subjects);
+
+  // Get the list of subject IDs to exclude (the subject and all its children)
+  const subjectsToExclude = [subjectId, ...getChildren(subjectsCopy, subjectId)];
+
+  // Compute the general average with the subject included
+  const averageWithSubject = average(undefined, subjectsCopy);
+
+  // Remove the subject and its children from the subjects array
+  const subjectsWithoutSubject = subjectsCopy.filter(
+    (subject) => !subjectsToExclude.includes(subject.id)
+  );
+
+  // Compute the general average without the subject
+  const averageWithoutSubject = average(undefined, subjectsWithoutSubject);
+
+  // Compute the impact
+  if (averageWithSubject !== null && averageWithoutSubject !== null) {
+    const difference = averageWithSubject - averageWithoutSubject;
+    let percentageChange: number | null = null;
+    if (averageWithoutSubject !== 0) {
+      percentageChange = (difference / averageWithoutSubject) * 100;
+    }
+    return { difference, percentageChange };
+  } else {
+    return null;
+  }
+}
+
+// This function returns an array of the id of all the parents of a subject (we are including the parent of the parent and so on until we reach the root and we are not including the subject itself)
+export function getParents(subjects: Subject[], subjectId: string): string[] {
+  const parents: string[] = [];
+  let currentSubject = subjects.find((s) => s.id === subjectId);
+
+  while (currentSubject && currentSubject.parentId !== null) {
+    parents.push(currentSubject.parentId);
+    currentSubject = subjects.find((s) => s.id === currentSubject.parentId);
+  }
+
+  return parents;
 }

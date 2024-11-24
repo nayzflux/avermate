@@ -85,14 +85,14 @@ app.get("/", zValidator("query", getGradesQuerySchema), async (c) => {
 
   const { from, to, limit } = c.req.valid("query");
 
-  const allGrades = await db.query.grades.findMany({
+  let allGrades = await db.query.grades.findMany({
     where: and(
       eq(grades.userId, session.user.id),
       from && gte(grades.createdAt, from),
       to && lte(grades.createdAt, to)
     ),
-    orderBy: desc(grades.passedAt),
     limit: limit,
+    orderBy: desc(grades.createdAt),
     with: {
       subject: {
         columns: {
@@ -102,6 +102,9 @@ app.get("/", zValidator("query", getGradesQuerySchema), async (c) => {
       }
     },
   });
+
+  allGrades = allGrades.sort((a, b) => b.passedAt.getTime() - a.passedAt.getTime());
+
 
   return c.json({ grades: allGrades });
 });
@@ -113,11 +116,11 @@ const getGradeSchema = z.object({
   gradeId: z.string().min(1).max(64),
 });
 
-app.get("/:gradeId", zValidator("json", getGradeSchema), async (c) => {
+app.get("/:gradeId", zValidator("param", getGradeSchema), async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   if (!session) throw new HTTPException(401);
 
-  const { gradeId } = c.req.valid("json");
+  const { gradeId } = c.req.valid("param");
 
   const grade = await db.query.grades.findFirst({
     where: eq(grades.id, gradeId),

@@ -12,13 +12,13 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import {
-  Area, AreaChart, CartesianGrid, XAxis, 
-  YAxis
+  Area, LineChart, CartesianGrid, XAxis, 
+  YAxis, Line
  } from "recharts";
 import { apiClient } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { Subject } from "@/types/subject";
-import { averageOverTime } from "@/utils/average";
+import { averageOverTime, getChildren } from "@/utils/average";
 
 export default function SubjectAverageChart({ subjectId }: { subjectId: string }) {
   const {
@@ -33,6 +33,7 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
       return data.subjects;
     },
   });
+
 
   if (isPending) {
     return (
@@ -70,6 +71,8 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
     );
   }
 
+  const childrensId = getChildren(subjects, subjectId);
+
   // Calculate the start and end dates
   const endDate = new Date();
   const startDate = new Date();
@@ -80,16 +83,32 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
   for (
     let dt = new Date(startDate);
     dt <= endDate;
-    dt.setDate(dt.getDate() + 1)
+    dt.setDate(dt.getDate() + 3)
   ) {
     dates.push(new Date(dt));
   }
   // Calculate the average grades over time
+
+  const mainSubject = subjects.find((subject) => subject.id === subjectId);
+
+  let childrensObjects = subjects.filter((subject) => childrensId.includes(subject.id));
+  //filter the childrens objects by only the childrens having a depth of 1 superior of the main subject
+  childrensObjects = childrensObjects.filter((child) => child.depth === mainSubject.depth + 1);
+
+  const childrenAverage = childrensObjects.map((child) => {
+    return {
+      id: child.id,
+      name: child.name,
+      average: averageOverTime(subjects, child.id, dates),
+    };
+  });
+
   const averages = averageOverTime(subjects, subjectId, dates);
 
   const chartData = dates.map((date, index) => ({
     date: date.toISOString(),
     average: averages[index],
+    ...Object.fromEntries(childrenAverage.map((child) => [child.id, child.average[index]])),
   }));
 
   const chartConfig = {
@@ -97,6 +116,15 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
       label: "Moyenne",
       color: "#2662d9",
     },
+    ...Object.fromEntries(
+      childrenAverage.map((child) => [
+        child.id,
+        {
+          label: child.name,
+          color: "#f87171",
+        },
+      ])
+    ),
   };
 
   return (
@@ -166,7 +194,7 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
             stackId="b"
           />
         </AreaChart> */}
-        <AreaChart data={chartData} margin={{ left: -30 }}>
+        <LineChart data={chartData} margin={{ left: -30 }}>
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey="date"
@@ -203,13 +231,26 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
               <stop offset="95%" stopColor="#2662d9" stopOpacity={0.1} />
             </linearGradient>
           </defs>
-          <Area
+          {childrenAverage.map((child) => (
+            <Line
+              key={child.id}
+              dataKey={child.id}
+              type="monotone"
+              fill="#f87171"
+              stroke="#f87171"
+              dot={false}
+            />
+          ))}
+          <Line
             dataKey="average"
             type="monotone"
             fill="url(#fillAverage)"
             stroke="#2662d9"
+            dot={false}
+            strokeWidth={3}
+            //always on top and big stroke
           />
-        </AreaChart>
+        </LineChart>
       </ChartContainer>
     </Card>
   );
