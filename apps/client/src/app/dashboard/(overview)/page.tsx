@@ -267,7 +267,9 @@ export default function OverviewPage() {
                     <GradeValue
                       value={
                         worstGrade !== null
-                          ? Number(worstGrade?.grade).toString()
+                          ? (
+                              Number(worstGrade?.grade.toFixed(2))
+                            ).toString()
                           : "—"
                       }
                       outOf={

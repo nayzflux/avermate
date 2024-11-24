@@ -18,6 +18,12 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import SubjectAverageChart from "./subject-average-chart";
+import {
+  average,
+  getBestGradeInSubject,
+  subjectImpact,
+  getChildren,
+} from "@/utils/average";
 
 function SubjectWrapper({ subjectId }: { subjectId: string }) {
   const { data, isPending, isError } = useQuery({
@@ -26,6 +32,19 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
       const res = await apiClient.get(`subjects/${subjectId}`);
       const data = await res.json<{ subject: Subject }>();
       return data.subject;
+    },
+  });
+
+  const {
+    data: subjects,
+    isPending: isSubjectsPending,
+    isError: isSubjectsError,
+  } = useQuery({
+    queryKey: ["subjects"],
+    queryFn: async () => {
+      const res = await apiClient.get("subjects");
+      const data = await res.json<{ subjects: Subject[] }>();
+      return data.subjects;
     },
   });
 
@@ -46,7 +65,7 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
 
       <div>
         {isPending ? (
-          <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-8 w-[200px]" />
         ) : (
           <p className="text-2xl font-semibold">{data?.name}</p>
         )}
@@ -59,10 +78,15 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
         {/* Subject average */}
         <DataCard
           title="Moyenne"
-          description="Votre moyenne actuelle"
+          description={`Votre moyenne actuelle en ${data?.name}`}
           icon={AcademicCapIcon}
         >
-          <GradeValue value={1340} outOf={2000} />
+          {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
+            <GradeValue
+              value={average(data?.id, subjects) * 100}
+              outOf={2000}
+            />
+          )}
         </DataCard>
 
         {/* Subject impact on average */}
@@ -71,7 +95,16 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
           description={`Visualisez l'impact de ${data?.name} sur votre moyenne générale`}
           icon={ArrowUpCircleIcon}
         >
-          <p className="text-3xl font-bold">+1.2</p>
+          {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
+            <p className="text-3xl font-bold">
+              {(() => {
+                const diff =
+                  subjectImpact(subjectId, subjects)?.difference?.toFixed(2) ||
+                  0;
+                return diff >= 0 ? `+${diff}` : `${diff}`;
+              })()}
+            </p>
+          )}
         </DataCard>
 
         {/* Coeff */}
@@ -91,7 +124,18 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
           description={`Votre plus belle performance en ${data?.name}`}
           icon={SparklesIcon}
         >
-          <p className="text-3xl font-bold">19.8</p>
+          {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
+            <p className="text-3xl font-bold">
+              {(() => {
+                const bestGradeObj = getBestGradeInSubject(subjects, subjectId);
+                if (bestGradeObj && bestGradeObj.grade !== undefined) {
+                  return bestGradeObj.grade / 100;
+                } else {
+                  return "N/A";
+                }
+              })()}
+            </p>
+          )}
         </DataCard>
       </div>
 
