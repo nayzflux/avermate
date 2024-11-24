@@ -1,71 +1,108 @@
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import {
+  Area, AreaChart, CartesianGrid, XAxis, 
+  YAxis
+ } from "recharts";
+import { apiClient } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+import { Subject } from "@/types/subject";
+import { averageOverTime } from "@/utils/average";
 
-const chartData = [
-  {
-    month: "January",
-    a: 15,
-    b: 17,
-    c: 13,
-  },
-  {
-    month: "February",
-    a: 15,
-    b: 17,
-    c: 13,
-  },
-  {
-    month: "March",
-    a: 15,
-    b: 17,
-    c: 13,
-  },
-  {
-    month: "April",
-    a: 15,
-    b: 17,
-    c: 13,
-  },
-  {
-    month: "May",
-    a: 15,
-    b: 17,
-    c: 13,
-  },
-  {
-    month: "June",
-    a: 15,
-    b: 17,
-    c: 13,
-  },
-];
+export default function SubjectAverageChart({ subjectId }: { subjectId: string }) {
+  const {
+    data: subjects,
+    isError,
+    isPending,
+  } = useQuery({
+    queryKey: ["subjects"],
+    queryFn: async () => {
+      const res = await apiClient.get("subjects");
+      const data = await res.json<{ subjects: Subject[] }>();
+      return data.subjects;
+    },
+  });
 
-const chartConfig = {
-  a: {
-    label: "A",
-    color: "hsl(var(--chart-1))",
-  },
-  b: {
-    label: "B",
-    color: "hsl(var(--chart-5))",
-  },
-  c: {
-    label: "C",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig;
+  if (isPending) {
+    return (
+      <Card className="lg:col-span-5">
+        <CardHeader>
+          <CardTitle>Moyenne Générale</CardTitle>
+        </CardHeader>
 
-export default function SubjectAverageChart() {
+        <CardContent>
+          <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
+            {/* Area Chart Section */}
+            <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%]">
+              <CardDescription className="pb-8">
+                Visualiser l'évolution de votre moyenne générale sur ce
+                trimestre
+              </CardDescription>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Card className="lg:col-span-5">
+        <CardHeader>
+          <CardTitle>Error</CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2"></div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Calculate the start and end dates
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setMonth(startDate.getMonth() - 3);
+
+  // Generate an array of dates
+  const dates = [];
+  for (
+    let dt = new Date(startDate);
+    dt <= endDate;
+    dt.setDate(dt.getDate() + 1)
+  ) {
+    dates.push(new Date(dt));
+  }
+  // Calculate the average grades over time
+  const averages = averageOverTime(subjects, subjectId, dates);
+
+  const chartData = dates.map((date, index) => ({
+    date: date.toISOString(),
+    average: averages[index],
+  }));
+
+  const chartConfig = {
+    average: {
+      label: "Moyenne",
+      color: "#2662d9",
+    },
+  };
+
   return (
     <Card className="p-4">
       <ChartContainer config={chartConfig} className="h-[400px] w-[100%]">
-        <AreaChart
+        {/* <AreaChart
           accessibilityLayer
           data={chartData}
           margin={{
@@ -127,6 +164,50 @@ export default function SubjectAverageChart() {
             fillOpacity={0.4}
             stroke="var(--color-b)"
             stackId="b"
+          />
+        </AreaChart> */}
+        <AreaChart data={chartData} margin={{ left: -30 }}>
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="date"
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            tickFormatter={(value) =>
+              new Date(value).toLocaleDateString("fr-FR", {
+                month: "short",
+                day: "numeric",
+              })
+            }
+          />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            domain={[0, 20]}
+            tickMargin={8}
+            tickCount={5}
+          />
+          <ChartTooltip
+            cursor={false}
+            content={<ChartTooltipContent />}
+            labelFormatter={(value) =>
+              new Date(value).toLocaleDateString("fr-FR", {
+                month: "short",
+                day: "numeric",
+              })
+            }
+          />
+          <defs>
+            <linearGradient id="fillAverage" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#2662d9" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#2662d9" stopOpacity={0.1} />
+            </linearGradient>
+          </defs>
+          <Area
+            dataKey="average"
+            type="monotone"
+            fill="url(#fillAverage)"
+            stroke="#2662d9"
           />
         </AreaChart>
       </ChartContainer>

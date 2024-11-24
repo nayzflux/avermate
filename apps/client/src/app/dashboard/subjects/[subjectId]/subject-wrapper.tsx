@@ -101,11 +101,10 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
       <div className="flex flex-col gap-4">
         <h2 className="text-xl font-semibold">Evolution de la moyenne</h2>
 
-        <SubjectAverageChart />
+        <SubjectAverageChart subjectId={subjectId} />
       </div>
 
       {/* Last grades */}
-      
     </div>
   );
 }
