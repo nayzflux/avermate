@@ -154,6 +154,7 @@ function renderSubjects(subjects: Subject[], parentId: string | null = null) {
                   value={grade.value}
                   outOf={grade.outOf}
                   coefficient={grade.coefficient}
+                  id={grade.id}
                 />
               ))}
             </div>
