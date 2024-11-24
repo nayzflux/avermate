@@ -13,6 +13,14 @@ import { apiClient } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { Subject } from "@/types/subject";
 import { average, averageOverTime, getBestMainSubject, getWorstMainSubject, getBestSubjectAverageComparaison, getWorstSubjectAverageComparaison, getBestGrade, getWorstSubjects, getWorstGrade } from "@/utils/average";
+import { 
+  PlusIcon,
+  AcademicCapIcon,
+  MinusIcon,
+  ArrowTrendingDownIcon,
+  ArrowTrendingUpIcon,
+} from "@heroicons/react/24/outline";
+import { TrendingUpIcon } from "lucide-react";
 
 /**
  * Vue d'ensemble des notes
@@ -184,7 +192,7 @@ export default function OverviewPage() {
                 <div className="grid grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
                   <DataCard
                     title="Overall average"
-                    icon={BoxIcon}
+                    icon={AcademicCapIcon}
                     description={
                       growth > 0
                         ? `+${growth.toFixed(2)}% since the beginning`
@@ -209,7 +217,7 @@ export default function OverviewPage() {
 
                   <DataCard
                     title="Best grade"
-                    icon={BoxIcon}
+                    icon={PlusIcon}
                     description={
                       bestGrade !== null
                         ? `In ${bestGrade?.subject?.name} ? Impressive ! (${bestGrade?.name})`
@@ -233,7 +241,7 @@ export default function OverviewPage() {
 
                   <DataCard
                     title="Best subject"
-                    icon={BoxIcon}
+                    icon={ArrowTrendingUpIcon}
                     description={
                       bestSubjectAverage !== null
                         ? `${bestSubject?.name} is ${
@@ -257,7 +265,7 @@ export default function OverviewPage() {
 
                   <DataCard
                     title="Worst Grade"
-                    icon={BoxIcon}
+                    icon={MinusIcon}
                     description={
                       worstGrade !== null
                         ? `In ${worstGrade?.subject?.name} ? Yep that’s bad (${worstGrade?.name})`
@@ -282,7 +290,7 @@ export default function OverviewPage() {
                   </DataCard>
                   <DataCard
                     title="Worst subject"
-                    icon={BoxIcon}
+                    icon={ArrowTrendingDownIcon}
                     description={
                       worstSubjectAverage !== null
                         ? `${worstSubject?.name} is ${

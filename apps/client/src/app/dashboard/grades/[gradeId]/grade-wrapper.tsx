@@ -15,6 +15,7 @@ import {
   ArrowUpCircleIcon,
   SparklesIcon,
   VariableIcon,
+  CalendarIcon,
 } from "@heroicons/react/24/outline";
 import { Subject } from "@/types/subject";
 
@@ -127,33 +128,32 @@ export default function GradeWrapper({ gradeId }: { gradeId: string }) {
           <p className="text-4xl font-bold">
             {(() => {
               const diff =
-                gradeImpact(grade.id, grade.subjectId, subjects)?.difference || 0;
+                gradeImpact(grade.id, grade.subjectId, subjects)?.difference ||
+                0;
               return diff > 0 ? `+${diff.toFixed(2)}` : `${diff.toFixed(2)}`;
             })()}
           </p>
         </DataCard>
-        {
-          gradeParents.map((parent) => (
-            <DataCard
-              key={parent.id}
-              title={`Impact sur la moyenne de ${parent.name}`}
-              description={`Visualisez l'impact de cette évaluation sur votre moyenne de la matière ${parent.name}`}
-              icon={ArrowUpCircleIcon}
-            >
-              <p className="text-4xl font-bold">
-                {(() => {
-                  const diff =
-                    gradeImpact(grade.id, parent.id, subjects)?.difference || 0;
-                  return diff > 0 ? `+${diff.toFixed(2)}` : `${diff.toFixed(2)}`;
-                })()}
-              </p>
-            </DataCard>
-          ))
-        }
+        {gradeParents.map((parent) => (
+          <DataCard
+            key={parent.id}
+            title={`Impact sur la moyenne de ${parent.name}`}
+            description={`Visualisez l'impact de cette évaluation sur votre moyenne de la matière ${parent.name}`}
+            icon={ArrowUpCircleIcon}
+          >
+            <p className="text-4xl font-bold">
+              {(() => {
+                const diff =
+                  gradeImpact(grade.id, parent.id, subjects)?.difference || 0;
+                return diff > 0 ? `+${diff.toFixed(2)}` : `${diff.toFixed(2)}`;
+              })()}
+            </p>
+          </DataCard>
+        ))}
         <DataCard
           title="Date de l'évaluation"
           description="La date de passage de cette évaluation"
-          icon={VariableIcon}
+          icon={CalendarIcon}
         >
           <p className="text-4xl font-bold">
             {new Intl.DateTimeFormat("fr-FR", {
@@ -166,7 +166,7 @@ export default function GradeWrapper({ gradeId }: { gradeId: string }) {
         <DataCard
           title="Date d'ajout"
           description="La date d'ajout de cette évaluation"
-          icon={VariableIcon}
+          icon={CalendarIcon}
         >
           <p className="text-4xl font-bold">
             {new Intl.DateTimeFormat("fr-FR", {
