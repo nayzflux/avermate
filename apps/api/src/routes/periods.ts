@@ -58,12 +58,14 @@ app.get("/", async (c) => {
 
   if (!session) throw new HTTPException(401);
 
-  const period = await db.query.periods.findMany({
+  const allPeriods = await db.query.periods.findMany({
       where: eq(periods.userId, session.user.id),
     orderBy: desc(periods.startAt),
   });
 
-    return c.json(period);
+  return c.json({
+    periods: allPeriods,
+    });
 });
 
 /**

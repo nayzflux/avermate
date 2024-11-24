@@ -35,8 +35,49 @@ export default function OverviewPage() {
     },
   });
 
+  const {
+    data: periods,
+    isError: periodsIsError,
+    isPending: periodsIsPending,
+  } = useQuery({
+    queryKey: ["periods"],
+    queryFn: async () => {
+      const res = await apiClient.get("periods");
+      const data = await res.json<{
+        periods: Period[];
+      }>();
+
+      // Add a "full year" period to the periods array
+      if (data.periods && data.periods.length > 0) {
+        data.periods.push({
+          id: "1",
+          name: "Full year",
+          startAt: data.periods[0].startAt,
+          endAt: data.periods[data.periods.length - 1].endAt,
+          createdAt: new Date(),
+          userId: "system",
+        });
+      } else {
+        // If there are no periods, create a "full year" period from the last 12 months
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 12);
+        data.periods.push({
+          id: "1",
+          name: "Full year",
+          startAt: startDate,
+          endAt: endDate,
+          createdAt: new Date(),
+          userId: "system",
+        });
+      }
+
+      return data.periods;
+    },
+  });
+
   // Loading State
-  if (isPending) {
+  if (isPending || periodsIsPending) {
     return <div>Loading...</div>;
   }
 
@@ -74,14 +115,15 @@ export default function OverviewPage() {
       ? ((averages[averages.length - 1] - averages[0]) / averages[0]) * 100
       : 0;
 
-
   const bestSubject = getBestMainSubject(subjects);
   const bestSubjectAverage = average(bestSubject?.id, subjects);
-  const bestSubjectAverageComparaison = getBestSubjectAverageComparaison(subjects);
+  const bestSubjectAverageComparaison =
+    getBestSubjectAverageComparaison(subjects);
   const worstSubject = getWorstMainSubject(subjects);
   const worstSubjectAverage = average(worstSubject?.id, subjects);
-  const worstSubjectAverageComparaison = getWorstSubjectAverageComparaison(subjects);
-  
+  const worstSubjectAverageComparaison =
+    getWorstSubjectAverageComparaison(subjects);
+
   const bestGrade = getBestGrade(subjects);
   const worstGrade = getWorstGrade(subjects);
 
@@ -98,294 +140,178 @@ export default function OverviewPage() {
       <Separator />
 
       {/* Statistiques */}
-      <Tabs defaultValue="1">
+      <Tabs
+        defaultValue={
+          // choose the period where we are currently in if it exists
+          periods.find(
+            (period) =>
+              new Date(period.startAt) <= new Date() &&
+              new Date(period.endAt) >= new Date()
+          )?.id || "1"
+        }
+      >
         <ScrollArea>
           <div className="w-full relative h-10">
             <TabsList className="flex absolute">
-              <TabsTrigger value="1">1st Trimester</TabsTrigger>
-              <TabsTrigger value="2">2nd Trimester</TabsTrigger>
-              <TabsTrigger value="3">3rd Trimester</TabsTrigger>
-              <TabsTrigger value="f">Full Year</TabsTrigger>
+              {periods &&
+                periods.length > 0 &&
+                //sort the periods by start date
+                periods
+                  .sort(
+                    (a, b) =>
+                      new Date(a.startAt).getTime() -
+                      new Date(b.startAt).getTime()
+                  )
+                  .map((period) => (
+                    <TabsTrigger key={period.id} value={period.id}>
+                      {period.name}
+                    </TabsTrigger>
+                  ))}
             </TabsList>
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
 
-        <TabsContent value="1">
-          <div className="grid grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
-            <DataCard
-              title="Overall average"
-              icon={BoxIcon}
-              description={
-                growth > 0
-                  ? `+${growth.toFixed(2)}% since the beginning`
-                  : growth < 0
-                  ? `${growth.toFixed(2)}% since the beginning`
-                  : "No growth since the beginning"
-              }
-            >
-              <GradeValue
-                value={
-                  average(undefined, subjects) !== null
-                    ? (
-                        Number(average(undefined, subjects)?.toFixed(2)) * 100
-                      ).toString()
-                    : "—"
-                }
-                outOf={2000}
-                size="xl"
-              />
-            </DataCard>
+        {periods &&
+          periods.length > 0 &&
+          periods
+            .sort(
+              (a, b) =>
+                new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+            )
+            .map((period) => (
+              <TabsContent key={period.id} value={period.id}>
+                <div className="grid grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
+                  <DataCard
+                    title="Overall average"
+                    icon={BoxIcon}
+                    description={
+                      growth > 0
+                        ? `+${growth.toFixed(2)}% since the beginning`
+                        : growth < 0
+                        ? `${growth.toFixed(2)}% since the beginning`
+                        : "No growth since the beginning"
+                    }
+                  >
+                    <GradeValue
+                      value={
+                        average(undefined, subjects) !== null
+                          ? (
+                              Number(average(undefined, subjects)?.toFixed(2)) *
+                              100
+                            ).toString()
+                          : "—"
+                      }
+                      outOf={2000}
+                      size="xl"
+                    />
+                  </DataCard>
 
-            <DataCard
-              title="Best grade"
-              icon={BoxIcon}
-              description={
-                bestGrade !== null
-                  ? `In ${bestGrade?.subject?.name} ? Impressive ! (${bestGrade?.name})`
-                  : "No best grade"
-              }
-            >
-              <GradeValue
-                value={
-                  bestGrade !== null ? Number(bestGrade?.grade).toString() : "—"
-                }
-                outOf={
-                  bestGrade !== null ? Number(bestGrade?.outOf).toString() : "—"
-                }
-                size="xl"
-              />
-            </DataCard>
+                  <DataCard
+                    title="Best grade"
+                    icon={BoxIcon}
+                    description={
+                      bestGrade !== null
+                        ? `In ${bestGrade?.subject?.name} ? Impressive ! (${bestGrade?.name})`
+                        : "No best grade"
+                    }
+                  >
+                    <GradeValue
+                      value={
+                        bestGrade !== null
+                          ? Number(bestGrade?.grade).toString()
+                          : "—"
+                      }
+                      outOf={
+                        bestGrade !== null
+                          ? Number(bestGrade?.outOf).toString()
+                          : "—"
+                      }
+                      size="xl"
+                    />
+                  </DataCard>
 
-            <DataCard
-              title="Best subject"
-              icon={BoxIcon}
-              description={
-                bestSubjectAverage !== null
-                  ? `${bestSubject?.name} is ${
-                      bestSubjectAverageComparaison.toFixed(2) || "—"
-                    }% higher than other subjects`
-                  : "No best subject"
-              }
-            >
-              <GradeValue
-                value={
-                  bestSubjectAverage !== null
-                    ? (Number(bestSubjectAverage?.toFixed(2)) * 100).toString()
-                    : "—"
-                }
-                outOf={2000}
-                size="xl"
-              />
-            </DataCard>
+                  <DataCard
+                    title="Best subject"
+                    icon={BoxIcon}
+                    description={
+                      bestSubjectAverage !== null
+                        ? `${bestSubject?.name} is ${
+                            bestSubjectAverageComparaison.toFixed(2) || "—"
+                          }% higher than other subjects`
+                        : "No best subject"
+                    }
+                  >
+                    <GradeValue
+                      value={
+                        bestSubjectAverage !== null
+                          ? (
+                              Number(bestSubjectAverage?.toFixed(2)) * 100
+                            ).toString()
+                          : "—"
+                      }
+                      outOf={2000}
+                      size="xl"
+                    />
+                  </DataCard>
 
-            <DataCard
-              title="Worst Grade"
-              icon={BoxIcon}
-              description={
-                worstGrade !== null
-                  ? `In ${worstGrade?.subject?.name} ? Yep that’s bad (${worstGrade?.name})`
-                  : "No worst grade"
-              }
-            >
-              <GradeValue
-                value={
-                  worstGrade !== null
-                    ? Number(worstGrade?.grade).toString()
-                    : "—"
-                }
-                outOf={
-                  worstGrade !== null
-                    ? Number(worstGrade?.outOf).toString()
-                    : "—"
-                }
-                size="xl"
-              />
-            </DataCard>
-            <DataCard
-              title="Worst subject"
-              icon={BoxIcon}
-              description={
-                worstSubjectAverage !== null
-                  ? `${worstSubject?.name} is ${
-                      worstSubjectAverageComparaison.toFixed(2) || "—"
-                    }% lower than other subjects`
-                  : "No worst subject"
-              }
-            >
-              <GradeValue
-                value={
-                  worstSubjectAverage !== null
-                    ? (Number(worstSubjectAverage?.toFixed(2)) * 100).toString()
-                    : "—"
-                }
-                outOf={2000}
-                size="xl"
-              />
-            </DataCard>
-          </div>
+                  <DataCard
+                    title="Worst Grade"
+                    icon={BoxIcon}
+                    description={
+                      worstGrade !== null
+                        ? `In ${worstGrade?.subject?.name} ? Yep that’s bad (${worstGrade?.name})`
+                        : "No worst grade"
+                    }
+                  >
+                    <GradeValue
+                      value={
+                        worstGrade !== null
+                          ? Number(worstGrade?.grade).toString()
+                          : "—"
+                      }
+                      outOf={
+                        worstGrade !== null
+                          ? Number(worstGrade?.outOf).toString()
+                          : "—"
+                      }
+                      size="xl"
+                    />
+                  </DataCard>
+                  <DataCard
+                    title="Worst subject"
+                    icon={BoxIcon}
+                    description={
+                      worstSubjectAverage !== null
+                        ? `${worstSubject?.name} is ${
+                            worstSubjectAverageComparaison.toFixed(2) || "—"
+                          }% lower than other subjects`
+                        : "No worst subject"
+                    }
+                  >
+                    <GradeValue
+                      value={
+                        worstSubjectAverage !== null
+                          ? (
+                              Number(worstSubjectAverage?.toFixed(2)) * 100
+                            ).toString()
+                          : "—"
+                      }
+                      outOf={2000}
+                      size="xl"
+                    />
+                  </DataCard>
+                </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
-            {/* Evolution de la moyenne générale */}
-            <GlobalAverageChart />
+                <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
+                  {/* Evolution de la moyenne générale */}
+                  <GlobalAverageChart />
 
-            {/* Dernières notes */}
-            <RecentGradesCard />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="2">
-          <div className="grid grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
-            <DataCard
-              title="Overall average"
-              icon={BoxIcon}
-              description="+7% since the beginning"
-            >
-              <GradeValue value={1535} outOf={2000} size="xl" />
-            </DataCard>
-
-            <DataCard
-              title="Best grade"
-              icon={BoxIcon}
-              description="In maths, impressive !"
-            >
-              <GradeValue value={2000} outOf={2000} size="xl" />
-            </DataCard>
-
-            <DataCard
-              title="Best subject"
-              icon={BoxIcon}
-              description="English is 5% higher than other subjects"
-            >
-              <GradeValue value={1535} outOf={2000} size="xl" />
-            </DataCard>
-
-            <DataCard
-              title="Worst Grade"
-              icon={BoxIcon}
-              description="In SI, Yep that’s bad"
-            >
-              <GradeValue value={200} outOf={2000} size="xl" />
-            </DataCard>
-            <DataCard
-              title="Worst subject"
-              icon={BoxIcon}
-              description="SI is 50% lower than other subjects"
-            >
-              <GradeValue value={875} outOf={2000} size="xl" />
-            </DataCard>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
-            {/* Evolution de la moyenne générale */}
-            <GlobalAverageChart />
-
-            {/* Dernières notes */}
-            <RecentGradesCard />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="3">
-          <div className="grid grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
-            <DataCard
-              title="Overall average"
-              icon={BoxIcon}
-              description="+7% since the beginning"
-            >
-              <GradeValue value={1535} outOf={2000} size="xl" />
-            </DataCard>
-
-            <DataCard
-              title="Best grade"
-              icon={BoxIcon}
-              description="In maths, impressive !"
-            >
-              <GradeValue value={2000} outOf={2000} size="xl" />
-            </DataCard>
-
-            <DataCard
-              title="Best subject"
-              icon={BoxIcon}
-              description="English is 5% higher than other subjects"
-            >
-              <GradeValue value={1535} outOf={2000} size="xl" />
-            </DataCard>
-
-            <DataCard
-              title="Worst Grade"
-              icon={BoxIcon}
-              description="In SI, Yep that’s bad"
-            >
-              <GradeValue value={200} outOf={2000} size="xl" />
-            </DataCard>
-            <DataCard
-              title="Worst subject"
-              icon={BoxIcon}
-              description="SI is 50% lower than other subjects"
-            >
-              <GradeValue value={875} outOf={2000} size="xl" />
-            </DataCard>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
-            {/* Evolution de la moyenne générale */}
-            <GlobalAverageChart />
-
-            {/* Dernières notes */}
-            <RecentGradesCard />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="f">
-          <div className="grid grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
-            <DataCard
-              title="Overall average"
-              icon={BoxIcon}
-              description="+7% since the beginning"
-            >
-              <GradeValue value={1535} outOf={2000} size="xl" />
-            </DataCard>
-
-            <DataCard
-              title="Best grade"
-              icon={BoxIcon}
-              description="In maths, impressive !"
-            >
-              <GradeValue value={2000} outOf={2000} size="xl" />
-            </DataCard>
-
-            <DataCard
-              title="Best subject"
-              icon={BoxIcon}
-              description="English is 5% higher than other subjects"
-            >
-              <GradeValue value={1535} outOf={2000} size="xl" />
-            </DataCard>
-
-            <DataCard
-              title="Worst Grade"
-              icon={BoxIcon}
-              description="In SI, Yep that’s bad"
-            >
-              <GradeValue value={200} outOf={2000} size="xl" />
-            </DataCard>
-            <DataCard
-              title="Worst subject"
-              icon={BoxIcon}
-              description="SI is 50% lower than other subjects"
-            >
-              <GradeValue value={875} outOf={2000} size="xl" />
-            </DataCard>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
-            {/* Evolution de la moyenne générale */}
-            <GlobalAverageChart />
-
-            {/* Dernières notes */}
-            <RecentGradesCard />
-          </div>
-        </TabsContent>
+                  {/* Dernières notes */}
+                  <RecentGradesCard />
+                </div>
+              </TabsContent>
+            ))}
       </Tabs>
     </main>
   );

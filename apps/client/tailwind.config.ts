@@ -8,7 +8,7 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {
+    extend: { 
       screens: {
         "xs": "375px",
         "3xl": "1920px",
@@ -73,6 +73,11 @@ const config: Config = {
           },
         },
       },
+    },
+  },
+  variants: {
+    extend: {
+      backgroundColor: ["last"],
     },
   },
   plugins: [require("tailwindcss-animate")],
