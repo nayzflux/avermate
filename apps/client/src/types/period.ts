@@ -1,8 +1,8 @@
 export type Period = {
-    name: string;
-    startAt: Date;
-    endAt: Date;
-    id: string;
-    createdAt: Date;
-    userId: string;
-    };
+  name: string;
+  startAt: string;
+  endAt: string;
+  id: string;
+  createdAt: string;
+  userId: string;
+};
