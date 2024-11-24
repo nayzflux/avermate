@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,22 +10,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-import { apiClient } from "@/lib/api";
-import { Period } from "@/types/period";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2Icon, CalendarIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Calendar } from "../ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useToast } from "@/hooks/use-toast";
+import { apiClient } from "@/lib/api";
+import { Period } from "@/types/period";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format, isBefore, isWithinInterval, startOfDay } from "date-fns";
-import { Subject } from "@/types/subject";
+import { CalendarIcon, Loader2Icon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Calendar } from "../ui/calendar";
 
 const addPeriodSchema = z.object({
   name: z.string().min(1).max(64),
@@ -53,41 +51,15 @@ const addPeriodSchema = z.object({
 
 type AddPeriodSchema = z.infer<typeof addPeriodSchema>;
 
-export const AddPeriodForm = ({ close }: { close: () => void }) => {
+export const AddPeriodForm = ({
+  close,
+  periods,
+}: {
+  close: () => void;
+  periods: Period[];
+}) => {
   const toaster = useToast();
   const queryClient = useQueryClient();
-
-  // Fetch existing periods to prevent overlapping
-  const {
-    data: periods,
-    isError,
-    isPending: isPeriodPending,
-  } = useQuery({
-    queryKey: ["periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("periods");
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch periods");
-      }
-
-      const data = await res.json<{ periods: Period[] }>();
-
-      if (!data || !data.periods) {
-        return [];
-      }
-
-      // Parse and normalize dates
-      const periods = data.periods.map((period) => ({
-        ...period,
-        startAt: startOfDay(new Date(period.startAt)),
-        endAt: startOfDay(new Date(period.endAt)),
-      }));
-
-      return periods;
-    },
-    initialData: [],
-  });
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["create-Period"],
@@ -100,9 +72,9 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
         },
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to create period");
-      }
+      // if (!res.ok) {
+      //   throw new Error("Failed to create period");
+      // }
 
       const data = await res.json();
       return data;
@@ -114,11 +86,11 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
           "Vous pouvez maintenant organiser vos activités dans cette période.",
       });
 
-      close();
-
       queryClient.invalidateQueries({
         queryKey: ["periods"],
       });
+
+      close();
     },
 
     onError: (err) => {
@@ -148,22 +120,27 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
     const normalizedStartAt = startOfDay(startAt);
     const normalizedEndAt = startOfDay(endAt);
 
-    const overlappingPeriod = periods.find(
-      (period) =>
+    const overlappingPeriod = periods.find((period) => {
+      const normalizedPeriodStartAt = startOfDay(period.startAt);
+      const normalizedPeriodEndAt = startOfDay(period.endAt);
+
+      return (
         isWithinInterval(normalizedStartAt, {
-          start: period.startAt,
-          end: period.endAt,
+          start: normalizedPeriodStartAt,
+          end: normalizedPeriodEndAt,
         }) ||
         isWithinInterval(normalizedEndAt, {
-          start: period.startAt,
-          end: period.endAt,
+          start: normalizedPeriodStartAt,
+          end: normalizedPeriodEndAt,
         }) ||
-        (period.startAt >= normalizedStartAt && period.endAt <= normalizedEndAt)
-    );
+        (normalizedPeriodStartAt >= normalizedStartAt &&
+          normalizedPeriodEndAt <= normalizedEndAt)
+      );
+    });
 
     if (overlappingPeriod) {
       toaster.toast({
-        title: "Conflit de période",
+        title: "Les périodes se chevauchent",
         variant: "destructive",
       });
       return;
@@ -238,8 +215,8 @@ export const AddPeriodForm = ({ close }: { close: () => void }) => {
                           onSelect={field.onChange}
                           numberOfMonths={3}
                           disabled={periods.map((period) => ({
-                            from: period.startAt,
-                            to: period.endAt,
+                            from: startOfDay(period.startAt),
+                            to: startOfDay(period.endAt),
                           }))}
                         />
                       </PopoverContent>

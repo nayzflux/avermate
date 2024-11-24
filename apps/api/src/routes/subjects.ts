@@ -51,7 +51,7 @@ app.post("/", zValidator("json", createSubjectSchema), async (c) => {
       coefficient,
       parentId,
       depth,
-      isMainSubject: false,
+      isMainSubject: isMainSubject,
       createdAt: new Date(),
       userId: session.user.id,
     })
