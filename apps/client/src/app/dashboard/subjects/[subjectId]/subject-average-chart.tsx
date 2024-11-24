@@ -6,21 +6,21 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import {
-  Area, LineChart, CartesianGrid, XAxis, 
-  YAxis, Line
- } from "recharts";
 import { apiClient } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
 import { Subject } from "@/types/subject";
 import { averageOverTime, getChildren } from "@/utils/average";
+import { useQuery } from "@tanstack/react-query";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
-export default function SubjectAverageChart({ subjectId }: { subjectId: string }) {
+export default function SubjectAverageChart({
+  subjectId,
+}: {
+  subjectId: string;
+}) {
   const {
     data: subjects,
     isError,
@@ -33,7 +33,6 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
       return data.subjects;
     },
   });
-
 
   if (isPending) {
     return (
@@ -91,9 +90,13 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
 
   const mainSubject = subjects.find((subject) => subject.id === subjectId);
 
-  let childrensObjects = subjects.filter((subject) => childrensId.includes(subject.id));
+  let childrensObjects = subjects.filter((subject) =>
+    childrensId.includes(subject.id)
+  );
   //filter the childrens objects by only the childrens having a depth of 1 superior of the main subject
-  childrensObjects = childrensObjects.filter((child) => child.depth === mainSubject.depth + 1);
+  childrensObjects = childrensObjects.filter(
+    (child) => child.depth === mainSubject.depth + 1
+  );
 
   const childrenAverage = childrensObjects.map((child) => {
     return {
@@ -108,7 +111,9 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
   const chartData = dates.map((date, index) => ({
     date: date.toISOString(),
     average: averages[index],
-    ...Object.fromEntries(childrenAverage.map((child) => [child.id, child.average[index]])),
+    ...Object.fromEntries(
+      childrenAverage.map((child) => [child.id, child.average[index]])
+    ),
   }));
 
   const chartConfig = {

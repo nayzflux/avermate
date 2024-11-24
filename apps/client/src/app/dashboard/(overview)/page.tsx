@@ -29,12 +29,15 @@ import {
   PlusIcon,
 } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
 
 /**
  * Vue d'ensemble des notes
  */
 export default function OverviewPage() {
   const { data: session } = authClient.useSession();
+
+  const [defaultPeriod, setDefaultPeriod] = useState("full-year");
 
   // Fetch subjects lists with grades from API
   const {
@@ -60,6 +63,7 @@ export default function OverviewPage() {
     queryFn: async () => {
       const res = await apiClient.get("periods");
       const data = await res.json<GetPeriodsResponse>();
+      const periods = data.periods;
 
       // // Add a "full year" period to the periods array
       // if (data.periods && data.periods.length > 0) {
@@ -90,6 +94,108 @@ export default function OverviewPage() {
     },
   });
 
+  useEffect(() => {
+    // Choose default period, the period where we are currently in if it exists or choose full year
+    const defaultPeriod =
+      periods?.find(
+        (period) =>
+          new Date(period.startAt) <= new Date() &&
+          new Date(period.endAt) >= new Date()
+      )?.id || "full-year";
+
+    setDefaultPeriod(defaultPeriod);
+  }, [periods]);
+
+  const averages = useMemo(() => {
+    if (isPending || isError) {
+      return [];
+    }
+
+    console.time("Calculating averages overtime");
+
+    // Calculate the start and end dates
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - 3);
+
+    // Generate an array of dates
+    const dates = [];
+    for (
+      let dt = new Date(startDate);
+      dt <= endDate;
+      dt.setDate(dt.getDate() + 1)
+    ) {
+      dates.push(new Date(dt));
+    }
+
+    // Calculate the average grades over time
+    const averages = averageOverTime(subjects, undefined, dates);
+
+    console.timeEnd("Calculating averages overtime");
+
+    return averages;
+  }, [subjects]);
+
+  // Calculate the growth of the average over time
+  const growth = useMemo(() => {
+    const growth =
+      averages.length > 1
+        ? ((averages[averages.length - 1] - averages[0]) / averages[0]) * 100
+        : 0;
+
+    return growth;
+  }, [averages]);
+
+  // Calculate the best and worst subjects and grades
+  const {
+    bestSubject,
+    bestSubjectAverage,
+    bestSubjectAverageComparaison,
+    worstSubject,
+    worstSubjectAverage,
+    worstSubjectAverageComparaison,
+    bestGrade,
+    worstGrade,
+  } = useMemo(() => {
+    if (isPending || isError) {
+      return {
+        bestSubject: null,
+        bestSubjectAverage: null,
+        bestSubjectAverageComparaison: null,
+        worstSubject: null,
+        worstSubjectAverage: null,
+        worstSubjectAverageComparaison: null,
+        bestGrade: null,
+        worstGrade: null,
+      };
+    }
+
+    //calculate the percentage of growth of the average between the first and last date
+    const bestSubject = getBestMainSubject(subjects);
+    const bestSubjectAverage = average(bestSubject?.id, subjects);
+    const bestSubjectAverageComparaison =
+      getBestSubjectAverageComparaison(subjects);
+
+    const worstSubject = getWorstMainSubject(subjects);
+    const worstSubjectAverage = average(worstSubject?.id, subjects);
+    const worstSubjectAverageComparaison =
+      getWorstSubjectAverageComparaison(subjects);
+
+    const bestGrade = getBestGrade(subjects);
+    const worstGrade = getWorstGrade(subjects);
+
+    return {
+      bestSubject,
+      bestSubjectAverage,
+      bestSubjectAverageComparaison,
+      worstSubject,
+      worstSubjectAverage,
+      worstSubjectAverageComparaison,
+      bestGrade,
+      worstGrade,
+    };
+  }, [subjects]);
+
   // Loading State
   if (isPending || periodsIsPending) {
     return <div>Loading...</div>;
@@ -105,42 +211,6 @@ export default function OverviewPage() {
     );
   }
 
-  // Calculate the start and end dates
-  const endDate = new Date();
-  const startDate = new Date();
-  startDate.setMonth(startDate.getMonth() - 3);
-
-  // Generate an array of dates
-  const dates = [];
-  for (
-    let dt = new Date(startDate);
-    dt <= endDate;
-    dt.setDate(dt.getDate() + 1)
-  ) {
-    dates.push(new Date(dt));
-  }
-
-  // Calculate the average grades over time
-  const averages = averageOverTime(subjects, undefined, dates);
-
-  //calculate the percentage of growth of the average between the first and last date
-  const growth =
-    averages.length > 1
-      ? ((averages[averages.length - 1] - averages[0]) / averages[0]) * 100
-      : 0;
-
-  const bestSubject = getBestMainSubject(subjects);
-  const bestSubjectAverage = average(bestSubject?.id, subjects);
-  const bestSubjectAverageComparaison =
-    getBestSubjectAverageComparaison(subjects);
-  const worstSubject = getWorstMainSubject(subjects);
-  const worstSubjectAverage = average(worstSubject?.id, subjects);
-  const worstSubjectAverageComparaison =
-    getWorstSubjectAverageComparaison(subjects);
-
-  const bestGrade = getBestGrade(subjects);
-  const worstGrade = getWorstGrade(subjects);
-
   return (
     <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
       <div className="flex flex-wrap items-center justify-between">
@@ -154,16 +224,7 @@ export default function OverviewPage() {
       <Separator />
 
       {/* Statistiques */}
-      <Tabs
-        defaultValue={
-          // choose the period where we are currently in if it exists
-          periods.find(
-            (period) =>
-              new Date(period.startAt) <= new Date() &&
-              new Date(period.endAt) >= new Date()
-          )?.id || "1"
-        }
-      >
+      <Tabs defaultValue={defaultPeriod}>
         <div className="flex flex-col gap-4">
           <ScrollArea>
             <div className="flex w-full">
@@ -203,15 +264,7 @@ export default function OverviewPage() {
                       }
                     >
                       <GradeValue
-                        value={
-                          average(undefined, subjects) !== null
-                            ? (
-                                Number(
-                                  average(undefined, subjects)?.toFixed(2)
-                                ) * 100
-                              ).toString()
-                            : "—"
-                        }
+                        value={average(undefined, subjects) || 0}
                         outOf={2000}
                         size="xl"
                       />
@@ -226,19 +279,13 @@ export default function OverviewPage() {
                           : "No best grade"
                       }
                     >
-                      <GradeValue
-                        value={
-                          bestGrade !== null
-                            ? Number(bestGrade?.grade).toString()
-                            : "—"
-                        }
-                        outOf={
-                          bestGrade !== null
-                            ? Number(bestGrade?.outOf).toString()
-                            : "—"
-                        }
-                        size="xl"
-                      />
+                      {bestGrade && (
+                        <GradeValue
+                          value={bestGrade.grade}
+                          outOf={bestGrade.outOf}
+                          size="xl"
+                        />
+                      )}
                     </DataCard>
 
                     <DataCard
@@ -252,17 +299,13 @@ export default function OverviewPage() {
                           : "No best subject"
                       }
                     >
-                      <GradeValue
-                        value={
-                          bestSubjectAverage !== null
-                            ? (
-                                Number(bestSubjectAverage?.toFixed(2)) * 100
-                              ).toString()
-                            : "—"
-                        }
-                        outOf={2000}
-                        size="xl"
-                      />
+                      {bestSubjectAverage && (
+                        <GradeValue
+                          value={bestSubjectAverage}
+                          outOf={2000}
+                          size="xl"
+                        />
+                      )}
                     </DataCard>
 
                     <DataCard
@@ -274,19 +317,13 @@ export default function OverviewPage() {
                           : "No worst grade"
                       }
                     >
-                      <GradeValue
-                        value={
-                          worstGrade !== null
-                            ? Number(worstGrade?.grade.toFixed(2)).toString()
-                            : "—"
-                        }
-                        outOf={
-                          worstGrade !== null
-                            ? Number(worstGrade?.outOf).toString()
-                            : "—"
-                        }
-                        size="xl"
-                      />
+                      {worstGrade && (
+                        <GradeValue
+                          value={worstGrade.grade}
+                          outOf={worstGrade.outOf}
+                          size="xl"
+                        />
+                      )}
                     </DataCard>
                     <DataCard
                       title="Worst subject"
@@ -299,17 +336,13 @@ export default function OverviewPage() {
                           : "No worst subject"
                       }
                     >
-                      <GradeValue
-                        value={
-                          worstSubjectAverage !== null
-                            ? (
-                                Number(worstSubjectAverage?.toFixed(2)) * 100
-                              ).toString()
-                            : "—"
-                        }
-                        outOf={2000}
-                        size="xl"
-                      />
+                      {worstSubjectAverage && (
+                        <GradeValue
+                          value={worstSubjectAverage}
+                          outOf={2000}
+                          size="xl"
+                        />
+                      )}
                     </DataCard>
                   </div>
 

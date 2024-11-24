@@ -1,18 +1,17 @@
 "use client";
 
-import MoreButton from "@/components/buttons/dashboard/more-button";
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
 import GradesTable from "@/components/tables/grades-table";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useQuery } from "@tanstack/react-query";
-import { Period } from "@/types/period";
 import { apiClient } from "@/lib/api";
+import { Period } from "@/types/period";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { useQuery } from "@tanstack/react-query";
 
 export default function GradesPage() {
   const {
@@ -60,6 +59,7 @@ export default function GradesPage() {
   if (periodsIsPending) {
     return <div>Loading...</div>;
   }
+
   return (
     <main className="flex flex-col gap-8">
       <div className="flex gap-2 md:gap-16 justify-between items-center">
@@ -127,7 +127,7 @@ export default function GradesPage() {
             )
             .map((period) => (
               <TabsContent key={period.id} value={period.id}>
-  <GradesTable />
+                <GradesTable />
               </TabsContent>
             ))}
       </Tabs>
