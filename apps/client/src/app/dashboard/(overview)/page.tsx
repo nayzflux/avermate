@@ -29,7 +29,7 @@ import {
   PlusIcon,
 } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 /**
  * Vue d'ensemble des notes
@@ -94,17 +94,14 @@ export default function OverviewPage() {
     },
   });
 
-  useEffect(() => {
-    // Choose default period, the period where we are currently in if it exists or choose full year
-    const defaultPeriod =
-      periods?.find(
-        (period) =>
-          new Date(period.startAt) <= new Date() &&
-          new Date(period.endAt) >= new Date()
-      )?.id || "full-year";
+  // useEffect(() => {
+  //   // Choose default period, the period where we are currently in if it exists or choose full year
+  //   const defaultPeriod = periods?.[0]?.id || "full-year";
 
-    setDefaultPeriod(defaultPeriod);
-  }, [periods]);
+  //   console.log("defaultPeriod", defaultPeriod);
+
+  //   setDefaultPeriod(defaultPeriod);
+  // }, [periods]);
 
   const averages = useMemo(() => {
     if (isPending || isError) {
@@ -224,7 +221,7 @@ export default function OverviewPage() {
       <Separator />
 
       {/* Statistiques */}
-      <Tabs defaultValue={defaultPeriod}>
+      <Tabs defaultValue={periods?.[0]?.id || "full-year"}>
         <div className="flex flex-col gap-4">
           <ScrollArea>
             <div className="flex w-full">
@@ -264,7 +261,7 @@ export default function OverviewPage() {
                       }
                     >
                       <GradeValue
-                        value={average(undefined, subjects) || 0}
+                        value={(average(undefined, subjects) || 0) * 100}
                         outOf={2000}
                         size="xl"
                       />
@@ -301,7 +298,7 @@ export default function OverviewPage() {
                     >
                       {bestSubjectAverage && (
                         <GradeValue
-                          value={bestSubjectAverage}
+                          value={bestSubjectAverage * 100}
                           outOf={2000}
                           size="xl"
                         />
@@ -338,7 +335,7 @@ export default function OverviewPage() {
                     >
                       {worstSubjectAverage && (
                         <GradeValue
-                          value={worstSubjectAverage}
+                          value={worstSubjectAverage * 100}
                           outOf={2000}
                           size="xl"
                         />
