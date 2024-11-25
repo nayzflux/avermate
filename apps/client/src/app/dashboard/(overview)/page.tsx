@@ -12,7 +12,7 @@ import { BoxIcon } from "@radix-ui/react-icons";
 import { apiClient } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { Subject } from "@/types/subject";
-import { average, averageOverTime, getBestMainSubject, getWorstMainSubject, getBestSubjectAverageComparaison, getWorstSubjectAverageComparaison, getBestGrade, getWorstSubjects, getWorstGrade } from "@/utils/average";
+import { average, averageOverTime, getBestSubject, getWorstSubject, getBestGrade, getWorstGrade, getSubjectAverageComparison } from "@/utils/average";
 import { 
   PlusIcon,
   AcademicCapIcon,
@@ -123,14 +123,12 @@ export default function OverviewPage() {
       ? ((averages[averages.length - 1] - averages[0]) / averages[0]) * 100
       : 0;
 
-  const bestSubject = getBestMainSubject(subjects);
+  const bestSubject = getBestSubject(subjects, true);
   const bestSubjectAverage = average(bestSubject?.id, subjects);
-  const bestSubjectAverageComparaison =
-    getBestSubjectAverageComparaison(subjects);
-  const worstSubject = getWorstMainSubject(subjects);
+  const bestSubjectAverageComparaison = getSubjectAverageComparison(subjects, bestSubject?.id, true)?.percentageChange;
+  const worstSubject = getWorstSubject(subjects, true);
   const worstSubjectAverage = average(worstSubject?.id, subjects);
-  const worstSubjectAverageComparaison =
-    getWorstSubjectAverageComparaison(subjects);
+  const worstSubjectAverageComparaison = getSubjectAverageComparison(subjects, worstSubject?.id, true)?.percentageChange;
 
   const bestGrade = getBestGrade(subjects);
   const worstGrade = getWorstGrade(subjects);

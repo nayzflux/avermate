@@ -21,6 +21,7 @@ import SubjectAverageChart from "./subject-average-chart";
 import {
   average,
   getBestGradeInSubject,
+  getWorstGradeInSubject,
   subjectImpact,
   getChildren,
 } from "@/utils/average";
@@ -119,12 +120,21 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
         </DataCard>
 
         {/* Best grade */}
-        <DataCard
-          title="Meilleure note"
-          description={`Votre plus belle performance en ${data?.name}`}
-          icon={SparklesIcon}
-        >
-          {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
+        {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
+          <DataCard
+            title="Meilleure note"
+            description={`Votre plus belle performance en ${
+              (() => {
+                const bestGradeObj = getBestGradeInSubject(subjects, subjectId);
+                if (bestGradeObj && bestGradeObj.grade !== undefined) {
+                  return bestGradeObj.subject.name;
+                } else {
+                  return "N/A";
+                }
+              })()
+            }`}
+            icon={SparklesIcon}
+          >
             <p className="text-3xl font-bold">
               {(() => {
                 const bestGradeObj = getBestGradeInSubject(subjects, subjectId);
@@ -135,8 +145,38 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
                 }
               })()}
             </p>
-          )}
-        </DataCard>
+          </DataCard>
+        )}
+
+        {/* Worst grade */}{!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
+        <DataCard
+          title="Pire note"
+          description={`Votre moins bonne performance en ${(() => {
+            const worstGradeObj = getWorstGradeInSubject(subjects, subjectId);
+            if (worstGradeObj && worstGradeObj.grade !== undefined) {
+              return worstGradeObj.subject.name;
+            } else {
+              return "N/A";
+            }
+          })()}`}
+          icon={SparklesIcon}
+        >
+          
+            <p className="text-3xl font-bold">
+              {(() => {
+                const worstGradeObj = getWorstGradeInSubject(
+                  subjects,
+                  subjectId
+                );
+                if (worstGradeObj && worstGradeObj.grade !== undefined) {
+                  return worstGradeObj.grade / 100;
+                } else {
+                  return "N/A";
+                }
+              })()}
+            </p>
+          
+        </DataCard>)}
       </div>
 
       <Separator />
