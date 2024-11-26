@@ -1,16 +1,16 @@
 import { PartialSubject } from "./subject";
 
 export type Grade = {
-    name: string;
-    outOf: number;
-    value: number;
-    coefficient: number;
-    passedAt: Date;
-    subjectId: string;
-    id: string;
-    createdAt: Date;
-    userId: string;
-    subject: PartialSubject;
-}
+  name: string;
+  outOf: number;
+  value: number;
+  coefficient: number;
+  passedAt: string;
+  subjectId: string;
+  id: string;
+  createdAt: string;
+  userId: string;
+  subject: PartialSubject;
+};
 
 export type PartialGrade = Omit<Grade, "subject">;

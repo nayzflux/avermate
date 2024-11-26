@@ -1,26 +1,31 @@
 "use client";
 
+import GradeMoreButton from "@/components/buttons/dashboard/grade/grade-more-button";
 import DataCard from "@/components/dashboard/data-card";
 import GradeValue from "@/components/dashboard/grade-value";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
 import { apiClient } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
 import { Grade } from "@/types/grade";
+import { Subject } from "@/types/subject";
 import { getParents, gradeImpact } from "@/utils/average";
 import {
   AcademicCapIcon,
   ArrowLeftIcon,
   ArrowUpCircleIcon,
+  CalendarIcon,
   SparklesIcon,
   VariableIcon,
-  CalendarIcon,
 } from "@heroicons/react/24/outline";
-import { Subject } from "@/types/subject";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 
 export default function GradeWrapper({ gradeId }: { gradeId: string }) {
-  const { data: grade, isPending, isError } = useQuery({
+  const {
+    data: grade,
+    isPending,
+    isError,
+  } = useQuery({
     queryKey: ["grades", gradeId],
     queryFn: async () => {
       const res = await apiClient.get(`grades/${gradeId}`);
@@ -42,7 +47,6 @@ export default function GradeWrapper({ gradeId }: { gradeId: string }) {
     },
   });
 
-
   if (isPending) {
     return (
       <div>
@@ -60,8 +64,10 @@ export default function GradeWrapper({ gradeId }: { gradeId: string }) {
   }
 
   const gradeParentsId = getParents(subjects, grade.subject.id);
-  
-  const gradeParents = subjects.filter((subject) => gradeParentsId.includes(subject.id));
+
+  const gradeParents = subjects.filter((subject) =>
+    gradeParentsId.includes(subject.id)
+  );
 
   console.log(gradeParents);
 
@@ -76,8 +82,10 @@ export default function GradeWrapper({ gradeId }: { gradeId: string }) {
         </Button>
       </div>
 
-      <div>
+      <div className="flex justify-between items-center">
         <p className="text-2xl font-semibold">{grade.name}</p>
+
+        <GradeMoreButton gradeId={gradeId} />
       </div>
 
       <Separator />

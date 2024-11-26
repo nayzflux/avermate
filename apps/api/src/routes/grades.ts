@@ -158,6 +158,8 @@ const updateGradeBodySchema = z.object({
     .max(1000 * 10)
     .transform((f) => Math.round(f * 100))
     .optional(),
+  passedAt: z.coerce.date().max(new Date()).optional(),
+  subjectId: z.string().min(1).max(64).optional(),
 });
 
 const updateGradeParamSchema = z.object({
