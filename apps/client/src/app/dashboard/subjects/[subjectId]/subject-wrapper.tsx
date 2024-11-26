@@ -92,12 +92,6 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
         >
           {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
             <p className="text-3xl font-bold">
-              {/* {(() => {
-                const diff =
-                  subjectImpact(subjectId, subjects)?.difference?.toFixed(2) ||
-                  0;
-                return diff >= 0 ? `+${diff}` : `${diff}`;
-              })()} */}
               {formatDiff(subjectImpact(subjectId, subjects)?.difference || 0)}
             </p>
           )}
