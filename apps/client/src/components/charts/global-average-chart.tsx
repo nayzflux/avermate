@@ -227,6 +227,7 @@ export default function GlobalAverageChart() {
                   tickCount={5}
                 />
                 <ChartTooltip
+                  filterNull={false}
                   cursor={false}
                   content={<ChartTooltipContent />}
                   labelFormatter={(value) =>
