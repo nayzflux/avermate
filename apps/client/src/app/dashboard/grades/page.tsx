@@ -26,30 +26,30 @@ export default function GradesPage() {
         periods: Period[];
       }>();
 
-      // Add a "full year" period to the periods array
-      if (data.periods && data.periods.length > 0) {
-        data.periods.push({
-          id: "1",
-          name: "Full year",
-          startAt: data.periods[0].startAt,
-          endAt: data.periods[data.periods.length - 1].endAt,
-          createdAt: new Date(),
-          userId: "system",
-        });
-      } else {
-        // If there are no periods, create a "full year" period from the last 12 months
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setMonth(startDate.getMonth() - 12);
-        data.periods.push({
-          id: "1",
-          name: "Full year",
-          startAt: startDate,
-          endAt: endDate,
-          createdAt: new Date(),
-          userId: "system",
-        });
-      }
+      // // Add a "full year" period to the periods array
+      // if (data.periods && data.periods.length > 0) {
+      //   data.periods.push({
+      //     id: "1",
+      //     name: "Full year",
+      //     startAt: data.periods[0].startAt,
+      //     endAt: data.periods[data.periods.length - 1].endAt,
+      //     createdAt: new Date(),
+      //     userId: "system",
+      //   });
+      // } else {
+      //   // If there are no periods, create a "full year" period from the last 12 months
+      //   const endDate = new Date();
+      //   const startDate = new Date();
+      //   startDate.setMonth(startDate.getMonth() - 12);
+      //   data.periods.push({
+      //     id: "1",
+      //     name: "Full year",
+      //     startAt: startDate,
+      //     endAt: endDate,
+      //     createdAt: new Date(),
+      //     userId: "system",
+      //   });
+      // }
 
       return data.periods;
     },
@@ -89,11 +89,11 @@ export default function GradesPage() {
       <Tabs
         defaultValue={
           // choose the period where we are currently in if it exists
-          periods.find(
+          periods?.find(
             (period) =>
               new Date(period.startAt) <= new Date() &&
               new Date(period.endAt) >= new Date()
-          )?.id || "1"
+          )?.id || "full-year"
         }
       >
         <ScrollArea>
@@ -113,6 +113,7 @@ export default function GradesPage() {
                       {period.name}
                     </TabsTrigger>
                   ))}
+              <TabsTrigger value="full-year">Toute l'année</TabsTrigger>
             </TabsList>
           </div>
           <ScrollBar orientation="horizontal" />

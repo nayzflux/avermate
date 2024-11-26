@@ -29,15 +29,13 @@ import {
   PlusIcon,
 } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 /**
  * Vue d'ensemble des notes
  */
 export default function OverviewPage() {
   const { data: session } = authClient.useSession();
-
-  const [defaultPeriod, setDefaultPeriod] = useState("full-year");
 
   // Fetch subjects lists with grades from API
   const {
@@ -93,15 +91,6 @@ export default function OverviewPage() {
       return data.periods;
     },
   });
-
-  // useEffect(() => {
-  //   // Choose default period, the period where we are currently in if it exists or choose full year
-  //   const defaultPeriod = periods?.[0]?.id || "full-year";
-
-  //   console.log("defaultPeriod", defaultPeriod);
-
-  //   setDefaultPeriod(defaultPeriod);
-  // }, [periods]);
 
   const averages = useMemo(() => {
     if (isPending || isError) {
@@ -221,7 +210,16 @@ export default function OverviewPage() {
       <Separator />
 
       {/* Statistiques */}
-      <Tabs defaultValue={periods?.[0]?.id || "full-year"}>
+      <Tabs
+        defaultValue={
+          // choose the period where we are currently in if it exists
+          periods?.find(
+            (period) =>
+              new Date(period.startAt) <= new Date() &&
+              new Date(period.endAt) >= new Date()
+          )?.id || "full-year"
+        }
+      >
         <div className="flex flex-col gap-4">
           <ScrollArea>
             <div className="flex w-full">
@@ -232,7 +230,7 @@ export default function OverviewPage() {
                   </TabsTrigger>
                 ))}
 
-                <TabsTrigger value="full-year">Année complète</TabsTrigger>
+                <TabsTrigger value="full-year">Toute l'année</TabsTrigger>
               </TabsList>
             </div>
 
