@@ -1,18 +1,17 @@
 "use client";
 
-import MoreButton from "@/components/buttons/dashboard/more-button";
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
 import GradesTable from "@/components/tables/grades-table";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useQuery } from "@tanstack/react-query";
-import { Period } from "@/types/period";
 import { apiClient } from "@/lib/api";
+import { Period } from "@/types/period";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { useQuery } from "@tanstack/react-query";
 
 export default function GradesPage() {
   const {
@@ -27,30 +26,30 @@ export default function GradesPage() {
         periods: Period[];
       }>();
 
-      // Add a "full year" period to the periods array
-      if (data.periods && data.periods.length > 0) {
-        data.periods.push({
-          id: "1",
-          name: "Full year",
-          startAt: data.periods[0].startAt,
-          endAt: data.periods[data.periods.length - 1].endAt,
-          createdAt: new Date(),
-          userId: "system",
-        });
-      } else {
-        // If there are no periods, create a "full year" period from the last 12 months
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setMonth(startDate.getMonth() - 12);
-        data.periods.push({
-          id: "1",
-          name: "Full year",
-          startAt: startDate,
-          endAt: endDate,
-          createdAt: new Date(),
-          userId: "system",
-        });
-      }
+      // // Add a "full year" period to the periods array
+      // if (data.periods && data.periods.length > 0) {
+      //   data.periods.push({
+      //     id: "1",
+      //     name: "Full year",
+      //     startAt: data.periods[0].startAt,
+      //     endAt: data.periods[data.periods.length - 1].endAt,
+      //     createdAt: new Date(),
+      //     userId: "system",
+      //   });
+      // } else {
+      //   // If there are no periods, create a "full year" period from the last 12 months
+      //   const endDate = new Date();
+      //   const startDate = new Date();
+      //   startDate.setMonth(startDate.getMonth() - 12);
+      //   data.periods.push({
+      //     id: "1",
+      //     name: "Full year",
+      //     startAt: startDate,
+      //     endAt: endDate,
+      //     createdAt: new Date(),
+      //     userId: "system",
+      //   });
+      // }
 
       return data.periods;
     },
@@ -60,6 +59,7 @@ export default function GradesPage() {
   if (periodsIsPending) {
     return <div>Loading...</div>;
   }
+
   return (
     <main className="flex flex-col gap-8">
       <div className="flex gap-2 md:gap-16 justify-between items-center">
@@ -89,11 +89,11 @@ export default function GradesPage() {
       <Tabs
         defaultValue={
           // choose the period where we are currently in if it exists
-          periods.find(
+          periods?.find(
             (period) =>
               new Date(period.startAt) <= new Date() &&
               new Date(period.endAt) >= new Date()
-          )?.id || "1"
+          )?.id || "full-year"
         }
       >
         <ScrollArea>
@@ -113,6 +113,7 @@ export default function GradesPage() {
                       {period.name}
                     </TabsTrigger>
                   ))}
+              <TabsTrigger value="full-year">Toute l'année</TabsTrigger>
             </TabsList>
           </div>
           <ScrollBar orientation="horizontal" />
@@ -127,7 +128,7 @@ export default function GradesPage() {
             )
             .map((period) => (
               <TabsContent key={period.id} value={period.id}>
-  <GradesTable />
+                <GradesTable />
               </TabsContent>
             ))}
       </Tabs>

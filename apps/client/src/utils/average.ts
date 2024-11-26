@@ -62,7 +62,6 @@ function calculateAverageForSubject(
 
   // Calculer la moyenne pondérée des pourcentages
   const averagePercentage = totalWeightedPercentages / totalCoefficients;
-  
 
   return averagePercentage * 20;
 }
@@ -101,11 +100,13 @@ function calculateAverageForSubjects(
 export function averageOverTime(
   subjects: Subject[],
   subjectId: string | undefined,
-  dates: Date[],
+  dates: Date[]
 ): number[] {
   return dates.map((date) => {
     const subjectsWithGrades = subjects.map((subject) => {
-      const grades = subject.grades.filter((grade) => new Date(grade.passedAt) <= date);
+      const grades = subject.grades.filter(
+        (grade) => new Date(grade.passedAt) <= date
+      );
       return { ...subject, grades };
     });
 
@@ -114,23 +115,30 @@ export function averageOverTime(
 }
 
 // Compute the average for each subject and return an array of objects with subject ID and its average
-export function getSubjectAverages(subjects: Subject[]): { id: string; average: number }[] {
+export function getSubjectAverages(
+  subjects: Subject[]
+): { id: string; average: number }[] {
   return subjects
     .map((subject) => {
       const average = calculateAverageForSubject(subject, subjects);
       return average !== null ? { id: subject.id, average } : null;
     })
-    .filter((entry): entry is { id: string; average: number } => entry !== null);
+    .filter(
+      (entry): entry is { id: string; average: number } => entry !== null
+    );
 }
-
 
 // Get all subjects with the best average
 export function getBestSubjects(subjects: Subject[]): Subject[] {
   const subjectAverages = getSubjectAverages(subjects);
-  const bestAverage = Math.max(...subjectAverages.map((entry) => entry.average));
+  const bestAverage = Math.max(
+    ...subjectAverages.map((entry) => entry.average)
+  );
 
   return subjects.filter((subject) =>
-    subjectAverages.some((entry) => entry.id === subject.id && entry.average === bestAverage)
+    subjectAverages.some(
+      (entry) => entry.id === subject.id && entry.average === bestAverage
+    )
   );
 }
 
@@ -144,21 +152,33 @@ export function getBestSubjectAverageComparaison(subjects: Subject[]): number {
     return 0; // or throw an error, or decide on an appropriate default value
   }
 
-  const mainSubjectsAverage = mainSubjectsAverages.reduce((acc, entry) => acc + entry.average, 0) / mainSubjectsAverages.length;
+  const mainSubjectsAverage =
+    mainSubjectsAverages.reduce((acc, entry) => acc + entry.average, 0) /
+    mainSubjectsAverages.length;
 
   const bestSubjects = getBestSubjects(subjects);
-  const bestSubjectAverage = Math.max(...bestSubjects.map((subject) => calculateAverageForSubject(subject, subjects) ?? 0));
+  const bestSubjectAverage = Math.max(
+    ...bestSubjects.map(
+      (subject) => calculateAverageForSubject(subject, subjects) ?? 0
+    )
+  );
 
-  return ((bestSubjectAverage - mainSubjectsAverage) / mainSubjectsAverage) * 100;
+  return (
+    ((bestSubjectAverage - mainSubjectsAverage) / mainSubjectsAverage) * 100
+  );
 }
 
 // Get all subjects with the worst average
 export function getWorstSubjects(subjects: Subject[]): Subject[] {
   const subjectAverages = getSubjectAverages(subjects);
-  const worstAverage = Math.min(...subjectAverages.map((entry) => entry.average));
+  const worstAverage = Math.min(
+    ...subjectAverages.map((entry) => entry.average)
+  );
 
   return subjects.filter((subject) =>
-    subjectAverages.some((entry) => entry.id === subject.id && entry.average === worstAverage)
+    subjectAverages.some(
+      (entry) => entry.id === subject.id && entry.average === worstAverage
+    )
   );
 }
 
@@ -168,16 +188,24 @@ export function getWorstSubjectAverageComparaison(subjects: Subject[]): number {
   const mainSubjectsAverages = getSubjectAverages(mainSubjects);
 
   if (mainSubjectsAverages.length === 0) {
-  // Handle the case where there are no main subjects
+    // Handle the case where there are no main subjects
     return 0; // or throw an error, or decide on an appropriate default value
   }
 
-  const mainSubjectsAverage = mainSubjectsAverages.reduce((acc, entry) => acc + entry.average, 0) / mainSubjectsAverages.length;
+  const mainSubjectsAverage =
+    mainSubjectsAverages.reduce((acc, entry) => acc + entry.average, 0) /
+    mainSubjectsAverages.length;
 
   const worstSubjects = getWorstSubjects(subjects);
-  const worstSubjectAverage = Math.min(...worstSubjects.map((subject) => calculateAverageForSubject(subject, subjects) ?? 0));
+  const worstSubjectAverage = Math.min(
+    ...worstSubjects.map(
+      (subject) => calculateAverageForSubject(subject, subjects) ?? 0
+    )
+  );
 
-  return ((mainSubjectsAverage - worstSubjectAverage) / mainSubjectsAverage) * 100;
+  return (
+    ((mainSubjectsAverage - worstSubjectAverage) / mainSubjectsAverage) * 100
+  );
 }
 
 // Get the best main subject or fallback to the best subject
@@ -210,11 +238,15 @@ export function getWorstMainSubject(subjects: Subject[]): Subject | null {
 // Get the subject with the best average; if tied, pick the one with the highest coefficient
 export function getBestSubject(subjects: Subject[]): Subject | null {
   const subjectAverages = getSubjectAverages(subjects);
-  const bestAverage = Math.max(...subjectAverages.map((entry) => entry.average));
+  const bestAverage = Math.max(
+    ...subjectAverages.map((entry) => entry.average)
+  );
 
   // Filter subjects with the best average
   const bestSubjects = subjects.filter((subject) =>
-    subjectAverages.some((entry) => entry.id === subject.id && entry.average === bestAverage)
+    subjectAverages.some(
+      (entry) => entry.id === subject.id && entry.average === bestAverage
+    )
   );
 
   if (bestSubjects.length === 0) {
@@ -239,11 +271,15 @@ export function getBestSubject(subjects: Subject[]): Subject | null {
 // Get the subject with the worst average; if tied, pick the one with the highest coefficient
 export function getWorstSubject(subjects: Subject[]): Subject | null {
   const subjectAverages = getSubjectAverages(subjects);
-  const worstAverage = Math.min(...subjectAverages.map((entry) => entry.average));
+  const worstAverage = Math.min(
+    ...subjectAverages.map((entry) => entry.average)
+  );
 
   // Filter subjects with the worst average
   const worstSubjects = subjects.filter((subject) =>
-    subjectAverages.some((entry) => entry.id === subject.id && entry.average === worstAverage)
+    subjectAverages.some(
+      (entry) => entry.id === subject.id && entry.average === worstAverage
+    )
   );
 
   if (worstSubjects.length === 0) {
@@ -266,7 +302,9 @@ export function getWorstSubject(subjects: Subject[]): Subject | null {
 }
 
 // Get the best grade adjusted by outOf; if tied, pick the one with the highest coefficient
-export function getBestGrade(subjects: Subject[]): { grade: number; outOf: number; subject: Subject; name: String } | null {
+export function getBestGrade(
+  subjects: Subject[]
+): { grade: number; outOf: number; subject: Subject; name: String } | null {
   let bestGrade = null;
 
   for (const subject of subjects) {
@@ -275,25 +313,53 @@ export function getBestGrade(subjects: Subject[]): { grade: number; outOf: numbe
       const coefficient = grade.coefficient ?? 100; // Default to 100 if undefined
 
       if (bestGrade === null) {
-        bestGrade = { grade: grade.value, outOf: grade.outOf, subject, percentage, coefficient, name: grade.name };
+        bestGrade = {
+          grade: grade.value,
+          outOf: grade.outOf,
+          subject,
+          percentage,
+          coefficient,
+          name: grade.name,
+        };
       } else if (percentage > bestGrade.percentage) {
-        bestGrade = { grade: grade.value, outOf: grade.outOf, subject, percentage, coefficient, name: grade.name };
+        bestGrade = {
+          grade: grade.value,
+          outOf: grade.outOf,
+          subject,
+          percentage,
+          coefficient,
+          name: grade.name,
+        };
       } else if (percentage === bestGrade.percentage) {
         // If percentages are equal, compare coefficients
         if (coefficient > bestGrade.coefficient) {
-          bestGrade = { grade: grade.value, outOf: grade.outOf, subject, percentage, coefficient, name: grade.name };
+          bestGrade = {
+            grade: grade.value,
+            outOf: grade.outOf,
+            subject,
+            percentage,
+            coefficient,
+            name: grade.name,
+          };
         }
       }
     }
   }
 
   return bestGrade
-    ? { grade: bestGrade.grade, outOf: bestGrade.outOf, subject: bestGrade.subject, name: bestGrade.name }
+    ? {
+        grade: bestGrade.grade,
+        outOf: bestGrade.outOf,
+        subject: bestGrade.subject,
+        name: bestGrade.name,
+      }
     : null;
 }
 
 // Get the worst grade adjusted by outOf; if tied, pick the one with the highest coefficient
-export function getWorstGrade(subjects: Subject[]): { grade: number; outOf: number; subject: Subject; name: String } | null {
+export function getWorstGrade(
+  subjects: Subject[]
+): { grade: number; outOf: number; subject: Subject; name: String } | null {
   let worstGrade = null;
 
   for (const subject of subjects) {
@@ -302,25 +368,54 @@ export function getWorstGrade(subjects: Subject[]): { grade: number; outOf: numb
       const coefficient = grade.coefficient ?? 100; // Default to 100 if undefined
 
       if (worstGrade === null) {
-        worstGrade = { grade: grade.value, outOf: grade.outOf, subject, percentage, coefficient, name: grade.name };
+        worstGrade = {
+          grade: grade.value,
+          outOf: grade.outOf,
+          subject,
+          percentage,
+          coefficient,
+          name: grade.name,
+        };
       } else if (percentage < worstGrade.percentage) {
-        worstGrade = { grade: grade.value, outOf: grade.outOf, subject, percentage, coefficient, name: grade.name };
+        worstGrade = {
+          grade: grade.value,
+          outOf: grade.outOf,
+          subject,
+          percentage,
+          coefficient,
+          name: grade.name,
+        };
       } else if (percentage === worstGrade.percentage) {
         // If percentages are equal, compare coefficients
         if (coefficient > worstGrade.coefficient) {
-          worstGrade = { grade: grade.value, outOf: grade.outOf, subject, percentage, coefficient, name: grade.name };
+          worstGrade = {
+            grade: grade.value,
+            outOf: grade.outOf,
+            subject,
+            percentage,
+            coefficient,
+            name: grade.name,
+          };
         }
       }
     }
   }
 
   return worstGrade
-    ? { grade: worstGrade.grade, outOf: worstGrade.outOf, subject: worstGrade.subject, name: worstGrade.name }
+    ? {
+        grade: worstGrade.grade,
+        outOf: worstGrade.outOf,
+        subject: worstGrade.subject,
+        name: worstGrade.name,
+      }
     : null;
 }
 
 // Get the best grade inside a specific subject and its childrens
-export function getBestGradeInSubject(subjects: Subject[], subjectId: string): { grade: number; outOf: number; subject: Subject; name: String } | null {
+export function getBestGradeInSubject(
+  subjects: Subject[],
+  subjectId: string
+): { grade: number; outOf: number; subject: Subject; name: String } | null {
   const subject = subjects.find((s) => s.id === subjectId);
   if (!subject) return null;
 
@@ -333,7 +428,10 @@ export function getBestGradeInSubject(subjects: Subject[], subjectId: string): {
 }
 
 // Get the worst grade inside a specific subject and its childrens
-export function getWorstGradeInSubject(subjects: Subject[], subjectId: string): { grade: number; outOf: number; subject: Subject; name: String } | null {
+export function getWorstGradeInSubject(
+  subjects: Subject[],
+  subjectId: string
+): { grade: number; outOf: number; subject: Subject; name: String } | null {
   const subject = subjects.find((s) => s.id === subjectId);
   if (!subject) return null;
 
@@ -355,8 +453,6 @@ export function getChildren(subjects: Subject[], subjectId: string): string[] {
 
   return childrenIds;
 }
-
-
 
 // Utility function to deep clone the subjects array
 function deepCloneSubjects(subjects: Subject[]): Subject[] {
@@ -424,7 +520,10 @@ export function subjectImpact(
   const subjectsCopy = deepCloneSubjects(subjects);
 
   // Get the list of subject IDs to exclude (the subject and all its children)
-  const subjectsToExclude = [subjectId, ...getChildren(subjectsCopy, subjectId)];
+  const subjectsToExclude = [
+    subjectId,
+    ...getChildren(subjectsCopy, subjectId),
+  ];
 
   // Compute the general average with the subject included
   const averageWithSubject = average(undefined, subjectsCopy);
@@ -457,7 +556,7 @@ export function getParents(subjects: Subject[], subjectId: string): string[] {
 
   while (currentSubject && currentSubject.parentId !== null) {
     parents.push(currentSubject.parentId);
-    currentSubject = subjects.find((s) => s.id === currentSubject.parentId);
+    currentSubject = subjects.find((s) => s.id === currentSubject?.parentId);
   }
 
   return parents;

@@ -7,7 +7,8 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { apiClient } from "@/lib/api";
 import { Subject } from "@/types/subject";
-import { formatGradeValue } from "@/utils/format";
+import { average, getBestGradeInSubject, subjectImpact } from "@/utils/average";
+import { formatDiff, formatGradeValue } from "@/utils/format";
 import {
   AcademicCapIcon,
   ArrowLeftIcon,
@@ -18,12 +19,6 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import SubjectAverageChart from "./subject-average-chart";
-import {
-  average,
-  getBestGradeInSubject,
-  subjectImpact,
-  getChildren,
-} from "@/utils/average";
 
 function SubjectWrapper({ subjectId }: { subjectId: string }) {
   const { data, isPending, isError } = useQuery({
@@ -83,7 +78,7 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
         >
           {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
             <GradeValue
-              value={average(data?.id, subjects) * 100}
+              value={(average(data?.id, subjects) || 0) * 100}
               outOf={2000}
             />
           )}
@@ -97,12 +92,7 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
         >
           {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
             <p className="text-3xl font-bold">
-              {(() => {
-                const diff =
-                  subjectImpact(subjectId, subjects)?.difference?.toFixed(2) ||
-                  0;
-                return diff >= 0 ? `+${diff}` : `${diff}`;
-              })()}
+              {formatDiff(subjectImpact(subjectId, subjects)?.difference || 0)}
             </p>
           )}
         </DataCard>

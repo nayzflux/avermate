@@ -11,16 +11,18 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import {
-  Area, LineChart, CartesianGrid, XAxis, 
-  YAxis, Line
- } from "recharts";
 import { apiClient } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
 import { Subject } from "@/types/subject";
 import { averageOverTime, getChildren } from "@/utils/average";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
-export default function SubjectAverageChart({ subjectId }: { subjectId: string }) {
+export default function SubjectAverageChart({
+  subjectId,
+}: {
+  subjectId: string;
+}) {
   const {
     data: subjects,
     isError,
@@ -34,6 +36,75 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
     },
   });
 
+  const { childrenAverage, chartData, chartConfig } = useMemo(() => {
+    if (isPending || isError) {
+      return { chartConfig: {} };
+    }
+
+    const childrensId = getChildren(subjects, subjectId);
+
+    // Calculate the start and end dates
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - 3);
+
+    // Generate an array of dates
+    const dates: Date[] = [];
+    for (
+      let dt = new Date(startDate);
+      dt <= endDate;
+      dt.setDate(dt.getDate() + 3)
+    ) {
+      dates.push(new Date(dt));
+    }
+    // Calculate the average grades over time
+
+    const mainSubject = subjects.find((subject) => subject.id === subjectId);
+
+    let childrensObjects = subjects.filter((subject) =>
+      childrensId.includes(subject.id)
+    );
+    //filter the childrens objects by only the childrens having a depth of 1 superior of the main subject
+    childrensObjects = childrensObjects.filter(
+      (child) => mainSubject && child.depth === mainSubject.depth + 1
+    );
+
+    const childrenAverage = childrensObjects.map((child) => {
+      return {
+        id: child.id,
+        name: child.name,
+        average: averageOverTime(subjects, child.id, dates),
+      };
+    });
+
+    const averages = averageOverTime(subjects, subjectId, dates);
+
+    const chartData = dates.map((date, index) => ({
+      date: date.toISOString(),
+      average: averages[index],
+      ...Object.fromEntries(
+        childrenAverage.map((child) => [child.id, child.average[index]])
+      ),
+    }));
+
+    const chartConfig = {
+      average: {
+        label: "Moyenne",
+        color: "#2662d9",
+      },
+      ...Object.fromEntries(
+        childrenAverage.map((child) => [
+          child.id,
+          {
+            label: child.name,
+            color: "#f87171",
+          },
+        ])
+      ),
+    } satisfies ChartConfig;
+
+    return { childrenAverage, chartData, chartConfig };
+  }, [subjects]);
 
   if (isPending) {
     return (
@@ -70,62 +141,6 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
       </Card>
     );
   }
-
-  const childrensId = getChildren(subjects, subjectId);
-
-  // Calculate the start and end dates
-  const endDate = new Date();
-  const startDate = new Date();
-  startDate.setMonth(startDate.getMonth() - 3);
-
-  // Generate an array of dates
-  const dates = [];
-  for (
-    let dt = new Date(startDate);
-    dt <= endDate;
-    dt.setDate(dt.getDate() + 3)
-  ) {
-    dates.push(new Date(dt));
-  }
-  // Calculate the average grades over time
-
-  const mainSubject = subjects.find((subject) => subject.id === subjectId);
-
-  let childrensObjects = subjects.filter((subject) => childrensId.includes(subject.id));
-  //filter the childrens objects by only the childrens having a depth of 1 superior of the main subject
-  childrensObjects = childrensObjects.filter((child) => child.depth === mainSubject.depth + 1);
-
-  const childrenAverage = childrensObjects.map((child) => {
-    return {
-      id: child.id,
-      name: child.name,
-      average: averageOverTime(subjects, child.id, dates),
-    };
-  });
-
-  const averages = averageOverTime(subjects, subjectId, dates);
-
-  const chartData = dates.map((date, index) => ({
-    date: date.toISOString(),
-    average: averages[index],
-    ...Object.fromEntries(childrenAverage.map((child) => [child.id, child.average[index]])),
-  }));
-
-  const chartConfig = {
-    average: {
-      label: "Moyenne",
-      color: "#2662d9",
-    },
-    ...Object.fromEntries(
-      childrenAverage.map((child) => [
-        child.id,
-        {
-          label: child.name,
-          color: "#f87171",
-        },
-      ])
-    ),
-  };
 
   return (
     <Card className="p-4">
@@ -231,7 +246,8 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
               <stop offset="95%" stopColor="#2662d9" stopOpacity={0.1} />
             </linearGradient>
           </defs>
-          {childrenAverage.map((child) => (
+
+          {childrenAverage?.map((child) => (
             <Line
               key={child.id}
               dataKey={child.id}
@@ -241,6 +257,7 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
               dot={false}
             />
           ))}
+
           <Line
             dataKey="average"
             type="monotone"
