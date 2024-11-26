@@ -12,7 +12,7 @@ import { BoxIcon } from "@radix-ui/react-icons";
 import { apiClient } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { Subject } from "@/types/subject";
-import { average, averageOverTime, getBestSubject, getWorstSubject, getBestGrade, getWorstGrade, getSubjectAverageComparison } from "@/utils/average";
+import { average, averageOverTime, getBestSubject, getWorstSubject, getBestGrade, getWorstGrade, getSubjectAverageComparison, getBestTrendSubject, getWorstTrendSubject } from "@/utils/average";
 import { 
   PlusIcon,
   AcademicCapIcon,
@@ -115,7 +115,7 @@ export default function OverviewPage() {
   }
 
   // Calculate the average grades over time
-  const averages = averageOverTime(subjects, undefined, dates);
+  const averages = averageOverTime(subjects, undefined, startDate, endDate);
 
   //calculate the percentage of growth of the average between the first and last date
   const growth =
@@ -132,6 +132,11 @@ export default function OverviewPage() {
 
   const bestGrade = getBestGrade(subjects);
   const worstGrade = getWorstGrade(subjects);
+
+  // 
+
+  const bestTrendSubject = getBestTrendSubject(subjects, startDate, endDate, true);
+  const worstTrendSubject = getWorstTrendSubject(subjects, startDate, endDate, true);
 
   return (
     <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
@@ -243,7 +248,7 @@ export default function OverviewPage() {
                     description={
                       bestSubjectAverage !== null
                         ? `${bestSubject?.name} is ${
-                            bestSubjectAverageComparaison.toFixed(2) || "—"
+                            bestSubjectAverageComparaison?.toFixed(2) || "—"
                           }% higher than other subjects`
                         : "No best subject"
                     }
@@ -273,9 +278,7 @@ export default function OverviewPage() {
                     <GradeValue
                       value={
                         worstGrade !== null
-                          ? (
-                              Number(worstGrade?.grade.toFixed(2))
-                            ).toString()
+                          ? Number(worstGrade?.grade.toFixed(2)).toString()
                           : "—"
                       }
                       outOf={
@@ -292,7 +295,7 @@ export default function OverviewPage() {
                     description={
                       worstSubjectAverage !== null
                         ? `${worstSubject?.name} is ${
-                            worstSubjectAverageComparaison.toFixed(2) || "—"
+                            worstSubjectAverageComparaison?.toFixed(2) || "—"
                           }% lower than other subjects`
                         : "No worst subject"
                     }
@@ -308,6 +311,36 @@ export default function OverviewPage() {
                       outOf={2000}
                       size="xl"
                     />
+                  </DataCard>
+                  <DataCard
+                    title="Best trend"
+                    icon={TrendingUpIcon}
+                    description={
+                      bestTrendSubject !== null
+                        ? `In ${bestTrendSubject?.bestSubject.name} ? Impressive !`
+                        : "No best trend"
+                    }
+                  >
+                    <p className="text-4xl font-bold">
+                      {bestTrendSubject !== null
+                        ? `+${bestTrendSubject?.bestTrend}`
+                        : "No best trend"}
+                    </p>
+                  </DataCard>
+                  <DataCard
+                    title="Worst trend"
+                    icon={ArrowTrendingDownIcon}
+                    description={
+                      worstTrendSubject !== null
+                        ? `In ${worstTrendSubject?.worstSubject.name} ? Yep that’s bad`
+                        : "No worst trend"
+                    }
+                  >
+                    <p className="text-4xl font-bold">
+                      {worstTrendSubject !== null
+                        ? `${worstTrendSubject?.worstTrend}`
+                        : "No worst trend"}
+                    </p>
                   </DataCard>
                 </div>
 

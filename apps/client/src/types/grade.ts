@@ -5,10 +5,10 @@ export type Grade = {
     outOf: number;
     value: number;
     coefficient: number;
-    passedAt: Date;
+    passedAt: string;
     subjectId: string;
     id: string;
-    createdAt: Date;
+    createdAt: string;
     userId: string;
     subject: PartialSubject;
 }

@@ -93,17 +93,17 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
 
   let childrensObjects = subjects.filter((subject) => childrensId.includes(subject.id));
   //filter the childrens objects by only the childrens having a depth of 1 superior of the main subject
-  childrensObjects = childrensObjects.filter((child) => child.depth === mainSubject.depth + 1);
+  childrensObjects = childrensObjects.filter((child) => child.depth === (mainSubject?.depth ?? 0) + 1);
 
   const childrenAverage = childrensObjects.map((child) => {
     return {
       id: child.id,
       name: child.name,
-      average: averageOverTime(subjects, child.id, dates),
+      average: averageOverTime(subjects, child.id, startDate, endDate),
     };
   });
 
-  const averages = averageOverTime(subjects, subjectId, dates);
+  const averages = averageOverTime(subjects, subjectId, startDate, endDate);
 
   const chartData = dates.map((date, index) => ({
     date: date.toISOString(),

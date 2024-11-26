@@ -30,6 +30,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Subject } from "@/types/subject";
 import { Separator } from "@/components/ui/separator";
 import { averageOverTime, average } from "@/utils/average";
+import { startOfDay } from "date-fns";
 
 export const description = "A simple area chart";
 
@@ -99,12 +100,15 @@ export default function GlobalAverageChart() {
   }
 
   // Calculate the average grades over time
-  const averages = averageOverTime(subjects, undefined, dates);
+  const averages = averageOverTime(subjects, undefined, startDate, endDate);
+
 
   const chartData = dates.map((date, index) => ({
     date: date.toISOString(),
     average: averages[index],
   }));
+
+  console.log(chartData);
 
   const chartConfig = {
     average: {
@@ -243,6 +247,7 @@ export default function GlobalAverageChart() {
                   type="monotone"
                   fill="url(#fillAverage)"
                   stroke="#2662d9"
+                  connectNulls={true}
                 />
               </AreaChart>
             </ChartContainer>
@@ -265,7 +270,6 @@ export default function GlobalAverageChart() {
               <RadarChart data={radarData} outerRadius="90%">
                 <PolarGrid />
                 <PolarAngleAxis dataKey="subject" tick={renderPolarAngleAxis} />
-                <PolarRadiusAxis angle={30} domain={[0, 20]} tickCount={5} />
                 <Radar
                   dataKey="average"
                   stroke="#2662d9"
