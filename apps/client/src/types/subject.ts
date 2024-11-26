@@ -12,4 +12,7 @@ export type Subject = {
   isMainSubject: boolean;
 };
 
-export type PartialSubject = Omit<Subject, "grades" | "coefficient" | "depth" | "createdAt" | "parentId" | "userId">;
+export type PartialSubject = Omit<
+  Subject,
+  "grades" | "coefficient" | "depth" | "createdAt" | "parentId" | "userId"
+>;

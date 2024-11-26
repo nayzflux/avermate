@@ -7,7 +7,13 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { apiClient } from "@/lib/api";
 import { Subject } from "@/types/subject";
-import { formatGradeValue } from "@/utils/format";
+import {
+  average,
+  getBestGradeInSubject,
+  getWorstGradeInSubject,
+  subjectImpact,
+} from "@/utils/average";
+import { formatDiff, formatGradeValue } from "@/utils/format";
 import {
   AcademicCapIcon,
   ArrowLeftIcon,
@@ -18,13 +24,6 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import SubjectAverageChart from "./subject-average-chart";
-import {
-  average,
-  getBestGradeInSubject,
-  getWorstGradeInSubject,
-  subjectImpact,
-  getChildren,
-} from "@/utils/average";
 
 function SubjectWrapper({ subjectId }: { subjectId: string }) {
   const { data, isPending, isError } = useQuery({
@@ -84,7 +83,7 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
         >
           {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
             <GradeValue
-              value={average(data?.id, subjects) * 100}
+              value={(average(data?.id, subjects) || 0) * 100}
               outOf={2000}
             />
           )}
@@ -98,12 +97,7 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
         >
           {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
             <p className="text-3xl font-bold">
-              {(() => {
-                const diff =
-                  subjectImpact(subjectId, subjects)?.difference?.toFixed(2) ||
-                  0;
-                return diff >= 0 ? `+${diff}` : `${diff}`;
-              })()}
+              {formatDiff(subjectImpact(subjectId, subjects)?.difference || 0)}
             </p>
           )}
         </DataCard>
@@ -123,16 +117,14 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
         {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
           <DataCard
             title="Meilleure note"
-            description={`Votre plus belle performance en ${
-              (() => {
-                const bestGradeObj = getBestGradeInSubject(subjects, subjectId);
-                if (bestGradeObj && bestGradeObj.grade !== undefined) {
-                  return bestGradeObj.subject.name;
-                } else {
-                  return "N/A";
-                }
-              })()
-            }`}
+            description={`Votre plus belle performance en ${(() => {
+              const bestGradeObj = getBestGradeInSubject(subjects, subjectId);
+              if (bestGradeObj && bestGradeObj.grade !== undefined) {
+                return bestGradeObj.subject.name;
+              } else {
+                return "N/A";
+              }
+            })()}`}
             icon={SparklesIcon}
           >
             <p className="text-3xl font-bold">
@@ -148,20 +140,20 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
           </DataCard>
         )}
 
-        {/* Worst grade */}{!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
-        <DataCard
-          title="Pire note"
-          description={`Votre moins bonne performance en ${(() => {
-            const worstGradeObj = getWorstGradeInSubject(subjects, subjectId);
-            if (worstGradeObj && worstGradeObj.grade !== undefined) {
-              return worstGradeObj.subject.name;
-            } else {
-              return "N/A";
-            }
-          })()}`}
-          icon={SparklesIcon}
-        >
-          
+        {/* Worst grade */}
+        {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
+          <DataCard
+            title="Pire note"
+            description={`Votre moins bonne performance en ${(() => {
+              const worstGradeObj = getWorstGradeInSubject(subjects, subjectId);
+              if (worstGradeObj && worstGradeObj.grade !== undefined) {
+                return worstGradeObj.subject.name;
+              } else {
+                return "N/A";
+              }
+            })()}`}
+            icon={SparklesIcon}
+          >
             <p className="text-3xl font-bold">
               {(() => {
                 const worstGradeObj = getWorstGradeInSubject(
@@ -175,8 +167,8 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
                 }
               })()}
             </p>
-          
-        </DataCard>)}
+          </DataCard>
+        )}
       </div>
 
       <Separator />

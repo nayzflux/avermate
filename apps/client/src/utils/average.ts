@@ -3,7 +3,7 @@ import { startOfDay } from "date-fns";
 
 /**
  * TODO: Verify the consistency of the returned grades/averages values (e.g. null, 0, and more importantly, if we return the values *100 or not) (WE ARE DEALING WITH GRADES/COEFS AND OUTOF VALUES multiplied by 100 because we don't want to deal with floating numbers in the database but because this is a frontend function, we need to divide by 100 to get the real value)
-**/
+ **/
 
 export function average(
   subjectId: string | undefined,
@@ -110,11 +110,16 @@ export function averageOverTime(
 ): (number | null)[] {
   const normalizedStartDate = startOfDay(startDate);
   const normalizedEndDate = startOfDay(endDate);
-  const gradeDates = getGradeDates(subjects, subjectId).filter((date) => date >= normalizedStartDate && date <= normalizedEndDate);
+  const gradeDates = getGradeDates(subjects, subjectId).filter(
+    (date) => date >= normalizedStartDate && date <= normalizedEndDate
+  );
   const dates = createDateRange(normalizedStartDate, normalizedEndDate, 1);
 
   return dates.map((date, index) => {
-    if (gradeDates.some((gradeDate) => gradeDate.getTime() === date.getTime()) || index === dates.length - 1) {
+    if (
+      gradeDates.some((gradeDate) => gradeDate.getTime() === date.getTime()) ||
+      index === dates.length - 1
+    ) {
       const subjectsWithGrades = subjects.map((subject) => ({
         ...subject,
         grades: subject.grades.filter(
@@ -136,7 +141,11 @@ export function getSubjectAverages(
     .map((subject) => {
       const averageValue = calculateAverageForSubject(subject, subjects);
       return averageValue !== null
-        ? { id: subject.id, average: averageValue, isMainSubject: subject.isMainSubject ?? false }
+        ? {
+            id: subject.id,
+            average: averageValue,
+            isMainSubject: subject.isMainSubject ?? false,
+          }
         : null;
     })
     .filter(
@@ -178,7 +187,8 @@ export function getSubjectAverageComparison(
       return null;
     }
 
-    comparisonAverage = averages.reduce((acc, avg) => acc + avg, 0) / averages.length;
+    comparisonAverage =
+      averages.reduce((acc, avg) => acc + avg, 0) / averages.length;
   } else if (isMainSubject) {
     const mainSubjects = subjects.filter(
       (s) => s.isMainSubject && s.id !== subjectIdToCompare
@@ -191,7 +201,8 @@ export function getSubjectAverageComparison(
       return null;
     }
 
-    comparisonAverage = averages.reduce((acc, avg) => acc + avg, 0) / averages.length;
+    comparisonAverage =
+      averages.reduce((acc, avg) => acc + avg, 0) / averages.length;
   } else {
     // Compare with all subjects excluding subjectIdToCompare
     const otherSubjects = subjects.filter((s) => s.id !== subjectIdToCompare);
@@ -203,7 +214,8 @@ export function getSubjectAverageComparison(
       return null;
     }
 
-    comparisonAverage = averages.reduce((acc, avg) => acc + avg, 0) / averages.length;
+    comparisonAverage =
+      averages.reduce((acc, avg) => acc + avg, 0) / averages.length;
   }
 
   const difference = subjectAverage - comparisonAverage;
@@ -225,14 +237,18 @@ export function getBestSubject(
   let subjectAverages = getSubjectAverages(subjects);
 
   if (isMainSubject) {
-    subjectAverages = subjectAverages.filter((subject) => subject.isMainSubject);
+    subjectAverages = subjectAverages.filter(
+      (subject) => subject.isMainSubject
+    );
   }
-  
+
   if (subjectAverages.length === 0) {
     return null;
   }
 
-  const bestAverage = Math.max(...subjectAverages.map((entry) => entry.average));
+  const bestAverage = Math.max(
+    ...subjectAverages.map((entry) => entry.average)
+  );
 
   // Filter subjects with the best average
   const bestSubjects = subjects.filter((subject) =>
@@ -269,14 +285,18 @@ export function getWorstSubject(
   let subjectAverages = getSubjectAverages(subjects);
 
   if (isMainSubject) {
-    subjectAverages = subjectAverages.filter((subject) => subject.isMainSubject);
+    subjectAverages = subjectAverages.filter(
+      (subject) => subject.isMainSubject
+    );
   }
 
   if (subjectAverages.length === 0) {
     return null;
   }
 
-  const worstAverage = Math.min(...subjectAverages.map((entry) => entry.average));
+  const worstAverage = Math.min(
+    ...subjectAverages.map((entry) => entry.average)
+  );
 
   // Filter subjects with the worst average
   const worstSubjects = subjects.filter((subject) =>
@@ -451,7 +471,15 @@ export function getWorstGrade(subjects: Subject[]): {
 export function getBestGradeInSubject(
   subjects: Subject[],
   subjectId: string
-): { grade: number; outOf: number; subject: Subject; name: string, coefficient: number; passedAt: string; createdAt: string; } | null {
+): {
+  grade: number;
+  outOf: number;
+  subject: Subject;
+  name: string;
+  coefficient: number;
+  passedAt: string;
+  createdAt: string;
+} | null {
   const subject = subjects.find((s) => s.id === subjectId);
   if (!subject) return null;
 
@@ -467,7 +495,15 @@ export function getBestGradeInSubject(
 export function getWorstGradeInSubject(
   subjects: Subject[],
   subjectId: string
-): { grade: number; outOf: number; subject: Subject; name: string, coefficient: number; passedAt: string; createdAt: string; } | null {
+): {
+  grade: number;
+  outOf: number;
+  subject: Subject;
+  name: string;
+  coefficient: number;
+  passedAt: string;
+  createdAt: string;
+} | null {
   const subject = subjects.find((s) => s.id === subjectId);
   if (!subject) return null;
 
@@ -560,7 +596,10 @@ export function subjectImpact(
   const subjectsCopy = deepCloneSubjects(subjects);
 
   // Get the list of subject IDs to exclude (the subject and all its children)
-  const subjectsToExclude = [subjectId, ...getChildren(subjectsCopy, subjectId)];
+  const subjectsToExclude = [
+    subjectId,
+    ...getChildren(subjectsCopy, subjectId),
+  ];
 
   // Compute the general average with the subject included
   const averageWithSubject = average(undefined, subjectsCopy);
@@ -620,7 +659,9 @@ export function createDateRange(
 
 // Improved getTrend function to use actual dates
 // Get trend of the average over time
-export function getTrend(data: { date: Date; average: number | null }[]): number {
+export function getTrend(
+  data: { date: Date; average: number | null }[]
+): number {
   const filteredData = data.filter((entry) => entry.average !== null) as {
     date: Date;
     average: number;
@@ -686,7 +727,7 @@ export function getBestTrendSubject(
   startDate: Date,
   endDate: Date,
   isMainSubject: boolean = false
-): {bestSubject: Subject, bestTrend: number} | null {
+): { bestSubject: Subject; bestTrend: number } | null {
   let bestSubject: Subject | null = null;
   let bestTrend: number | null = null;
 
@@ -730,7 +771,7 @@ export function getWorstTrendSubject(
   startDate: Date,
   endDate: Date,
   isMainSubject: boolean = false
-): {worstSubject: Subject, worstTrend: number} | null {
+): { worstSubject: Subject; worstTrend: number } | null {
   let worstSubject: Subject | null = null;
   let worstTrend: number | null = null;
 
@@ -764,10 +805,10 @@ export function getWorstTrendSubject(
     return null;
   }
   console.log(worstSubject, worstTrend);
-  return { worstSubject, worstTrend }; 
+  return { worstSubject, worstTrend };
 }
 
-// Create a function that returns an array containing each date there is a new grade as parameter it takes the subjects array 
+// Create a function that returns an array containing each date there is a new grade as parameter it takes the subjects array
 export function getGradeDates(subjects: Subject[], subjectId?: string): Date[] {
   const dates: Date[] = [];
   // for each date check if there is a grade where the passedAt date is equal to the date
