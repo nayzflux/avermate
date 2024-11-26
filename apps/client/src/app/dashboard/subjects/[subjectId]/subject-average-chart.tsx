@@ -49,11 +49,11 @@ export default function SubjectAverageChart({
     startDate.setMonth(startDate.getMonth() - 3);
 
     // Generate an array of dates
-    const dates: Date[] = [];
+    const dates = [];
     for (
       let dt = new Date(startDate);
       dt <= endDate;
-      dt.setDate(dt.getDate() + 3)
+      dt.setDate(dt.getDate() + 1)
     ) {
       dates.push(new Date(dt));
     }
@@ -66,18 +66,18 @@ export default function SubjectAverageChart({
     );
     //filter the childrens objects by only the childrens having a depth of 1 superior of the main subject
     childrensObjects = childrensObjects.filter(
-      (child) => mainSubject && child.depth === mainSubject.depth + 1
+      (child) => child.depth === (mainSubject?.depth ?? 0) + 1
     );
 
     const childrenAverage = childrensObjects.map((child) => {
       return {
         id: child.id,
         name: child.name,
-        average: averageOverTime(subjects, child.id, dates),
+        average: averageOverTime(subjects, child.id, startDate, endDate),
       };
     });
 
-    const averages = averageOverTime(subjects, subjectId, dates);
+    const averages = averageOverTime(subjects, subjectId, startDate, endDate);
 
     const chartData = dates.map((date, index) => ({
       date: date.toISOString(),
@@ -255,6 +255,7 @@ export default function SubjectAverageChart({
               fill="#f87171"
               stroke="#f87171"
               dot={false}
+              connectNulls={true}
             />
           ))}
 
@@ -265,6 +266,7 @@ export default function SubjectAverageChart({
             stroke="#2662d9"
             dot={false}
             strokeWidth={3}
+            connectNulls={true}
             //always on top and big stroke
           />
         </LineChart>
