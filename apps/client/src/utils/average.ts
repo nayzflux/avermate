@@ -113,8 +113,8 @@ export function averageOverTime(
   const gradeDates = getGradeDates(subjects, subjectId).filter((date) => date >= normalizedStartDate && date <= normalizedEndDate);
   const dates = createDateRange(normalizedStartDate, normalizedEndDate, 1);
 
-  return dates.map((date) => {
-    if (gradeDates.some((gradeDate) => gradeDate.getTime() === date.getTime())) {
+  return dates.map((date, index) => {
+    if (gradeDates.some((gradeDate) => gradeDate.getTime() === date.getTime()) || index === dates.length - 1) {
       const subjectsWithGrades = subjects.map((subject) => ({
         ...subject,
         grades: subject.grades.filter(

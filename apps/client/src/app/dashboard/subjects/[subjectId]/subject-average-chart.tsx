@@ -83,7 +83,7 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
   for (
     let dt = new Date(startDate);
     dt <= endDate;
-    dt.setDate(dt.getDate() + 3)
+    dt.setDate(dt.getDate() + 1)
   ) {
     dates.push(new Date(dt));
   }
