@@ -1,5 +1,6 @@
 "use client";
 
+import GradeMoreButton from "@/components/buttons/dashboard/grade/grade-more-button";
 import DataCard from "@/components/dashboard/data-card";
 import GradeValue from "@/components/dashboard/grade-value";
 import { Button } from "@/components/ui/button";
@@ -93,8 +94,10 @@ export default function GradeWrapper({ gradeId }: { gradeId: string }) {
         </Button>
       </div>
 
-      <div>
+      <div className="flex justify-between items-center">
         <p className="text-2xl font-semibold">{grade.name}</p>
+
+        <GradeMoreButton gradeId={gradeId} />
       </div>
 
       <Separator />
