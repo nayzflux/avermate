@@ -49,7 +49,7 @@ export default function DataCards({
     if (averages.length === 0) return 0;
 
     const lastValue = averages[averages.length - 1];
-    const firstValue = averages[0];
+    const firstValue = averages.find(value => value !== null);
 
     if (!firstValue) return 0;
     if (!lastValue || lastValue === 0) return 0;
@@ -71,7 +71,7 @@ export default function DataCards({
     worstGrade,
   } = useMemo(() => {
     //calculate the percentage of growth of the average between the first and last date
-    const bestSubject = getBestSubject(subjects);
+    const bestSubject = getBestSubject(subjects, true);
     const bestSubjectAverage = average(bestSubject?.id, subjects);
     const bestSubjectAverageComparaison = getSubjectAverageComparison(
       subjects,
@@ -79,7 +79,7 @@ export default function DataCards({
       true
     );
 
-    const worstSubject = getWorstSubject(subjects);
+    const worstSubject = getWorstSubject(subjects, true);
     const worstSubjectAverage = average(worstSubject?.id, subjects);
     const worstSubjectAverageComparaison = getSubjectAverageComparison(
       subjects,
