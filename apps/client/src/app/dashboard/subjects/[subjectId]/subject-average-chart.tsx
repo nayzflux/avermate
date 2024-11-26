@@ -239,6 +239,7 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
               fill="#f87171"
               stroke="#f87171"
               dot={false}
+              connectNulls={true}
             />
           ))}
           <Line
@@ -248,6 +249,7 @@ export default function SubjectAverageChart({ subjectId }: { subjectId: string }
             stroke="#2662d9"
             dot={false}
             strokeWidth={3}
+            connectNulls={true}
             //always on top and big stroke
           />
         </LineChart>
