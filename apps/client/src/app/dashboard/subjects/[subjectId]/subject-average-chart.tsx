@@ -231,6 +231,7 @@ export default function SubjectAverageChart({
             tickCount={5}
           />
           <ChartTooltip
+            filterNull={false}
             cursor={false}
             content={<ChartTooltipContent />}
             labelFormatter={(value) =>
