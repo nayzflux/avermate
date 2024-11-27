@@ -97,7 +97,7 @@ export default function GradeWrapper({ gradeId }: { gradeId: string }) {
       <div className="flex justify-between items-center">
         <p className="text-2xl font-semibold">{grade.name}</p>
 
-        <GradeMoreButton gradeId={gradeId} />
+        <GradeMoreButton grade={grade} />
       </div>
 
       <Separator />
