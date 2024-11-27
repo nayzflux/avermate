@@ -1,5 +1,6 @@
 "use client";
 
+import AddSubjectButton from "@/components/buttons/dashboard/add-subject-button";
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
@@ -67,18 +68,18 @@ export default function GradesPage() {
 
         <div className="flex gap-4">
           <AddGradeDialog />
+
           <AddSubjectDialog>
-            <Button>
-              <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une matière
-            </Button>
+            <AddSubjectButton />
           </AddSubjectDialog>
+
           <AddPeriodDialog>
-            <Button>
+            <Button variant="outline">
               <PlusCircleIcon className="size-4 mr-2" />
               Ajouter une période
             </Button>
           </AddPeriodDialog>
+
           {/* <MoreButton /> */}
         </div>
       </div>
