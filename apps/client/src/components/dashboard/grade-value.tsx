@@ -19,12 +19,12 @@ export default function GradeValue({
     <div className="flex items-center gap-1 whitespace-nowrap">
       <p
         className={cn(
-          size === "sm" && "text-l font-normal",
-          size === "xl" && "text-3xl font-bold"
+          size === "sm" && "text-lg font-normal",
+          size === "xl" && "text-xl md:text-3xl font-bold"
         )}
       >
         <NumberTicker decimalPlaces={2} value={formatGradeValue(value)} />
-        
+
         <span
           className={cn(
             "text-sm text-muted-foreground align-sub",
