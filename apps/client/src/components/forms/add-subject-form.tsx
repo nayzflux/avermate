@@ -36,7 +36,7 @@ const addSubjectSchema = z.object({
     .string()
     .max(64)
     .optional()
-    .transform((val) => (val === "" ||"none" ? null : val)),
+    .transform((val) => (val === "" || val === "none" ? null : val)),
   isMainSubject: z.boolean().optional(),
   isDisplaySubject: z.boolean().optional(),
 });
@@ -58,8 +58,6 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
       return data.subjects;
     },
   });
-
-  const filteredSubjects = subects?.filter((s: Subject) => s.id !== "");
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["create-Subject"],
@@ -216,9 +214,9 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="none">No parent</SelectItem>
-                    {filteredSubjects?.map((s) => (
-                      <SelectItem key={s.id} value={s.id}>
-                        {s.name}
+                    {subects?.map((subject) => (
+                      <SelectItem key={subject.id} value={subject.id}>
+                        {subject.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
