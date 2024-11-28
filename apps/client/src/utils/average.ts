@@ -50,13 +50,28 @@ function calculateAverageForSubject(
   const childSubjects = subjects.filter((s) => s.parentId === subject.id);
 
   for (const child of childSubjects) {
-    const childAverage = calculateAverageForSubject(child, subjects);
-    if (childAverage !== null) {
-      const childPercentage = childAverage / 20;
-      const childCoefficient = (child.coefficient ?? 100) / 100;
+    if (child.isDisplaySubject) {
+      // Flatten display subjects and process their children
+      const grandChildren = subjects.filter((s) => s.parentId === child.id);
+      for (const grandChild of grandChildren) {
+        const grandChildAverage = calculateAverageForSubject(grandChild, subjects);
+        if (grandChildAverage !== null) {
+          const grandChildPercentage = grandChildAverage / 20;
+          const grandChildCoefficient = (grandChild.coefficient ?? 100) / 100;
 
-      totalWeightedPercentages += childPercentage * childCoefficient;
-      totalCoefficients += childCoefficient;
+          totalWeightedPercentages += grandChildPercentage * grandChildCoefficient;
+          totalCoefficients += grandChildCoefficient;
+        }
+      }
+    } else {
+      const childAverage = calculateAverageForSubject(child, subjects);
+      if (childAverage !== null) {
+        const childPercentage = childAverage / 20;
+        const childCoefficient = (child.coefficient ?? 100) / 100;
+
+        totalWeightedPercentages += childPercentage * childCoefficient;
+        totalCoefficients += childCoefficient;
+      }
     }
   }
 
@@ -79,17 +94,32 @@ function calculateAverageForSubjects(
   let totalCoefficients = 0;
 
   for (const subject of subjects) {
-    const subjectAverage = calculateAverageForSubject(subject, allSubjects);
-    if (subjectAverage !== null) {
-      // Convert the subject's average to a percentage
-      const subjectPercentage = subjectAverage / 20;
+    if (subject.isDisplaySubject) {
+      // Flatten display subjects and process their children
+      const childSubjects = allSubjects.filter((s) => s.parentId === subject.id);
+      for (const child of childSubjects) {
+        const childAverage = calculateAverageForSubject(child, allSubjects);
+        if (childAverage !== null) {
+          const childPercentage = childAverage / 20;
+          const childCoefficient = (child.coefficient ?? 100) / 100;
 
-      // Adjust the subject's coefficient (divide by 100)
-      const subjectCoefficient = (subject.coefficient ?? 100) / 100;
+          totalWeightedPercentages += childPercentage * childCoefficient;
+          totalCoefficients += childCoefficient;
+        }
+      }
+    } else {
+      const subjectAverage = calculateAverageForSubject(subject, allSubjects);
+      if (subjectAverage !== null) {
+        // Convert the subject's average to a percentage
+        const subjectPercentage = subjectAverage / 20;
 
-      // Add the weighted average of the subject
-      totalWeightedPercentages += subjectPercentage * subjectCoefficient;
-      totalCoefficients += subjectCoefficient;
+        // Adjust the subject's coefficient (divide by 100)
+        const subjectCoefficient = (subject.coefficient ?? 100) / 100;
+
+        // Add the weighted average of the subject
+        totalWeightedPercentages += subjectPercentage * subjectCoefficient;
+        totalCoefficients += subjectCoefficient;
+      }
     }
   }
 
