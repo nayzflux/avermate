@@ -19,16 +19,17 @@ const createSubjectSchema = z.object({
     .min(1)
     .max(1000)
     .transform((f) => Math.round(f * 100)),
-  parentId: z.string().min(1).max(64).optional(),
+  parentId: z.string().min(1).max(64).optional().nullable(),
   depth: z.number().int().min(0).max(1000).optional(),
   isMainSubject: z.boolean().optional(),
+  isDisplaySubject: z.boolean().optional(),
 });
 
 app.post("/", zValidator("json", createSubjectSchema), async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   if (!session) throw new HTTPException(401);
 
-  const { name, coefficient, parentId, isMainSubject } = c.req.valid("json");
+  const { name, coefficient, parentId, isMainSubject, isDisplaySubject } = c.req.valid("json");
 
   let depth = 0;
 
@@ -52,6 +53,7 @@ app.post("/", zValidator("json", createSubjectSchema), async (c) => {
       parentId,
       depth,
       isMainSubject: isMainSubject,
+      isDisplaySubject: isDisplaySubject,
       createdAt: new Date(),
       userId: session.user.id,
     })
@@ -118,9 +120,10 @@ const updateSubjectBodySchema = z.object({
     .max(1000)
     .transform((f) => Math.round(f * 100))
     .optional(),
-  parentId: z.string().min(1).max(64).optional(),
+  parentId: z.string().min(1).max(64).optional().nullable(),
   depth: z.number().int().min(0).max(1000).optional(),
   isMainSubject: z.boolean().optional(),
+  isDisplaySubject: z.boolean().optional(),
 });
 
 const updateSubjectParamSchema = z.object({
