@@ -25,6 +25,8 @@ export const subjects = sqliteTable(
 
     isMainSubject: integer({ mode: "boolean" }).default(false).notNull(),
 
+    isDisplaySubject: integer({ mode: "boolean" }).default(false).notNull(),
+
     createdAt: integer({ mode: "timestamp" }).notNull(),
     userId: text()
       .notNull()
@@ -35,7 +37,7 @@ export const subjects = sqliteTable(
       columns: [t.parentId],
       foreignColumns: [t.id],
       name: "subjects_parent_id_fk",
-    }),
+    }).onDelete("cascade").onUpdate("cascade"),
   })
 );
 
@@ -85,6 +87,10 @@ export const grades = sqliteTable("grades", {
   passedAt: integer({ mode: "timestamp" }).notNull(),
   createdAt: integer({ mode: "timestamp" }).notNull(),
 
+  periodId: text()
+    .notNull()
+    .references(() => periods.id, { onUpdate: "cascade", onDelete: "cascade" }),
+
   subjectId: text()
     .notNull()
     .references(() => subjects.id, {
@@ -100,6 +106,10 @@ export const gradesRelations = relations(grades, ({ one }) => ({
   subject: one(subjects, {
     fields: [grades.subjectId],
     references: [subjects.id],
+  }),
+  period: one(periods, {
+    fields: [grades.periodId],
+    references: [periods.id],
   }),
   user: one(users, {
     fields: [grades.userId],

@@ -31,6 +31,7 @@ const createGradeSchema = z.object({
     .transform((f) => Math.round(f * 100)),
   passedAt: z.coerce.date().max(new Date()).optional().default(new Date()),
   subjectId: z.string().min(1).max(64),
+  periodId: z.string().min(1).max(64),
 });
 
 app.post("/", zValidator("json", createGradeSchema), async (c) => {
@@ -40,7 +41,7 @@ app.post("/", zValidator("json", createGradeSchema), async (c) => {
 
   if (!session) throw new HTTPException(401);
 
-  const { name, outOf, value, coefficient, passedAt, subjectId } =
+  const { name, outOf, value, coefficient, passedAt, subjectId, periodId } =
     c.req.valid("json");
 
   const subject = await db.query.subjects.findFirst({
@@ -62,6 +63,7 @@ app.post("/", zValidator("json", createGradeSchema), async (c) => {
       createdAt: new Date(),
       userId: session.user.id,
       subjectId: subject.id,
+      periodId
     })
     .returning()
     .get();
@@ -160,6 +162,7 @@ const updateGradeBodySchema = z.object({
     .optional(),
   passedAt: z.coerce.date().max(new Date()).optional(),
   subjectId: z.string().min(1).max(64).optional(),
+  periodId: z.string().min(1).max(64).optional(),
 });
 
 const updateGradeParamSchema = z.object({

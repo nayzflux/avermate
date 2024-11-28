@@ -10,6 +10,7 @@ export type Subject = {
   depth: number;
   grades: PartialGrade[];
   isMainSubject: boolean;
+  isDisplaySubject: boolean;
 };
 
 export type PartialSubject = Omit<

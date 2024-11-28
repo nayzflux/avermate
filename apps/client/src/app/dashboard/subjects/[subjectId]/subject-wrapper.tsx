@@ -24,6 +24,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import SubjectAverageChart from "./subject-average-chart";
+import SubjectMoreButton from "@/components/buttons/dashboard/subject/subject-more-button";
 
 function SubjectWrapper({ subjectId }: { subjectId: string }) {
   const { data, isPending, isError } = useQuery({
@@ -67,7 +68,10 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
         {isPending ? (
           <Skeleton className="h-8 w-[200px]" />
         ) : (
+            <div className="flex justify-between items-center">
           <p className="text-2xl font-semibold">{data?.name}</p>
+              {data && <SubjectMoreButton subject={data} />}
+              </div>
         )}
       </div>
 

@@ -39,6 +39,7 @@ const updateGradeSchema = z.object({
   coefficient: z.coerce.number().min(0).max(1000),
   passedAt: z.date(),
   subjectId: z.string().min(1).max(64),
+  periodId: z.string().min(1).max(64),
 });
 
 type UpdateGradeSchema = z.infer<typeof updateGradeSchema>;
@@ -65,6 +66,17 @@ export const UpdateGradeForm = ({
     },
   });
 
+  const { data: periods, isError: isPeriodsError } = useQuery({
+    queryKey: ["periods"],
+    queryFn: async () => {
+      const res = await apiClient.get("periods");
+      const data = await res.json<{
+        periods: { id: string; name: string }[];
+      }>();
+      return data.periods;
+    },
+  });
+
   const { mutate, isPending } = useMutation({
     mutationKey: ["update-grade"],
     mutationFn: async ({
@@ -74,6 +86,7 @@ export const UpdateGradeForm = ({
       coefficient,
       passedAt,
       subjectId,
+      periodId,
     }: UpdateGradeSchema) => {
       const res = await apiClient.patch(`grades/${grade.id}`, {
         json: {
@@ -83,6 +96,7 @@ export const UpdateGradeForm = ({
           coefficient,
           passedAt,
           subjectId,
+          periodId,
         },
       });
 
@@ -131,6 +145,7 @@ export const UpdateGradeForm = ({
       coefficient: grade.coefficient / 100,
       passedAt: new Date(grade.passedAt),
       subjectId: grade.subjectId,
+      periodId: grade.periodId,
     },
   });
 
@@ -269,6 +284,37 @@ export const UpdateGradeForm = ({
                     />
                   </PopoverContent>
                 </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="periodId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Période</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue
+                        className="placeholder:text-muted-foreground text-blue-500"
+                        placeholder="Choisir une période"
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {periods?.map((period) => (
+                      <SelectItem key={period.id} value={period.id}>
+                        {period.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

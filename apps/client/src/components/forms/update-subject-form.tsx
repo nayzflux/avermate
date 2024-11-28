@@ -28,27 +28,33 @@ import {
 } from "../ui/select";
 import { Switch } from "@/components/ui/switch";
 
-const addSubjectSchema = z.object({
+const updateSubjectSchema = z.object({
   name: z.string().min(1).max(64),
-  // Coefficient is a float number
   coefficient: z.coerce.number().min(0).max(1000),
   parentId: z
     .string()
     .max(64)
     .optional()
-    .transform((val) => (val === "" || val === "none" ? null : val)),
+    .transform((val) => (val === "none" ? null : val))
+    .nullable(),
   isMainSubject: z.boolean().optional(),
   isDisplaySubject: z.boolean().optional(),
 });
 
-type AddSubjectSchema = z.infer<typeof addSubjectSchema>;
+type UpdateSubjectSchema = z.infer<typeof updateSubjectSchema>;
 
-export const AddSubjectForm = ({ close }: { close: () => void }) => {
+export const UpdateSubjectForm = ({
+  close,
+  subject,
+}: {
+  close: () => void;
+  subject: Subject;
+}) => {
   const toaster = useToast();
 
   const queryClient = useQueryClient();
 
-  const { data: subects, isError } = useQuery({
+  const { data: subjects } = useQuery({
     queryKey: ["subjects"],
     queryFn: async () => {
       const res = await apiClient.get("subjects");
@@ -58,11 +64,20 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
       return data.subjects;
     },
   });
+    
+  const filteredSubjects = subjects?.filter((s) => s.id !== subject.id);
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ["create-Subject"],
-    mutationFn: async ({ name, coefficient, parentId, isMainSubject, isDisplaySubject }: AddSubjectSchema) => {
-      const res = await apiClient.post("subjects", {
+    mutationKey: ["update-subject"],
+    mutationFn: async ({
+      name,
+      coefficient,
+      parentId,
+      isMainSubject,
+      isDisplaySubject,
+    }: UpdateSubjectSchema) => {
+        console.log(parentId);
+      const res = await apiClient.patch(`subjects/${subject.id}`, {
         json: {
           name,
           coefficient,
@@ -71,53 +86,54 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
           isDisplaySubject,
         },
       });
-
-      const data = await res.json();
-      return data;
+        
+      const data = await res.json<{ subject: Subject }>();
+      return data.subject;
     },
-    onSuccess: (data) => {
-      // Send toast notification
+    onSuccess: () => {
       toaster.toast({
-        title: `Matière ajouter avec succès !`,
-        description:
-          "Ajouter des notes à cette matière pour commencer à suivre votre progression.",
+        title: `Matière modifiée avec succès !`,
+        description: "Votre matière a été mise à jour.",
       });
 
       close();
 
       queryClient.invalidateQueries({
-        queryKey: ["Subjects"],
+        queryKey: ["subjects"],
       });
 
       queryClient.invalidateQueries({
-        queryKey: ["subjects"],
+        queryKey: ["subject", subject.id],
       });
     },
 
-    onError: (err) => {
-      // TODO: Error handling
+    onError: () => {
       toaster.toast({
-        title: "Failed to sign-in",
-        description: "Something went wrong. Please try again later.",
+        title: "Erreur",
+        description:
+          "Impossible de mettre à jour la matière. Réessayer plus tard.",
         variant: "destructive",
       });
     },
   });
 
-  const form = useForm<AddSubjectSchema>({
-    resolver: zodResolver(addSubjectSchema),
+  const form = useForm<UpdateSubjectSchema>({
+    resolver: zodResolver(updateSubjectSchema),
     defaultValues: {
-      name: "",
-      parentId: "",
+      name: subject.name,
+      coefficient: subject.coefficient / 100,
+      parentId: subject.parentId ?? "none",
+      isMainSubject: subject.isMainSubject,
+      isDisplaySubject: subject.isDisplaySubject,
     },
   });
 
-  const onSubmit = (values: AddSubjectSchema) => {
+  const onSubmit = (values: UpdateSubjectSchema) => {
     mutate(values);
   };
 
   return (
-    <div className="">
+    <div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -130,11 +146,9 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Nom</FormLabel>
-
                 <FormControl>
-                  <Input type="text" placeholder="Mathématiques" {...field} />
+                  <Input type="text" placeholder={subject.name} {...field} />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -145,18 +159,16 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
             name="coefficient"
             disabled={isPending}
             render={({ field }) => (
-              <FormItem className="col-span-2">
+              <FormItem>
                 <FormLabel>Coefficient</FormLabel>
-
                 <FormControl>
                   <Input
                     type="number"
-                    placeholder="2"
+                    placeholder={(subject.coefficient / 100).toString()}
                     {...field}
                     onChange={(e) => field.onChange(e.target.value)}
                   />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -166,7 +178,7 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
             control={form.control}
             name="isMainSubject"
             render={({ field }) => (
-              <FormItem className="col-span-2 flex flex-row gap-4 items-center">
+              <FormItem className="flex flex-row gap-4 items-center">
                 <FormLabel>Matière principale</FormLabel>
                 <Switch
                   checked={field.value}
@@ -181,7 +193,7 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
             control={form.control}
             name="isDisplaySubject"
             render={({ field }) => (
-              <FormItem className="col-span-2 flex flex-row gap-4 items-center">
+              <FormItem className="flex flex-row gap-4 items-center">
                 <FormLabel>Catégorie</FormLabel>
                 <Switch
                   checked={field.value}
@@ -207,16 +219,16 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue
-                        className="placeholder:text-muted-foreground text-blue-500"
                         placeholder="Choisir une matière parente"
+                        className="text-blue-500 placeholder:text-muted-foreground"
                       />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="none">No parent</SelectItem>
-                    {subects?.map((subject) => (
-                      <SelectItem key={subject.id} value={subject.id}>
-                        {subject.name}
+                    {filteredSubjects?.map((s) => (
+                      <SelectItem key={s.id} value={s.id}>
+                        {s.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -228,7 +240,7 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
 
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2Icon className="animate-spin mr-2 size-4" />}
-            Ajouter une matière
+            Modifier la matière
           </Button>
         </form>
       </Form>
