@@ -1,7 +1,9 @@
-import React from 'react'
+import { ThemeSection } from "./theme-section";
 
 export default function SettingsPage() {
   return (
-    <div>SettingsPage</div>
-  )
+    <main className="flex flex-col gap-8 w-full">
+      <ThemeSection />
+    </main>
+  );
 }
