@@ -20,8 +20,10 @@ import { Button } from "../ui/button";
 
 export default function RevokeSessionButton({
   sessionId,
+  sessionToken,
 }: {
   sessionId: string;
+  sessionToken: string;
 }) {
   const toaster = useToast();
 
@@ -34,7 +36,10 @@ export default function RevokeSessionButton({
   const { mutate, isPending } = useMutation({
     mutationKey: ["revoke-session"],
     mutationFn: async () => {
-      const data = await authClient.revokeSession({ id: sessionId });
+      const data = await authClient.revokeSession({
+        // @ts-ignore
+        token: sessionToken,
+      });
       return data;
     },
     onSuccess: () => {
@@ -44,6 +49,7 @@ export default function RevokeSessionButton({
         description: "Session has been successfully revoked!",
       });
 
+      // @ts-ignore
       if (sessionId === currentSession?.session?.id) {
         router.push("/");
       }

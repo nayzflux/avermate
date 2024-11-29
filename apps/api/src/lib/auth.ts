@@ -10,9 +10,6 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "sqlite",
     usePlural: true,
-
-    // Don't generate ID
-    generateId: false,
   }),
 
   // Client URL
@@ -109,6 +106,8 @@ export const auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: "strict",
     },
+
+    generateId: false,
   },
 });
 

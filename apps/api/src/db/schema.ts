@@ -37,7 +37,9 @@ export const subjects = sqliteTable(
       columns: [t.parentId],
       foreignColumns: [t.id],
       name: "subjects_parent_id_fk",
-    }).onDelete("cascade").onUpdate("cascade"),
+    })
+      .onDelete("cascade")
+      .onUpdate("cascade"),
   })
 );
 
@@ -147,7 +149,11 @@ export const sessions = sqliteTable("sessions", {
     .primaryKey()
     .$defaultFn(() => generateId("ses", 32)),
 
+  token: text().notNull(),
+
   expiresAt: integer({ mode: "timestamp" }).notNull(),
+  createdAt: integer({ mode: "timestamp" }).notNull(),
+  updatedAt: integer({ mode: "timestamp" }).notNull(),
 
   ipAddress: text(),
   userAgent: text(),
@@ -179,10 +185,14 @@ export const accounts = sqliteTable("accounts", {
     .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
 
   accessToken: text(),
+  accessTokenExpiresAt: integer({ mode: "timestamp" }),
   refreshToken: text(),
+  refreshTokenExpiresAt: integer({ mode: "timestamp" }),
+  scope: text(),
   idToken: text(),
 
-  expiresAt: integer({ mode: "timestamp" }),
+  createdAt: integer({ mode: "timestamp" }).notNull(),
+  updatedAt: integer({ mode: "timestamp" }).notNull(),
 
   password: text(),
 });
@@ -203,4 +213,6 @@ export const verifications = sqliteTable("verifications", {
   identifier: text().notNull(),
   value: text().notNull(),
   expiresAt: integer({ mode: "timestamp" }).notNull(),
+  createdAt: integer({ mode: "timestamp" }).notNull(),
+  updatedAt: integer({ mode: "timestamp" }).notNull(),
 });
