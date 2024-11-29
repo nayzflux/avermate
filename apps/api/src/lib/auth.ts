@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { env } from "@/lib/env";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { resend } from "./resend";
 
 export const auth = betterAuth({
   appName: "Avermate",
@@ -30,8 +31,37 @@ export const auth = betterAuth({
     // },
   },
 
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      console.log("Sending email verification to", user.email);
+      await resend.emails.send({
+        from: "Avermate <noreply@test.nayz.fr>",
+        to: user.email,
+        subject: "Verify your email",
+        html: `<p>Hello ${user.name}! Click <a href="${url}">here</a> to verify your email.</p>`,
+      });
+    },
+  },
+
   // User
   user: {
+    changeEmail: {
+      enabled: true,
+      // TODO: Implement email verification
+      sendChangeEmailVerification: async (
+        { user, newEmail, token, url },
+        request
+      ) => {
+        await resend.emails.send({
+          from: "Avermate <noreply@test.nayz.fr>",
+          to: newEmail,
+          subject: "Email update",
+          html: `<p>Hello ${user.name}! Your email has been updated. Click <a href="${url}">here</a> to verify your new email.</p>`,
+        });
+      },
+    },
+
     fields: {
       image: "avatarUrl",
       // updatedAt: "updated_at",
