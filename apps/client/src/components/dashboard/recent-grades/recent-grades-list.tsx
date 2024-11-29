@@ -7,7 +7,11 @@ import React from "react";
 import RecentGradeItem from "./recent-grade-item";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function RecentGradesList() {
+export default function RecentGradesList({
+  periodId,
+}: {
+  periodId: string;
+}) {
   // Fetch recent grades
   const {
     data: recentGrades,
@@ -98,7 +102,7 @@ export default function RecentGradesList() {
   return (
     <div className="grid grid-cols-1 gap-0.5">
       {recentGrades.map((grade) => (
-        <RecentGradeItem key={grade.id} grade={grade} />
+        <RecentGradeItem key={grade.id} grade={grade} periodId={periodId} />
       ))}
     </div>
   );

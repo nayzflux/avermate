@@ -2,10 +2,12 @@ import { db } from "@/db";
 import { subjects } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
-import { and, eq, is, sql } from "drizzle-orm";
+import { and, eq, asc, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
+import { periods } from "@/db/schema";
+
 
 const app = new Hono();
 
@@ -80,6 +82,62 @@ app.get("/", async (c) => {
 
   return c.json({ subjects: allSubjects });
 });
+
+app.get("/organized-by-periods", async (c) => {
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  if (!session) throw new HTTPException(401);
+
+  // Fetch periods for the user
+  const userPeriods = await db.query.periods.findMany({
+    where: eq(periods.userId, session.user.id),
+    orderBy: asc(periods.startAt),
+  });
+
+  if (!userPeriods.length) {
+    return c.json({ periods: [] });
+  }
+
+  // Fetch subjects with grades
+  const subjectsWithGrades = await db.query.subjects.findMany({
+    where: eq(subjects.userId, session.user.id),
+    with: {
+      grades: {
+        columns: {
+          id: true,
+          name: true,
+          value: true,
+          outOf: true,
+          coefficient: true,
+          passedAt: true,
+          periodId: true,
+        },
+      },
+    },
+    orderBy: asc(subjects.name),
+  });
+
+  // Organize subjects by periods
+  const periodsWithSubjects = userPeriods.map((period) => {
+    const subjectsInPeriod = subjectsWithGrades.map((subject) => {
+      const gradesInPeriod = subject.grades.filter(
+        (grade) => grade.periodId === period.id
+      );
+
+      return {
+        ...subject,
+        grades: gradesInPeriod, // Grades for this period, or an empty array
+      };
+    });
+
+    return {
+      period,
+      subjects: subjectsInPeriod,
+    };
+  });
+
+  return c.json({ periods: periodsWithSubjects });
+});
+
 
 /**
  * Get subject by ID

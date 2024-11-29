@@ -7,7 +7,11 @@ import {
 } from "@/components/ui/card";
 import RecentGradesList from "./recent-grades-list";
 
-export default function RecentGradesCard() {
+export default function RecentGradesCard({
+  periodId,
+}: {
+  periodId: string;
+}) {
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
@@ -19,7 +23,7 @@ export default function RecentGradesCard() {
       </CardHeader>
 
       <CardContent>
-        <RecentGradesList />
+        <RecentGradesList periodId={periodId} />
       </CardContent>
     </Card>
   );

@@ -25,8 +25,33 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import SubjectAverageChart from "./subject-average-chart";
 import SubjectMoreButton from "@/components/buttons/dashboard/subject/subject-more-button";
+import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
 
-function SubjectWrapper({ subjectId }: { subjectId: string }) {
+function SubjectWrapper({
+  subjectId,
+  periodId,
+}: {
+  subjectId: string;
+  periodId: string;
+}) {
+  //fetch organized subjects
+  const {
+    data: subjects,
+    isError: isSubjectsPending,
+    isPending: isSubjectsError,
+  } = useQuery({
+    queryKey: ["subjects", "organized-by-periods"],
+    queryFn: async () => {
+      const res = await apiClient.get("subjects/organized-by-periods");
+      let data = await res.json<GetOrganizedSubjectsResponse>();
+
+      // filter the organized subjects by the periodId
+      data.periods = data.periods.filter((period) => period.id === periodId);
+
+      return data.periods[0].subjects;
+    },
+  });
+
   const { data, isPending, isError } = useQuery({
     queryKey: ["subject", subjectId],
     queryFn: async () => {
@@ -36,18 +61,18 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
     },
   });
 
-  const {
-    data: subjects,
-    isPending: isSubjectsPending,
-    isError: isSubjectsError,
-  } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{ subjects: Subject[] }>();
-      return data.subjects;
-    },
-  });
+  // const {
+  //   data: subjects,
+  //   isPending: isSubjectsPending,
+  //   isError: isSubjectsError,
+  // } = useQuery({
+  //   queryKey: ["subjects"],
+  //   queryFn: async () => {
+  //     const res = await apiClient.get("subjects");
+  //     const data = await res.json<{ subjects: Subject[] }>();
+  //     return data.subjects;
+  //   },
+  // });
 
   const router = useRouter();
 
@@ -68,10 +93,10 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
         {isPending ? (
           <Skeleton className="h-8 w-[200px]" />
         ) : (
-            <div className="flex justify-between items-center">
-          <p className="text-2xl font-semibold">{data?.name}</p>
-              {data && <SubjectMoreButton subject={data} />}
-              </div>
+          <div className="flex justify-between items-center">
+            <p className="text-2xl font-semibold">{data?.name}</p>
+            {data && <SubjectMoreButton subject={data} />}
+          </div>
         )}
       </div>
 
@@ -181,7 +206,8 @@ function SubjectWrapper({ subjectId }: { subjectId: string }) {
       <div className="flex flex-col gap-4">
         <h2 className="text-xl font-semibold">Evolution de la moyenne</h2>
 
-        <SubjectAverageChart subjectId={subjectId} />
+        <SubjectAverageChart subjectId={subjectId} periodId={periodId}
+        />
       </div>
 
       {/* Last grades */}

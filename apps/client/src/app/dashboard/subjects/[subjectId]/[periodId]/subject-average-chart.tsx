@@ -17,11 +17,14 @@ import { averageOverTime, getChildren } from "@/utils/average";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { Period } from "@/types/period";
 
 export default function SubjectAverageChart({
   subjectId,
+  periodId,
 }: {
   subjectId: string;
+  periodId: string;
 }) {
   const {
     data: subjects,
@@ -36,17 +39,31 @@ export default function SubjectAverageChart({
     },
   });
 
+  const {
+    data: periods,
+    isError: isPeriodsError,
+    isPending: isPeriodsPending,
+  } = useQuery({
+    queryKey: ["periods"],
+    queryFn: async () => {
+      const res = await apiClient.get("periods");
+      let data = await res.json<{ periods: Period[] }>();
+      // filter the periods by the periodId
+      data.periods = data.periods.filter((period) => period.id === periodId);
+      return data.periods;
+    },
+  });
+
   const { childrenAverage, chartData, chartConfig } = useMemo(() => {
-    if (isPending || isError) {
+    if (isPending || isError || isPeriodsPending || isPeriodsError) {
       return { chartConfig: {} };
     }
 
     const childrensId = getChildren(subjects, subjectId);
 
     // Calculate the start and end dates
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setMonth(startDate.getMonth() - 3);
+    const endDate = new Date(periods[0].endAt);
+    const startDate = new Date(periods[0].startAt);
 
     // Generate an array of dates
     const dates = [];
@@ -104,7 +121,7 @@ export default function SubjectAverageChart({
     } satisfies ChartConfig;
 
     return { childrenAverage, chartData, chartConfig };
-  }, [subjects]);
+  }, [subjects, subjectId]);
 
   if (isPending) {
     return (

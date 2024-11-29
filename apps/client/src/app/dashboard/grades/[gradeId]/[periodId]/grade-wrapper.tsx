@@ -21,8 +21,9 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import {GetOrganizedSubjectsResponse} from "@/types/get-organized-subjects-response";
 
-export default function GradeWrapper({ gradeId }: { gradeId: string }) {
+export default function GradeWrapper({ gradeId, periodId }: { gradeId: string, periodId: string }) {
   const router = useRouter();
 
   const {
@@ -40,14 +41,18 @@ export default function GradeWrapper({ gradeId }: { gradeId: string }) {
 
   const {
     data: subjects,
-    isPending: isSubjectsPending,
-    isError: isSubjectsError,
+    isError: isSubjectsPending,
+    isPending: isSubjectsError,
   } = useQuery({
-    queryKey: ["subjects"],
+    queryKey: ["subjects", "organized-by-periods"],
     queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{ subjects: Subject[] }>();
-      return data.subjects;
+      const res = await apiClient.get("subjects/organized-by-periods");
+      let data = await res.json<GetOrganizedSubjectsResponse>();
+
+      // filter the organized subjects by the periodId
+      data.periods = data.periods.filter((period) => period.id === periodId);
+
+      return data.periods[0].subjects;
     },
   });
 

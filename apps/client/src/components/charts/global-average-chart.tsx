@@ -31,63 +31,69 @@ import { Subject } from "@/types/subject";
 import { Separator } from "@/components/ui/separator";
 import { averageOverTime, average } from "@/utils/average";
 import { startOfDay } from "date-fns";
+import { Period } from "@/types/period";
 
 export const description = "A simple area chart";
 
-export default function GlobalAverageChart() {
-  const {
-    data: subjects,
-    isError,
-    isPending,
-  } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{ subjects: Subject[] }>();
-      return data.subjects;
-    },
-  });
+export default function GlobalAverageChart({
+  subjects,
+  period,
+}: {
+    subjects: Subject[];
+    period: Period[];
+}) {
+  // const {
+  //   data: subjects,
+  //   isError,
+  //   isPending,
+  // } = useQuery({
+  //   queryKey: ["subjects"],
+  //   queryFn: async () => {
+  //     const res = await apiClient.get("subjects");
+  //     const data = await res.json<{ subjects: Subject[] }>();
+  //     return data.subjects;
+  //   },
+  // });
 
-  if (isPending) {
-    return (
-      <Card className="lg:col-span-5">
-        <CardHeader>
-          <CardTitle>Moyenne Générale</CardTitle>
-        </CardHeader>
+  // if (isPending) {
+  //   return (
+  //     <Card className="lg:col-span-5">
+  //       <CardHeader>
+  //         <CardTitle>Moyenne Générale</CardTitle>
+  //       </CardHeader>
 
-        <CardContent>
-          <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
-            {/* Area Chart Section */}
-            <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%]">
-              <CardDescription className="pb-8">
-                Visualiser l'évolution de votre moyenne générale sur ce
-                trimestre
-              </CardDescription>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+  //       <CardContent>
+  //         <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
+  //           {/* Area Chart Section */}
+  //           <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%]">
+  //             <CardDescription className="pb-8">
+  //               Visualiser l'évolution de votre moyenne générale sur ce
+  //               trimestre
+  //             </CardDescription>
+  //           </div>
+  //         </div>
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // }
 
-  if (isError) {
-    return (
-      <Card className="lg:col-span-5">
-        <CardHeader>
-          <CardTitle>Error</CardTitle>
-        </CardHeader>
+  // if (isError) {
+  //   return (
+  //     <Card className="lg:col-span-5">
+  //       <CardHeader>
+  //         <CardTitle>Error</CardTitle>
+  //       </CardHeader>
 
-        <CardContent>
-          <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2"></div>
-        </CardContent>
-      </Card>
-    );
-  }
+  //       <CardContent>
+  //         <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2"></div>
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // }
 
   // Calculate the start and end dates
-  const endDate = new Date();
-  const startDate = new Date();
-  startDate.setMonth(startDate.getMonth() - 3);
+  const endDate = new Date(period.endAt);
+  const startDate = new Date(period.startAt);
 
   // Generate an array of dates
   const dates = [];
@@ -101,7 +107,6 @@ export default function GlobalAverageChart() {
 
   // Calculate the average grades over time
   const averages = averageOverTime(subjects, undefined, startDate, endDate);
-
 
   const chartData = dates.map((date, index) => ({
     date: date.toISOString(),
@@ -151,16 +156,16 @@ export default function GlobalAverageChart() {
 
     // Determine the truncate length based on screen width
 
-  const truncateLength =
-    window.innerWidth < 450
-      ? 5
-      : window.innerWidth < 1024
-      ? 10
-      : window.innerWidth < 1300
-      ? 5
-      : window.innerWidth < 2100
-      ? 9
-      : 12;
+    const truncateLength =
+      window.innerWidth < 450
+        ? 5
+        : window.innerWidth < 1024
+        ? 10
+        : window.innerWidth < 1300
+        ? 5
+        : window.innerWidth < 2100
+        ? 9
+        : 12;
 
     const truncatedLabel =
       payload.value.length > truncateLength

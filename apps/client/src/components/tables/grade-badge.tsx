@@ -7,15 +7,17 @@ export default function GradeBadge({
   value,
   outOf,
   coefficient,
-  id
+  id,
+  periodId,
 }: {
   value: number;
   outOf: number;
   coefficient: number;
   id: string;
+  periodId: string;
 }) {
   return (
-    <Link href={`/dashboard/grades/${id}`}>
+    <Link href={`/dashboard/grades/${id}/${periodId}`}>
     <span
       className={cn(
         "flex items-center justify-center text-center align-middle px-2 py-0.5 bg-muted font-semibold rounded text-sm bg-opacity-40",
