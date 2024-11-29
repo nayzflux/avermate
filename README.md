@@ -15,21 +15,22 @@
 # TODO List
 
 ## Bug Fixes
-- [ ] Fix "Worst subject" functionality (currently broken).
-- [ ] Ensure the back button is consistent across "Subjects" and "Grades".
-- [ ] Address the issue with the "Full Year" category in the notes tab (appears junky).
-- [ ] Verify and correct percentage calculations (e.g., x% lower/higher) and resolve "+infinity" issue.
+- [x] Fix "Worst subject" functionality (currently broken).
+- [x] Ensure the back button is consistent across "Subjects" and "Grades".
+- [x] Address the issue with the "Full Year" category in the notes tab (appears junky).
+- [x] Verify and correct percentage calculations (e.g., x% lower/higher) and resolve "+infinity" issue.
 - [ ] Resolve Next.js errors.
 - [ ] Fix graphical bugs (paddings, inconsistencies, responsiveness, calendar, etc.).
-- [ ] Bug with graph animations when changing pages.
+- [x] Bug with graph animations when changing pages.
 - [ ] Fix hardcoded "You received 3 new grades this week" message (recent grades section).
 - [ ] Improve loading statuses, error statuses, and edge-case handling (e.g., "no items" display).
+- [ ] Improve mobile responsive for grade table and modals
 
 ## Feature Enhancements
 ### Core Functionality
-- [ ] Implement a new system for "Subjects" that ignores coefficients.
+- [x] Implement a new system for "Subjects" that ignores coefficients.
 - [ ] Support periods in grade management.
-- [ ] Allow adding grades to specific periods.
+- [x] Allow adding grades to specific periods.
 - [ ] Enable modification and deletion of grades, subjects, and periods.
 - [ ] Add average calculation for specific categories (e.g., written/oral averages).
 - [ ] Support category creation (update API, forms, and database accordingly).
