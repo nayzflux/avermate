@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { env } from "@/lib/env";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { resend } from "./resend";
 
 export const auth = betterAuth({
   appName: "Avermate",
@@ -10,9 +11,6 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "sqlite",
     usePlural: true,
-
-    // Don't generate ID
-    generateId: false,
   }),
 
   // Client URL
@@ -33,8 +31,40 @@ export const auth = betterAuth({
     // },
   },
 
+  emailVerification: {
+    sendOnSignUp: true,
+
+    autoSignInAfterVerification: true,
+
+    sendVerificationEmail: async ({ user, url }) => {
+      console.info("Sending email verification to", user.id);
+
+      await resend.emails.send({
+        from: "Avermate <noreply@test.nayz.fr>",
+        to: user.email,
+        subject: "Verify your email",
+        html: `<p>Hello ${user.name}! Click <a href="${url}&callbackUrl=${env.CLIENT_URL}/dashboard">here</a> to verify your email.</p>`,
+      });
+    },
+  },
+
   // User
   user: {
+    changeEmail: {
+      enabled: true,
+      // TODO: Implement email verification
+      sendChangeEmailVerification: async ({ user, newEmail, url }) => {
+        console.info("Sending email update request to", user.id);
+
+        await resend.emails.send({
+          from: "Avermate <noreply@test.nayz.fr>",
+          to: newEmail,
+          subject: "Email update",
+          html: `<p>Hello ${user.name}! Your email has been updated. Click <a href="${url}">here</a> to verify your new email. ${url}</p>`,
+        });
+      },
+    },
+
     fields: {
       image: "avatarUrl",
       // updatedAt: "updated_at",
@@ -106,9 +136,7 @@ export const auth = betterAuth({
   advanced: {
     cookiePrefix: "avermate",
 
-    defaultCookieAttributes: {
-      sameSite: "strict",
-    },
+    generateId: false,
   },
 });
 

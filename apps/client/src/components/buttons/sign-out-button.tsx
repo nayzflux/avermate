@@ -16,6 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import { Button } from "../ui/button";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 
 export default function SignOutButton() {
@@ -65,9 +66,11 @@ export default function SignOutButton() {
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Stay in</AlertDialogCancel>
 
-          <AlertDialogAction disabled={isPending} onClick={handleSignOut}>
-            Sign out
-          </AlertDialogAction>
+          <Button variant="destructive" asChild>
+            <AlertDialogAction disabled={isPending} onClick={handleSignOut}>
+              Sign out
+            </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

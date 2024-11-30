@@ -13,9 +13,12 @@ dayjs.extend(relativeTime);
 type Session = {
   id: string;
   userId: string;
+  createdAt: Date;
+  updatedAt: Date;
   expiresAt: Date;
-  ipAddress?: string;
-  userAgent?: string;
+  token: string;
+  ipAddress?: string | null | undefined;
+  userAgent?: string | null | undefined;
 };
 
 export default function SessionList() {
@@ -65,11 +68,13 @@ export default function SessionList() {
                   "items-center px-2 py-1 rounded bg-opacity-30 text-xs",
                   session.expiresAt < new Date()
                     ? "bg-red-600 text-red-500 border-red-500"
-                    : currentSession?.session?.id === session.id
+                    : // @ts-ignore
+                    currentSession?.session?.id === session.id
                     ? "bg-green-600 text-green-600 border-green-500"
                     : "bg-blue-600 text-blue-600 border-blue-500"
                 )}
               >
+                {/* @ts-ignore */}
                 {currentSession?.session?.id === session.id ? (
                   <p>Current</p>
                 ) : session.expiresAt < new Date() ? (
@@ -86,7 +91,10 @@ export default function SessionList() {
             </div>
 
             <div className="flex justify-end">
-              <RevokeSessionButton sessionId={session.id} />
+              <RevokeSessionButton
+                sessionId={session.id}
+                sessionToken={session.token}
+              />
             </div>
           </div>
         ))}

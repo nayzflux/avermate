@@ -12,6 +12,7 @@ export default function EmailSection() {
 
   return (
     <ProfileSection title="Your Email" description="Edit your email address.">
+      {/* @ts-ignore */}
       <UpdateEmailForm defaultEmail={session?.user?.email} />
     </ProfileSection>
   );

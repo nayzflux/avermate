@@ -18,7 +18,9 @@ export default function AvatarSection() {
           className="size-32 lg:size-64"
           size={256}
           src={
+            // @ts-ignore
             session?.user?.image ||
+            // @ts-ignore
             `https://avatar.vercel.sh/${session?.user?.id}?size=256`
           }
         />

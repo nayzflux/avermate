@@ -22,6 +22,9 @@ export const env = createEnv({
     // Google OAuth
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
+
+    // Resend
+    RESEND_API_KEY: z.string(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
