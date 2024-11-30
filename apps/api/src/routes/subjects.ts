@@ -138,6 +138,65 @@ app.get("/organized-by-periods", async (c) => {
   return c.json({ periods: periodsWithSubjects });
 });
 
+// Get a specific subject organized by periods
+const getSubjectByPeriodSchema = z.object({
+  subjectId: z.string().min(1).max(64),
+});
+
+app.get(
+  "/organized-by-periods/:subjectId",
+  zValidator("param", getSubjectByPeriodSchema),
+  async (c) => {
+    const session = await auth.api.getSession({ headers: c.req.raw.headers });
+    if (!session) throw new HTTPException(401);
+
+    const { subjectId } = c.req.valid("param");
+
+    // Fetch the subject with grades
+    const subject = await db.query.subjects.findFirst({
+      where: and(
+        eq(subjects.id, subjectId),
+        eq(subjects.userId, session.user.id)
+      ),
+      with: {
+        grades: {
+          columns: {
+            id: true,
+            name: true,
+            value: true,
+            outOf: true,
+            coefficient: true,
+            passedAt: true,
+            periodId: true,
+          },
+        },
+      },
+    });
+
+    if (!subject) throw new HTTPException(404);
+
+    // Fetch periods for the user
+    const userPeriods = await db.query.periods.findMany({
+      where: eq(periods.userId, session.user.id),
+      orderBy: asc(periods.startAt),
+    });
+
+    // Organize grades of the subject by periods
+    const periodsWithGrades = userPeriods.map((period) => {
+      const gradesInPeriod = subject.grades.filter(
+        (grade) => grade.periodId === period.id
+      );
+
+      return {
+        period,
+        grades: gradesInPeriod,
+      };
+    });
+
+    return c.json({ subject: { ...subject, periods: periodsWithGrades } });
+  }
+);
+
 
 /**
  * Get subject by ID

@@ -26,53 +26,18 @@ import { useRouter } from "next/navigation";
 import SubjectAverageChart from "./subject-average-chart";
 import SubjectMoreButton from "@/components/buttons/dashboard/subject/subject-more-button";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
+import { Period } from "@/types/period";
 
 function SubjectWrapper({
-  subjectId,
-  periodId,
+  subjects,
+  subject,
+  period,
+
 }: {
-  subjectId: string;
-  periodId: string;
+    subjects: Subject[];
+    subject: Subject;
+    period: Period;
 }) {
-  //fetch organized subjects
-  const {
-    data: subjects,
-    isError: isSubjectsPending,
-    isPending: isSubjectsError,
-  } = useQuery({
-    queryKey: ["subjects", "organized-by-periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects/organized-by-periods");
-      let data = await res.json<GetOrganizedSubjectsResponse>();
-
-      // filter the organized subjects by the periodId
-      data.periods = data.periods.filter((period) => period.id === periodId);
-
-      return data.periods[0].subjects;
-    },
-  });
-
-  const { data, isPending, isError } = useQuery({
-    queryKey: ["subject", subjectId],
-    queryFn: async () => {
-      const res = await apiClient.get(`subjects/${subjectId}`);
-      const data = await res.json<{ subject: Subject }>();
-      return data.subject;
-    },
-  });
-
-  // const {
-  //   data: subjects,
-  //   isPending: isSubjectsPending,
-  //   isError: isSubjectsError,
-  // } = useQuery({
-  //   queryKey: ["subjects"],
-  //   queryFn: async () => {
-  //     const res = await apiClient.get("subjects");
-  //     const data = await res.json<{ subjects: Subject[] }>();
-  //     return data.subjects;
-  //   },
-  // });
 
   const router = useRouter();
 
@@ -90,14 +55,10 @@ function SubjectWrapper({
       </div>
 
       <div>
-        {isPending ? (
-          <Skeleton className="h-8 w-[200px]" />
-        ) : (
-          <div className="flex justify-between items-center">
-            <p className="text-2xl font-semibold">{data?.name}</p>
-            {data && <SubjectMoreButton subject={data} />}
-          </div>
-        )}
+        <div className="flex justify-between items-center">
+          <p className="text-2xl font-semibold">{subject?.name}</p>
+          {subject && <SubjectMoreButton subject={subject} />}
+        </div>
       </div>
 
       <Separator />
@@ -107,97 +68,89 @@ function SubjectWrapper({
         {/* Subject average */}
         <DataCard
           title="Moyenne"
-          description={`Votre moyenne actuelle en ${data?.name}`}
+          description={`Votre moyenne actuelle en ${subject?.name}`}
           icon={AcademicCapIcon}
         >
-          {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
-            <GradeValue
-              value={(average(data?.id, subjects) || 0) * 100}
-              outOf={2000}
-            />
-          )}
+          <GradeValue
+            value={(average(subject?.id, subjects) || 0) * 100}
+            outOf={2000}
+          />
         </DataCard>
 
         {/* Subject impact on average */}
         <DataCard
           title="Impact sur la moyenne"
-          description={`Visualisez l'impact de ${data?.name} sur votre moyenne générale`}
+          description={`Visualisez l'impact de ${subject?.name} sur votre moyenne générale`}
           icon={ArrowUpCircleIcon}
         >
-          {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
-            <p className="text-3xl font-bold">
-              {formatDiff(subjectImpact(subjectId, subjects)?.difference || 0)}
-            </p>
-          )}
+          <p className="text-3xl font-bold">
+            {formatDiff(subjectImpact(subject.id, subjects)?.difference || 0)}
+          </p>
         </DataCard>
 
         {/* Coeff */}
         <DataCard
           title="Coefficient"
-          description={`Coefficient de ${data?.name}`}
+          description={`Coefficient de ${subject?.name}`}
           icon={VariableIcon}
         >
           <p className="text-3xl font-bold">
-            {formatGradeValue(data?.coefficient || 0)}
+            {formatGradeValue(subject?.coefficient || 0)}
           </p>
         </DataCard>
 
         {/* Best grade */}
-        {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
-          <DataCard
-            title="Meilleure note"
-            description={`Votre plus belle performance en ${(() => {
-              const bestGradeObj = getBestGradeInSubject(subjects, subjectId);
+        <DataCard
+          title="Meilleure note"
+          description={`Votre plus belle performance en ${(() => {
+            const bestGradeObj = getBestGradeInSubject(subjects, subject.id);
+            if (bestGradeObj && bestGradeObj.grade !== undefined) {
+              return bestGradeObj.subject.name;
+            } else {
+              return "N/A";
+            }
+          })()}`}
+          icon={SparklesIcon}
+        >
+          <p className="text-3xl font-bold">
+            {(() => {
+              const bestGradeObj = getBestGradeInSubject(subjects, subject.id);
               if (bestGradeObj && bestGradeObj.grade !== undefined) {
-                return bestGradeObj.subject.name;
+                return bestGradeObj.grade / 100;
               } else {
                 return "N/A";
               }
-            })()}`}
-            icon={SparklesIcon}
-          >
-            <p className="text-3xl font-bold">
-              {(() => {
-                const bestGradeObj = getBestGradeInSubject(subjects, subjectId);
-                if (bestGradeObj && bestGradeObj.grade !== undefined) {
-                  return bestGradeObj.grade / 100;
-                } else {
-                  return "N/A";
-                }
-              })()}
-            </p>
-          </DataCard>
-        )}
+            })()}
+          </p>
+        </DataCard>
 
         {/* Worst grade */}
-        {!isPending && !isError && !isSubjectsPending && !isSubjectsError && (
-          <DataCard
-            title="Pire note"
-            description={`Votre moins bonne performance en ${(() => {
-              const worstGradeObj = getWorstGradeInSubject(subjects, subjectId);
+        <DataCard
+          title="Pire note"
+          description={`Votre moins bonne performance en ${(() => {
+            const worstGradeObj = getWorstGradeInSubject(subjects, subject.id);
+            if (worstGradeObj && worstGradeObj.grade !== undefined) {
+              return worstGradeObj.subject.name;
+            } else {
+              return "N/A";
+            }
+          })()}`}
+          icon={SparklesIcon}
+        >
+          <p className="text-3xl font-bold">
+            {(() => {
+              const worstGradeObj = getWorstGradeInSubject(
+                subjects,
+                subject.id
+              );
               if (worstGradeObj && worstGradeObj.grade !== undefined) {
-                return worstGradeObj.subject.name;
+                return worstGradeObj.grade / 100;
               } else {
                 return "N/A";
               }
-            })()}`}
-            icon={SparklesIcon}
-          >
-            <p className="text-3xl font-bold">
-              {(() => {
-                const worstGradeObj = getWorstGradeInSubject(
-                  subjects,
-                  subjectId
-                );
-                if (worstGradeObj && worstGradeObj.grade !== undefined) {
-                  return worstGradeObj.grade / 100;
-                } else {
-                  return "N/A";
-                }
-              })()}
-            </p>
-          </DataCard>
-        )}
+            })()}
+          </p>
+        </DataCard>
       </div>
 
       <Separator />
@@ -206,7 +159,11 @@ function SubjectWrapper({
       <div className="flex flex-col gap-4">
         <h2 className="text-xl font-semibold">Evolution de la moyenne</h2>
 
-        <SubjectAverageChart subjectId={subjectId} periodId={periodId}
+        <SubjectAverageChart
+          subjectId={subject.id}
+          periods={period}
+          subject={subject}
+          subjects={subjects}
         />
       </div>
 

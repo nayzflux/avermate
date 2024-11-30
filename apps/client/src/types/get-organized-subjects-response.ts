@@ -6,8 +6,7 @@ export type GetOrganizedSubjectsResponse = {
   periods: {
     period: Period;
     subjects: {
-      subject: Subject;
-        grades: Grade[];
+      subject: Subject[];
     }[];
   }[];
 };

@@ -23,40 +23,48 @@ import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import {GetOrganizedSubjectsResponse} from "@/types/get-organized-subjects-response";
 
-export default function GradeWrapper({ gradeId, periodId }: { gradeId: string, periodId: string }) {
+export default function GradeWrapper({ 
+  subjects,
+  grade,
+  periodId,
+}: {
+  subjects: Subject[];
+  grade: Grade;
+  periodId: string;
+}) {
   const router = useRouter();
 
-  const {
-    data: grade,
-    isPending,
-    isError,
-  } = useQuery({
-    queryKey: ["grades", gradeId],
-    queryFn: async () => {
-      const res = await apiClient.get(`grades/${gradeId}`);
-      const data = await res.json<{ grade: Grade }>();
-      return data.grade;
-    },
-  });
+  // const {
+  //   data: grade,
+  //   isPending,
+  //   isError,
+  // } = useQuery({
+  //   queryKey: ["grades", gradeId],
+  //   queryFn: async () => {
+  //     const res = await apiClient.get(`grades/${gradeId}`);
+  //     const data = await res.json<{ grade: Grade }>();
+  //     return data.grade;
+  //   },
+  // });
 
-  const {
-    data: subjects,
-    isError: isSubjectsPending,
-    isPending: isSubjectsError,
-  } = useQuery({
-    queryKey: ["subjects", "organized-by-periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects/organized-by-periods");
-      let data = await res.json<GetOrganizedSubjectsResponse>();
+  // const {
+  //   data: subjects,
+  //   isError: isSubjectsPending,
+  //   isPending: isSubjectsError,
+  // } = useQuery({
+  //   queryKey: ["subjects", "organized-by-periods"],
+  //   queryFn: async () => {
+  //     const res = await apiClient.get("subjects/organized-by-periods");
+  //     let data = await res.json<GetOrganizedSubjectsResponse>();
 
-      // filter the organized subjects by the periodId
-      data.periods = data.periods.filter((period) => period.id === periodId);
+  //     // filter the organized subjects by the periodId
+  //     data.periods = data.periods.filter((period) => period.id === periodId);
 
-      return data.periods[0].subjects;
-    },
-  });
+  //     return data.periods[0].subjects;
+  //   },
+  // });
 
-  const gradeParents = useMemo(() => {
+  const gradeParents = () => {
     if (!grade || !subjects) {
       return [];
     }
@@ -68,22 +76,6 @@ export default function GradeWrapper({ gradeId, periodId }: { gradeId: string, p
     );
 
     return gradeParents;
-  }, [grade, subjects]);
-
-  if (isPending) {
-    return (
-      <div>
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div>
-        <p>There was an error</p>
-      </div>
-    );
   }
 
   return (
@@ -159,7 +151,7 @@ export default function GradeWrapper({ gradeId, periodId }: { gradeId: string, p
               )}
           </p>
         </DataCard>
-        {gradeParents.map((parent) => (
+        {gradeParents().map((parent: Subject) => (
           <DataCard
             key={parent.id}
             title={`Impact sur la moyenne de ${parent.name}`}
