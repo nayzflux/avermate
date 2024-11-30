@@ -1,6 +1,7 @@
 "use client";
 
 import { apiClient } from "@/lib/api";
+import { authClient } from "@/lib/auth";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
 import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";

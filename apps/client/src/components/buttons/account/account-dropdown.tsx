@@ -17,6 +17,7 @@ import {
   UserIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { LuGithub } from "react-icons/lu";
 import SignOutButton from "../sign-out-button";
 import ThemeSwitchButton from "../theme-switch-button";
@@ -24,6 +25,14 @@ import Avatar from "./avatar";
 
 export default function AccountDropdown() {
   const { data, isPending } = authClient.useSession();
+  const router = useRouter();
+
+  // @ts-ignore
+  if (!data && !isPending) {
+    router.push("/auth/sign-in");
+
+    return "Not Logged";
+  }
 
   return (
     <DropdownMenu>
