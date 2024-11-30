@@ -9,7 +9,7 @@ import { apiClient } from "@/lib/api";
 import { Grade } from "@/types/grade";
 import { Subject } from "@/types/subject";
 import { getParents, gradeImpact } from "@/utils/average";
-import { formatDate, formatDiff } from "@/utils/format";
+import { formatDate } from "@/utils/format";
 import {
   AcademicCapIcon,
   ArrowLeftIcon,
@@ -22,6 +22,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import {GetOrganizedSubjectsResponse} from "@/types/get-organized-subjects-response";
+import { DifferenceBadge } from "./difference-badge";
 
 export default function GradeWrapper({ 
   subjects,
@@ -99,7 +100,7 @@ export default function GradeWrapper({
 
       <Separator />
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3  gap-4">
         <DataCard
           title="Note obtenue"
           description={`Votre note obtenue lors de cette évaluation sur ${
@@ -115,14 +116,16 @@ export default function GradeWrapper({
           description="La matière de cette évaluation"
           icon={AcademicCapIcon}
         >
-          <p className="text-4xl font-bold">{grade.subject.name}</p>
+          <p className="texl-xl md:text-3xl font-bold">{grade.subject.name}</p>
         </DataCard>
         <DataCard
           title="Coefficient"
           description="Le coefficient de cette évaluation"
           icon={VariableIcon}
         >
-          <p className="text-4xl font-bold">{grade.coefficient / 100}</p>
+          <p className="texl-xl md:text-3xl font-bold">
+            {grade.coefficient / 100}
+          </p>
         </DataCard>
 
         <DataCard
@@ -130,12 +133,13 @@ export default function GradeWrapper({
           description="Visualisez l'impact de cette évaluation sur votre moyenne générale"
           icon={ArrowUpCircleIcon}
         >
-          <p className="text-4xl font-bold">
-            {subjects &&
-              formatDiff(
-                gradeImpact(grade.id, undefined, subjects)?.difference || 0
-              )}
-          </p>
+          <DifferenceBadge
+            diff={
+              subjects
+                ? gradeImpact(grade.id, undefined, subjects)?.difference || 0
+                : 0
+            }
+          />
         </DataCard>
 
         <DataCard
@@ -143,13 +147,14 @@ export default function GradeWrapper({
           description={`Visualisez l'impact de cette évaluation sur votre moyenne de la matière ${grade.subject.name}`}
           icon={ArrowUpCircleIcon}
         >
-          <p className="text-4xl font-bold">
-            {subjects &&
-              formatDiff(
-                gradeImpact(grade.id, grade.subjectId, subjects)?.difference ||
-                  0
-              )}
-          </p>
+          <DifferenceBadge
+            diff={
+              subjects
+                ? gradeImpact(grade.id, grade.subjectId, subjects)
+                    ?.difference || 0
+                : 0
+            }
+          />
         </DataCard>
         {gradeParents().map((parent: Subject) => (
           <DataCard
@@ -158,29 +163,38 @@ export default function GradeWrapper({
             description={`Visualisez l'impact de cette évaluation sur votre moyenne de la matière ${parent.name}`}
             icon={ArrowUpCircleIcon}
           >
-            <p className="text-4xl font-bold">
+            {/* <p className="text-3xl font-bold">
               {subjects &&
                 formatDiff(
                   gradeImpact(grade.id, parent.id, subjects)?.difference || 0
                 )}
-            </p>
+            </p> */}
+            <DifferenceBadge
+              diff={
+                subjects
+                  ? gradeImpact(grade.id, parent.id, subjects)?.difference || 0
+                  : 0
+              }
+            />
           </DataCard>
         ))}
+
         <DataCard
-          title="Date de l'évaluation"
+          title="Date de passage"
           description="La date de passage de cette évaluation"
           icon={CalendarIcon}
         >
-          <p className="text-4xl font-bold">
+          <p className="texl-xl md:text-3xl font-bold">
             {formatDate(new Date(grade.passedAt))}
           </p>
         </DataCard>
+
         <DataCard
           title="Date d'ajout"
           description="La date d'ajout de cette évaluation"
           icon={CalendarIcon}
         >
-          <p className="text-4xl font-bold">
+          <p className="texl-xl md:text-3xl font-bold">
             {formatDate(new Date(grade.createdAt))}
           </p>
         </DataCard>
