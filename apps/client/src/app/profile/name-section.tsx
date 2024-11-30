@@ -16,6 +16,7 @@ export default function NameSection() {
       title="Your Name"
       description="Edit how your appear on Avermate."
     >
+      {/* @ts-ignore */}
       <UpdateNameForm defaultName={session?.user?.name} />
     </ProfileSection>
   );

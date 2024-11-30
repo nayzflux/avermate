@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
+import { env } from "@/lib/env";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
@@ -23,7 +24,11 @@ const updateEmailSchema = z.object({
 
 type UpdateEmailSchema = z.infer<typeof updateEmailSchema>;
 
-export const UpdateEmailForm = ({ defaultEmail }: { defaultEmail?: string }) => {
+export const UpdateEmailForm = ({
+  defaultEmail,
+}: {
+  defaultEmail?: string;
+}) => {
   const toaster = useToast();
 
   const { mutate, isPending } = useMutation({
@@ -31,6 +36,7 @@ export const UpdateEmailForm = ({ defaultEmail }: { defaultEmail?: string }) => 
     mutationFn: async ({ email }: UpdateEmailSchema) => {
       const data = await authClient.changeEmail({
         newEmail: email,
+        callbackURL: env.NEXT_PUBLIC_CLIENT_URL + "/profile",
       });
       return data;
     },
