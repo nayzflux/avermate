@@ -66,7 +66,7 @@ export default function RevokeSessionButton({
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger>
+      <AlertDialogTrigger asChild>
         <Button variant="destructive">Revoke</Button>
       </AlertDialogTrigger>
 

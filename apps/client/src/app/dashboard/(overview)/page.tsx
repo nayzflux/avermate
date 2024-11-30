@@ -9,6 +9,7 @@ import { apiClient } from "@/lib/api";
 import { authClient } from "@/lib/auth";
 import { GetPeriodsResponse } from "@/types/get-periods-response";
 import { GetSubjectsResponse } from "@/types/get-subjects-response";
+import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
 import { useQuery } from "@tanstack/react-query";
 import DataCards from "./data-cards";
 
@@ -46,8 +47,22 @@ export default function OverviewPage() {
     },
   });
 
+  // fetch subjects but organized by period
+const {
+  data: organizedSubjects,
+  isError: organizedSubjectsIsError,
+  isPending: organizedSubjectsIsPending,
+} = useQuery({
+  queryKey: ["subjects", "organized-by-periods"],
+  queryFn: async () => {
+    const res = await apiClient.get("subjects/organized-by-periods");
+    const data = await res.json<GetOrganizedSubjectsResponse>();
+    return data.periods;
+  },
+});
+
   // Loading State
-  if (isPending || periodsIsPending) {
+  if (isPending || periodsIsPending || organizedSubjectsIsPending) {
     return <div>Loading...</div>;
   }
 
@@ -60,6 +75,7 @@ export default function OverviewPage() {
       </div>
     );
   }
+
 
   return (
     <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
@@ -110,14 +126,33 @@ export default function OverviewPage() {
               )
               .map((period) => (
                 <TabsContent key={period.id} value={period.id}>
-                  <DataCards period={period} subjects={subjects} />
+                  <DataCards
+                    period={period}
+                    subjects={
+                      organizedSubjects?.find((p) => p.period.id === period.id)
+                        ?.subjects || []
+                    }
+                  />
 
                   <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
                     {/* Evolution de la moyenne générale */}
-                    <GlobalAverageChart />
+                    <GlobalAverageChart subjects={
+                      organizedSubjects?.find((p) => p.period.id === period.id)
+                        ?.subjects || []
+                    }
+                    
+                      period={
+                        organizedSubjects?.find((p) => p.period.id === period.id)
+                          ?.period || []
+                      }
+                      
+                    />
 
                     {/* Dernières notes */}
-                    <RecentGradesCard />
+                    <RecentGradesCard periodId={
+                      organizedSubjects?.find((p) => p.period.id === period.id)
+                        ?.period.id || ""
+                    } />
                   </div>
                 </TabsContent>
               ))}

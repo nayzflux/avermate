@@ -17,36 +17,47 @@ import { averageOverTime, getChildren } from "@/utils/average";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { Period } from "@/types/period";
 
 export default function SubjectAverageChart({
   subjectId,
+  periods,
+  subject,
+  subjects,
 }: {
   subjectId: string;
+    periods: Period[];
+    subject: Subject;
+  subjects: Subject[];
 }) {
-  const {
-    data: subjects,
-    isError,
-    isPending,
-  } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{ subjects: Subject[] }>();
-      return data.subjects;
-    },
-  });
 
-  const { childrenAverage, chartData, chartConfig } = useMemo(() => {
-    if (isPending || isError) {
-      return { chartConfig: {} };
-    }
+  // const {
+  //   data: periods,
+  //   isError: isPeriodsError,
+  //   isPending: isPeriodsPending,
+  // } = useQuery({
+  //   queryKey: ["periods"],
+  //   queryFn: async () => {
+  //     const res = await apiClient.get("periods");
+  //     let data = await res.json<{ periods: Period[] }>();
+  //     // filter the periods by the periodId
+  //     data.periods = data.periods.filter((period) => period.id === periodId);
+  //     return data.periods;
+  //   },
+  // });
+
+  console.log(subjects);
+
+  const { childrenAverage, chartData, chartConfig } = (() => {
+    // if (isPending || isError || isPeriodsPending || isPeriodsError) {
+    //   return { chartConfig: {} };
+    // }
 
     const childrensId = getChildren(subjects, subjectId);
 
     // Calculate the start and end dates
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setMonth(startDate.getMonth() - 3);
+    const endDate = new Date(periods[0]?.endAt);
+    const startDate = new Date(periods[0]?.startAt);
 
     // Generate an array of dates
     const dates = [];
@@ -104,43 +115,43 @@ export default function SubjectAverageChart({
     } satisfies ChartConfig;
 
     return { childrenAverage, chartData, chartConfig };
-  }, [subjects]);
+  })();
 
-  if (isPending) {
-    return (
-      <Card className="lg:col-span-5">
-        <CardHeader>
-          <CardTitle>Moyenne Générale</CardTitle>
-        </CardHeader>
+  // if (isPending) {
+  //   return (
+  //     <Card className="lg:col-span-5">
+  //       <CardHeader>
+  //         <CardTitle>Moyenne Générale</CardTitle>
+  //       </CardHeader>
 
-        <CardContent>
-          <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
-            {/* Area Chart Section */}
-            <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%]">
-              <CardDescription className="pb-8">
-                Visualiser l'évolution de votre moyenne générale sur ce
-                trimestre
-              </CardDescription>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+  //       <CardContent>
+  //         <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
+  //           {/* Area Chart Section */}
+  //           <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%]">
+  //             <CardDescription className="pb-8">
+  //               Visualiser l'évolution de votre moyenne générale sur ce
+  //               trimestre
+  //             </CardDescription>
+  //           </div>
+  //         </div>
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // }
 
-  if (isError) {
-    return (
-      <Card className="lg:col-span-5">
-        <CardHeader>
-          <CardTitle>Error</CardTitle>
-        </CardHeader>
+  // if (isError) {
+  //   return (
+  //     <Card className="lg:col-span-5">
+  //       <CardHeader>
+  //         <CardTitle>Error</CardTitle>
+  //       </CardHeader>
 
-        <CardContent>
-          <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2"></div>
-        </CardContent>
-      </Card>
-    );
-  }
+  //       <CardContent>
+  //         <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2"></div>
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // }
 
   return (
     <Card className="p-4">

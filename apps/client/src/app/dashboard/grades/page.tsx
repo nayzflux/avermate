@@ -13,6 +13,7 @@ import { apiClient } from "@/lib/api";
 import { Period } from "@/types/period";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
+import { Subject } from "@/types/subject";
 
 export default function GradesPage() {
   const {
@@ -56,6 +57,22 @@ export default function GradesPage() {
     },
   });
 
+  // fetch subjects but organized by period
+  const {
+    data: organizedSubjects,
+    isError: organizedSubjectsIsError,
+    isPending: organizedSubjectsIsPending,
+  } = useQuery({
+    queryKey: ["subjects", "organized-by-periods"],
+    queryFn: async () => {
+      const res = await apiClient.get("subjects/organized-by-periods");
+      const data = await res.json<{
+        periods: { period: Period; subjects: Subject[] }[];
+      }>();
+      return data.periods;
+    },
+  });
+
   // Loading State
   if (periodsIsPending) {
     return <div>Loading...</div>;
@@ -70,7 +87,10 @@ export default function GradesPage() {
           <AddGradeDialog />
 
           <AddSubjectDialog>
-            <AddSubjectButton />
+            <Button variant="outline">
+              <PlusCircleIcon className="size-4 mr-2" />
+              Ajouter une matière
+            </Button>
           </AddSubjectDialog>
 
           <AddPeriodDialog>
@@ -129,7 +149,13 @@ export default function GradesPage() {
             )
             .map((period) => (
               <TabsContent key={period.id} value={period.id}>
-                <GradesTable />
+                <GradesTable
+                  subjects={
+                    organizedSubjects?.find((p) => p.period.id === period.id)
+                      ?.subjects || []
+                  }
+                  periodId={period.id}
+                />
               </TabsContent>
             ))}
       </Tabs>

@@ -36,7 +36,7 @@ export default function UpdateGradeDialog({ gradeId }: { gradeId: string }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button variant="ghost">
           <PencilIcon className="size-4 mr-2" />
           Modifier la note

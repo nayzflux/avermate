@@ -15,7 +15,7 @@ import { Subject } from "@/types/subject";
 export default function SubjectMoreButton({ subject }: { subject: Subject }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <Button size="icon" variant="outline">
           <EllipsisVerticalIcon className="size-4" />
         </Button>

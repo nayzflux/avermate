@@ -21,38 +21,51 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import {GetOrganizedSubjectsResponse} from "@/types/get-organized-subjects-response";
 import { DifferenceBadge } from "./difference-badge";
 
-export default function GradeWrapper({ gradeId }: { gradeId: string }) {
+export default function GradeWrapper({ 
+  subjects,
+  grade,
+  periodId,
+}: {
+  subjects: Subject[];
+  grade: Grade;
+  periodId: string;
+}) {
   const router = useRouter();
 
-  const {
-    data: grade,
-    isPending,
-    isError,
-  } = useQuery({
-    queryKey: ["grades", gradeId],
-    queryFn: async () => {
-      const res = await apiClient.get(`grades/${gradeId}`);
-      const data = await res.json<{ grade: Grade }>();
-      return data.grade;
-    },
-  });
+  // const {
+  //   data: grade,
+  //   isPending,
+  //   isError,
+  // } = useQuery({
+  //   queryKey: ["grades", gradeId],
+  //   queryFn: async () => {
+  //     const res = await apiClient.get(`grades/${gradeId}`);
+  //     const data = await res.json<{ grade: Grade }>();
+  //     return data.grade;
+  //   },
+  // });
 
-  const {
-    data: subjects,
-    isPending: isSubjectsPending,
-    isError: isSubjectsError,
-  } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{ subjects: Subject[] }>();
-      return data.subjects;
-    },
-  });
+  // const {
+  //   data: subjects,
+  //   isError: isSubjectsPending,
+  //   isPending: isSubjectsError,
+  // } = useQuery({
+  //   queryKey: ["subjects", "organized-by-periods"],
+  //   queryFn: async () => {
+  //     const res = await apiClient.get("subjects/organized-by-periods");
+  //     let data = await res.json<GetOrganizedSubjectsResponse>();
 
-  const gradeParents = useMemo(() => {
+  //     // filter the organized subjects by the periodId
+  //     data.periods = data.periods.filter((period) => period.id === periodId);
+
+  //     return data.periods[0].subjects;
+  //   },
+  // });
+
+  const gradeParents = () => {
     if (!grade || !subjects) {
       return [];
     }
@@ -64,22 +77,6 @@ export default function GradeWrapper({ gradeId }: { gradeId: string }) {
     );
 
     return gradeParents;
-  }, [grade, subjects]);
-
-  if (isPending) {
-    return (
-      <div>
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div>
-        <p>There was an error</p>
-      </div>
-    );
   }
 
   return (
@@ -159,8 +156,7 @@ export default function GradeWrapper({ gradeId }: { gradeId: string }) {
             }
           />
         </DataCard>
-
-        {gradeParents.map((parent) => (
+        {gradeParents().map((parent: Subject) => (
           <DataCard
             key={parent.id}
             title={`Impact sur la moyenne de ${parent.name}`}

@@ -18,7 +18,7 @@ export default function AddGradeDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button>
           <PlusCircleIcon className="size-4 mr-2" />
           Ajouter une note

@@ -7,7 +7,11 @@ import React from "react";
 import RecentGradeItem from "./recent-grade-item";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function RecentGradesList() {
+export default function RecentGradesList({
+  periodId,
+}: {
+  periodId: string;
+}) {
   // Fetch recent grades
   const {
     data: recentGrades,
@@ -30,60 +34,60 @@ export default function RecentGradesList() {
     <div>
       <div className="flex items-center justify-between gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2">
         <div className="flex flex-col gap-0.5 w-[80%]">
-          <p className="font-semibold">
+          <div className="font-semibold">
             <Skeleton className="w-36 h-6" />
-          </p>
-          <p className="text-sm text-muted-foreground truncate">
+          </div>
+          <div className="text-sm text-muted-foreground truncate">
             <Skeleton className="w-24 h-5" />
-          </p>
+          </div>
         </div>
 
         <Skeleton className="w-20 h-6" />
       </div>
       <div className="flex items-center justify-between gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2">
         <div className="flex flex-col gap-0.5 w-[80%]">
-          <p className="font-semibold">
+          <div className="font-semibold">
             <Skeleton className="w-36 h-6" />
-          </p>
-          <p className="text-sm text-muted-foreground truncate">
+          </div>
+          <div className="text-sm text-muted-foreground truncate">
             <Skeleton className="w-24 h-5" />
-          </p>
+          </div>
         </div>
 
         <Skeleton className="w-20 h-6" />
       </div>
       <div className="flex items-center justify-between gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2">
         <div className="flex flex-col gap-0.5 w-[80%]">
-          <p className="font-semibold">
+          <div className="font-semibold">
             <Skeleton className="w-36 h-6" />
-          </p>
-          <p className="text-sm text-muted-foreground truncate">
+          </div>
+          <div className="text-sm text-muted-foreground truncate">
             <Skeleton className="w-24 h-5" />
-          </p>
+          </div>
         </div>
 
         <Skeleton className="w-20 h-6" />
       </div>
       <div className="flex items-center justify-between gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2">
         <div className="flex flex-col gap-0.5 w-[80%]">
-          <p className="font-semibold">
+          <div className="font-semibold">
             <Skeleton className="w-36 h-6" />
-          </p>
-          <p className="text-sm text-muted-foreground truncate">
+          </div>
+          <div className="text-sm text-muted-foreground truncate">
             <Skeleton className="w-24 h-5" />
-          </p>
+          </div>
         </div>
 
         <Skeleton className="w-20 h-6" />
       </div>
       <div className="flex items-center justify-between gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2">
         <div className="flex flex-col gap-0.5 w-[80%]">
-          <p className="font-semibold">
+          <div className="font-semibold">
             <Skeleton className="w-36 h-6" />
-          </p>
-          <p className="text-sm text-muted-foreground truncate">
+          </div>
+          <div className="text-sm text-muted-foreground truncate">
             <Skeleton className="w-24 h-5" />
-          </p>
+          </div>
         </div>
 
         <Skeleton className="w-20 h-6" />
@@ -98,7 +102,7 @@ export default function RecentGradesList() {
   return (
     <div className="grid grid-cols-1 gap-0.5">
       {recentGrades.map((grade) => (
-        <RecentGradeItem key={grade.id} grade={grade} />
+        <RecentGradeItem key={grade.id} grade={grade} periodId={periodId} />
       ))}
     </div>
   );

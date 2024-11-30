@@ -25,38 +25,46 @@ import GradeBadge from "./grade-badge";
 import { average } from "@/utils/average";
 import React from "react";
 
-export default function GradesTable() {
-  const {
-    data: subjects,
-    isError,
-    isPending,
-  } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{
-        subjects: Subject[];
-      }>();
-      return data.subjects;
-    },
-  });
+export default function GradesTable({
+  subjects,
+  periodId,
+}: {
+    subjects: Subject[];
+    periodId: string;
+}
 
-  // Loading State
-  if (isPending) {
-    return <LoadingTable />;
-  }
+) {
+  // const {
+  //   data: subjects,
+  //   isError,
+  //   isPending,
+  // } = useQuery({
+  //   queryKey: ["subjects"],
+  //   queryFn: async () => {
+  //     const res = await apiClient.get("subjects");
+  //     const data = await res.json<{
+  //       subjects: Subject[];
+  //     }>();
+  //     return data.subjects;
+  //   },
+  // });
 
-  // Error State
-  if (isError) {
-    return (
-      <Card className="flex justify-center items-center p-4 w-full h-[400px]">
-        <div className="">
-          <h2 className="text-xl font-semibold">Erreur</h2>
-          <p>Une erreur s'est produite lors du chargement des notes.</p>
-        </div>
-      </Card>
-    );
-  }
+  // // Loading State
+  // if (isPending) {
+  //   return <LoadingTable />;
+  // }
+
+  // // Error State
+  // if (isError) {
+  //   return (
+  //     <Card className="flex justify-center items-center p-4 w-full h-[400px]">
+  //       <div className="">
+  //         <h2 className="text-xl font-semibold">Erreur</h2>
+  //         <p>Une erreur s'est produite lors du chargement des notes.</p>
+  //       </div>
+  //     </Card>
+  //   );
+  // }
 
   // Empty State
   if (subjects.length === 0) {
@@ -92,7 +100,7 @@ export default function GradesTable() {
         </TableRow>
       </TableHeader>
 
-      <TableBody>{renderSubjects(subjects)}</TableBody>
+      <TableBody>{renderSubjects(subjects, periodId)}</TableBody>
 
       <TableFooter>
         <TableRow>
@@ -124,7 +132,7 @@ function getPaddingClass(depth: number) {
 }
 
 
-function renderSubjects(subjects: Subject[], parentId: string | null = null) {
+function renderSubjects(subjects: Subject[], periodId: string, parentId: string | null = null) {
   return subjects
     .filter((subject) => subject.parentId === parentId)
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -135,10 +143,10 @@ function renderSubjects(subjects: Subject[], parentId: string | null = null) {
             className={cn("font-medium", getPaddingClass(subject.depth))}
           >
             <Link
-              href={`/dashboard/subjects/${subject.id}`}
+              href={`/dashboard/subjects/${subject.id}/${periodId}`}
               className="border-b border-dotted border-white"
             >
-              {subject.name + ` (`+subject.coefficient/100+`)`}
+              {subject.name + ` (` + subject.coefficient / 100 + `)`}
             </Link>
           </TableCell>
           <TableCell className="text-center font-semibold">
@@ -155,12 +163,13 @@ function renderSubjects(subjects: Subject[], parentId: string | null = null) {
                   outOf={grade.outOf}
                   coefficient={grade.coefficient}
                   id={grade.id}
+                  periodId={periodId}
                 />
               ))}
             </div>
           </TableCell>
         </TableRow>
-        {renderSubjects(subjects, subject.id)}
+        {renderSubjects(subjects, periodId, subject.id)}
       </React.Fragment>
     ));
 }

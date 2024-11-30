@@ -22,6 +22,7 @@ export default function AddSubjectDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         className="flex items-center"
+        asChild
       >
         {children}
       </DialogTrigger>
