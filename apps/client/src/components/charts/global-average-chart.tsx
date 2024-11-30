@@ -113,7 +113,7 @@ export default function GlobalAverageChart({
     average: averages[index],
   }));
 
-  console.log(chartData);
+  //console.log(chartData);
 
   const chartConfig = {
     average: {

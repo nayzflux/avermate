@@ -76,7 +76,7 @@ export const UpdateSubjectForm = ({
       isMainSubject,
       isDisplaySubject,
     }: UpdateSubjectSchema) => {
-        console.log(parentId);
+        //console.log(parentId);
       const res = await apiClient.patch(`subjects/${subject.id}`, {
         json: {
           name,

@@ -161,8 +161,7 @@ function SubjectWrapper({
 
         <SubjectAverageChart
           subjectId={subject.id}
-          periods={period}
-          subject={subject}
+          period={period}
           subjects={subjects}
         />
       </div>

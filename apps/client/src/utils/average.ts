@@ -791,7 +791,7 @@ export function getBestTrendSubject(
   if (bestSubject === null || bestTrend === null) {
     return null;
   }
-  console.log(bestSubject, bestTrend);
+  //console.log(bestSubject, bestTrend);
   return { bestSubject, bestTrend };
 }
 
@@ -834,7 +834,7 @@ export function getWorstTrendSubject(
   if (worstSubject === null || worstTrend === null) {
     return null;
   }
-  console.log(worstSubject, worstTrend);
+  //console.log(worstSubject, worstTrend);
   return { worstSubject, worstTrend };
 }
 

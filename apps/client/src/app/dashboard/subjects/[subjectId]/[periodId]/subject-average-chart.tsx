@@ -21,13 +21,11 @@ import { Period } from "@/types/period";
 
 export default function SubjectAverageChart({
   subjectId,
-  periods,
-  subject,
+  period,
   subjects,
 }: {
   subjectId: string;
-    periods: Period[];
-    subject: Subject;
+  period: Period;
   subjects: Subject[];
 }) {
 
@@ -46,7 +44,7 @@ export default function SubjectAverageChart({
   //   },
   // });
 
-  console.log(subjects);
+  //console.log(subjects);
 
   const { childrenAverage, chartData, chartConfig } = (() => {
     // if (isPending || isError || isPeriodsPending || isPeriodsError) {
@@ -56,8 +54,8 @@ export default function SubjectAverageChart({
     const childrensId = getChildren(subjects, subjectId);
 
     // Calculate the start and end dates
-    const endDate = new Date(periods[0]?.endAt);
-    const startDate = new Date(periods[0]?.startAt);
+    const endDate = new Date(period.endAt);
+    const startDate = new Date(period.startAt);
 
     // Generate an array of dates
     const dates = [];

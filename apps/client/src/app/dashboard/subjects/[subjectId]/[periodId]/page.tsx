@@ -61,14 +61,22 @@ export default function SubjectPage({
     return <div>Loading...</div>;
   }
 
+  // console.log(
+  //   organizedSubjects?.find((p) => p.period.id === periodId)?.subjects || [],
+  //   organizedSubject,
+  //   period,
+  //   organizedSubjects
+  // );
+
   return (
     <SubjectWrapper
       subjects={
-        organizedSubjects?.find((p) => p.period.id === periodId)?.subjects
-          .subject || []
+        organizedSubjects?.find((p) => p.period.id === periodId)?.subjects || []
       }
       subject={organizedSubject}
-      period= {periodId}
+      period={
+        organizedSubjects?.find((p) => p.period.id === periodId)?.period || []
+      }
     />
   );
 }

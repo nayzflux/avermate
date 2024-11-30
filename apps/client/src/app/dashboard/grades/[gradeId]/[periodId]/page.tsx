@@ -45,11 +45,15 @@ export default function GradePage({
     return <div>Loading...</div>;
   }
 
+  // console.log(
+  //   organizedSubjects?.find((p) => p.period.id === periodId)?.subjects || [],
+  //   grade
+  // );
+
   return (
     <GradeWrapper
       subjects={
-        organizedSubjects?.find((p) => p.period.id === periodId)?.subjects
-          .subject || []
+        organizedSubjects?.find((p) => p.period.id === periodId)?.subjects  || []
       }
       grade={grade}
       periodId={periodId}
