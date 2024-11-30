@@ -137,64 +137,71 @@ export default function GlobalAverageChart({
 
   const radarData = subjectAverages;
 
-  const renderPolarAngleAxis = ({
-    payload,
-    x,
-    y,
-    cx,
-    cy,
-  }: {
-    payload: { value: string };
-    x: number;
-    y: number;
-    cx: number;
-    cy: number;
-  }) => {
-    // Calculate the angle in radians between the label position and the center
-    const radius = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
-    const angle = Math.atan2(y - cy, x - cx);
+const renderPolarAngleAxis = ({
+  payload,
+  x,
+  y,
+  cx,
+  cy,
+}: {
+  payload: { value: string };
+  x: number;
+  y: number;
+  cx: number;
+  cy: number;
+}) => {
+  // Calculate the angle in radians between the label position and the center
+  const radius = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+  const angle = Math.atan2(y - cy, x - cx);
 
-    // Determine the truncate length based on screen width
+  // Determine the truncate length based on screen width
+  const truncateLength =
+    window.innerWidth < 450
+      ? 5
+      : window.innerWidth < 1024
+      ? 10
+      : window.innerWidth < 1300
+      ? 5
+      : window.innerWidth < 2100
+      ? 9
+      : 12;
 
-    const truncateLength =
-      window.innerWidth < 450
-        ? 5
-        : window.innerWidth < 1024
-        ? 10
-        : window.innerWidth < 1300
-        ? 5
-        : window.innerWidth < 2100
-        ? 9
-        : 12;
+  const truncatedLabel =
+    payload.value.length > truncateLength
+      ? `${payload.value.slice(0, truncateLength)}...`
+      : payload.value;
 
-    const truncatedLabel =
-      payload.value.length > truncateLength
-        ? `${payload.value.slice(0, truncateLength)}...`
-        : payload.value;
+  // Adjust the radius to move the labels inside
+  const labelRadius = radius - truncatedLabel.length * 3 + 10;
 
-    // Adjust the radius to move the labels inside
-    const labelRadius = radius - truncatedLabel.length * 3 + 10; // Adjust this value based on text length
+  // Calculate new label positions
+  const nx = cx + labelRadius * Math.cos(angle);
+  const ny = cy + labelRadius * Math.sin(angle);
 
-    // Calculate new label positions
-    const nx = cx + labelRadius * Math.cos(angle);
-    const ny = cy + labelRadius * Math.sin(angle);
+  // Convert angle to degrees for rotation
+  let rotation = (angle * 180) / Math.PI;
 
-    // Convert angle to degrees for rotation
-    const rotation = (angle * 180) / Math.PI;
+  // Flip text if rotation is beyond 90 degrees
+  if (rotation > 90) {
+    rotation -= 180;
+  } else if (rotation < -90) {
+    rotation += 180;
+  }
 
-    return (
-      <text
-        x={nx}
-        y={ny}
-        textAnchor="middle"
-        transform={`rotate(${rotation}, ${nx}, ${ny})`}
-        fontSize={12}
-        fill="#a1a1aa"
-      >
-        {truncatedLabel}
-      </text>
-    );
-  };
+  return (
+    <text
+      x={nx}
+      y={ny}
+      textAnchor="middle"
+      transform={`rotate(${rotation}, ${nx}, ${ny})`}
+      fontSize={12}
+      fill="#a1a1aa"
+    >
+      {truncatedLabel}
+    </text>
+  );
+};
+
 
   return (
     <Card className="lg:col-span-5">
@@ -234,7 +241,14 @@ export default function GlobalAverageChart({
                 <ChartTooltip
                   filterNull={false}
                   cursor={false}
-                  content={<ChartTooltipContent />}
+                  content={
+                    <ChartTooltipContent
+                      chartData={chartData}
+                      findNearestNonNull={true}
+                      dataKey="average"
+                      labelFormatter={(value) => value}
+                    />
+                  }
                   labelFormatter={(value) =>
                     new Date(value).toLocaleDateString("fr-FR", {
                       month: "short",

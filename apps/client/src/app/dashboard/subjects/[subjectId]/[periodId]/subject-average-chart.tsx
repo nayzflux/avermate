@@ -19,6 +19,18 @@ import { useMemo } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { Period } from "@/types/period";
 
+const predefinedColors = [
+  "#ea5545",
+  "#f46a9b",
+  "#ef9b20",
+  "#edbf33",
+  "#ede15b",
+  "#bdcf32",
+  "#87bc45",
+  "#27aeef",
+  "#b33dc6",
+];
+
 export default function SubjectAverageChart({
   subjectId,
   period,
@@ -28,36 +40,12 @@ export default function SubjectAverageChart({
   period: Period;
   subjects: Subject[];
 }) {
-
-  // const {
-  //   data: periods,
-  //   isError: isPeriodsError,
-  //   isPending: isPeriodsPending,
-  // } = useQuery({
-  //   queryKey: ["periods"],
-  //   queryFn: async () => {
-  //     const res = await apiClient.get("periods");
-  //     let data = await res.json<{ periods: Period[] }>();
-  //     // filter the periods by the periodId
-  //     data.periods = data.periods.filter((period) => period.id === periodId);
-  //     return data.periods;
-  //   },
-  // });
-
-  //console.log(subjects);
-
   const { childrenAverage, chartData, chartConfig } = (() => {
-    // if (isPending || isError || isPeriodsPending || isPeriodsError) {
-    //   return { chartConfig: {} };
-    // }
-
     const childrensId = getChildren(subjects, subjectId);
 
-    // Calculate the start and end dates
     const endDate = new Date(period.endAt);
     const startDate = new Date(period.startAt);
 
-    // Generate an array of dates
     const dates = [];
     for (
       let dt = new Date(startDate);
@@ -66,23 +54,24 @@ export default function SubjectAverageChart({
     ) {
       dates.push(new Date(dt));
     }
-    // Calculate the average grades over time
 
     const mainSubject = subjects.find((subject) => subject.id === subjectId);
 
     let childrensObjects = subjects.filter((subject) =>
       childrensId.includes(subject.id)
     );
-    //filter the childrens objects by only the childrens having a depth of 1 superior of the main subject
+
+    // TODO: add an option to enable/disable the depth filter
     childrensObjects = childrensObjects.filter(
       (child) => child.depth === (mainSubject?.depth ?? 0) + 1
     );
 
-    const childrenAverage = childrensObjects.map((child) => {
+    const childrenAverage = childrensObjects.map((child, index) => {
       return {
         id: child.id,
         name: child.name,
         average: averageOverTime(subjects, child.id, startDate, endDate),
+        color: predefinedColors[index % predefinedColors.length], // Assign color from the list
       };
     });
 
@@ -106,55 +95,85 @@ export default function SubjectAverageChart({
           child.id,
           {
             label: child.name,
-            color: "#f87171",
+            color: child.color, // Use the dynamically assigned color
           },
         ])
       ),
-    } satisfies ChartConfig;
+    };
 
     return { childrenAverage, chartData, chartConfig };
   })();
 
-  // if (isPending) {
-  //   return (
-  //     <Card className="lg:col-span-5">
-  //       <CardHeader>
-  //         <CardTitle>Moyenne Générale</CardTitle>
-  //       </CardHeader>
-
-  //       <CardContent>
-  //         <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
-  //           {/* Area Chart Section */}
-  //           <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%]">
-  //             <CardDescription className="pb-8">
-  //               Visualiser l'évolution de votre moyenne générale sur ce
-  //               trimestre
-  //             </CardDescription>
-  //           </div>
-  //         </div>
-  //       </CardContent>
-  //     </Card>
-  //   );
-  // }
-
-  // if (isError) {
-  //   return (
-  //     <Card className="lg:col-span-5">
-  //       <CardHeader>
-  //         <CardTitle>Error</CardTitle>
-  //       </CardHeader>
-
-  //       <CardContent>
-  //         <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2"></div>
-  //       </CardContent>
-  //     </Card>
-  //   );
-  // }
-
   return (
     <Card className="p-4">
       <ChartContainer config={chartConfig} className="h-[400px] w-[100%]">
-        {/* <AreaChart
+        <LineChart data={chartData} margin={{ left: -30 }}>
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="date"
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            tickFormatter={(value) =>
+              new Date(value).toLocaleDateString("fr-FR", {
+                month: "short",
+                day: "numeric",
+              })
+            }
+          />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            domain={[0, 20]}
+            tickMargin={8}
+            tickCount={5}
+          />
+          <ChartTooltip
+            filterNull={false}
+            cursor={false}
+            content={
+              <ChartTooltipContent
+                chartData={chartData}
+                findNearestNonNull={true}
+                labelFormatter={(value) => value}
+              />
+            }
+            labelFormatter={(value) =>
+              new Date(value).toLocaleDateString("fr-FR", {
+                month: "short",
+                day: "numeric",
+              })
+            }
+          />
+
+          {childrenAverage?.map((child) => (
+            <Line
+              key={child.id}
+              dataKey={child.id}
+              type="monotone"
+              fill={child.color}
+              stroke={child.color}
+              dot={false}
+              connectNulls={true}
+            />
+          ))}
+
+          <Line
+            dataKey="average"
+            type="monotone"
+            fill="url(#fillAverage)"
+            stroke="#2662d9"
+            dot={false}
+            strokeWidth={3}
+            connectNulls={true}
+          />
+        </LineChart>
+      </ChartContainer>
+    </Card>
+  );
+}
+
+          /* <AreaChart
           accessibilityLayer
           data={chartData}
           margin={{
@@ -217,70 +236,4 @@ export default function SubjectAverageChart({
             stroke="var(--color-b)"
             stackId="b"
           />
-        </AreaChart> */}
-        <LineChart data={chartData} margin={{ left: -30 }}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="date"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            tickFormatter={(value) =>
-              new Date(value).toLocaleDateString("fr-FR", {
-                month: "short",
-                day: "numeric",
-              })
-            }
-          />
-          <YAxis
-            tickLine={false}
-            axisLine={false}
-            domain={[0, 20]}
-            tickMargin={8}
-            tickCount={5}
-          />
-          <ChartTooltip
-            filterNull={false}
-            cursor={false}
-            content={<ChartTooltipContent />}
-            labelFormatter={(value) =>
-              new Date(value).toLocaleDateString("fr-FR", {
-                month: "short",
-                day: "numeric",
-              })
-            }
-          />
-          <defs>
-            <linearGradient id="fillAverage" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#2662d9" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#2662d9" stopOpacity={0.1} />
-            </linearGradient>
-          </defs>
-
-          {childrenAverage?.map((child) => (
-            <Line
-              key={child.id}
-              dataKey={child.id}
-              type="monotone"
-              fill="#f87171"
-              stroke="#f87171"
-              dot={false}
-              connectNulls={true}
-            />
-          ))}
-
-          <Line
-            dataKey="average"
-            type="monotone"
-            fill="url(#fillAverage)"
-            stroke="#2662d9"
-            dot={false}
-            strokeWidth={3}
-            connectNulls={true}
-            //always on top and big stroke
-          />
-        </LineChart>
-      </ChartContainer>
-    </Card>
-  );
-}
+        </AreaChart> */
