@@ -13,7 +13,7 @@ const deleteUserParams = z.object({
   id: z.string().min(1).max(64),
 });
 
-app.delete("/users/:id", zValidator("param", deleteUserParams), async (c) => {
+app.delete("/:id", zValidator("param", deleteUserParams), async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
   if (!session) throw new HTTPException(401);
@@ -25,7 +25,8 @@ app.delete("/users/:id", zValidator("param", deleteUserParams), async (c) => {
   const user = await db
     .delete(users)
     .where(eq(users.id, session.user.id))
-    .returning();
+    .returning()
+    .get();
 
   return c.json({ user });
 });
