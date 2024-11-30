@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import GlobalAverageChart from "@/components/charts/global-average-chart";
 import RecentGradesCard from "@/components/dashboard/recent-grades/recent-grades";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -18,6 +19,8 @@ import DataCards from "./data-cards";
  */
 export default function OverviewPage() {
   const { data: session } = authClient.useSession();
+
+  const [selectedTab, setSelectedTab] = useState<string | null>(null);
 
   // Fetch subjects lists with grades from API
   const {
@@ -61,8 +64,44 @@ export default function OverviewPage() {
     },
   });
 
+  useEffect(() => {
+    if (!periods) return;
+
+    const savedTab = sessionStorage.getItem("selectedTab");
+
+    if (savedTab) {
+      setSelectedTab(savedTab);
+    } else {
+      const defaultTab =
+        periods.find(
+          (period) =>
+            new Date(period.startAt) <= new Date() &&
+            new Date(period.endAt) >= new Date()
+        )?.id || "full-year";
+      setSelectedTab(defaultTab);
+    }
+  }, [periods]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      sessionStorage.removeItem("selectedTab");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+
   // Loading State
-  if (isPending || periodsIsPending || organizedSubjectsIsPending) {
+  if (
+    isPending ||
+    periodsIsPending ||
+    organizedSubjectsIsPending ||
+    selectedTab === null
+  ) {
     return <div>Loading...</div>;
   }
 
@@ -85,7 +124,7 @@ export default function OverviewPage() {
   return (
     <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
       <div className="flex flex-wrap items-center justify-between">
-        <h1 className="text-3xl font-bold">Vue d&apos;ensemble</h1>
+        <h1 className="text-3xl font-bold">Vue d'ensemble</h1>
         <h1 className="text-3xl font-normal">
           Bonjour {session?.user?.name ? session?.user?.name.split(" ")[0] : ""}{" "}
           👋
@@ -96,14 +135,11 @@ export default function OverviewPage() {
 
       {/* Statistiques */}
       <Tabs
-        defaultValue={
-          // choose the period where we are currently in if it exists
-          periods?.find(
-            (period) =>
-              new Date(period.startAt) <= new Date() &&
-              new Date(period.endAt) >= new Date()
-          )?.id || "full-year"
-        }
+        value={selectedTab}
+        onValueChange={(value) => {
+          setSelectedTab(value);
+          sessionStorage.setItem("selectedTab", value);
+        }}
       >
         <div className="flex flex-col gap-4">
           <ScrollArea>
@@ -171,8 +207,7 @@ export default function OverviewPage() {
               <GlobalAverageChart
                 subjects={subjects || []}
                 period={
-                  organizedSubjects?.find((p) => p.period.id === "full-year")
-                    ?.period || {
+                  {
                     id: "full-year",
                     name: "Toute l'année",
                     startAt:
@@ -191,7 +226,7 @@ export default function OverviewPage() {
                             5,
                             30
                           ).toISOString(),
-                  }
+                  } as any
                 }
               />
               <RecentGradesCard />
