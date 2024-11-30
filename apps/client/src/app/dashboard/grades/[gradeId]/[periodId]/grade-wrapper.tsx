@@ -22,7 +22,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import {GetOrganizedSubjectsResponse} from "@/types/get-organized-subjects-response";
-import { DifferenceBadge } from "./difference-badge";
+import { DifferenceBadge } from "../difference-badge";
 
 export default function GradeWrapper({ 
   subjects,
