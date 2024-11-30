@@ -15,7 +15,7 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 export default function GradeMoreButton({ grade }: { grade: Grade }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <Button size="icon" variant="outline">
           <EllipsisVerticalIcon className="size-4" />
         </Button>
