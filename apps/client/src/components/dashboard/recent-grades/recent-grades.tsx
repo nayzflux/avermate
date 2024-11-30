@@ -5,10 +5,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import RecentGradesList from "./recent-grades-list";
-import { useQuery } from "@tanstack/react-query";
-import { Grade } from "@/types/grade";
 import { apiClient } from "@/lib/api";
+import { Grade } from "@/types/grade";
+import { useQuery } from "@tanstack/react-query";
+import RecentGradesList from "./recent-grades-list";
 
 export default function RecentGradesCard() {
   const {
@@ -19,7 +19,9 @@ export default function RecentGradesCard() {
     queryKey: ["recent-grades-title", "grades"],
     queryFn: async () => {
       const res = await apiClient.get(
-        `grades?from=${new Date(Date.now() - 1000 * 60 * 60 * 24 * 14)}&limit=50`
+        `grades?from=${new Date(
+          Date.now() - 1000 * 60 * 60 * 24 * 14
+        )}&limit=50`
       );
 
       const data = await res.json<{ grades: Grade[] }>();
@@ -28,15 +30,9 @@ export default function RecentGradesCard() {
     },
   });
 
-  if (isPending) return (
-    <div>
-      loading...
-    </div>
-  );
+  if (isPending) return <div>loading...</div>;
 
   if (isError) return <div>Erreur lors du chargement des notes récentes</div>;
-
-
 
   return (
     <Card className="lg:col-span-2">
@@ -44,9 +40,15 @@ export default function RecentGradesCard() {
         <CardTitle className="text-l">Notes récentes</CardTitle>
 
         <CardDescription>
-          Vous avez reçu { 
-            recentGrades.filter((grade) => new Date(grade.createdAt) > new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)).length
-          } nouvelles notes cette semaine !
+          Vous avez reçu{" "}
+          {
+            recentGrades.filter(
+              (grade) =>
+                new Date(grade.createdAt) >
+                new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
+            ).length
+          }{" "}
+          nouvelles notes cette semaine !
         </CardDescription>
       </CardHeader>
 

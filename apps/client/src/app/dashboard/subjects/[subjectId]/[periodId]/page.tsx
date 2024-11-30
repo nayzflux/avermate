@@ -1,12 +1,12 @@
 "use client";
 
+import { apiClient } from "@/lib/api";
+import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
+import { Period } from "@/types/period";
+import { Subject } from "@/types/subject";
+import { useQuery } from "@tanstack/react-query";
 import { use } from "react";
 import SubjectWrapper from "./subject-wrapper";
-import { useQuery } from "@tanstack/react-query";
-import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
-import { apiClient } from "@/lib/api";
-import { Subject } from "@/types/subject";
-import { Period } from "@/types/period";
 
 export default function SubjectPage({
   params,
@@ -57,16 +57,17 @@ export default function SubjectPage({
     },
   });
 
-  if (organizedSubjectsIsPending || organizedSubjectIsPending || isPeriodPending) {
-    return <div>Loading...</div>;
+  if (isPeriodError || organizedSubjectsIsError || organizedSubjectIsError) {
+    return <div>Error!</div>;
   }
 
-  // console.log(
-  //   organizedSubjects?.find((p) => p.period.id === periodId)?.subjects || [],
-  //   organizedSubject,
-  //   period,
-  //   organizedSubjects
-  // );
+  if (
+    organizedSubjectsIsPending ||
+    organizedSubjectIsPending ||
+    isPeriodPending
+  ) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <SubjectWrapper
@@ -75,7 +76,14 @@ export default function SubjectPage({
       }
       subject={organizedSubject}
       period={
-        organizedSubjects?.find((p) => p.period.id === periodId)?.period || []
+        organizedSubjects?.find((p) => p.period.id === periodId)?.period || {
+          id: "full-year",
+          name: "Toute l'année",
+          startAt: new Date(new Date().getFullYear(), 8, 1).toISOString(),
+          endAt: new Date(new Date().getFullYear() + 1, 5, 30).toISOString(),
+          userId: "",
+          createdAt: "",
+        }
       }
     />
   );

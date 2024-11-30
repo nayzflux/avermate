@@ -5,7 +5,6 @@ import DataCard from "@/components/dashboard/data-card";
 import GradeValue from "@/components/dashboard/grade-value";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { apiClient } from "@/lib/api";
 import { Grade } from "@/types/grade";
 import { Subject } from "@/types/subject";
 import { getParents, gradeImpact } from "@/utils/average";
@@ -18,13 +17,10 @@ import {
   SparklesIcon,
   VariableIcon,
 } from "@heroicons/react/24/outline";
-import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
-import {GetOrganizedSubjectsResponse} from "@/types/get-organized-subjects-response";
 import { DifferenceBadge } from "../difference-badge";
 
-export default function GradeWrapper({ 
+export default function GradeWrapper({
   subjects,
   grade,
   periodId,
@@ -77,7 +73,7 @@ export default function GradeWrapper({
     );
 
     return gradeParents;
-  }
+  };
 
   return (
     <div className="flex flex-col gap-8 m-auto max-w-[2000px]">

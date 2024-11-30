@@ -1,12 +1,11 @@
 "use client";
 
-import GradeWrapper from "./grade-wrapper";
-import { use } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
 import { apiClient } from "@/lib/api";
-import { Subject } from "@/types/subject";
+import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
 import { Grade } from "@/types/grade";
+import { useQuery } from "@tanstack/react-query";
+import { use } from "react";
+import GradeWrapper from "./grade-wrapper";
 
 export default function GradePage({
   params,
@@ -41,19 +40,18 @@ export default function GradePage({
     },
   });
 
+  if (isError || organizedSubjectsIsError) {
+    return <div>Error</div>;
+  }
+
   if (isPending || organizedSubjectsIsPending) {
     return <div>Loading...</div>;
   }
 
-  // console.log(
-  //   organizedSubjects?.find((p) => p.period.id === periodId)?.subjects || [],
-  //   grade
-  // );
-
   return (
     <GradeWrapper
       subjects={
-        organizedSubjects?.find((p) => p.period.id === periodId)?.subjects  || []
+        organizedSubjects?.find((p) => p.period.id === periodId)?.subjects || []
       }
       grade={grade}
       periodId={periodId}

@@ -1,6 +1,5 @@
 "use client";
 
-import AddSubjectButton from "@/components/buttons/dashboard/add-subject-button";
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
@@ -11,9 +10,9 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiClient } from "@/lib/api";
 import { Period } from "@/types/period";
+import { Subject } from "@/types/subject";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
-import { Subject } from "@/types/subject";
 
 export default function GradesPage() {
   const {
@@ -87,6 +86,16 @@ export default function GradesPage() {
       return data.subjects;
     },
   });
+
+  // Error State
+  if (periodsIsError || organizedSubjectsIsError || subjectsIsError) {
+    return (
+      <div>
+        <h2>Error</h2>
+        <p>An error occurred!</p>
+      </div>
+    );
+  }
 
   // Loading State
   if (periodsIsPending || organizedSubjectsIsPending || subjectsIsPending) {

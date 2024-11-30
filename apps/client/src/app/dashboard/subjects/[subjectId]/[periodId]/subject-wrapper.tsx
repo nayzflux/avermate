@@ -1,11 +1,11 @@
 "use client";
 
+import SubjectMoreButton from "@/components/buttons/dashboard/subject/subject-more-button";
 import DataCard from "@/components/dashboard/data-card";
 import GradeValue from "@/components/dashboard/grade-value";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { apiClient } from "@/lib/api";
+import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
 import {
   average,
@@ -21,24 +21,18 @@ import {
   SparklesIcon,
   VariableIcon,
 } from "@heroicons/react/24/outline";
-import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import SubjectAverageChart from "./subject-average-chart";
-import SubjectMoreButton from "@/components/buttons/dashboard/subject/subject-more-button";
-import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
-import { Period } from "@/types/period";
 
 function SubjectWrapper({
   subjects,
   subject,
   period,
-
 }: {
-    subjects: Subject[];
-    subject: Subject;
-    period: Period;
+  subjects: Subject[];
+  subject: Subject;
+  period: Period;
 }) {
-
   const router = useRouter();
 
   return (

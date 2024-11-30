@@ -21,8 +21,10 @@ import {
 import { useMemo } from "react";
 
 export default function DataCards({
+  period,
   subjects,
 }: {
+  period: Period;
   subjects: Subject[];
 }) {
   const averages = useMemo(() => {
@@ -47,7 +49,7 @@ export default function DataCards({
     if (averages.length === 0) return 0;
 
     const lastValue = averages[averages.length - 1];
-    const firstValue = averages.find(value => value !== null);
+    const firstValue = averages.find((value) => value !== null);
 
     if (!firstValue) return 0;
     if (!lastValue || lastValue === 0) return 0;
