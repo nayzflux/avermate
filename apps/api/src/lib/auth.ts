@@ -33,13 +33,17 @@ export const auth = betterAuth({
 
   emailVerification: {
     sendOnSignUp: true,
-    sendVerificationEmail: async ({ user, url, token }, request) => {
-      console.log("Sending email verification to", user.email);
+
+    autoSignInAfterVerification: true,
+
+    sendVerificationEmail: async ({ user, url }) => {
+      console.info("Sending email verification to", user.id);
+
       await resend.emails.send({
         from: "Avermate <noreply@test.nayz.fr>",
         to: user.email,
         subject: "Verify your email",
-        html: `<p>Hello ${user.name}! Click <a href="${url}">here</a> to verify your email.</p>`,
+        html: `<p>Hello ${user.name}! Click <a href="${url}&callbackUrl=${env.CLIENT_URL}/dashboard">here</a> to verify your email.</p>`,
       });
     },
   },
@@ -49,15 +53,14 @@ export const auth = betterAuth({
     changeEmail: {
       enabled: true,
       // TODO: Implement email verification
-      sendChangeEmailVerification: async (
-        { user, newEmail, token, url },
-        request
-      ) => {
+      sendChangeEmailVerification: async ({ user, newEmail, url }) => {
+        console.info("Sending email update request to", user.id);
+
         await resend.emails.send({
           from: "Avermate <noreply@test.nayz.fr>",
           to: newEmail,
           subject: "Email update",
-          html: `<p>Hello ${user.name}! Your email has been updated. Click <a href="${url}">here</a> to verify your new email.</p>`,
+          html: `<p>Hello ${user.name}! Your email has been updated. Click <a href="${url}">here</a> to verify your new email. ${url}</p>`,
         });
       },
     },
@@ -132,10 +135,6 @@ export const auth = betterAuth({
   // Cookie
   advanced: {
     cookiePrefix: "avermate",
-
-    defaultCookieAttributes: {
-      sameSite: "strict",
-    },
 
     generateId: false,
   },
