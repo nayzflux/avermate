@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { subjects } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
-import { and, eq, asc, sql } from "drizzle-orm";
+import { and, eq, asc, sql, ne } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
@@ -266,6 +266,9 @@ app.patch(
     if (!subject) throw new HTTPException(404);
     if (subject.userId !== session.user.id) throw new HTTPException(403);
 
+    let newDepth = subject.depth;
+    let depthDifference = 0;
+
     // If parentId is being updated
     if (data.parentId !== undefined) {
       const newParentId = data.parentId;
@@ -285,11 +288,16 @@ app.patch(
         if (parentSubject.userId !== session.user.id) throw new HTTPException(403);
 
         // Compute new depth
-        data.depth = parentSubject.depth + 1;
+        newDepth = parentSubject.depth + 1;
       } else {
         // ParentId is null, depth is 0
-        data.depth = 0;
+        newDepth = 0;
       }
+
+      // Compute depth difference
+      depthDifference = newDepth - subject.depth;
+
+      data.depth = newDepth;
     }
 
     // Update the subject
@@ -301,6 +309,28 @@ app.patch(
       )
       .returning()
       .get();
+
+    // If depth has changed, update the depths of the descendants
+    if (depthDifference !== 0) {
+      // Fetch all descendants of the subject
+      const descendants = await db.query.subjects.findMany({
+        where: and(
+          eq(subjects.userId, session.user.id),
+          sql`${subjects.id} IN (SELECT descendant.id FROM ${subjects} AS ancestor JOIN ${subjects} AS descendant ON descendant.parentId = ancestor.id WHERE ancestor.id = ${subjectId})`,
+          ne(subjects.id, subjectId)
+        ),
+      });
+
+      // Update the depth of each descendant
+      await Promise.all(
+        descendants.map((descendant) =>
+          db
+            .update(subjects)
+            .set({ depth: descendant.depth + depthDifference })
+            .where(eq(subjects.id, descendant.id))
+        )
+      );
+    }
 
     return c.json({ subject: updatedSubject });
   }

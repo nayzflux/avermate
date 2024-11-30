@@ -68,12 +68,37 @@ app.get("/", async (c) => {
 });
 
 /**
- * Update a period by id
+ * Get a period by id
  */
 
 const getPeriodSchema = z.object({
   periodId: z.string().min(1).max(64),
 });
+
+app.get("/:periodId", zValidator("param", getPeriodSchema), async (c) => {
+  const session = await auth.api.getSession({
+    headers: c.req.raw.headers,
+  });
+
+  if (!session) throw new HTTPException(401);
+
+  const { periodId } = c.req.valid("param");
+
+  const period = await db.query.periods.findFirst({
+    where: and(eq(periods.id, periodId), eq(periods.userId, session.user.id))
+  });
+
+  if (!period) throw new HTTPException(404);
+
+
+  return c.json(period);
+});
+
+
+/**
+ * Update a period by id
+ */
+
 
 const updatePeriodSchema = z.object({
   name: z.string().min(1).max(64).optional(),
@@ -81,7 +106,7 @@ const updatePeriodSchema = z.object({
   endAt: z.coerce.date().optional(),
 });
 
-app.put(
+app.patch(
   "/:periodId",
   zValidator("param", getPeriodSchema),
   zValidator("json", updatePeriodSchema),
@@ -135,7 +160,10 @@ app.delete("/:periodId", zValidator("param", deletePeriodSchema), async (c) => {
     .returning()
     .get();
 
-  return c.json(period);
+  if (!period) throw new HTTPException(404);
+
+  return c.json({ period }); // Wrap the deleted period in an object
 });
+
 
 export default app;
