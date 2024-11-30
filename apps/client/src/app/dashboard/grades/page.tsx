@@ -13,8 +13,11 @@ import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 export default function GradesPage() {
+  const [selectedTab, setSelectedTab] = useState<string | null>(null);
+
   const {
     data: periods,
     isError: periodsIsError,
@@ -26,32 +29,6 @@ export default function GradesPage() {
       const data = await res.json<{
         periods: Period[];
       }>();
-
-      // // Add a "full year" period to the periods array
-      // if (data.periods && data.periods.length > 0) {
-      //   data.periods.push({
-      //     id: "1",
-      //     name: "Full year",
-      //     startAt: data.periods[0].startAt,
-      //     endAt: data.periods[data.periods.length - 1].endAt,
-      //     createdAt: new Date(),
-      //     userId: "system",
-      //   });
-      // } else {
-      //   // If there are no periods, create a "full year" period from the last 12 months
-      //   const endDate = new Date();
-      //   const startDate = new Date();
-      //   startDate.setMonth(startDate.getMonth() - 12);
-      //   data.periods.push({
-      //     id: "1",
-      //     name: "Full year",
-      //     startAt: startDate,
-      //     endAt: endDate,
-      //     createdAt: new Date(),
-      //     userId: "system",
-      //   });
-      // }
-
       return data.periods;
     },
   });
@@ -87,6 +64,36 @@ export default function GradesPage() {
     },
   });
 
+  useEffect(() => {
+    if (!periods) return;
+
+    const savedTab = sessionStorage.getItem("selectedTab");
+
+    if (savedTab) {
+      setSelectedTab(savedTab);
+    } else {
+      const defaultTab =
+        periods.find(
+          (period) =>
+            new Date(period.startAt) <= new Date() &&
+            new Date(period.endAt) >= new Date()
+        )?.id || "full-year";
+      setSelectedTab(defaultTab);
+    }
+  }, [periods]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      sessionStorage.removeItem("selectedTab");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   // Error State
   if (periodsIsError || organizedSubjectsIsError || subjectsIsError) {
     return (
@@ -98,7 +105,12 @@ export default function GradesPage() {
   }
 
   // Loading State
-  if (periodsIsPending || organizedSubjectsIsPending || subjectsIsPending) {
+  if (
+    periodsIsPending ||
+    organizedSubjectsIsPending ||
+    subjectsIsPending ||
+    selectedTab === null
+  ) {
     return <div>Loading...</div>;
   }
 
@@ -123,8 +135,6 @@ export default function GradesPage() {
               Ajouter une période
             </Button>
           </AddPeriodDialog>
-
-          {/* <MoreButton /> */}
         </div>
       </div>
 
@@ -132,21 +142,18 @@ export default function GradesPage() {
 
       {/* Statistiques */}
       <Tabs
-        defaultValue={
-          // choose the period where we are currently in if it exists
-          periods?.find(
-            (period) =>
-              new Date(period.startAt) <= new Date() &&
-              new Date(period.endAt) >= new Date()
-          )?.id || "full-year"
-        }
+        value={selectedTab}
+        onValueChange={(value) => {
+          setSelectedTab(value);
+          sessionStorage.setItem("selectedTab", value);
+        }}
       >
         <ScrollArea>
           <div className="w-full relative h-10">
             <TabsList className="flex absolute">
               {periods &&
                 periods.length > 0 &&
-                //sort the periods by start date
+                // Sort the periods by start date
                 periods
                   .sort(
                     (a, b) =>

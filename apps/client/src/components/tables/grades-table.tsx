@@ -24,6 +24,7 @@ import { Skeleton } from "../ui/skeleton";
 import GradeBadge from "./grade-badge";
 import { average } from "@/utils/average";
 import React from "react";
+import { Period } from "@/types/period";
 
 export default function GradesTable({
   subjects,
@@ -66,6 +67,27 @@ export default function GradesTable({
   //   );
   // }
 
+  // Fetch period data by id
+  const {
+    data: period,
+    isError: isPeriodError,
+    isPending: isPeriodPending,
+  } = useQuery({
+    queryKey: ["periods-name"],
+    queryFn: async () => {
+      const res = await apiClient.get(`periods/${periodId}`);
+      const data = await res.json<Period>();
+      return data;
+    },
+  });
+
+  // Loading State
+  if (isPeriodPending) {
+    return <LoadingTable />;
+  }
+
+  // Error State
+
   // Empty State
   if (subjects.length === 0) {
     return (
@@ -88,7 +110,7 @@ export default function GradesTable({
 
   return (
     <Table>
-      <TableCaption>1er trimestre</TableCaption>
+      <TableCaption>{periodId !== "full-year" ? period?.name : "Année complète"}</TableCaption>
 
       <TableHeader>
         <TableRow>

@@ -11,6 +11,7 @@ import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-res
 import { GetPeriodsResponse } from "@/types/get-periods-response";
 import { GetSubjectsResponse } from "@/types/get-subjects-response";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
 
 /**
@@ -18,6 +19,8 @@ import DataCards from "./data-cards";
  */
 export default function OverviewPage() {
   const { data: session } = authClient.useSession();
+
+  const [selectedTab, setSelectedTab] = useState<string | null>(null);
 
   // Fetch subjects lists with grades from API
   const {
@@ -61,8 +64,43 @@ export default function OverviewPage() {
     },
   });
 
+  useEffect(() => {
+    if (!periods) return;
+
+    const savedTab = sessionStorage.getItem("selectedTab");
+
+    if (savedTab) {
+      setSelectedTab(savedTab);
+    } else {
+      const defaultTab =
+        periods.find(
+          (period) =>
+            new Date(period.startAt) <= new Date() &&
+            new Date(period.endAt) >= new Date()
+        )?.id || "full-year";
+      setSelectedTab(defaultTab);
+    }
+  }, [periods]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      sessionStorage.removeItem("selectedTab");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   // Loading State
-  if (isPending || periodsIsPending || organizedSubjectsIsPending) {
+  if (
+    isPending ||
+    periodsIsPending ||
+    organizedSubjectsIsPending ||
+    selectedTab === null
+  ) {
     return <div>Loading...</div>;
   }
 
@@ -85,7 +123,7 @@ export default function OverviewPage() {
   return (
     <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
       <div className="flex flex-wrap items-center justify-between">
-        <h1 className="text-3xl font-bold">Vue d&apos;ensemble</h1>
+        <h1 className="text-3xl font-bold">Vue d'ensemble</h1>
         <h1 className="text-3xl font-normal">
           {/* @ts-ignore */}
           Bonjour {/* @ts-ignore */}
@@ -109,6 +147,11 @@ export default function OverviewPage() {
               new Date(period.endAt).getTime() >= new Date().getTime()
           )?.id || "full-year"
         }
+        value={selectedTab}
+        onValueChange={(value) => {
+          setSelectedTab(value);
+          sessionStorage.setItem("selectedTab", value);
+        }}
       >
         <div className="flex flex-col gap-4">
           <ScrollArea>
@@ -211,31 +254,24 @@ export default function OverviewPage() {
             <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
               <GlobalAverageChart
                 subjects={subjects || []}
-                period={
-                  organizedSubjects?.find((p) => p.period.id === "full-year")
-                    ?.period || {
-                    id: "full-year",
-                    name: "Toute l'année",
-                    startAt:
-                      sortedPeriods && sortedPeriods.length > 0
-                        ? sortedPeriods[0].startAt
-                        : new Date(
-                            new Date().getFullYear(),
-                            8,
-                            1
-                          ).toISOString(),
-                    endAt:
-                      sortedPeriods && sortedPeriods.length > 0
-                        ? sortedPeriods[sortedPeriods.length - 1].endAt
-                        : new Date(
-                            new Date().getFullYear() + 1,
-                            5,
-                            30
-                          ).toISOString(),
-                    userId: "",
-                    createdAt: "",
-                  }
-                }
+                period={{
+                  id: "full-year",
+                  name: "Toute l'année",
+                  startAt:
+                    sortedPeriods && sortedPeriods.length > 0
+                      ? sortedPeriods[0].startAt
+                      : new Date(new Date().getFullYear(), 8, 1).toISOString(),
+                  endAt:
+                    sortedPeriods && sortedPeriods.length > 0
+                      ? sortedPeriods[sortedPeriods.length - 1].endAt
+                      : new Date(
+                          new Date().getFullYear() + 1,
+                          5,
+                          30
+                        ).toISOString(),
+                  userId: "",
+                  createdAt: "",
+                }}
               />
               <RecentGradesCard />
             </div>
