@@ -87,7 +87,10 @@ export default function GradesPage() {
           <AddGradeDialog />
 
           <AddSubjectDialog>
-            <AddSubjectButton />
+            <Button variant="outline">
+              <PlusCircleIcon className="size-4 mr-2" />
+              Ajouter une matière
+            </Button>
           </AddSubjectDialog>
 
           <AddPeriodDialog>
@@ -146,11 +149,12 @@ export default function GradesPage() {
             )
             .map((period) => (
               <TabsContent key={period.id} value={period.id}>
-                <GradesTable subjects={
-                  organizedSubjects?.find((p) => p.period.id === period.id)
-                    ?.subjects || []
-                }
-                periodId={period.id}
+                <GradesTable
+                  subjects={
+                    organizedSubjects?.find((p) => p.period.id === period.id)
+                      ?.subjects || []
+                  }
+                  periodId={period.id}
                 />
               </TabsContent>
             ))}

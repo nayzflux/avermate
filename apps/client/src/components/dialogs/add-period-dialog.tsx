@@ -46,7 +46,7 @@ export default function AddPeriodDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="flex items-center">{children}</DialogTrigger>
+      <DialogTrigger className="flex items-center" asChild>{children}</DialogTrigger>
 
       <DialogContent>
         <DialogHeader>

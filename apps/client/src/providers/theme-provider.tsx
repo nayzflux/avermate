@@ -1,12 +1,19 @@
 "use client";
+import * as React from "react";
+const NextThemesProvider = dynamic(
+  () => import("next-themes").then((e) => e.ThemeProvider),
+  {
+    ssr: false,
+  }
+);
 
-import { ThemeProvider as NextThemeProvider } from "next-themes";
-import { ReactNode } from "react";
+import { type ThemeProviderProps } from "next-themes/dist/types";
+import dynamic from "next/dynamic";
 
-export default function ThemeProvider({ children }: { children: ReactNode }) {
+export default function ThemeProvider({ children }: ThemeProviderProps) {
   return (
-    <NextThemeProvider attribute="class" enableSystem disableTransitionOnChange>
+    <NextThemesProvider attribute="class" enableSystem disableTransitionOnChange>
       {children}
-    </NextThemeProvider>
+    </NextThemesProvider>
   );
 }
