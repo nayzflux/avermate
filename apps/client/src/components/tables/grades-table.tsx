@@ -163,7 +163,7 @@ function renderSubjects(subjects: Subject[], periodId: string, parentId: string 
                   outOf={grade.outOf}
                   coefficient={grade.coefficient}
                   id={grade.id}
-                  periodId={periodId}
+                  periodId={grade.periodId}
                 />
               ))}
             </div>

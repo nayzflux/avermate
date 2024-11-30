@@ -22,10 +22,8 @@ import { useMemo } from "react";
 
 export default function DataCards({
   subjects,
-  period,
 }: {
   subjects: Subject[];
-  period: Period;
 }) {
   const averages = useMemo(() => {
     console.time("Calculating averages overtime");

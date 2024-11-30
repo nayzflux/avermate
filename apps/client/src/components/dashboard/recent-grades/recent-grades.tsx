@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Grade } from "@/types/grade";
 import { apiClient } from "@/lib/api";
 
-export default function RecentGradesCard({ periodId }: { periodId: string }) {
+export default function RecentGradesCard() {
   const {
     data: recentGrades,
     isPending,
@@ -51,7 +51,7 @@ export default function RecentGradesCard({ periodId }: { periodId: string }) {
       </CardHeader>
 
       <CardContent>
-        <RecentGradesList periodId={periodId} />
+        <RecentGradesList />
       </CardContent>
     </Card>
   );

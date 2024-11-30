@@ -48,18 +48,18 @@ export default function OverviewPage() {
   });
 
   // fetch subjects but organized by period
-const {
-  data: organizedSubjects,
-  isError: organizedSubjectsIsError,
-  isPending: organizedSubjectsIsPending,
-} = useQuery({
-  queryKey: ["subjects", "organized-by-periods"],
-  queryFn: async () => {
-    const res = await apiClient.get("subjects/organized-by-periods");
-    const data = await res.json<GetOrganizedSubjectsResponse>();
-    return data.periods;
-  },
-});
+  const {
+    data: organizedSubjects,
+    isError: organizedSubjectsIsError,
+    isPending: organizedSubjectsIsPending,
+  } = useQuery({
+    queryKey: ["subjects", "organized-by-periods"],
+    queryFn: async () => {
+      const res = await apiClient.get("subjects/organized-by-periods");
+      const data = await res.json<GetOrganizedSubjectsResponse>();
+      return data.periods;
+    },
+  });
 
   // Loading State
   if (isPending || periodsIsPending || organizedSubjectsIsPending) {
@@ -76,6 +76,11 @@ const {
     );
   }
 
+  const sortedPeriods = periods
+    ?.slice()
+    .sort(
+      (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+    );
 
   return (
     <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
@@ -136,26 +141,62 @@ const {
 
                   <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
                     {/* Evolution de la moyenne générale */}
-                    <GlobalAverageChart subjects={
-                      organizedSubjects?.find((p) => p.period.id === period.id)
-                        ?.subjects || []
-                    }
-                    
-                      period={
-                        organizedSubjects?.find((p) => p.period.id === period.id)
-                          ?.period || []
+                    <GlobalAverageChart
+                      subjects={
+                        organizedSubjects?.find(
+                          (p) => p.period.id === period.id
+                        )?.subjects || []
                       }
-                      
+                      period={
+                        organizedSubjects?.find(
+                          (p) => p.period.id === period.id
+                        )?.period || []
+                      }
                     />
 
                     {/* Dernières notes */}
-                    <RecentGradesCard periodId={
-                      organizedSubjects?.find((p) => p.period.id === period.id)
-                        ?.period.id || ""
-                    } />
+                    <RecentGradesCard
+                      periodId={
+                        organizedSubjects?.find(
+                          (p) => p.period.id === period.id
+                        )?.period.id || ""
+                      }
+                    />
                   </div>
                 </TabsContent>
               ))}
+          <TabsContent value="full-year">
+            <DataCards subjects={subjects || []} />
+            <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
+              <GlobalAverageChart
+                subjects={subjects || []}
+                period={
+                  organizedSubjects?.find((p) => p.period.id === "full-year")
+                    ?.period || {
+                    id: "full-year",
+                    name: "Toute l'année",
+                    startAt:
+                      sortedPeriods && sortedPeriods.length > 0
+                        ? sortedPeriods[0].startAt
+                        : new Date(
+                            new Date().getFullYear(),
+                            8,
+                            1
+                          ).toISOString(),
+                    endAt:
+                      sortedPeriods && sortedPeriods.length > 0
+                        ? sortedPeriods[sortedPeriods.length - 1].endAt
+                        : new Date(
+                            new Date().getFullYear() + 1,
+                            5,
+                            30
+                          ).toISOString(),
+                  }
+                }
+              />
+              <RecentGradesCard />
+            </div>
+          </TabsContent>
         </div>
       </Tabs>
     </main>

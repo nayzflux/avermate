@@ -73,8 +73,23 @@ export default function GradesPage() {
     },
   });
 
+  const {
+    data: subjects,
+    isError: subjectsIsError,
+    isPending: subjectsIsPending,
+  } = useQuery({
+    queryKey: ["subjects"],
+    queryFn: async () => {
+      const res = await apiClient.get("subjects");
+      const data = await res.json<{
+        subjects: Subject[];
+      }>();
+      return data.subjects;
+    },
+  });
+
   // Loading State
-  if (periodsIsPending) {
+  if (periodsIsPending || organizedSubjectsIsPending || subjectsIsPending) {
     return <div>Loading...</div>;
   }
 
@@ -158,6 +173,9 @@ export default function GradesPage() {
                 />
               </TabsContent>
             ))}
+        <TabsContent value="full-year">
+          <GradesTable subjects={subjects} periodId="full-year" />
+        </TabsContent>
       </Tabs>
     </main>
   );
