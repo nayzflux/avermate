@@ -41,8 +41,8 @@ export default function dashboardLoader() {
         <h1 className="text-3xl font-bold">
           <Skeleton className="w-40 h-[32px]" />
         </h1>
-        <h1 className="text-3xl font-normal">
-          <Skeleton className="w-[300px] h-9" />
+        <h1 className="text-3xl font-normal pt-1">
+          <Skeleton className="w-[250px] h-9" />
         </h1>
       </div>
 
@@ -106,8 +106,8 @@ export default function dashboardLoader() {
                 <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
                   {/* Area Chart Section */}
                   <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%] lg:w-[60%]">
-                    <CardDescription className="pb-8">
-                      <Skeleton className="w-96 h-6" />
+                    <CardDescription className="pb-8 w-full">
+                      <Skeleton className="w-full h-6" />
                     </CardDescription>
                     <ChartContainer
                       config={chartConfig}

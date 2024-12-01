@@ -101,13 +101,17 @@ export default function AccountDropdown() {
         <DropdownMenuSeparator />
         <ThemeSwitchButton />
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <LuGithub className="size-4 mr-2" />
-          Github
+        <DropdownMenuItem asChild>
+          <Link href="https://github.com/nayzflux/avermate">
+            <LuGithub className="size-4 mr-2" />
+            Github
+          </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <LifebuoyIcon className="size-4 mr-2" />
-          Support
+        <DropdownMenuItem asChild>
+          <Link href="https://discord.gg/DSCMg3MUzu">
+            <LifebuoyIcon className="size-4 mr-2" />
+            Support
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
 
