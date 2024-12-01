@@ -9,30 +9,15 @@ import { apiClient } from "@/lib/api";
 import { Grade } from "@/types/grade";
 import { useQuery } from "@tanstack/react-query";
 import RecentGradesList from "./recent-grades-list";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function RecentGradesCard() {
-  const {
-    data: recentGrades,
-    isPending,
-    isError,
-  } = useQuery({
-    queryKey: ["recent-grades-title", "grades"],
-    queryFn: async () => {
-      const res = await apiClient.get(
-        `grades?from=${new Date(
-          Date.now() - 1000 * 60 * 60 * 24 * 14
-        )}&limit=50`
-      );
-
-      const data = await res.json<{ grades: Grade[] }>();
-
-      return data.grades;
-    },
-  });
-
-  if (isPending) return <div>loading...</div>;
-
-  if (isError) return <div>Erreur lors du chargement des notes récentes</div>;
+export default function RecentGradesCard(
+  {
+    recentGrades,
+  }: {
+    recentGrades: Grade[];
+  }
+) {
 
   return (
     <Card className="lg:col-span-2">
@@ -53,7 +38,7 @@ export default function RecentGradesCard() {
       </CardHeader>
 
       <CardContent>
-        <RecentGradesList />
+        <RecentGradesList recentGrades={recentGrades} />
       </CardContent>
     </Card>
   );

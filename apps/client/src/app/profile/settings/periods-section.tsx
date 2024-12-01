@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import DeletePeriodDialog from "@/components/dialogs/delete-period-dialog";
 import UpdatePeriodDialog from "@/components/dialogs/update-period-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
 
 export const PeriodsSection = () => {
 
@@ -26,6 +29,49 @@ export const PeriodsSection = () => {
             return data.periods;
         },
     });
+  
+  if (isPeriodPending) {
+    return (
+      <Card className={"p-6 w-full"}>
+        <div className="flex flex-col gap-6">
+          <CardHeader className="p-0">
+            <CardTitle>
+              <Skeleton className="w-36 h-6" />
+            </CardTitle>
+            <CardDescription>
+              <Skeleton className="w-20 h-4" />
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent className="p-0">
+            <div className="flex flex-col gap-4">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2
+              "
+                >
+                  <div className="flex flex-col gap-1">
+                    <Label>
+                      <Skeleton className="w-64 h-6" />
+                    </Label>
+                    <span className="text-muted-foreground text-sm">
+                      <Skeleton className="w-32 h-4" />
+                    </span>
+                  </div>
+                  <div>
+                    <Button size="icon" variant="outline" disabled>
+                      <EllipsisVerticalIcon className="size-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <ProfileSection title="Périodes" description="Gérez vos périodes scolaires">

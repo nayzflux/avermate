@@ -45,7 +45,7 @@ export default function ProfileNav() {
             <Button
               className={cn(
                 "w-full justify-start items-center",
-                path === route.path && "active"
+                path === route.path ? "bg-primary/10" : ""
               )}
               variant="ghost"
               asChild
