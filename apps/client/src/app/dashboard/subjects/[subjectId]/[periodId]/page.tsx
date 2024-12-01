@@ -124,26 +124,17 @@ export default function SubjectPage({
         organizedSubjects?.find((p) => p.period.id === periodId)?.period || {
           id: "full-year",
           name: "Toute l'année",
-          startAt: new Date(new Date().getFullYear(), 8, 1).toISOString(),
-          endAt: new Date(new Date().getFullYear() + 1, 5, 30).toISOString(),
+          startAt:
+            sortedPeriods && sortedPeriods.length > 0
+              ? sortedPeriods[0].startAt
+              : new Date(new Date().getFullYear(), 8, 1).toISOString(),
+          endAt:
+            sortedPeriods && sortedPeriods.length > 0
+              ? sortedPeriods[sortedPeriods.length - 1].endAt
+              : new Date(new Date().getFullYear() + 1, 5, 30).toISOString(),
           userId: "",
           createdAt: "",
         }
-        // periodId === "full-year"
-        //   ? {
-        //       id: "full-year",
-        //       name: "Toute l'année",
-        //       startAt:
-        //         sortedPeriods && sortedPeriods.length > 0
-        //           ? sortedPeriods[0].startAt
-        //           : new Date(new Date().getFullYear(), 8, 1).toISOString(),
-        //       endAt:
-        //         sortedPeriods && sortedPeriods.length > 0
-        //           ? sortedPeriods[sortedPeriods.length - 1].endAt
-        //           : new Date(new Date().getFullYear() + 1, 5, 30).toISOString(),
-        //     }
-        //   : organizedSubjects?.find((p) => p.period.id === periodId)?.period ||
-        //     []
       }
     />
   );

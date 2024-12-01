@@ -75,6 +75,9 @@ export default function GradesTable({
   } = useQuery({
     queryKey: ["periods-name"],
     queryFn: async () => {
+      if (periodId === "full-year") {
+        return null;
+      }
       const res = await apiClient.get(`periods/${periodId}`);
       const data = await res.json<Period>();
       return data;
