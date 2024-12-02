@@ -15,7 +15,7 @@ import { apiClient } from "@/lib/api";
 import { Subject } from "@/types/subject";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2Icon } from "lucide-react";
+import { CheckIcon, ChevronDownIcon, Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Badge } from "../ui/badge";
@@ -27,6 +27,17 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Switch } from "@/components/ui/switch";
+import { useEffect, useState } from "react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 
 const addSubjectSchema = z.object({
   name: z.string().min(1).max(64),
@@ -44,6 +55,7 @@ const addSubjectSchema = z.object({
 type AddSubjectSchema = z.infer<typeof addSubjectSchema>;
 
 export const AddSubjectForm = ({ close }: { close: () => void }) => {
+  const [open, setOpen] = useState(false);
   const toaster = useToast();
 
   const queryClient = useQueryClient();
@@ -61,7 +73,13 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["create-Subject"],
-    mutationFn: async ({ name, coefficient, parentId, isMainSubject, isDisplaySubject }: AddSubjectSchema) => {
+    mutationFn: async ({
+      name,
+      coefficient,
+      parentId,
+      isMainSubject,
+      isDisplaySubject,
+    }: AddSubjectSchema) => {
       const res = await apiClient.post("subjects", {
         json: {
           name,
@@ -196,31 +214,70 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
             control={form.control}
             name="parentId"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col">
                 <FormLabel>
                   Sous-matière <Badge className="ml-2">Optionnel</Badge>
                 </FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value ?? undefined}
+                <Popover
+                  modal
+                  open={open}
+                  onOpenChange={(isOpen) => setOpen(isOpen)}
                 >
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        className="placeholder:text-muted-foreground text-blue-500"
-                        placeholder="Choisir une matière parente"
-                      />
-                    </SelectTrigger>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open ? "true" : "false"}
+                        className="justify-between"
+                        onClick={() => setOpen(!open)}
+                      >
+                        {field.value
+                          ? subects?.find(
+                              (subject) => subject.id === field.value
+                            )?.name
+                          : "Choisir une matière parente"}
+                        <ChevronUpDownIcon className="opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
                   </FormControl>
-                  <SelectContent>
-                    <SelectItem value="none">No parent</SelectItem>
-                    {subects?.map((subject) => (
-                      <SelectItem key={subject.id} value={subject.id}>
-                        {subject.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  <PopoverContent
+                    className="p-0 min-w-[var(--radix-popover-trigger-width)]"
+                    align="start"
+                  >
+                    <Command>
+                      <CommandInput
+                        placeholder="Choisir une matière parente"
+                        className=" h-9"
+                      />
+                      <CommandList>
+                        <CommandEmpty>Aucune période trouvée</CommandEmpty>
+                        <CommandGroup>
+                          {subects
+                            ?.slice()
+                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .map((subject) => (
+                              <CommandItem
+                                key={subject.id}
+                                value={subject.name}
+                                onSelect={() => {
+                                  form.setValue("parentId", subject.id, {
+                                    shouldValidate: true,
+                                  });
+                                  setOpen(false);
+                                }}
+                              >
+                                <span>{subject.name}</span>
+                                {form.getValues("parentId") === subject.id && (
+                                  <CheckIcon className="w-4 h-4 ml-auto" />
+                                )}
+                              </CommandItem>
+                            ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
                 <FormMessage />
               </FormItem>
             )}
