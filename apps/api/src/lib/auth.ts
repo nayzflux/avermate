@@ -96,6 +96,18 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
 
+    // Password reset
+    sendResetPassword: async ({ user, url }) => {
+      console.info("Sending password reset to", user.id);
+
+      await resend.emails.send({
+        from: "Avermate <noreply@test.nayz.fr>",
+        to: user.email,
+        subject: "Reset your password",
+        html: `<p>Hello ${user.name}! Click <a href="${url}">here</a> to reset your password. ${url}</p>`,
+      });
+    },
+
     password: {
       // Hash password using Argon2id
       async hash(password) {
