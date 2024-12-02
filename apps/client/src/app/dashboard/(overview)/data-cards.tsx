@@ -103,7 +103,7 @@ export default function DataCards({
   }, [subjects]);
 
   return (
-    <div className="grid grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
       <DataCard
         title="Overall average"
         icon={AcademicCapIcon}
