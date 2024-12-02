@@ -71,6 +71,28 @@ export const auth = betterAuth({
       // createdAt: "created_at",
       // emailVerified: "email_verified",
     },
+
+    // SEE: https://github.com/better-auth/better-auth/issues/371
+    // additionalFields: {
+    //   firstName: {
+    //     type: "string",
+    //     required: true,
+    //   },
+    //   lastName: {
+    //     type: "string",
+    //     required: true,
+    //   },
+    //   jobTitle: {
+    //     type: "string",
+    //     required: true,
+    //   },
+    //   isCPEAccount: {
+    //     type: "boolean",
+    //     required: true,
+    //   }
+
+    // },
+
   },
 
   // Account

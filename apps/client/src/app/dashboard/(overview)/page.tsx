@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
 import dashboardLoader from "@/components/skeleton/dashboard-loader";
 import { Grade } from "@/types/grade";
+import Onboardding from "./onboarding/onboardding";
 
 /**
  * Vue d'ensemble des notes
@@ -138,6 +139,20 @@ export default function OverviewPage() {
       </div>
     );
   }
+
+  // // Onboarding
+  // if (
+  //   (!subjects || subjects.length === 0) &&
+  //   (!periods || periods.length === 0) &&
+  //   session?.user?.createdAt &&
+  //   new Date(session?.user?.createdAt).getTime() > Date.now() - 1000 * 60 * 60 * 24
+  // ) {
+  //   return (
+  //     <div>
+  //       {Onboardding()}
+  //     </div>
+  //   );
+  // }
 
   const sortedPeriods = periods
     ?.slice()

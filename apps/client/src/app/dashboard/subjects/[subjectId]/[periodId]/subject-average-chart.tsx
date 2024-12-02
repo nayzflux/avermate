@@ -18,6 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { Period } from "@/types/period";
+import React, { useState, useCallback } from "react";
 
 const predefinedColors = [
   "#ea5545",
@@ -40,6 +41,18 @@ export default function SubjectAverageChart({
   period: Period;
   subjects: Subject[];
 }) {
+  const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
+    [key: string]: number | null;
+  }>({});
+
+  // Callback to update active tooltip index
+  const handleActiveTooltipIndicesChange = React.useCallback(
+    (indices: { [key: string]: number | null }) => {
+      setActiveTooltipIndices(indices);
+    },
+    []
+  );
+
   const { childrenAverage, chartData, chartConfig } = (() => {
     const childrensId = getChildren(subjects, subjectId);
 
@@ -104,6 +117,27 @@ export default function SubjectAverageChart({
     return { childrenAverage, chartData, chartConfig };
   })();
 
+  // Custom dot component
+  const CustomDot = (props: any) => {
+    const { cx, cy, index, stroke, dataKey } = props;
+    if (
+      activeTooltipIndices &&
+      activeTooltipIndices[dataKey] !== null &&
+      index === activeTooltipIndices[dataKey]
+    ) {
+      return (
+        <circle
+          cx={cx}
+          cy={cy}
+          r={4} // Adjust size as needed
+          opacity={0.8}
+          fill={stroke}
+        />
+      );
+    }
+    return null;
+  };
+
   return (
     <Card className="p-4">
       <ChartContainer config={chartConfig} className="h-[400px] w-[100%]">
@@ -136,6 +170,7 @@ export default function SubjectAverageChart({
                 chartData={chartData}
                 findNearestNonNull={true}
                 labelFormatter={(value) => value}
+                onUpdateActiveTooltipIndices={handleActiveTooltipIndicesChange}
               />
             }
             labelFormatter={(value) =>
@@ -153,8 +188,15 @@ export default function SubjectAverageChart({
               type="monotone"
               fill={child.color}
               stroke={child.color}
-              dot={false}
               connectNulls={true}
+              activeDot={false}
+              dot={(props) => (
+                <CustomDot
+                  {...props}
+                  dataKey={child.id}
+                  activeTooltipIndices={activeTooltipIndices}
+                />
+              )}
             />
           ))}
 
@@ -163,9 +205,16 @@ export default function SubjectAverageChart({
             type="monotone"
             fill="url(#fillAverage)"
             stroke="#2662d9"
-            dot={false}
             strokeWidth={3}
             connectNulls={true}
+            activeDot={false}
+            dot={(props) => (
+              <CustomDot
+                {...props}
+                dataKey="average"
+                activeTooltipIndices={activeTooltipIndices}
+              />
+            )}
           />
         </LineChart>
       </ChartContainer>
@@ -173,7 +222,7 @@ export default function SubjectAverageChart({
   );
 }
 
-          /* <AreaChart
+/* <AreaChart
           accessibilityLayer
           data={chartData}
           margin={{

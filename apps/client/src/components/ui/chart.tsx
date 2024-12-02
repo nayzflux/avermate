@@ -2,7 +2,12 @@
 
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
-import { Payload, ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
+import {
+  Payload,
+  ValueType,
+  NameType,
+} from "recharts/types/component/DefaultTooltipContent";
+import { debounce } from "lodash"
 
 import { cn } from "@/lib/utils";
 
@@ -115,6 +120,10 @@ const ChartTooltipContent = React.forwardRef<
       chartData?: any[];
       findNearestNonNull?: boolean;
       dataKey?: string;
+      onUpdateActiveTooltipIndex?: (index: number | null) => void;
+      onUpdateActiveTooltipIndices?: (indices: {
+        [key: string]: number | null;
+      }) => void;
     }
 >(
   (
@@ -133,6 +142,8 @@ const ChartTooltipContent = React.forwardRef<
       nameKey,
       labelKey,
       chartData,
+      onUpdateActiveTooltipIndex,
+      onUpdateActiveTooltipIndices,
       findNearestNonNull = false,
       dataKey,
     },
@@ -176,10 +187,10 @@ const ChartTooltipContent = React.forwardRef<
           let forwardIndex = dataIndex + 1;
           while (
             forwardIndex < chartData.length &&
-            (dataKey !== undefined &&
-              (chartData[forwardIndex]?.[dataKey] === null ||
+            dataKey !== undefined &&
+            (chartData[forwardIndex]?.[dataKey] === null ||
               chartData[forwardIndex]?.[dataKey] === undefined ||
-              isNaN(Number(chartData[forwardIndex]?.[dataKey]))))
+              isNaN(Number(chartData[forwardIndex]?.[dataKey])))
           ) {
             forwardIndex++;
           }
@@ -188,10 +199,10 @@ const ChartTooltipContent = React.forwardRef<
           let backwardIndex = dataIndex - 1;
           while (
             backwardIndex >= 0 &&
-            (dataKey !== undefined &&
-              (chartData[backwardIndex]?.[dataKey] === null ||
+            dataKey !== undefined &&
+            (chartData[backwardIndex]?.[dataKey] === null ||
               chartData[backwardIndex]?.[dataKey] === undefined ||
-              isNaN(Number(chartData[backwardIndex]?.[dataKey]))))
+              isNaN(Number(chartData[backwardIndex]?.[dataKey])))
           ) {
             backwardIndex--;
           }
@@ -226,6 +237,91 @@ const ChartTooltipContent = React.forwardRef<
         .filter(Boolean); // Remove any null items
     }, [findNearestNonNull, chartData, payload]);
 
+    // React.useEffect(() => {
+    //   if (adjustedPayload && adjustedPayload.length > 0) {
+    //     const item = adjustedPayload[0];
+    //     const date = item.payload.date;
+    //     if (chartData && chartData.length > 0) {
+    //       const index = chartData.findIndex((d) => d.date === date);
+    //       if (onUpdateActiveTooltipIndex) {
+    //         onUpdateActiveTooltipIndex(index >= 0 ? index : null);
+    //       }
+    //     } else {
+    //       if (onUpdateActiveTooltipIndex) {
+    //         onUpdateActiveTooltipIndex(null);
+    //       }
+    //     }
+    //   } else {
+    //     if (onUpdateActiveTooltipIndex) {
+    //       onUpdateActiveTooltipIndex(null);
+    //     }
+    //   }
+    // }, [adjustedPayload, chartData, onUpdateActiveTooltipIndex]);
+
+    // React.useEffect(() => {
+    //   if (adjustedPayload && adjustedPayload.length > 0) {
+    //     const indices: { [key: string]: number | null } = {};
+
+    //     adjustedPayload.forEach((item) => {
+    //       const date = item.payload.date;
+    //       const dataKey = item.dataKey;
+    //       if (chartData && chartData.length > 0) {
+    //         const index = chartData.findIndex((d) => d.date === date);
+    //         indices[dataKey] = index >= 0 ? index : null;
+    //       } else {
+    //         indices[dataKey] = null;
+    //       }
+    //     });
+
+    //     if (onUpdateActiveTooltipIndices) {
+    //       onUpdateActiveTooltipIndices(indices);
+    //     }
+    //   } else {
+    //     if (onUpdateActiveTooltipIndices) {
+    //       onUpdateActiveTooltipIndices({});
+    //     }
+    //   }
+    // }, [adjustedPayload, chartData, onUpdateActiveTooltipIndices]);
+
+    const computedIndices = React.useMemo(() => {
+      if (adjustedPayload && adjustedPayload.length > 0) {
+        const indices: { [key: string]: number | null } = {};
+
+        adjustedPayload.forEach((item) => {
+          const date = item?.payload.date;
+          const dataKey = item?.dataKey;
+          if (chartData && chartData.length > 0) {
+            const index = chartData.findIndex((d) => d.date === date);
+            if (dataKey !== undefined) {
+              indices[dataKey] = index >= 0 ? index : null;
+            }
+          } else {
+            if (dataKey !== undefined) {
+              indices[dataKey] = null;
+            }
+          }
+        });
+
+        return indices;
+      }
+      return {};
+    }, [adjustedPayload, chartData]);
+
+    // Debounce the update function
+    const debouncedUpdateActiveTooltipIndices = React.useMemo(() => {
+      return debounce((indices: { [key: string]: number | null; }) => {
+        if (onUpdateActiveTooltipIndices) {
+          onUpdateActiveTooltipIndices(indices);
+        }
+      }, 10);
+    }, [onUpdateActiveTooltipIndices]);
+
+    React.useEffect(() => {
+      if (onUpdateActiveTooltipIndices) {
+        debouncedUpdateActiveTooltipIndices(computedIndices);
+      }
+    }, [computedIndices, debouncedUpdateActiveTooltipIndices]);
+
     // Use adjustedPayload in tooltipLabel
     const tooltipLabel = React.useMemo(() => {
       if (hideLabel || !adjustedPayload?.length) {
@@ -243,7 +339,10 @@ const ChartTooltipContent = React.forwardRef<
       if (labelFormatter) {
         return (
           <div className={cn("font-medium", labelClassName)}>
-            {labelFormatter(value, adjustedPayload as Payload<ValueType, NameType>[])}
+            {labelFormatter(
+              value,
+              adjustedPayload as Payload<ValueType, NameType>[]
+            )}
           </div>
         );
       }
@@ -338,7 +437,8 @@ const ChartTooltipContent = React.forwardRef<
                           {itemConfig?.label || item?.name}
                         </span>
                       </div>
-                      {typeof item?.value === "number" && !isNaN(Number(item?.value)) ? (
+                      {typeof item?.value === "number" &&
+                      !isNaN(Number(item?.value)) ? (
                         <span className="font-mono font-medium tabular-nums text-foreground">
                           {item?.value?.toLocaleString()}
                         </span>
@@ -359,8 +459,6 @@ const ChartTooltipContent = React.forwardRef<
   }
 );
 ChartTooltipContent.displayName = "ChartTooltip";
-
-
 
 // Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(
@@ -401,9 +499,4 @@ function getPayloadConfigFromPayload(
     : config[key as keyof typeof config];
 }
 
-export {
-  ChartContainer,
-  ChartStyle,
-  ChartTooltip,
-  ChartTooltipContent,
-};
+export { ChartContainer, ChartStyle, ChartTooltip, ChartTooltipContent };
