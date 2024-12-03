@@ -18,7 +18,7 @@ const cons = [
 export const Benefits = () => {
   return (
     <LandingSection>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 items-center">
         <SubHeading as="h3">
           Restez concentré sur ce qui compte vraiment
         </SubHeading>
