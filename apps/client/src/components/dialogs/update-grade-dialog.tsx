@@ -8,15 +8,18 @@ import { useState } from "react";
 import { UpdateGradeForm } from "../forms/update-grade-form";
 import { Button } from "../ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
+  Credenza,
+  CredenzaBody,
+  CredenzaClose,
+  CredenzaContent,
+  CredenzaDescription,
+  CredenzaFooter,
+  CredenzaHeader,
+  CredenzaTitle,
+  CredenzaTrigger,
+} from "@/components/ui/credenza";
 
-export default function UpdateGradeDialog({ gradeId }: { gradeId: string }) {
+export default function UpdateGradeCredenza({ gradeId }: { gradeId: string }) {
   const [open, setOpen] = useState(false);
 
   const {
@@ -35,26 +38,26 @@ export default function UpdateGradeDialog({ gradeId }: { gradeId: string }) {
   });
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <Credenza open={open} onOpenChange={setOpen}>
+      <CredenzaTrigger asChild>
         <Button variant="ghost">
           <PencilIcon className="size-4 mr-2" />
           Modifier la note
         </Button>
-      </DialogTrigger>
+      </CredenzaTrigger>
 
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Modifier la note</DialogTitle>
-          <DialogDescription>
+      <CredenzaContent className="px-4 py-4">
+        <CredenzaHeader>
+          <CredenzaTitle>Modifier la note</CredenzaTitle>
+          <CredenzaDescription>
             Modifier les données de la note.
-          </DialogDescription>
-        </DialogHeader>
+          </CredenzaDescription>
+        </CredenzaHeader>
 
         {!isPending && !isError && (
           <UpdateGradeForm grade={grade} close={() => setOpen(false)} />
         )}
-      </DialogContent>
-    </Dialog>
+      </CredenzaContent>
+    </Credenza>
   );
 }

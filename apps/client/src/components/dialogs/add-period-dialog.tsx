@@ -6,15 +6,18 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { AddPeriodForm } from "../forms/add-period-form";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
+  Credenza,
+  CredenzaBody,
+  CredenzaClose,
+  CredenzaContent,
+  CredenzaDescription,
+  CredenzaFooter,
+  CredenzaHeader,
+  CredenzaTitle,
+  CredenzaTrigger,
+} from "@/components/ui/credenza";
 
-export default function AddPeriodDialog({
+export default function AddPeriodCredenza({
   children,
 }: {
   children: React.ReactNode;
@@ -45,21 +48,23 @@ export default function AddPeriodDialog({
   });
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="flex items-center" asChild>{children}</DialogTrigger>
+    <Credenza open={open} onOpenChange={setOpen}>
+      <CredenzaTrigger className="flex items-center" asChild>
+        {children}
+      </CredenzaTrigger>
 
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Ajouter une période</DialogTitle>
-          <DialogDescription>
+      <CredenzaContent className="px-4 py-4">
+        <CredenzaHeader>
+          <CredenzaTitle>Ajouter une période</CredenzaTitle>
+          <CredenzaDescription>
             Créer une nouvelle période avant d'ajouter des notes.
-          </DialogDescription>
-        </DialogHeader>
+          </CredenzaDescription>
+        </CredenzaHeader>
 
         {!isPending && !isError && (
           <AddPeriodForm periods={periods} close={() => setOpen(false)} />
         )}
-      </DialogContent>
-    </Dialog>
+      </CredenzaContent>
+    </Credenza>
   );
 }

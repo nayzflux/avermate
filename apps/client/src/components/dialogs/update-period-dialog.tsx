@@ -8,15 +8,18 @@ import { useState } from "react";
 import { UpdatePeriodForm } from "../forms/update-period-form";
 import { Button } from "../ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
+  Credenza,
+  CredenzaBody,
+  CredenzaClose,
+  CredenzaContent,
+  CredenzaDescription,
+  CredenzaFooter,
+  CredenzaHeader,
+  CredenzaTitle,
+  CredenzaTrigger,
+} from "@/components/ui/credenza";
 
-export default function UpdatePeriodDialog({ periodId }: { periodId: string }) {
+export default function UpdatePeriodCredenza({ periodId }: { periodId: string }) {
   const [open, setOpen] = useState(false);
 
   const {
@@ -47,26 +50,30 @@ export default function UpdatePeriodDialog({ periodId }: { periodId: string }) {
   });
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <Credenza open={open} onOpenChange={setOpen}>
+      <CredenzaTrigger asChild>
         <Button variant="ghost">
           <PencilIcon className="size-4 mr-2" />
           Modifier la période
         </Button>
-      </DialogTrigger>
+      </CredenzaTrigger>
 
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Modifier la période</DialogTitle>
-          <DialogDescription>
+      <CredenzaContent className="px-4 py-4">
+        <CredenzaHeader>
+          <CredenzaTitle>Modifier la période</CredenzaTitle>
+          <CredenzaDescription>
             Modifier les données de la période.
-          </DialogDescription>
-        </DialogHeader>
+          </CredenzaDescription>
+        </CredenzaHeader>
 
         {!isPending && !isError && !isPeriodsPending && !isPeriodsError && (
-          <UpdatePeriodForm period={period} periods={periods} close={() => setOpen(false)} />
+          <UpdatePeriodForm
+            period={period}
+            periods={periods}
+            close={() => setOpen(false)}
+          />
         )}
-      </DialogContent>
-    </Dialog>
+      </CredenzaContent>
+    </Credenza>
   );
 }
