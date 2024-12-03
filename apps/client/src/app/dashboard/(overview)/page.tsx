@@ -16,6 +16,13 @@ import DataCards from "./data-cards";
 import dashboardLoader from "@/components/skeleton/dashboard-loader";
 import { Grade } from "@/types/grade";
 import Onboardding from "./onboarding/onboardding";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 /**
  * Vue d'ensemble des notes
@@ -67,24 +74,24 @@ export default function OverviewPage() {
     },
   });
 
-    const {
-      data: recentGrades,
-      isError: isPendingRecentGrades,
-      isPending: isErrorRecentGrades,
-    } = useQuery({
-      queryKey: ["recent-grades", "grades"],
-      queryFn: async () => {
-        const res = await apiClient.get(
-          `grades?from=${new Date(
-            Date.now() - 1000 * 60 * 60 * 24 * 14
-          )}&limit=100`
-        );
+  const {
+    data: recentGrades,
+    isError: isPendingRecentGrades,
+    isPending: isErrorRecentGrades,
+  } = useQuery({
+    queryKey: ["recent-grades", "grades"],
+    queryFn: async () => {
+      const res = await apiClient.get(
+        `grades?from=${new Date(
+          Date.now() - 1000 * 60 * 60 * 24 * 14
+        )}&limit=100`
+      );
 
-        const data = await res.json<{ grades: Grade[] }>();
+      const data = await res.json<{ grades: Grade[] }>();
 
-        return data.grades;
-      },
-    });
+      return data.grades;
+    },
+  });
 
   useEffect(() => {
     if (!periods) return;
@@ -125,13 +132,16 @@ export default function OverviewPage() {
     selectedTab === null
     // || true
   ) {
-    return <div>
-      {dashboardLoader()}
-    </div>;
+    return <div>{dashboardLoader()}</div>;
   }
 
   // Error State
-  if (isError || periodsIsError || organizedSubjectsIsError || isErrorRecentGrades) {
+  if (
+    isError ||
+    periodsIsError ||
+    organizedSubjectsIsError ||
+    isErrorRecentGrades
+  ) {
     return (
       <div>
         <h2>Error</h2>
@@ -194,21 +204,47 @@ export default function OverviewPage() {
         }}
       >
         <div className="flex flex-col gap-4">
-          <ScrollArea>
-            <div className="flex w-full">
-              <TabsList className="flex">
-                {periods?.map((period) => (
-                  <TabsTrigger key={period.id} value={period.id}>
-                    {period.name}
-                  </TabsTrigger>
-                ))}
+          <div className="hidden md:flex gap-4">
+            <ScrollArea>
+              <div className="flex w-full">
+                <TabsList className="flex">
+                  {periods?.map((period) => (
+                    <TabsTrigger key={period.id} value={period.id}>
+                      {period.name}
+                    </TabsTrigger>
+                  ))}
 
-                <TabsTrigger value="full-year">Toute l'année</TabsTrigger>
-              </TabsList>
-            </div>
+                  <TabsTrigger value="full-year">Toute l'année</TabsTrigger>
+                </TabsList>
+              </div>
 
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </div>
+          <div className="flex md:hidden">
+            <Select
+              value={selectedTab}
+              onValueChange={(value) => {
+                setSelectedTab(value);
+                sessionStorage.setItem("selectedTab", value);
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue>
+                  {periods?.find((period) => period.id === selectedTab)?.name ||
+                    "Toute l'année"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+              {periods?.map((period) => (
+                <SelectItem key={period.id} value={period.id}>
+                  {period.name}
+                </SelectItem>
+              ))}
+                <SelectItem value="full-year">Toute l'année</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           {periods &&
             periods.length > 0 &&

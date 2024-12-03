@@ -41,17 +41,27 @@ export default function SubjectAverageChart({
   period: Period;
   subjects: Subject[];
 }) {
-  const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
-    [key: string]: number | null;
-  }>({});
+  // const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
+  //   [key: string]: number | null;
+  // }>({});
+
+  // // Callback to update active tooltip index
+  // const handleActiveTooltipIndicesChange = React.useCallback(
+  //   (indices: { [key: string]: number | null }) => {
+  //     setActiveTooltipIndices(indices);
+  //   },
+  //   []
+  // );
+
+  // State to manage the active index for the data series
+  const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(
+    null
+  );
 
   // Callback to update active tooltip index
-  const handleActiveTooltipIndicesChange = React.useCallback(
-    (indices: { [key: string]: number | null }) => {
-      setActiveTooltipIndices(indices);
-    },
-    []
-  );
+  const handleActiveTooltipIndexChange = (index: number | null) => {
+    setActiveTooltipIndex(index);
+  };
 
   const { childrenAverage, chartData, chartConfig } = (() => {
     const childrensId = getChildren(subjects, subjectId);
@@ -118,25 +128,21 @@ export default function SubjectAverageChart({
   })();
 
   // Custom dot component
-  const CustomDot = (props: any) => {
-    const { cx, cy, index, stroke, dataKey } = props;
-    if (
-      activeTooltipIndices &&
-      activeTooltipIndices[dataKey] !== null &&
-      index === activeTooltipIndices[dataKey]
-    ) {
-      return (
-        <circle
-          cx={cx}
-          cy={cy}
-          r={4} // Adjust size as needed
-          opacity={0.8}
-          fill={stroke}
-        />
-      );
-    }
-    return null;
-  };
+const CustomDot = (props: any) => {
+  const { cx, cy, index, stroke, activeTooltipIndex } = props;
+  if (activeTooltipIndex !== null && index === activeTooltipIndex) {
+    return (
+      <circle
+        cx={cx}
+        cy={cy}
+        r={4} // Adjust size as needed
+        fill={stroke}
+      />
+    );
+  }
+  return null;
+};
+
 
   return (
     <Card className="p-4">
@@ -170,7 +176,7 @@ export default function SubjectAverageChart({
                 chartData={chartData}
                 findNearestNonNull={true}
                 labelFormatter={(value) => value}
-                onUpdateActiveTooltipIndices={handleActiveTooltipIndicesChange}
+                onUpdateActiveTooltipIndex={handleActiveTooltipIndexChange}
               />
             }
             labelFormatter={(value) =>
@@ -194,7 +200,7 @@ export default function SubjectAverageChart({
                 <CustomDot
                   {...props}
                   dataKey={child.id}
-                  activeTooltipIndices={activeTooltipIndices}
+                  activeTooltipIndex={activeTooltipIndex}
                 />
               )}
             />
@@ -212,7 +218,7 @@ export default function SubjectAverageChart({
               <CustomDot
                 {...props}
                 dataKey="average"
-                activeTooltipIndices={activeTooltipIndices}
+                activeTooltipIndex={activeTooltipIndex}
               />
             )}
           />

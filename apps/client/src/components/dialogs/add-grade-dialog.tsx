@@ -24,7 +24,11 @@ import {
   CredenzaTrigger,
 } from "@/components/ui/credenza";
 
-export default function AddGradeDialog() {
+export default function AddGradeDialog({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -49,11 +53,8 @@ export default function AddGradeDialog() {
     //     </DialogContent>
     //   </Dialog>
       <Credenza open={open} onOpenChange={setOpen}>
-        <CredenzaTrigger asChild>
-          <Button>
-            <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une note
-          </Button>
+      <CredenzaTrigger asChild>
+        {children}
         </CredenzaTrigger>
         <CredenzaContent className="px-4 py-4">
           <CredenzaHeader>
