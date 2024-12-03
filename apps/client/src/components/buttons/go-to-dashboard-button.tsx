@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 export const GoToDashboardButton = () => {
   return (
     <Button asChild>
-      <Link href="/auth/sign-up">
+      <Link href="/dashboard">
         <ArrowRightIcon className="size-4 mr-2" />
         Aller au tableau de bord
       </Link>

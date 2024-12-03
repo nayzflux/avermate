@@ -52,6 +52,7 @@ export const auth = betterAuth({
   user: {
     changeEmail: {
       enabled: true,
+
       // TODO: Implement email verification
       sendChangeEmailVerification: async ({ user, newEmail, url }) => {
         console.info("Sending email update request to", user.id);
@@ -92,7 +93,6 @@ export const auth = betterAuth({
     //   }
 
     // },
-
   },
 
   // Account
@@ -117,6 +117,12 @@ export const auth = betterAuth({
   // Email / Password
   emailAndPassword: {
     enabled: true,
+
+    autoSignIn: true,
+    requireEmailVerification: true,
+
+    minPasswordLength: 8,
+    maxPasswordLength: 128,
 
     // Password reset
     sendResetPassword: async ({ user, url }) => {
