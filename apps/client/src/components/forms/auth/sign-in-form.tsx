@@ -13,10 +13,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
+import { env } from "@/lib/env";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Loader2Icon } from "lucide-react";
+import { Eye, EyeOff, Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -28,8 +30,12 @@ const signInSchema = z.object({
 type SignInSchema = z.infer<typeof signInSchema>;
 
 export const SignInForm = () => {
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+
   const router = useRouter();
   const toaster = useToast();
+
+  const toggleVisibility = () => setIsVisible((prevState) => !prevState);
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["sign-up"],
@@ -37,6 +43,7 @@ export const SignInForm = () => {
       const data = await authClient.signIn.email({
         email,
         password,
+        callbackURL: `${env.NEXT_PUBLIC_CLIENT_URL}/dashboard`,
       });
 
       return data;
@@ -109,9 +116,41 @@ export const SignInForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Password</FormLabel>
-
                 <FormControl>
-                  <Input type="password" placeholder="********" {...field} />
+                  <div>
+                    {/* Password input field with toggle visibility button */}
+                    <div className="space-y-2">
+                      <div className="relative">
+                        <Input
+                          className="pe-9"
+                          placeholder="********"
+                          type={isVisible ? "text" : "password"}
+                          {...field}
+                        />
+
+                        <button
+                          className="absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                          type="button"
+                          onClick={toggleVisibility}
+                          aria-label={
+                            isVisible ? "Hide password" : "Show password"
+                          }
+                          aria-pressed={isVisible}
+                          aria-controls="password"
+                        >
+                          {isVisible ? (
+                            <EyeOff
+                              size={16}
+                              strokeWidth={2}
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <Eye size={16} strokeWidth={2} aria-hidden="true" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </FormControl>
 
                 <FormMessage />

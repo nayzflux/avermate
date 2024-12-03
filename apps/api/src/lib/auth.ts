@@ -43,7 +43,7 @@ export const auth = betterAuth({
         from: "Avermate <noreply@test.nayz.fr>",
         to: user.email,
         subject: "Verify your email",
-        html: `<p>Hello ${user.name}! Click <a href="${url}&callbackUrl=${env.CLIENT_URL}/dashboard">here</a> to verify your email.</p>`,
+        html: `<p>Hello ${user.name}! Click <a href="${url}">here</a> to verify your email.</p>`,
       });
     },
   },
