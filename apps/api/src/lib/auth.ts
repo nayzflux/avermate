@@ -71,6 +71,28 @@ export const auth = betterAuth({
       // createdAt: "created_at",
       // emailVerified: "email_verified",
     },
+
+    // SEE: https://github.com/better-auth/better-auth/issues/371
+    // additionalFields: {
+    //   firstName: {
+    //     type: "string",
+    //     required: true,
+    //   },
+    //   lastName: {
+    //     type: "string",
+    //     required: true,
+    //   },
+    //   jobTitle: {
+    //     type: "string",
+    //     required: true,
+    //   },
+    //   isCPEAccount: {
+    //     type: "boolean",
+    //     required: true,
+    //   }
+
+    // },
+
   },
 
   // Account
@@ -95,6 +117,18 @@ export const auth = betterAuth({
   // Email / Password
   emailAndPassword: {
     enabled: true,
+
+    // Password reset
+    sendResetPassword: async ({ user, url }) => {
+      console.info("Sending password reset to", user.id);
+
+      await resend.emails.send({
+        from: "Avermate <noreply@test.nayz.fr>",
+        to: user.email,
+        subject: "Reset your password",
+        html: `<p>Hello ${user.name}! Click <a href="${url}">here</a> to reset your password. ${url}</p>`,
+      });
+    },
 
     password: {
       // Hash password using Argon2id

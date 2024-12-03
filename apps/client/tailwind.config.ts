@@ -62,6 +62,7 @@ const config: Config = {
       },
       animation: {
         "shiny-text": "shiny-text 8s infinite",
+        "pulse-dimmer": "pulse-dimmer 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
       },
       keyframes: {
         "shiny-text": {
@@ -70,6 +71,14 @@ const config: Config = {
           },
           "30%, 60%": {
             "background-position": "calc(100% + var(--shiny-width)) 0",
+          },
+        },
+        "pulse-dimmer": {
+          "0%, 100%": {
+            "opacity": "0.1",
+          },
+          "50%": {
+            "opacity": "0.05",
           },
         },
       },

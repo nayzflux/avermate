@@ -6,6 +6,7 @@ import { Grade } from "@/types/grade";
 import { useQuery } from "@tanstack/react-query";
 import { use } from "react";
 import GradeWrapper from "./grade-wrapper";
+import gradeLoader from "@/components/skeleton/grade-loader";
 
 export default function GradePage({
   params,
@@ -44,8 +45,10 @@ export default function GradePage({
     return <div>Error</div>;
   }
 
-  if (isPending || organizedSubjectsIsPending) {
-    return <div>Loading...</div>;
+  if (isPending || organizedSubjectsIsPending
+    // || true
+  ) {
+        return <div>{gradeLoader()}</div>;
   }
 
   return (

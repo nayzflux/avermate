@@ -7,6 +7,9 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ProfileSection from "../profile-section";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
 dayjs.extend(relativeTime);
 
@@ -37,7 +40,48 @@ export default function SessionList() {
   });
 
   if (isPending) {
-    return <p>Loading...</p>;
+    return (
+      <Card className={"p-6 w-full"}>
+        <div className="flex flex-col gap-6">
+          <CardHeader className="p-0">
+            <CardTitle>
+              <Skeleton className="w-36 h-6" />
+            </CardTitle>
+            <CardDescription>
+              <Skeleton className="w-20 h-4" />
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent className="p-0">
+            <div className="flex flex-col gap-4">
+              {Array.from({ length: 2 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col gap-2 border-t text-sm px-2 pt-4"
+                >
+                  <div className="flex gap-2">
+                    <p className="font-semibold">
+                      <Skeleton className="w-32 h-6" />
+                    </p>
+
+                  </div>
+
+                  <div className="flex gap-1 text-muted-foreground">
+                    <p>
+                      <Skeleton className="w-96 h-4" />
+                    </p>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button variant="destructive" disabled>Revoke</Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </div>
+      </Card>
+    );
   }
 
   if (isError) {

@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -85,6 +86,18 @@ export default function GlobalAverageChart({
   //     </Card>
   //   );
   // }
+
+  const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
+    [key: string]: number | null;
+  }>({});
+
+  // Callback to update active tooltip index
+  const handleActiveTooltipIndicesChange = React.useCallback(
+    (indices: { [key: string]: number | null }) => {
+      setActiveTooltipIndices(indices);
+    },
+    []
+  );
 
   // Calculate the start and end dates
   const endDate = new Date(period.endAt);
@@ -197,6 +210,27 @@ export default function GlobalAverageChart({
     );
   };
 
+  // Custom dot component
+  const CustomDot = (props: any) => {
+    const { cx, cy, index, stroke, dataKey } = props;
+    if (
+      activeTooltipIndices &&
+      activeTooltipIndices[dataKey] !== null &&
+      index === activeTooltipIndices[dataKey]
+    ) {
+      return (
+        <circle
+          cx={cx}
+          cy={cy}
+          r={4} // Adjust size as needed
+          opacity={0.8}
+          fill={stroke}
+        />
+      );
+    }
+    return null;
+  };
+
   return (
     <Card className="lg:col-span-5">
       <CardHeader>
@@ -241,6 +275,9 @@ export default function GlobalAverageChart({
                       findNearestNonNull={true}
                       dataKey="average"
                       labelFormatter={(value) => value}
+                      onUpdateActiveTooltipIndices={
+                        handleActiveTooltipIndicesChange
+                      }
                     />
                   }
                   labelFormatter={(value) =>
@@ -262,6 +299,13 @@ export default function GlobalAverageChart({
                   fill="url(#fillAverage)"
                   stroke="#2662d9"
                   connectNulls={true}
+                  activeDot={false}
+                  dot={(props) => (
+                    <CustomDot
+                      {...props}
+                      activeTooltipIndex={activeTooltipIndices}
+                    />
+                  )}
                 />
               </AreaChart>
             </ChartContainer>

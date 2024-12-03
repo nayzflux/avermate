@@ -8,6 +8,7 @@ import { Subject } from "@/types/subject";
 import { useQuery } from "@tanstack/react-query";
 import { use } from "react";
 import SubjectWrapper from "./subject-wrapper";
+import subjectLoader from "@/components/skeleton/subject-loader";
 
 export default function SubjectPage({
   params,
@@ -101,8 +102,9 @@ export default function SubjectPage({
     isSubjectPending ||
     isSubjectPending ||
     isSubjectsPending
+    // || true
   ) {
-    return <div>Loading...</div>;
+    return <div>{subjectLoader()}</div>;
   }
 
   const sortedPeriods = period

@@ -14,6 +14,7 @@ import { Subject } from "@/types/subject";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import gradesLoader from "@/components/skeleton/grades-loader";
 
 export default function GradesPage() {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
@@ -110,8 +111,11 @@ export default function GradesPage() {
     organizedSubjectsIsPending ||
     subjectsIsPending ||
     selectedTab === null
+    // || true
   ) {
-    return <div>Loading...</div>;
+    return <div>
+      {gradesLoader()}
+    </div>;
   }
 
   return (

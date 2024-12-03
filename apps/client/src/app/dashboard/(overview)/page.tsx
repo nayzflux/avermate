@@ -13,6 +13,9 @@ import { GetSubjectsResponse } from "@/types/get-subjects-response";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
+import dashboardLoader from "@/components/skeleton/dashboard-loader";
+import { Grade } from "@/types/grade";
+import Onboardding from "./onboarding/onboardding";
 
 /**
  * Vue d'ensemble des notes
@@ -64,6 +67,25 @@ export default function OverviewPage() {
     },
   });
 
+    const {
+      data: recentGrades,
+      isError: isPendingRecentGrades,
+      isPending: isErrorRecentGrades,
+    } = useQuery({
+      queryKey: ["recent-grades", "grades"],
+      queryFn: async () => {
+        const res = await apiClient.get(
+          `grades?from=${new Date(
+            Date.now() - 1000 * 60 * 60 * 24 * 14
+          )}&limit=100`
+        );
+
+        const data = await res.json<{ grades: Grade[] }>();
+
+        return data.grades;
+      },
+    });
+
   useEffect(() => {
     if (!periods) return;
 
@@ -99,13 +121,17 @@ export default function OverviewPage() {
     isPending ||
     periodsIsPending ||
     organizedSubjectsIsPending ||
+    isPendingRecentGrades ||
     selectedTab === null
+    // || true
   ) {
-    return <div>Loading...</div>;
+    return <div>
+      {dashboardLoader()}
+    </div>;
   }
 
   // Error State
-  if (isError) {
+  if (isError || periodsIsError || organizedSubjectsIsError || isErrorRecentGrades) {
     return (
       <div>
         <h2>Error</h2>
@@ -113,6 +139,20 @@ export default function OverviewPage() {
       </div>
     );
   }
+
+  // // Onboarding
+  // if (
+  //   (!subjects || subjects.length === 0) &&
+  //   (!periods || periods.length === 0) &&
+  //   session?.user?.createdAt &&
+  //   new Date(session?.user?.createdAt).getTime() > Date.now() - 1000 * 60 * 60 * 24
+  // ) {
+  //   return (
+  //     <div>
+  //       {Onboardding()}
+  //     </div>
+  //   );
+  // }
 
   const sortedPeriods = periods
     ?.slice()
@@ -224,7 +264,7 @@ export default function OverviewPage() {
                     />
 
                     {/* Dernières notes */}
-                    <RecentGradesCard />
+                    <RecentGradesCard recentGrades={recentGrades} />
                   </div>
                 </TabsContent>
               ))}
@@ -273,7 +313,7 @@ export default function OverviewPage() {
                   createdAt: "",
                 }}
               />
-              <RecentGradesCard />
+              <RecentGradesCard recentGrades={recentGrades} />
             </div>
           </TabsContent>
         </div>

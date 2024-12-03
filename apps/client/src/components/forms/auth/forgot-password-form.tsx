@@ -1,6 +1,5 @@
 "use client";
 
-import { ResetPasswordButton } from "@/components/buttons/auth/reset-password-button";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
+import { env } from "@/lib/env";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
@@ -20,57 +20,50 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const signInSchema = z.object({
-  password: z.string().min(8).max(2048),
+const forgotPasswordSchema = z.object({
   email: z.string().email().max(320),
 });
 
-type SignInSchema = z.infer<typeof signInSchema>;
+type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
 
-export const SignInForm = () => {
+export const ForgotPasswordForm = () => {
   const router = useRouter();
   const toaster = useToast();
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["sign-up"],
-    mutationFn: async ({ email, password }: SignInSchema) => {
-      const data = await authClient.signIn.email({
+    mutationFn: async ({ email }: ForgotPasswordSchema) => {
+      const data = await authClient.forgetPassword({
         email,
-        password,
+        redirectTo: `${env.NEXT_PUBLIC_CLIENT_URL}/auth/reset-password`,
       });
 
       return data;
     },
     onSuccess: (data) => {
-      // Redirect to the dashboard
-      router.push("/dashboard");
-
-      // Send toast notification
       toaster.toast({
-        title: `Welcome back ${data.user.name}!`,
-        description: "We hope you reached your goals 🚀!",
+        title: `Password reset email sent`,
+        description: "Please check your email for further instructions.",
       });
     },
 
     onError: (err) => {
-      // TODO: Error handling
       toaster.toast({
-        title: "Failed to sign-in",
+        title: "Failed to send password reset email",
         description: "Something went wrong. Please try again later.",
         variant: "destructive",
       });
     },
   });
 
-  const form = useForm<SignInSchema>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<ForgotPasswordSchema>({
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
-      password: "",
       email: "",
     },
   });
 
-  const onSubmit = (values: SignInSchema) => {
+  const onSubmit = (values: ForgotPasswordSchema) => {
     mutate(values);
   };
 
@@ -102,35 +95,10 @@ export const SignInForm = () => {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="password"
-            disabled={isPending}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-
-                <FormControl>
-                  <Input type="password" placeholder="********" {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="flex flex-col gap-2">
-            <Button className="w-full" type="submit" disabled={isPending}>
-              {isPending && (
-                <Loader2Icon className="animate-spin mr-2 size-4" />
-              )}
-              Sign In
-            </Button>
-
-            <div className="flex justify-end">
-              <ResetPasswordButton />
-            </div>
-          </div>
+          <Button className="w-full" type="submit" disabled={isPending}>
+            {isPending && <Loader2Icon className="animate-spin mr-2 size-4" />}
+            Reset Password
+          </Button>
         </form>
       </Form>
     </div>
