@@ -13,28 +13,26 @@ import {
 
 import { apiClient } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
+import { average } from "@/utils/average";
 import { BookOpenIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import React from "react";
 import AddSubjectButton from "../buttons/dashboard/add-subject-button";
 import AddSubjectDialog from "../dialogs/add-subject-dialog";
 import { Card } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import GradeBadge from "./grade-badge";
-import { average } from "@/utils/average";
-import React from "react";
-import { Period } from "@/types/period";
 
 export default function GradesTable({
   subjects,
   periodId,
 }: {
-    subjects: Subject[];
-    periodId: string;
-}
-
-) {
+  subjects: Subject[];
+  periodId: string;
+}) {
   // const {
   //   data: subjects,
   //   isError,
@@ -61,7 +59,7 @@ export default function GradesTable({
   //     <Card className="flex justify-center items-center p-4 w-full h-[400px]">
   //       <div className="">
   //         <h2 className="text-xl font-semibold">Erreur</h2>
-  //         <p>Une erreur s'est produite lors du chargement des notes.</p>
+  //         <p>Une erreur s&apos;est produite lors du chargement des notes.</p>
   //       </div>
   //     </Card>
   //   );
@@ -99,7 +97,7 @@ export default function GradesTable({
 
         <div className="flex flex-col items-center gap-1">
           <h2 className="text-xl font-semibold">
-            Aucune matière pour l'instant
+            Aucune matière pour l&apos;instant
           </h2>
           <p>Ajouter une nouvelle matière pour commencer à suivre vos notes.</p>
         </div>
@@ -113,7 +111,9 @@ export default function GradesTable({
 
   return (
     <Table>
-      <TableCaption>{periodId !== "full-year" ? period?.name : "Année complète"}</TableCaption>
+      <TableCaption>
+        {periodId !== "full-year" ? period?.name : "Année complète"}
+      </TableCaption>
 
       <TableHeader>
         <TableRow>
@@ -156,8 +156,11 @@ function getPaddingClass(depth: number) {
   }
 }
 
-
-function renderSubjects(subjects: Subject[], periodId: string, parentId: string | null = null) {
+function renderSubjects(
+  subjects: Subject[],
+  periodId: string,
+  parentId: string | null = null
+) {
   return subjects
     .filter((subject) => subject.parentId === parentId)
     .sort((a, b) => a.name.localeCompare(b.name))

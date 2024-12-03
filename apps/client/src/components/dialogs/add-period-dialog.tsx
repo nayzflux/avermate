@@ -46,13 +46,15 @@ export default function AddPeriodDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="flex items-center" asChild>{children}</DialogTrigger>
+      <DialogTrigger className="flex items-center" asChild>
+        {children}
+      </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Ajouter une période</DialogTitle>
           <DialogDescription>
-            Créer une nouvelle période avant d'ajouter des notes.
+            Créer une nouvelle période avant d&apos;ajouter des notes.
           </DialogDescription>
         </DialogHeader>
 

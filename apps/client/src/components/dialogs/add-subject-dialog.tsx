@@ -20,10 +20,7 @@ export default function AddSubjectDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        className="flex items-center"
-        asChild
-      >
+      <DialogTrigger className="flex items-center" asChild>
         {children}
       </DialogTrigger>
 
@@ -31,7 +28,7 @@ export default function AddSubjectDialog({
         <DialogHeader>
           <DialogTitle>Ajouter une matière</DialogTitle>
           <DialogDescription>
-            Créer une nouvelle matière avant d'ajouter des notes.
+            Créer une nouvelle matière avant d&apos;ajouter des notes.
           </DialogDescription>
         </DialogHeader>
 

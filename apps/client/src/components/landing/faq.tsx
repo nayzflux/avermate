@@ -30,11 +30,9 @@ export const FAQ = () => {
     <LandingSection>
       <Accordion type="single" collapsible className="w-full">
         {questions.map(({ q, a }) => (
-          <AccordionItem value={q}>
+          <AccordionItem key={q} value={q}>
             <AccordionTrigger>{q}</AccordionTrigger>
-            <AccordionContent>
-             {a}
-            </AccordionContent>
+            <AccordionContent>{a}</AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>

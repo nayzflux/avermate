@@ -1,15 +1,21 @@
 "use client";
 
 import RevokeSessionButton from "@/components/buttons/revoke-session-button";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ProfileSection from "../profile-section";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 
 dayjs.extend(relativeTime);
 
@@ -25,7 +31,9 @@ type Session = {
 };
 
 export default function SessionList() {
-  const { data: currentSession } = authClient.useSession();
+  const { data: currentSession } = authClient.useSession() as unknown as {
+    data: { session: Session };
+  };
 
   const {
     data: sesssions,
@@ -63,7 +71,6 @@ export default function SessionList() {
                     <p className="font-semibold">
                       <Skeleton className="w-32 h-6" />
                     </p>
-
                   </div>
 
                   <div className="flex gap-1 text-muted-foreground">
@@ -73,7 +80,9 @@ export default function SessionList() {
                   </div>
 
                   <div className="flex justify-end">
-                    <Button variant="destructive" disabled>Revoke</Button>
+                    <Button variant="destructive" disabled>
+                      Revoke
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -112,13 +121,11 @@ export default function SessionList() {
                   "items-center px-2 py-1 rounded bg-opacity-30 text-xs",
                   session.expiresAt < new Date()
                     ? "bg-red-600 text-red-500 border-red-500"
-                    : // @ts-ignore
-                    currentSession?.session?.id === session.id
+                    : currentSession?.session?.id === session.id
                     ? "bg-green-600 text-green-600 border-green-500"
                     : "bg-blue-600 text-blue-600 border-blue-500"
                 )}
               >
-                {/* @ts-ignore */}
                 {currentSession?.session?.id === session.id ? (
                   <p>Current</p>
                 ) : session.expiresAt < new Date() ? (

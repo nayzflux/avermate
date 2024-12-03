@@ -3,6 +3,7 @@
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
+import gradesLoader from "@/components/skeleton/grades-loader";
 import GradesTable from "@/components/tables/grades-table";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -14,7 +15,6 @@ import { Subject } from "@/types/subject";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import gradesLoader from "@/components/skeleton/grades-loader";
 
 export default function GradesPage() {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
@@ -113,9 +113,7 @@ export default function GradesPage() {
     selectedTab === null
     // || true
   ) {
-    return <div>
-      {gradesLoader()}
-    </div>;
+    return <div>{gradesLoader()}</div>;
   }
 
   return (
@@ -169,7 +167,7 @@ export default function GradesPage() {
                       {period.name}
                     </TabsTrigger>
                   ))}
-              <TabsTrigger value="full-year">Toute l'année</TabsTrigger>
+              <TabsTrigger value="full-year">Toute l&apos;année</TabsTrigger>
             </TabsList>
           </div>
           <ScrollBar orientation="horizontal" />

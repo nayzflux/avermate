@@ -54,12 +54,16 @@ function calculateAverageForSubject(
       // Flatten display subjects and process their children
       const grandChildren = subjects.filter((s) => s.parentId === child.id);
       for (const grandChild of grandChildren) {
-        const grandChildAverage = calculateAverageForSubject(grandChild, subjects);
+        const grandChildAverage = calculateAverageForSubject(
+          grandChild,
+          subjects
+        );
         if (grandChildAverage !== null) {
           const grandChildPercentage = grandChildAverage / 20;
           const grandChildCoefficient = (grandChild.coefficient ?? 100) / 100;
 
-          totalWeightedPercentages += grandChildPercentage * grandChildCoefficient;
+          totalWeightedPercentages +=
+            grandChildPercentage * grandChildCoefficient;
           totalCoefficients += grandChildCoefficient;
         }
       }
@@ -96,7 +100,9 @@ function calculateAverageForSubjects(
   for (const subject of subjects) {
     if (subject.isDisplaySubject) {
       // Flatten display subjects and process their children
-      const childSubjects = allSubjects.filter((s) => s.parentId === subject.id);
+      const childSubjects = allSubjects.filter(
+        (s) => s.parentId === subject.id
+      );
       for (const child of childSubjects) {
         const childAverage = calculateAverageForSubject(child, allSubjects);
         if (childAverage !== null) {
@@ -677,7 +683,7 @@ export function createDateRange(
   interval: number
 ): Date[] {
   const dates: Date[] = [];
-  let currentDate = new Date(start);
+  const currentDate = new Date(start);
 
   while (currentDate <= end) {
     dates.push(new Date(currentDate));

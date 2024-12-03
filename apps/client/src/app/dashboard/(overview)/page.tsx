@@ -2,6 +2,7 @@
 
 import GlobalAverageChart from "@/components/charts/global-average-chart";
 import RecentGradesCard from "@/components/dashboard/recent-grades/recent-grades";
+import dashboardLoader from "@/components/skeleton/dashboard-loader";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,18 +11,19 @@ import { authClient } from "@/lib/auth";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
 import { GetPeriodsResponse } from "@/types/get-periods-response";
 import { GetSubjectsResponse } from "@/types/get-subjects-response";
+import { Grade } from "@/types/grade";
 import { useQuery } from "@tanstack/react-query";
+import { Session, User } from "better-auth/types";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
-import dashboardLoader from "@/components/skeleton/dashboard-loader";
-import { Grade } from "@/types/grade";
-import Onboardding from "./onboarding/onboardding";
 
 /**
  * Vue d'ensemble des notes
  */
 export default function OverviewPage() {
-  const { data: session } = authClient.useSession();
+  const { data: session } = authClient.useSession() as unknown as {
+    data: { session: Session; user: User };
+  };
 
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
 
@@ -67,24 +69,24 @@ export default function OverviewPage() {
     },
   });
 
-    const {
-      data: recentGrades,
-      isError: isPendingRecentGrades,
-      isPending: isErrorRecentGrades,
-    } = useQuery({
-      queryKey: ["recent-grades", "grades"],
-      queryFn: async () => {
-        const res = await apiClient.get(
-          `grades?from=${new Date(
-            Date.now() - 1000 * 60 * 60 * 24 * 14
-          )}&limit=100`
-        );
+  const {
+    data: recentGrades,
+    isError: isPendingRecentGrades,
+    isPending: isErrorRecentGrades,
+  } = useQuery({
+    queryKey: ["recent-grades", "grades"],
+    queryFn: async () => {
+      const res = await apiClient.get(
+        `grades?from=${new Date(
+          Date.now() - 1000 * 60 * 60 * 24 * 14
+        )}&limit=100`
+      );
 
-        const data = await res.json<{ grades: Grade[] }>();
+      const data = await res.json<{ grades: Grade[] }>();
 
-        return data.grades;
-      },
-    });
+      return data.grades;
+    },
+  });
 
   useEffect(() => {
     if (!periods) return;
@@ -125,13 +127,16 @@ export default function OverviewPage() {
     selectedTab === null
     // || true
   ) {
-    return <div>
-      {dashboardLoader()}
-    </div>;
+    return <div>{dashboardLoader()}</div>;
   }
 
   // Error State
-  if (isError || periodsIsError || organizedSubjectsIsError || isErrorRecentGrades) {
+  if (
+    isError ||
+    periodsIsError ||
+    organizedSubjectsIsError ||
+    isErrorRecentGrades
+  ) {
     return (
       <div>
         <h2>Error</h2>
@@ -163,14 +168,9 @@ export default function OverviewPage() {
   return (
     <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
       <div className="flex flex-wrap items-center justify-between">
-        <h1 className="text-3xl font-bold">Vue d'ensemble</h1>
+        <h1 className="text-3xl font-bold">Vue d&apos;ensemble</h1>
         <h1 className="text-3xl font-normal">
-          {/* @ts-ignore */}
-          Bonjour {/* @ts-ignore */}
-          {session?.user?.name
-            ? // @ts-ignore
-              session?.user?.name.split(" ")[0]
-            : ""}{" "}
+          Bonjour {session?.user?.name ? session?.user?.name.split(" ")[0] : ""}{" "}
           👋
         </h1>
       </div>
@@ -203,7 +203,7 @@ export default function OverviewPage() {
                   </TabsTrigger>
                 ))}
 
-                <TabsTrigger value="full-year">Toute l'année</TabsTrigger>
+                <TabsTrigger value="full-year">Toute l&apos;année</TabsTrigger>
               </TabsList>
             </div>
 
@@ -240,7 +240,7 @@ export default function OverviewPage() {
                           (p) => p.period.id === period.id
                         )?.period || {
                           id: "full-year",
-                          name: "Toute l'année",
+                          name: "Toute l&apos;année",
                           startAt:
                             sortedPeriods && sortedPeriods.length > 0
                               ? sortedPeriods[0].startAt
@@ -273,7 +273,7 @@ export default function OverviewPage() {
               subjects={subjects || []}
               period={{
                 id: "full-year",
-                name: "Toute l'année",
+                name: "Toute l&apos;année",
                 startAt:
                   sortedPeriods && sortedPeriods.length > 0
                     ? sortedPeriods[0].startAt
@@ -296,7 +296,7 @@ export default function OverviewPage() {
                 subjects={subjects || []}
                 period={{
                   id: "full-year",
-                  name: "Toute l'année",
+                  name: "Toute l&apos;année",
                   startAt:
                     sortedPeriods && sortedPeriods.length > 0
                       ? sortedPeriods[0].startAt
