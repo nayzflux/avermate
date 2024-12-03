@@ -29,7 +29,7 @@ export default function MobileAddButtons() {
         {/* Update grade */}
         <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
           <AddGradeDialog>
-            <Button variant={"ghost"}>
+            <Button variant="ghost" className="w-full justify-start">
               <PlusCircleIcon className="size-4 mr-2" />
               Ajouter une note
             </Button>
@@ -39,7 +39,7 @@ export default function MobileAddButtons() {
         {/* Delete grade */}
         <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
           <AddSubjectDialog>
-            <Button variant="ghost">
+            <Button variant="ghost" className="w-full justify-start">
               <PlusCircleIcon className="size-4 mr-2" />
               Ajouter une matière
             </Button>
@@ -48,7 +48,7 @@ export default function MobileAddButtons() {
 
         <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
           <AddPeriodDialog>
-            <Button variant="ghost">
+            <Button variant="ghost" className="w-full justify-start">
               <PlusCircleIcon className="size-4 mr-2" />
               Ajouter une période
             </Button>

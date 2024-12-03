@@ -230,6 +230,7 @@ const CustomDot = (props: any) => {
         cy={cy}
         r={4} // Adjust size as needed
         fill={stroke}
+        opacity={0.8}
       />
     );
   }

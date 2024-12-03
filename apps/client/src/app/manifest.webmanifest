@@ -1,0 +1,9 @@
+{
+    "name": "Avermate",
+    "short_name": "Avermate",
+    "theme_color": "#000000",
+    "background_color": "#000000",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/dashboard"
+}

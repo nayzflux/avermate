@@ -52,20 +52,20 @@ export default function AddGradeDialog({
     //       <AddGradeForm close={() => setOpen(false)} />
     //     </DialogContent>
     //   </Dialog>
-      <Credenza open={open} onOpenChange={setOpen}>
-      <CredenzaTrigger asChild>
-        {children}
-        </CredenzaTrigger>
-        <CredenzaContent className="px-4 py-4">
-          <CredenzaHeader>
-            <CredenzaTitle>Ajouter une note</CredenzaTitle>
-            <CredenzaDescription>
-              Commencer à suivre votre évolution.
-            </CredenzaDescription>
-          </CredenzaHeader>
+    <Credenza open={open} onOpenChange={setOpen}>
+      <CredenzaTrigger asChild>{children}</CredenzaTrigger>
+      <CredenzaContent className="max-h-screen h-full ">
+        <CredenzaHeader>
+          <CredenzaTitle>Ajouter une note</CredenzaTitle>
+          <CredenzaDescription>
+            Commencer à suivre votre évolution.
+          </CredenzaDescription>
+        </CredenzaHeader>
+        <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
           <AddGradeForm close={() => setOpen(false)} />
-        </CredenzaContent>
-      </Credenza>
+        </CredenzaBody>
+      </CredenzaContent>
+    </Credenza>
     // </div>
   );
 }

@@ -7,7 +7,7 @@ import {
   ValueType,
   NameType,
 } from "recharts/types/component/DefaultTooltipContent";
-// import { debounce } from "lodash"
+import { debounce } from "lodash"
 
 import { cn } from "@/lib/utils";
 
@@ -283,44 +283,44 @@ const ChartTooltipContent = React.forwardRef<
     //   }
     // }, [adjustedPayload, chartData, onUpdateActiveTooltipIndices]);
 
-    // const computedIndices = React.useMemo(() => {
-    //   if (adjustedPayload && adjustedPayload.length > 0) {
-    //     const indices: { [key: string]: number | null } = {};
+    const computedIndices = React.useMemo(() => {
+      if (adjustedPayload && adjustedPayload.length > 0) {
+        const indices: { [key: string]: number | null } = {};
 
-    //     adjustedPayload.forEach((item) => {
-    //       const date = item?.payload.date;
-    //       const dataKey = item?.dataKey;
-    //       if (chartData && chartData.length > 0) {
-    //         const index = chartData.findIndex((d) => d.date === date);
-    //         if (dataKey !== undefined) {
-    //           indices[dataKey] = index >= 0 ? index : null;
-    //         }
-    //       } else {
-    //         if (dataKey !== undefined) {
-    //           indices[dataKey] = null;
-    //         }
-    //       }
-    //     });
+        adjustedPayload.forEach((item) => {
+          const date = item?.payload.date;
+          const dataKey = item?.dataKey;
+          if (chartData && chartData.length > 0) {
+            const index = chartData.findIndex((d) => d.date === date);
+            if (dataKey !== undefined) {
+              indices[dataKey] = index >= 0 ? index : null;
+            }
+          } else {
+            if (dataKey !== undefined) {
+              indices[dataKey] = null;
+            }
+          }
+        });
 
-    //     return indices;
-    //   }
-    //   return {};
-    // }, [adjustedPayload, chartData]);
+        return indices;
+      }
+      return {};
+    }, [adjustedPayload, chartData]);
 
-    // // Debounce the update function
-    // const debouncedUpdateActiveTooltipIndices = React.useMemo(() => {
-    //   return debounce((indices: { [key: string]: number | null; }) => {
-    //     if (onUpdateActiveTooltipIndices) {
-    //       onUpdateActiveTooltipIndices(indices);
-    //     }
-    //   }, 10);
-    // }, [onUpdateActiveTooltipIndices]);
+    // Debounce the update function
+    const debouncedUpdateActiveTooltipIndices = React.useMemo(() => {
+      return debounce((indices: { [key: string]: number | null; }) => {
+        if (onUpdateActiveTooltipIndices) {
+          onUpdateActiveTooltipIndices(indices);
+        }
+      }, 10);
+    }, [onUpdateActiveTooltipIndices]);
 
-    // React.useEffect(() => {
-    //   if (onUpdateActiveTooltipIndices) {
-    //     debouncedUpdateActiveTooltipIndices(computedIndices);
-    //   }
-    // }, [computedIndices, debouncedUpdateActiveTooltipIndices]);
+    React.useEffect(() => {
+      if (onUpdateActiveTooltipIndices) {
+        debouncedUpdateActiveTooltipIndices(computedIndices);
+      }
+    }, [computedIndices, debouncedUpdateActiveTooltipIndices]);
 
     // Use adjustedPayload in tooltipLabel
     const tooltipLabel = React.useMemo(() => {

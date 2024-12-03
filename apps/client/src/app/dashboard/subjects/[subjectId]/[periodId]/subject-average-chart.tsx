@@ -41,27 +41,27 @@ export default function SubjectAverageChart({
   period: Period;
   subjects: Subject[];
 }) {
-  // const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
-  //   [key: string]: number | null;
-  // }>({});
-
-  // // Callback to update active tooltip index
-  // const handleActiveTooltipIndicesChange = React.useCallback(
-  //   (indices: { [key: string]: number | null }) => {
-  //     setActiveTooltipIndices(indices);
-  //   },
-  //   []
-  // );
-
-  // State to manage the active index for the data series
-  const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(
-    null
-  );
+  const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
+    [key: string]: number | null;
+  }>({});
 
   // Callback to update active tooltip index
-  const handleActiveTooltipIndexChange = (index: number | null) => {
-    setActiveTooltipIndex(index);
-  };
+  const handleActiveTooltipIndicesChange = React.useCallback(
+    (indices: { [key: string]: number | null }) => {
+      setActiveTooltipIndices(indices);
+    },
+    []
+  );
+
+  // State to manage the active index for the data series
+  // const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(
+  //   null
+  // );
+
+  // // Callback to update active tooltip index
+  // const handleActiveTooltipIndexChange = (index: number | null) => {
+  //   setActiveTooltipIndex(index);
+  // };
 
   const { childrenAverage, chartData, chartConfig } = (() => {
     const childrensId = getChildren(subjects, subjectId);
@@ -137,6 +137,7 @@ const CustomDot = (props: any) => {
         cy={cy}
         r={4} // Adjust size as needed
         fill={stroke}
+        opacity={0.8}
       />
     );
   }
@@ -176,7 +177,7 @@ const CustomDot = (props: any) => {
                 chartData={chartData}
                 findNearestNonNull={true}
                 labelFormatter={(value) => value}
-                onUpdateActiveTooltipIndex={handleActiveTooltipIndexChange}
+                onUpdateActiveTooltipIndices={handleActiveTooltipIndicesChange}
               />
             }
             labelFormatter={(value) =>
@@ -200,7 +201,7 @@ const CustomDot = (props: any) => {
                 <CustomDot
                   {...props}
                   dataKey={child.id}
-                  activeTooltipIndex={activeTooltipIndex}
+                  activeTooltipIndex={activeTooltipIndices[child.id]}
                 />
               )}
             />
@@ -218,7 +219,7 @@ const CustomDot = (props: any) => {
               <CustomDot
                 {...props}
                 dataKey="average"
-                activeTooltipIndex={activeTooltipIndex}
+                activeTooltipIndex={activeTooltipIndices["average"]}
               />
             )}
           />

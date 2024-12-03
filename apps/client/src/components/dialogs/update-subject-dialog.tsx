@@ -46,17 +46,17 @@ export default function UpdateSubjectCredenza({ subjectId }: { subjectId: string
         </Button>
       </CredenzaTrigger>
 
-      <CredenzaContent className="px-4 py-4">
+      <CredenzaContent className="max-h-screen h-full ">
         <CredenzaHeader>
           <CredenzaTitle>Modifier la matière</CredenzaTitle>
           <CredenzaDescription>
             Modifier les données de la matière.
           </CredenzaDescription>
         </CredenzaHeader>
-
+        <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
         {!isPending && !isError && (
           <UpdateSubjectForm subject={subject} close={() => setOpen(false)} />
-        )}
+        )}</CredenzaBody>
       </CredenzaContent>
     </Credenza>
   );
