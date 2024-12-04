@@ -50,17 +50,17 @@ export default function AddPeriodCredenza({
         {children}
       </CredenzaTrigger>
 
-      <CredenzaContent className="px-4 py-4">
+      <CredenzaContent className="max-h-screen h-full ">
         <CredenzaHeader>
           <CredenzaTitle>Ajouter une période</CredenzaTitle>
           <CredenzaDescription>
             Créer une nouvelle période avant d&apos;ajouter des notes.
           </CredenzaDescription>
         </CredenzaHeader>
-
+        <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
         {!isPending && !isError && (
           <AddPeriodForm periods={periods} close={() => setOpen(false)} />
-        )}
+        )}</CredenzaBody>
       </CredenzaContent>
     </Credenza>
   );

@@ -2,6 +2,8 @@
 
 import {
   Credenza,
+  CredenzaBody,
+  CredenzaClose,
   CredenzaContent,
   CredenzaDescription,
   CredenzaHeader,
@@ -41,14 +43,16 @@ export default function AddGradeDialog({
     //   </Dialog>
     <Credenza open={open} onOpenChange={setOpen}>
       <CredenzaTrigger asChild>{children}</CredenzaTrigger>
-      <CredenzaContent className="px-4 py-4">
+      <CredenzaContent className="max-h-screen h-full ">
         <CredenzaHeader>
           <CredenzaTitle>Ajouter une note</CredenzaTitle>
           <CredenzaDescription>
             Commencer à suivre votre évolution.
           </CredenzaDescription>
         </CredenzaHeader>
-        <AddGradeForm close={() => setOpen(false)} />
+        <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
+          <AddGradeForm close={() => setOpen(false)} />
+        </CredenzaBody>
       </CredenzaContent>
     </Credenza>
     // </div>

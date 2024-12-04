@@ -59,21 +59,21 @@ export default function UpdatePeriodCredenza({
         </Button>
       </CredenzaTrigger>
 
-      <CredenzaContent className="px-4 py-4">
+      <CredenzaContent className="max-h-screen h-full ">
         <CredenzaHeader>
           <CredenzaTitle>Modifier la période</CredenzaTitle>
           <CredenzaDescription>
             Modifier les données de la période.
           </CredenzaDescription>
         </CredenzaHeader>
-
+        <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
         {!isPending && !isError && !isPeriodsPending && !isPeriodsError && (
           <UpdatePeriodForm
             period={period}
             periods={periods}
             close={() => setOpen(false)}
           />
-        )}
+        )}</CredenzaBody>
       </CredenzaContent>
     </Credenza>
   );

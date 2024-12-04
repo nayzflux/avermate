@@ -24,15 +24,15 @@ export default function AddSubjectCredenza({
         {children}
       </CredenzaTrigger>
 
-      <CredenzaContent className="px-4 py-4">
+      <CredenzaContent className="max-h-screen h-full ">
         <CredenzaHeader>
           <CredenzaTitle>Ajouter une matière</CredenzaTitle>
           <CredenzaDescription>
             Créer une nouvelle matière avant d&apos;ajouter des notes.
           </CredenzaDescription>
         </CredenzaHeader>
-
-        <AddSubjectForm close={() => setOpen(false)} />
+        <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
+        <AddSubjectForm close={() => setOpen(false)} /></CredenzaBody>
       </CredenzaContent>
     </Credenza>
   );

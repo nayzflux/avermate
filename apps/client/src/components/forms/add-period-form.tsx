@@ -25,6 +25,7 @@ import { CalendarIcon, Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Calendar } from "../ui/calendar";
+import { useMediaQuery } from "../ui/use-media-query";
 
 const addPeriodSchema = z.object({
   name: z.string().min(1).max(64),
@@ -57,7 +58,8 @@ export const AddPeriodForm = ({
 }: {
   close: () => void;
   periods: Period[];
-}) => {
+  }) => {
+  
   const toaster = useToast();
   const queryClient = useQueryClient();
 
@@ -213,7 +215,7 @@ export const AddPeriodForm = ({
                           mode="range"
                           selected={field.value}
                           onSelect={field.onChange}
-                          numberOfMonths={3}
+                          numberOfMonths={useMediaQuery("(min-width: 1024px)") ? 2 : 1}
                           disabled={periods.map((period) => ({
                             from: startOfDay(period.startAt),
                             to: startOfDay(period.endAt),
