@@ -1,5 +1,6 @@
 "use client";
 
+import MobileAddButtons from "@/components/buttons/dashboard/mobile-add-buttons";
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
@@ -7,6 +8,13 @@ import gradesLoader from "@/components/skeleton/grades-loader";
 import GradesTable from "@/components/tables/grades-table";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiClient } from "@/lib/api";
@@ -121,8 +129,13 @@ export default function GradesPage() {
       <div className="flex gap-2 md:gap-16 justify-between items-center">
         <h1 className="text-xl md:text-3xl font-semibold">Vos notes</h1>
 
-        <div className="flex gap-4">
-          <AddGradeDialog />
+        <div className=" gap-4 hidden lg:flex">
+          <AddGradeDialog>
+            <Button>
+              <PlusCircleIcon className="size-4 mr-2" />
+              Ajouter une note
+            </Button>
+          </AddGradeDialog>
 
           <AddSubjectDialog>
             <Button variant="outline">
@@ -138,6 +151,9 @@ export default function GradesPage() {
             </Button>
           </AddPeriodDialog>
         </div>
+        <div className="flex lg:hidden">
+          <MobileAddButtons />
+        </div>
       </div>
 
       <Separator />
@@ -150,28 +166,54 @@ export default function GradesPage() {
           sessionStorage.setItem("selectedTab", value);
         }}
       >
-        <ScrollArea>
-          <div className="w-full relative h-10">
-            <TabsList className="flex absolute">
-              {periods &&
-                periods.length > 0 &&
-                // Sort the periods by start date
-                periods
-                  .sort(
-                    (a, b) =>
-                      new Date(a.startAt).getTime() -
-                      new Date(b.startAt).getTime()
-                  )
-                  .map((period) => (
-                    <TabsTrigger key={period.id} value={period.id}>
-                      {period.name}
-                    </TabsTrigger>
-                  ))}
-              <TabsTrigger value="full-year">Toute l&apos;année</TabsTrigger>
-            </TabsList>
-          </div>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+        <div className="hidden md:flex gap-4">
+          <ScrollArea>
+            <div className="w-full relative h-10">
+              <TabsList className="flex absolute">
+                {periods &&
+                  periods.length > 0 &&
+                  // Sort the periods by start date
+                  periods
+                    .sort(
+                      (a, b) =>
+                        new Date(a.startAt).getTime() -
+                        new Date(b.startAt).getTime()
+                    )
+                    .map((period) => (
+                      <TabsTrigger key={period.id} value={period.id}>
+                        {period.name}
+                      </TabsTrigger>
+                    ))}
+                <TabsTrigger value="full-year">Toute l&apos;année</TabsTrigger>
+              </TabsList>
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </div>
+        <div className="flex md:hidden">
+          <Select
+            value={selectedTab}
+            onValueChange={(value) => {
+              setSelectedTab(value);
+              sessionStorage.setItem("selectedTab", value);
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue>
+                {periods?.find((period) => period.id === selectedTab)?.name ||
+                  "Toute l'année"}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {periods?.map((period) => (
+                <SelectItem key={period.id} value={period.id}>
+                  {period.name}
+                </SelectItem>
+              ))}
+              <SelectItem value="full-year">Toute l'année</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         {periods &&
           periods.length > 0 &&

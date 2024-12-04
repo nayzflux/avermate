@@ -65,12 +65,10 @@ export default function SessionList() {
               {Array.from({ length: 2 }).map((_, index) => (
                 <div
                   key={index}
-                  className="flex flex-col gap-2 border-t text-sm px-2 pt-4"
+                  className="flex flex-col gap-2 border-t text-sm px-2 pt-4 w-full"
                 >
-                  <div className="flex gap-2">
-                    <p className="font-semibold">
-                      <Skeleton className="w-32 h-6" />
-                    </p>
+                  <div className="flex gap-2 w-full">
+                      <Skeleton className="md:w-32 w-full h-6" />
                   </div>
 
                   <div className="flex gap-1 text-muted-foreground">
@@ -108,12 +106,14 @@ export default function SessionList() {
             key={session.id}
             className="flex flex-col gap-2 border-t text-sm px-2 pt-4"
           >
-            <div className="flex gap-2">
-              <p className="font-semibold">{session.id.substring(0, 10)}</p>
+            <div className="flex gap-2 justify-between items-center">
+              <div className="flex flex-col md:flex-row gap-1">
+                <p className="font-semibold">{session.id.substring(0, 10)}</p>
 
-              <p className="text-muted-foreground">
-                {dayjs(session.expiresAt).fromNow()}
-              </p>
+                <p className="text-muted-foreground">
+                  {dayjs(session.expiresAt).fromNow()}
+                </p>
+              </div>
 
               {/* Fix spaghetti code */}
               <span

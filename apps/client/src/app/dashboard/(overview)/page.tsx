@@ -2,7 +2,6 @@
 
 import GlobalAverageChart from "@/components/charts/global-average-chart";
 import RecentGradesCard from "@/components/dashboard/recent-grades/recent-grades";
-import dashboardLoader from "@/components/skeleton/dashboard-loader";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,11 +10,20 @@ import { authClient } from "@/lib/auth";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
 import { GetPeriodsResponse } from "@/types/get-periods-response";
 import { GetSubjectsResponse } from "@/types/get-subjects-response";
-import { Grade } from "@/types/grade";
 import { useQuery } from "@tanstack/react-query";
 import { Session, User } from "better-auth/types";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
+import dashboardLoader from "@/components/skeleton/dashboard-loader";
+import { Grade } from "@/types/grade";
+import Onboardding from "./onboarding/onboardding";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 /**
  * Vue d'ensemble des notes
@@ -194,14 +202,15 @@ export default function OverviewPage() {
         }}
       >
         <div className="flex flex-col gap-4">
-          <ScrollArea>
-            <div className="flex w-full">
-              <TabsList className="flex">
-                {periods?.map((period) => (
-                  <TabsTrigger key={period.id} value={period.id}>
-                    {period.name}
-                  </TabsTrigger>
-                ))}
+          <div className="hidden md:flex gap-4">
+            <ScrollArea>
+              <div className="flex w-full">
+                <TabsList className="flex">
+                  {periods?.map((period) => (
+                    <TabsTrigger key={period.id} value={period.id}>
+                      {period.name}
+                    </TabsTrigger>
+                  ))}
 
                 <TabsTrigger value="full-year">Toute l&apos;année</TabsTrigger>
               </TabsList>

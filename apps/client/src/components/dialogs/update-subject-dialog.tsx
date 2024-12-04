@@ -8,15 +8,18 @@ import { useState } from "react";
 import { UpdateSubjectForm } from "../forms/update-subject-form";
 import { Button } from "../ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
+  Credenza,
+  CredenzaBody,
+  CredenzaClose,
+  CredenzaContent,
+  CredenzaDescription,
+  CredenzaFooter,
+  CredenzaHeader,
+  CredenzaTitle,
+  CredenzaTrigger,
+} from "@/components/ui/credenza";
 
-export default function UpdateSubjectDialog({ subjectId }: { subjectId: string }) {
+export default function UpdateSubjectCredenza({ subjectId }: { subjectId: string }) {
   const [open, setOpen] = useState(false);
 
   const {
@@ -35,26 +38,26 @@ export default function UpdateSubjectDialog({ subjectId }: { subjectId: string }
   });
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <Credenza open={open} onOpenChange={setOpen}>
+      <CredenzaTrigger asChild>
         <Button variant="ghost">
           <PencilIcon className="size-4 mr-2" />
           Modifier la matière
         </Button>
-      </DialogTrigger>
+      </CredenzaTrigger>
 
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Modifier la matière</DialogTitle>
-          <DialogDescription>
+      <CredenzaContent className="px-4 py-4">
+        <CredenzaHeader>
+          <CredenzaTitle>Modifier la matière</CredenzaTitle>
+          <CredenzaDescription>
             Modifier les données de la matière.
-          </DialogDescription>
-        </DialogHeader>
+          </CredenzaDescription>
+        </CredenzaHeader>
 
         {!isPending && !isError && (
           <UpdateSubjectForm subject={subject} close={() => setOpen(false)} />
         )}
-      </DialogContent>
-    </Dialog>
+      </CredenzaContent>
+    </Credenza>
   );
 }

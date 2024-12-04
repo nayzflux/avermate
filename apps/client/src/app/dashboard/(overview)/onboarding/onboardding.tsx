@@ -13,6 +13,7 @@ import {
 import AddSubjectButton from "@/components/buttons/dashboard/add-subject-button";
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
 export default function Onboarding() {
   const [step, setStep] = useState(1);
@@ -56,7 +57,12 @@ export default function Onboarding() {
               Étape 3: Ajoutez vos premières notes en utilisant le dialogue
               ci-dessous.
             </p>
-            <AddGradeDialog />
+            <AddGradeDialog>
+              <Button>
+                <PlusCircleIcon className="size-4 mr-2" />
+                Ajouter une note
+              </Button>
+            </AddGradeDialog>
           </CardDescription>
         )}
         {/* Add more steps as needed */}

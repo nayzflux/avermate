@@ -1,17 +1,17 @@
 "use client";
 
+import {
+  Credenza,
+  CredenzaContent,
+  CredenzaDescription,
+  CredenzaHeader,
+  CredenzaTitle,
+  CredenzaTrigger,
+} from "@/components/ui/credenza";
 import { useState } from "react";
 import { AddSubjectForm } from "../forms/add-subject-form";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
 
-export default function AddSubjectDialog({
+export default function AddSubjectCredenza({
   children,
 }: {
   children: React.ReactNode;
@@ -19,21 +19,21 @@ export default function AddSubjectDialog({
   const [open, setOpen] = useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="flex items-center" asChild>
+    <Credenza open={open} onOpenChange={setOpen}>
+      <CredenzaTrigger className="flex items-center" asChild>
         {children}
-      </DialogTrigger>
+      </CredenzaTrigger>
 
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Ajouter une matière</DialogTitle>
-          <DialogDescription>
+      <CredenzaContent className="px-4 py-4">
+        <CredenzaHeader>
+          <CredenzaTitle>Ajouter une matière</CredenzaTitle>
+          <CredenzaDescription>
             Créer une nouvelle matière avant d&apos;ajouter des notes.
-          </DialogDescription>
-        </DialogHeader>
+          </CredenzaDescription>
+        </CredenzaHeader>
 
         <AddSubjectForm close={() => setOpen(false)} />
-      </DialogContent>
-    </Dialog>
+      </CredenzaContent>
+    </Credenza>
   );
 }

@@ -51,12 +51,12 @@ export const PeriodsSection = () => {
                   className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2
               "
                 >
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1 w-full">
                     <Label>
-                      <Skeleton className="w-64 h-6" />
+                      <Skeleton className="md:w-64 h-6" />
                     </Label>
                     <span className="text-muted-foreground text-sm">
-                      <Skeleton className="w-32 h-4" />
+                      <Skeleton className="w-full md:w-32 h-4" />
                     </span>
                   </div>
                   <div>

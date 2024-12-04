@@ -25,10 +25,10 @@ export default function AvatarSection() {
         <div className="flex flex-col gap-6">
           <CardHeader className="p-0">
             <CardTitle>
-              <Skeleton className="w-32 h-6" />
+              <Skeleton className="md:w-32 w-full h-6" />
             </CardTitle>
             <CardDescription>
-              <Skeleton className="w-64 h-4" />
+              <Skeleton className="md:w-64 w-full h-4" />
             </CardDescription>
           </CardHeader>
 

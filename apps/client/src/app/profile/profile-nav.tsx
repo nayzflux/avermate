@@ -51,7 +51,7 @@ export default function ProfileNav() {
               asChild
             >
               <Link href={route.path}>
-                <route.icon className="size-4 mr-2" />
+                <route.icon className="size-4 mr-0 lg:mr-2" />
                 <p className="hidden lg:inline">{route.label}</p>
               </Link>
             </Button>
