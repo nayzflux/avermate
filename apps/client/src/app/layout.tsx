@@ -5,11 +5,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import ThemeProvider from "@/providers/theme-provider";
-import { Gabarito, Inter } from "next/font/google";
-
-const inter = Inter({
-  subsets: ["latin"],
-});
+import { Gabarito } from "next/font/google";
 
 const gabarito = Gabarito({
   subsets: ["latin"],
@@ -27,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.webmanifest" />
       </head>

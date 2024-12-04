@@ -1,8 +1,7 @@
 "use client";
 
 import { UpdateNameForm } from "@/components/forms/profile/update-name-form";
-import { authClient } from "@/lib/auth";
-import ProfileSection from "./profile-section";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,14 +10,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth";
+import { Session, User } from "better-auth/types";
+import ProfileSection from "./profile-section";
 
 export default function NameSection() {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession() as unknown as {
+    data: { user: User; session: Session };
+    isPending: boolean;
+  };
 
-  if (isPending
-    // ||true
-  ) {
+  if (isPending) {
     return (
       <Card className={"p-6 w-full"}>
         <div className="flex flex-col gap-6">
@@ -32,7 +34,6 @@ export default function NameSection() {
           </CardHeader>
 
           <CardContent className="p-0">
-            {" "}
             <div>
               <form className="flex flex-col gap-4">
                 <div className="w-full">
@@ -57,7 +58,6 @@ export default function NameSection() {
       title="Your Name"
       description="Edit how your appear on Avermate."
     >
-      {/* @ts-ignore */}
       <UpdateNameForm defaultName={session?.user?.name} />
     </ProfileSection>
   );

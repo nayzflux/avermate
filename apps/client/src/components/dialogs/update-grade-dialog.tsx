@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  Credenza,
+  CredenzaContent,
+  CredenzaDescription,
+  CredenzaHeader,
+  CredenzaTitle,
+  CredenzaTrigger,
+} from "@/components/ui/credenza";
 import { apiClient } from "@/lib/api";
 import { Grade } from "@/types/grade";
 import { PencilIcon } from "@heroicons/react/24/outline";
@@ -7,17 +15,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { UpdateGradeForm } from "../forms/update-grade-form";
 import { Button } from "../ui/button";
-import {
-  Credenza,
-  CredenzaBody,
-  CredenzaClose,
-  CredenzaContent,
-  CredenzaDescription,
-  CredenzaFooter,
-  CredenzaHeader,
-  CredenzaTitle,
-  CredenzaTrigger,
-} from "@/components/ui/credenza";
 
 export default function UpdateGradeCredenza({ gradeId }: { gradeId: string }) {
   const [open, setOpen] = useState(false);

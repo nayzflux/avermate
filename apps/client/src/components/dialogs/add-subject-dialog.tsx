@@ -1,18 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { AddSubjectForm } from "../forms/add-subject-form";
 import {
   Credenza,
-  CredenzaBody,
-  CredenzaClose,
   CredenzaContent,
   CredenzaDescription,
-  CredenzaFooter,
   CredenzaHeader,
   CredenzaTitle,
   CredenzaTrigger,
 } from "@/components/ui/credenza";
+import { useState } from "react";
+import { AddSubjectForm } from "../forms/add-subject-form";
 
 export default function AddSubjectCredenza({
   children,
@@ -31,7 +28,7 @@ export default function AddSubjectCredenza({
         <CredenzaHeader>
           <CredenzaTitle>Ajouter une matière</CredenzaTitle>
           <CredenzaDescription>
-            Créer une nouvelle matière avant d'ajouter des notes.
+            Créer une nouvelle matière avant d&apos;ajouter des notes.
           </CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">

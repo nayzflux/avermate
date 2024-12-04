@@ -1,7 +1,6 @@
 "use client";
 import { UpdateEmailForm } from "@/components/forms/profile/update-email-form";
-import { authClient } from "@/lib/auth";
-import ProfileSection from "./profile-section";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,16 +9,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Form, FormMessage, FormItem } from "@/components/ui/form";
-import { FormField } from "@/components/ui/form";
-import { FormControl } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth";
+import { Session, User } from "better-auth/types";
+import ProfileSection from "./profile-section";
 
 export default function EmailSection() {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession() as unknown as {
+    data: { session: Session; user: User };
+    isPending: boolean;
+  };
 
-  if (isPending
+  if (
+    isPending
     // ||true
   ) {
     return (
@@ -35,25 +36,18 @@ export default function EmailSection() {
           </CardHeader>
 
           <CardContent className="p-0">
-            {" "}
             <div>
-                <form
-                  className="flex flex-col gap-4"
-                >
+              <form className="flex flex-col gap-4">
                 <div className="w-full">
                   <Skeleton className="w-full h-10" />
-                  </div>
+                </div>
 
-                  <div className="flex w-full justify-end">
-                    <Button
-                      type="submit"
-                      variant="outline"
-                      disabled={isPending}
-                    >
-                      Save changes
-                    </Button>
-                  </div>
-                </form>
+                <div className="flex w-full justify-end">
+                  <Button type="submit" variant="outline" disabled={isPending}>
+                    Save changes
+                  </Button>
+                </div>
+              </form>
             </div>
           </CardContent>
         </div>
@@ -63,7 +57,6 @@ export default function EmailSection() {
 
   return (
     <ProfileSection title="Your Email" description="Edit your email address.">
-      {/* @ts-ignore */}
       <UpdateEmailForm defaultEmail={session?.user?.email} />
     </ProfileSection>
   );

@@ -1,9 +1,6 @@
 "use client";
 
 import Avatar from "@/components/buttons/account/avatar";
-import { authClient } from "@/lib/auth";
-import ProfileSection from "./profile-section";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Card,
   CardContent,
@@ -11,9 +8,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { authClient } from "@/lib/auth";
+import { Session, User } from "better-auth/types";
+import ProfileSection from "./profile-section";
 
 export default function AvatarSection() {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession() as unknown as {
+    data: { user: User; session: Session };
+    isPending: boolean;
+  };
 
   if (isPending) {
     return (
@@ -45,9 +49,7 @@ export default function AvatarSection() {
           className="size-32 lg:size-64"
           size={256}
           src={
-            // @ts-ignore
             session?.user?.image ||
-            // @ts-ignore
             `https://avatar.vercel.sh/${session?.user?.id}?size=256`
           }
         />
