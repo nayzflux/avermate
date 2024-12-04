@@ -201,7 +201,7 @@ export default function GradesPage() {
             <SelectTrigger>
               <SelectValue>
                 {periods?.find((period) => period.id === selectedTab)?.name ||
-                  "Toute l'année"}
+                  "Toute l&apos;année"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
@@ -210,7 +210,7 @@ export default function GradesPage() {
                   {period.name}
                 </SelectItem>
               ))}
-              <SelectItem value="full-year">Toute l'année</SelectItem>
+              <SelectItem value="full-year">Toute l&apos;année</SelectItem>
             </SelectContent>
           </Select>
         </div>
