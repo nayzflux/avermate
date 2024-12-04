@@ -1,28 +1,15 @@
 "use client";
 
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
-import { AddGradeForm } from "../forms/add-grade-form";
-import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
 import {
   Credenza,
-  CredenzaBody,
-  CredenzaClose,
   CredenzaContent,
   CredenzaDescription,
-  CredenzaFooter,
   CredenzaHeader,
   CredenzaTitle,
   CredenzaTrigger,
 } from "@/components/ui/credenza";
+import { useState } from "react";
+import { AddGradeForm } from "../forms/add-grade-form";
 
 export default function AddGradeDialog({
   children,
@@ -52,20 +39,18 @@ export default function AddGradeDialog({
     //       <AddGradeForm close={() => setOpen(false)} />
     //     </DialogContent>
     //   </Dialog>
-      <Credenza open={open} onOpenChange={setOpen}>
-      <CredenzaTrigger asChild>
-        {children}
-        </CredenzaTrigger>
-        <CredenzaContent className="px-4 py-4">
-          <CredenzaHeader>
-            <CredenzaTitle>Ajouter une note</CredenzaTitle>
-            <CredenzaDescription>
-              Commencer à suivre votre évolution.
-            </CredenzaDescription>
-          </CredenzaHeader>
-          <AddGradeForm close={() => setOpen(false)} />
-        </CredenzaContent>
-      </Credenza>
+    <Credenza open={open} onOpenChange={setOpen}>
+      <CredenzaTrigger asChild>{children}</CredenzaTrigger>
+      <CredenzaContent className="px-4 py-4">
+        <CredenzaHeader>
+          <CredenzaTitle>Ajouter une note</CredenzaTitle>
+          <CredenzaDescription>
+            Commencer à suivre votre évolution.
+          </CredenzaDescription>
+        </CredenzaHeader>
+        <AddGradeForm close={() => setOpen(false)} />
+      </CredenzaContent>
+    </Credenza>
     // </div>
   );
 }

@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  Credenza,
+  CredenzaContent,
+  CredenzaDescription,
+  CredenzaHeader,
+  CredenzaTitle,
+  CredenzaTrigger,
+} from "@/components/ui/credenza";
 import { apiClient } from "@/lib/api";
 import { Period } from "@/types/period";
 import { PencilIcon } from "@heroicons/react/24/outline";
@@ -7,19 +15,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { UpdatePeriodForm } from "../forms/update-period-form";
 import { Button } from "../ui/button";
-import {
-  Credenza,
-  CredenzaBody,
-  CredenzaClose,
-  CredenzaContent,
-  CredenzaDescription,
-  CredenzaFooter,
-  CredenzaHeader,
-  CredenzaTitle,
-  CredenzaTrigger,
-} from "@/components/ui/credenza";
 
-export default function UpdatePeriodCredenza({ periodId }: { periodId: string }) {
+export default function UpdatePeriodCredenza({
+  periodId,
+}: {
+  periodId: string;
+}) {
   const [open, setOpen] = useState(false);
 
   const {
