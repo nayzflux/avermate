@@ -28,10 +28,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.webmanifest" />
+      </head>
       <body className={cn("", gabarito.className)}>
         <QueryProvider>
           <ThemeProvider>
-            {children}
+            <div data-vaul-drawer-wrapper="">{children}</div>
             <Toaster />
           </ThemeProvider>
         </QueryProvider>
