@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  Credenza,
+  CredenzaContent,
+  CredenzaDescription,
+  CredenzaHeader,
+  CredenzaTitle,
+  CredenzaTrigger,
+} from "@/components/ui/credenza";
 import { apiClient } from "@/lib/api";
 import { Subject } from "@/types/subject";
 import { PencilIcon } from "@heroicons/react/24/outline";
@@ -7,19 +15,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { UpdateSubjectForm } from "../forms/update-subject-form";
 import { Button } from "../ui/button";
-import {
-  Credenza,
-  CredenzaBody,
-  CredenzaClose,
-  CredenzaContent,
-  CredenzaDescription,
-  CredenzaFooter,
-  CredenzaHeader,
-  CredenzaTitle,
-  CredenzaTrigger,
-} from "@/components/ui/credenza";
 
-export default function UpdateSubjectCredenza({ subjectId }: { subjectId: string }) {
+export default function UpdateSubjectCredenza({
+  subjectId,
+}: {
+  subjectId: string;
+}) {
   const [open, setOpen] = useState(false);
 
   const {

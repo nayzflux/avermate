@@ -1,21 +1,18 @@
 "use client";
 
+import {
+  Credenza,
+  CredenzaContent,
+  CredenzaDescription,
+  CredenzaHeader,
+  CredenzaTitle,
+  CredenzaTrigger,
+} from "@/components/ui/credenza";
 import { apiClient } from "@/lib/api";
 import { Period } from "@/types/period";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { AddPeriodForm } from "../forms/add-period-form";
-import {
-  Credenza,
-  CredenzaBody,
-  CredenzaClose,
-  CredenzaContent,
-  CredenzaDescription,
-  CredenzaFooter,
-  CredenzaHeader,
-  CredenzaTitle,
-  CredenzaTrigger,
-} from "@/components/ui/credenza";
 
 export default function AddPeriodCredenza({
   children,
@@ -57,7 +54,7 @@ export default function AddPeriodCredenza({
         <CredenzaHeader>
           <CredenzaTitle>Ajouter une période</CredenzaTitle>
           <CredenzaDescription>
-            Créer une nouvelle période avant d'ajouter des notes.
+            Créer une nouvelle période avant d&apos;ajouter des notes.
           </CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">

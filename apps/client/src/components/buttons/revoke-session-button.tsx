@@ -3,6 +3,7 @@
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Session } from "better-auth/types";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -29,7 +30,9 @@ export default function RevokeSessionButton({
 
   const router = useRouter();
 
-  const { data: currentSession } = authClient.useSession();
+  const { data: currentSession } = authClient.useSession() as unknown as {
+    data: { session: Session };
+  };
 
   const queryClient = useQueryClient();
 
@@ -37,7 +40,6 @@ export default function RevokeSessionButton({
     mutationKey: ["revoke-session"],
     mutationFn: async () => {
       const data = await authClient.revokeSession({
-        // @ts-ignore
         token: sessionToken,
       });
       return data;
@@ -49,7 +51,6 @@ export default function RevokeSessionButton({
         description: "Session has been successfully revoked!",
       });
 
-      // @ts-ignore
       if (sessionId === currentSession?.session?.id) {
         router.push("/");
       }

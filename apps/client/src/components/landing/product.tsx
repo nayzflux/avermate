@@ -10,7 +10,7 @@ export const Product = () => {
         <SubHeading as="h3">Découvrez nos fonctionnalitées</SubHeading>
 
         <Heading className="max-w-[550px]" as="h2">
-          Suivez votre progression en un coup d'oeil
+          Suivez votre progression en un coup d&apos;oeil
         </Heading>
       </div>
 

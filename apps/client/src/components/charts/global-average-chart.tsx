@@ -248,7 +248,7 @@ const CustomDot = (props: any) => {
           {/* Area Chart Section */}
           <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%] lg:w-[60%]">
             <CardDescription className="pb-8">
-              Visualiser l'évolution de votre moyenne générale sur ce trimestre
+              Visualiser l&apos;évolution de votre moyenne générale sur ce trimestre
             </CardDescription>
             <ChartContainer config={chartConfig} className="h-[302px] w-[100%]">
               <AreaChart data={chartData} margin={{ left: -30 }}>

@@ -16,6 +16,7 @@ import {
   ShieldCheckIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
+import { Session, User } from "better-auth/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LuGithub } from "react-icons/lu";
@@ -24,10 +25,12 @@ import ThemeSwitchButton from "../theme-switch-button";
 import Avatar from "./avatar";
 
 export default function AccountDropdown() {
-  const { data, isPending } = authClient.useSession();
+  const { data, isPending } = authClient.useSession() as unknown as {
+    data: { user: User; session: Session };
+    isPending: boolean;
+  };
   const router = useRouter();
 
-  // @ts-ignore
   if (!data && !isPending) {
     router.push("/auth/sign-in");
 
@@ -44,12 +47,9 @@ export default function AccountDropdown() {
             <Avatar
               size={32}
               src={
-                // @ts-ignore
                 data?.user?.image
-                  ? // @ts-ignore
-                    data?.user?.image
-                  : // @ts-ignore
-                    `https://avatar.vercel.sh/${data?.user?.id}?size=32`
+                  ? data?.user?.image
+                  : `https://avatar.vercel.sh/${data?.user?.id}?size=32`
               }
             />
           )}
@@ -61,19 +61,14 @@ export default function AccountDropdown() {
           <Avatar
             size={32}
             src={
-              // @ts-ignore
               data?.user?.image
-                ? // @ts-ignore
-                  data?.user?.image
-                : // @ts-ignore
-                  `https://avatar.vercel.sh/${data?.user?.id}?size=32`
+                ? data?.user?.image
+                : `https://avatar.vercel.sh/${data?.user?.id}?size=32`
             }
           />
           <div className="flex flex-col">
-            {/* @ts-ignore */}
             <h1>{data?.user?.name}</h1>
             <p className="text-muted-foreground font-medium ">
-              {/* @ts-ignore */}
               {data?.user?.email}
             </p>
           </div>

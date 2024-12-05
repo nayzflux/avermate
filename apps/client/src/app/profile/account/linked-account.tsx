@@ -1,9 +1,5 @@
 "use client";
 
-import { authClient } from "@/lib/auth";
-import { useQuery } from "@tanstack/react-query";
-import ProfileSection from "../profile-section";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Card,
   CardContent,
@@ -11,7 +7,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { authClient } from "@/lib/auth";
+import { useQuery } from "@tanstack/react-query";
+import ProfileSection from "../profile-section";
 
 type Account = {
   id: string;
@@ -80,14 +79,14 @@ export default function LinkedAccount() {
             <div className="flex gap-2">
               <p className="font-semibold">{provider}</p>
             </div>
-            {provider === "microsoft" &&
+            {/* {provider === "microsoft" &&
               session?.user?.email.includes("@eleve.leschartreux.net") && (
                 <div className="flex gap-2">
                   <p className="text-muted-foreground">
                     Your grades are automatically imported 🎉
                   </p>
                 </div>
-              )}
+              )} */}
 
             <div className="flex justify-end"></div>
           </div>

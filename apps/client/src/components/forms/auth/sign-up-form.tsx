@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
+import { env } from "@/lib/env";
 import { cn } from "@/lib/utils";
 import { getPasswordStrength } from "@/utils/password";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -64,6 +65,7 @@ export const SignUpForm = () => {
         name,
         email,
         password,
+        callbackURL: `${env.NEXT_PUBLIC_CLIENT_URL}/dashboard`,
       });
 
       return data;

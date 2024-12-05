@@ -1,11 +1,20 @@
 "use client";
 
+import MobileAddButtons from "@/components/buttons/dashboard/mobile-add-buttons";
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
+import gradesLoader from "@/components/skeleton/grades-loader";
 import GradesTable from "@/components/tables/grades-table";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiClient } from "@/lib/api";
@@ -14,15 +23,6 @@ import { Subject } from "@/types/subject";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import gradesLoader from "@/components/skeleton/grades-loader";
-import MobileAddButtons from "@/components/buttons/dashboard/mobile-add-buttons";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 export default function GradesPage() {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
@@ -184,7 +184,7 @@ export default function GradesPage() {
                         {period.name}
                       </TabsTrigger>
                     ))}
-                <TabsTrigger value="full-year">Toute l'année</TabsTrigger>
+                <TabsTrigger value="full-year">Toute l&apos;année</TabsTrigger>
               </TabsList>
             </div>
             <ScrollBar orientation="horizontal" />
@@ -201,7 +201,7 @@ export default function GradesPage() {
             <SelectTrigger>
               <SelectValue>
                 {periods?.find((period) => period.id === selectedTab)?.name ||
-                  "Toute l'année"}
+                  "Toute l&apos;année"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
@@ -210,7 +210,7 @@ export default function GradesPage() {
                   {period.name}
                 </SelectItem>
               ))}
-              <SelectItem value="full-year">Toute l'année</SelectItem>
+              <SelectItem value="full-year">Toute l&apos;année</SelectItem>
             </SelectContent>
           </Select>
         </div>
