@@ -25,6 +25,7 @@ import AddSubjectDialog from "../dialogs/add-subject-dialog";
 import { Card } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import GradeBadge from "./grade-badge";
+import errorStateCard from "../skeleton/error-card";
 
 export default function GradesTable({
   subjects,
@@ -88,6 +89,13 @@ export default function GradesTable({
   }
 
   // Error State
+  if (isPeriodError) {
+    return (
+      <div>
+        {errorStateCard()}
+      </div>
+    );
+  }
 
   // Empty State
   if (subjects.length === 0) {

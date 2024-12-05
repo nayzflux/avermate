@@ -17,6 +17,7 @@ import { Session, User } from "better-auth/types";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import errorStateCard from "@/components/skeleton/error-card";
 
 /**
  * Vue d'ensemble des notes
@@ -117,6 +118,19 @@ export default function OverviewPage() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
+  // Error State
+  if (
+    isError ||
+    periodsIsError ||
+    organizedSubjectsIsError ||
+    isErrorRecentGrades
+  ) {
+    return (
+      <div>
+        {errorStateCard()}
+      </div>
+    );
+  }
 
   // Loading State
   if (
@@ -130,19 +144,6 @@ export default function OverviewPage() {
     return <div>{dashboardLoader()}</div>;
   }
 
-  // Error State
-  if (
-    isError ||
-    periodsIsError ||
-    organizedSubjectsIsError ||
-    isErrorRecentGrades
-  ) {
-    return (
-      <div>
-        <h1>Erreur</h1>
-      </div>
-    );
-  }
 
   // // Onboarding
   // if (

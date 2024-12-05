@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ProfileSection from "../profile-section";
+import errorStateCard from "@/components/skeleton/error-card";
 
 dayjs.extend(relativeTime);
 
@@ -92,7 +93,9 @@ export default function SessionList() {
   }
 
   if (isError) {
-    return <p>Error!</p>;
+    return <div>
+      {errorStateCard()}
+    </div>;
   }
 
   return (

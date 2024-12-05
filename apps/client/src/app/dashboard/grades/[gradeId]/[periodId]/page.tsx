@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { use } from "react";
 import GradeWrapper from "./grade-wrapper";
 import gradeLoader from "@/components/skeleton/grade-loader";
+import errorStateCard from "@/components/skeleton/error-card";
 
 export default function GradePage({
   params,
@@ -42,7 +43,9 @@ export default function GradePage({
   });
 
   if (isError || organizedSubjectsIsError) {
-    return <div>Error</div>;
+    return <div>
+      {errorStateCard()}
+    </div>;
   }
 
   if (isPending || organizedSubjectsIsPending

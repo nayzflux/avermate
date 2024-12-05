@@ -48,7 +48,7 @@ export default function UpdateSubjectCredenza({
         </Button>
       </CredenzaTrigger>
 
-      <CredenzaContent className="max-h-screen h-[95%] ">
+      <CredenzaContent>
         <CredenzaHeader>
           <CredenzaTitle>Modifier la matière</CredenzaTitle>
           <CredenzaDescription>

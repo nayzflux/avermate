@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { use } from "react";
 import SubjectWrapper from "./subject-wrapper";
 import subjectLoader from "@/components/skeleton/subject-loader";
+import errorStateCard from "@/components/skeleton/error-card";
 
 export default function SubjectPage({
   params,
@@ -92,7 +93,9 @@ export default function SubjectPage({
     isSubjectError ||
     isSubjectsError
   ) {
-    return <div>Error!</div>;
+    return <div>
+      {errorStateCard()}
+    </div>;
   }
 
   if (

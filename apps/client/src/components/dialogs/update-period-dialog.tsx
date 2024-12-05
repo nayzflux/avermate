@@ -60,7 +60,7 @@ export default function UpdatePeriodCredenza({
         </Button>
       </CredenzaTrigger>
 
-      <CredenzaContent className="max-h-screen h-[95%] ">
+      <CredenzaContent>
         <CredenzaHeader>
           <CredenzaTitle>Modifier la période</CredenzaTitle>
           <CredenzaDescription>

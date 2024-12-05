@@ -51,7 +51,7 @@ export default function AddPeriodCredenza({
         {children}
       </CredenzaTrigger>
 
-      <CredenzaContent className="max-h-screen h-[95%] ">
+      <CredenzaContent>
         <CredenzaHeader>
           <CredenzaTitle>Ajouter une période</CredenzaTitle>
           <CredenzaDescription>

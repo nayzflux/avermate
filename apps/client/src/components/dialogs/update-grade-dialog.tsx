@@ -44,7 +44,7 @@ export default function UpdateGradeCredenza({ gradeId }: { gradeId: string }) {
         </Button>
       </CredenzaTrigger>
 
-      <CredenzaContent className="max-h-screen h-[95%] ">
+      <CredenzaContent>
         <CredenzaHeader>
           <CredenzaTitle>Modifier la note</CredenzaTitle>
           <CredenzaDescription>

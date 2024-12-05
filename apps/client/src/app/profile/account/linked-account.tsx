@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
 import ProfileSection from "../profile-section";
+import errorStateCard from "@/components/skeleton/error-card";
 
 type Account = {
   id: string;
@@ -63,7 +64,7 @@ export default function LinkedAccount() {
       </Card>
     );
 
-  if (isError) return <p>Error!</p>;
+  if (isError) return <div>{errorStateCard()}</div>;
 
   return (
     <ProfileSection
