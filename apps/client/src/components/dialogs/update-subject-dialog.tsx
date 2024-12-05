@@ -46,7 +46,7 @@ export default function UpdateSubjectCredenza({ subjectId }: { subjectId: string
         </Button>
       </CredenzaTrigger>
 
-      <CredenzaContent className="max-h-screen h-full ">
+      <CredenzaContent className="max-h-screen h-[95%] ">
         <CredenzaHeader>
           <CredenzaTitle>Modifier la matière</CredenzaTitle>
           <CredenzaDescription>
@@ -54,9 +54,10 @@ export default function UpdateSubjectCredenza({ subjectId }: { subjectId: string
           </CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
-        {!isPending && !isError && (
-          <UpdateSubjectForm subject={subject} close={() => setOpen(false)} />
-        )}</CredenzaBody>
+          {!isPending && !isError && (
+            <UpdateSubjectForm subject={subject} close={() => setOpen(false)} />
+          )}
+        </CredenzaBody>
       </CredenzaContent>
     </Credenza>
   );

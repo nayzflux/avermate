@@ -75,7 +75,7 @@ export const SignInForm = () => {
   };
 
   return (
-    <div className="md:min-w-[500px] w-[80%]">
+    <div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

@@ -34,7 +34,9 @@ export default function RootLayout({
       <body className={cn("", gabarito.className)}>
         <QueryProvider>
           <ThemeProvider>
-            <div data-vaul-drawer-wrapper="">{children}</div>
+            <div data-vaul-drawer-wrapper="" className="bg-background">
+              {children}
+            </div>
             <Toaster />
           </ThemeProvider>
         </QueryProvider>

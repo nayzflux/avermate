@@ -42,10 +42,9 @@ import {
   TableRow,
 } from "../ui/table";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
-import {EllipsisVerticalIcon} from "@heroicons/react/24/outline";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 
 export default function gradeLoader() {
-
   return (
     <div className="flex flex-col gap-8 m-auto max-w-[2000px]">
       <div>
@@ -70,19 +69,17 @@ export default function gradeLoader() {
           <Card key={index} className="p-6 rounded-lg">
             <div className="flex flex-col gap-2">
               <div className="flex gap-2 justify-between">
-                <p className="font-semibold">
-                  <Skeleton className="w-20 h-6" />
-                </p>
+                <Skeleton className="w-20 h-6" />
                 <Skeleton className="w-6 h-6" />
               </div>
 
               <div className="flex flex-col gap-0.5">
                 <Skeleton className="h-10" />
 
-                <p className="text-xs text-muted-foreground font-light pt-2">
+                <div className="text-xs text-muted-foreground font-light pt-2">
                   <Skeleton className="h-4 mb-1" />
                   <Skeleton className="w-20 h-4" />
-                </p>
+                </div>
               </div>
             </div>
           </Card>

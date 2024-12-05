@@ -1,36 +1,9 @@
 import React from "react";
 import { Skeleton } from "../ui/skeleton";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DataCards from "@/app/dashboard/(overview)/data-cards";
-import GlobalAverageChart from "../charts/global-average-chart";
-import RecentGradesCard from "@/components/dashboard/recent-grades/recent-grades";
-import DataCard from "../dashboard/data-card";
-import { AcademicCapIcon } from "@heroicons/react/24/outline";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
-import { ChartContainer, ChartTooltipContent } from "../ui/chart";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  PolarAngleAxis,
-  PolarGrid,
-  Radar,
-  RadarChart,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Tabs } from "@/components/ui/tabs";
+
 import { Button } from "../ui/button";
-import AddGradeDialog from "../dialogs/add-grade-dialog";
-import AddPeriodDialog from "../dialogs/add-period-dialog";
-import AddSubjectDialog from "../dialogs/add-subject-dialog";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import {
   Table,
@@ -43,12 +16,6 @@ import {
 } from "../ui/table";
 
 export default function gradesLoader() {
-  const chartConfig = {};
-
-  const chartData = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
-
-  const radarData = [{ average: 15 }, {}, {}, {}, {}, {}];
-
   return (
     <main className="flex flex-col gap-8">
       <div className="flex gap-2 md:gap-16 justify-between items-center">

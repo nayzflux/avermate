@@ -236,11 +236,11 @@ export default function OverviewPage() {
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-              {periods?.map((period) => (
-                <SelectItem key={period.id} value={period.id}>
-                  {period.name}
-                </SelectItem>
-              ))}
+                {periods?.map((period) => (
+                  <SelectItem key={period.id} value={period.id}>
+                    {period.name}
+                  </SelectItem>
+                ))}
                 <SelectItem value="full-year">Toute l'année</SelectItem>
               </SelectContent>
             </Select>

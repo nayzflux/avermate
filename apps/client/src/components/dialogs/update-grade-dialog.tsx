@@ -46,7 +46,7 @@ export default function UpdateGradeCredenza({ gradeId }: { gradeId: string }) {
         </Button>
       </CredenzaTrigger>
 
-      <CredenzaContent className="max-h-screen h-full ">
+      <CredenzaContent className="max-h-screen h-[95%] ">
         <CredenzaHeader>
           <CredenzaTitle>Modifier la note</CredenzaTitle>
           <CredenzaDescription>
@@ -54,9 +54,10 @@ export default function UpdateGradeCredenza({ gradeId }: { gradeId: string }) {
           </CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
-        {!isPending && !isError && (
-          <UpdateGradeForm grade={grade} close={() => setOpen(false)} />
-        )}</CredenzaBody>
+          {!isPending && !isError && (
+            <UpdateGradeForm grade={grade} close={() => setOpen(false)} />
+          )}
+        </CredenzaBody>
       </CredenzaContent>
     </Credenza>
   );

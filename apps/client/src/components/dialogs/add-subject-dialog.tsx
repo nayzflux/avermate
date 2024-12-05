@@ -27,7 +27,7 @@ export default function AddSubjectCredenza({
         {children}
       </CredenzaTrigger>
 
-      <CredenzaContent className="max-h-screen h-full ">
+      <CredenzaContent className="max-h-screen h-[95%] ">
         <CredenzaHeader>
           <CredenzaTitle>Ajouter une matière</CredenzaTitle>
           <CredenzaDescription>
@@ -35,7 +35,8 @@ export default function AddSubjectCredenza({
           </CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
-        <AddSubjectForm close={() => setOpen(false)} /></CredenzaBody>
+          <AddSubjectForm close={() => setOpen(false)} />
+        </CredenzaBody>
       </CredenzaContent>
     </Credenza>
   );

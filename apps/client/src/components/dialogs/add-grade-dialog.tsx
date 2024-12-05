@@ -54,7 +54,7 @@ export default function AddGradeDialog({
     //   </Dialog>
     <Credenza open={open} onOpenChange={setOpen}>
       <CredenzaTrigger asChild>{children}</CredenzaTrigger>
-      <CredenzaContent className="max-h-screen h-full ">
+      <CredenzaContent className="max-h-screen h-[95%] ">
         <CredenzaHeader>
           <CredenzaTitle>Ajouter une note</CredenzaTitle>
           <CredenzaDescription>
