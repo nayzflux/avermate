@@ -169,7 +169,7 @@ export default function GradesPage() {
         <div className="hidden md:flex gap-4">
           <ScrollArea>
             <div className="w-full relative h-10">
-              <TabsList className="flex absolute">
+              <TabsList className="flex">
                 {periods &&
                   periods.length > 0 &&
                   // Sort the periods by start date

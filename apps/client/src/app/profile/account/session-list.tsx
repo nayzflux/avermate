@@ -69,13 +69,11 @@ export default function SessionList() {
                   className="flex flex-col gap-2 border-t text-sm px-2 pt-4 w-full"
                 >
                   <div className="flex gap-2 w-full">
-                      <Skeleton className="md:w-32 w-full h-6" />
+                    <Skeleton className="md:w-32 w-full h-6" />
                   </div>
 
                   <div className="flex gap-1 text-muted-foreground">
-                    <p>
-                      <Skeleton className="w-96 h-4" />
-                    </p>
+                    <Skeleton className="md:w-32 w-full h-4" />
                   </div>
 
                   <div className="flex justify-end">

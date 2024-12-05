@@ -16,10 +16,10 @@ export default function Avatar({
   return (
     <>
       {!loaded && (
-        <Skeleton
-          className={cn("rounded-full", className)}
-          style={{ width: size, height: size }}
-        />
+        <>
+          {size === 256 && <Skeleton className="rounded-full size-32 lg:size-64" />}
+          {size === 32 && <Skeleton className="rounded-full size-8" />}
+        </>
       )}
       <img
         src={src}

@@ -54,8 +54,8 @@ export default function subjectLoader() {
 
       <Separator />
 
-      <div className="grid grid-cols-2 gap-4">
-        {Array.from({ length: 6 }).map((_, index) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {Array.from({ length: 5 }).map((_, index) => (
           <Card key={index} className="p-6 rounded-lg">
             <div className="flex flex-col gap-2">
               <div className="flex gap-2 justify-between">
