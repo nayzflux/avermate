@@ -34,7 +34,15 @@ export default function AccountDropdown() {
   if (!data && !isPending) {
     router.push("/auth/sign-in");
 
-    return "Not Logged";
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <div className="p-2">
+            <Skeleton className="size-8 rounded-full" />
+          </div>
+        </DropdownMenuTrigger>
+      </DropdownMenu>
+    );
   }
 
   return (

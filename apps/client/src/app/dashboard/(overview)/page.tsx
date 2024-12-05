@@ -41,7 +41,6 @@ export default function OverviewPage() {
       return data.subjects;
     },
   });
-
   // Fetch periods from API
   const {
     data: periods,
@@ -72,8 +71,8 @@ export default function OverviewPage() {
 
   const {
     data: recentGrades,
-    isError: isPendingRecentGrades,
-    isPending: isErrorRecentGrades,
+    isError: isErrorRecentGrades,
+    isPending: isPendingRecentGrades,
   } = useQuery({
     queryKey: ["recent-grades", "grades"],
     queryFn: async () => {
@@ -140,8 +139,7 @@ export default function OverviewPage() {
   ) {
     return (
       <div>
-        <h2>Error</h2>
-        <p>An error occurred while loading the subjects.</p>
+        <h1>Erreur</h1>
       </div>
     );
   }
