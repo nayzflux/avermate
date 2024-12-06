@@ -31,6 +31,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useEffect, useState } from "react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import React from "react";
+import { Check } from "lucide-react";
+import { FormDescription } from "@/components/ui/form";
+import { ChevronsUpDown } from "lucide-react";
 
 const updateGradeSchema = z.object({
   name: z.string().min(1).max(64),
@@ -51,11 +64,13 @@ export const UpdateGradeForm = ({
   close: () => void;
   grade: Grade;
 }) => {
+  const [open, setOpen] = useState(false);
+  const [openSubjectPopover, setOpenSubjectPopover] = useState(false);
   const toaster = useToast();
 
   const queryClient = useQueryClient();
 
-  const { data: subects, isError } = useQuery({
+  const { data: subjects, isError } = useQuery({
     queryKey: ["subjects"],
     queryFn: async () => {
       const res = await apiClient.get("subjects");
@@ -152,6 +167,38 @@ export const UpdateGradeForm = ({
   const onSubmit = (values: UpdateGradeSchema) => {
     mutate(values);
   };
+
+  const determinePeriodId = (
+    date: string | number | Date | dayjs.Dayjs | null | undefined,
+    periods: any[] | undefined
+  ) => {
+    if (!date || !periods) return "";
+    const formattedDate = dayjs(date);
+    const matchedPeriod = periods.find(
+      (period) =>
+        formattedDate.isAfter(dayjs(period.startAt)) &&
+        formattedDate.isBefore(dayjs(period.endAt))
+    );
+    return matchedPeriod ? matchedPeriod.id : "";
+  };
+
+  // Automatically set the periodId when passedAt changes
+  useEffect(() => {
+    const passedAt = form.watch("passedAt");
+    if (passedAt) {
+      const matchedPeriodId = determinePeriodId(passedAt, periods);
+      console.log("matchedPeriodId", matchedPeriodId);
+      form.setValue("periodId", matchedPeriodId, { shouldValidate: true });
+    }
+  }, [form.watch("passedAt"), periods]);
+
+  const selectedPeriod = periods?.find(
+    (period) => period.id === form.getValues("periodId")
+  );
+
+  const selectedSubject = subjects?.find(
+    (subject) => subject.id === form.getValues("subjectId")
+  );
 
   return (
     <div className="">
@@ -280,76 +327,180 @@ export const UpdateGradeForm = ({
                       disabled={(date) =>
                         date > new Date() || date < new Date("2023-01-02")
                       }
+                      initialFocus
                       weekStartsOn={1}
                     />
                   </PopoverContent>
                 </Popover>
                 <FormMessage />
               </FormItem>
-            )}
-          />
+              )}
+              />
 
-          <FormField
-            control={form.control}
-            name="periodId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Période</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+              <FormField
+              control={form.control}
+              name="periodId"
+              render={({ field }) => {
+                const [periodInputValue, setPeriodInputValue] = useState('');
+
+                useEffect(() => {
+                if (open) {
+                  setPeriodInputValue(selectedPeriod?.name || '');
+                }
+                }, [open, selectedPeriod]);
+
+                return (
+                <FormItem className="flex flex-col">
+                  <FormLabel className="pointer-events-none">Période</FormLabel>
+
+                  <Popover
+                  modal
+                  open={open}
+                  onOpenChange={(isOpen) => setOpen(isOpen)}
+                  >
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        className="placeholder:text-muted-foreground text-blue-500"
-                        placeholder="Choisir une période"
-                      />
-                    </SelectTrigger>
+                    <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={open ? 'true' : 'false'}
+                      className="justify-between"
+                    >
+                      {selectedPeriod
+                      ? selectedPeriod.name
+                      : 'Choisir une période'}
+                      <ChevronsUpDown className="opacity-50" />
+                    </Button>
+                    </PopoverTrigger>
                   </FormControl>
-                  <SelectContent>
-                    {periods?.map((period) => (
-                      <SelectItem key={period.id} value={period.id}>
-                        {period.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <PopoverContent
+                    className="p-0 min-w-[var(--radix-popover-trigger-width)]"
+                    align="start"
+                  >
+                    <Command>
+                    <CommandInput
+                      placeholder="Choisir une période"
+                      value={periodInputValue}
+                      onValueChange={setPeriodInputValue}
+                      className="h-9"
+                    />
+                    <CommandList>
+                      <CommandEmpty>Aucune période trouvée</CommandEmpty>
+                      <CommandGroup>
+                      {periods?.map((period) => (
+                        <CommandItem
+                        key={period.id}
+                        value={period.name}
+                        onSelect={() => {
+                          form.setValue('periodId', period.id, {
+                          shouldValidate: true,
+                          });
+                          setOpen(false);
+                        }}
+                        >
+                        <span>{period.name}</span>
+                        {form.getValues('periodId') === period.id && (
+                          <Check className="ml-auto h-4 w-4" />
+                        )}
+                        </CommandItem>
+                      ))}
+                      </CommandGroup>
+                    </CommandList>
+                    </Command>
+                  </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                  <FormDescription>
+                  Une note doit être associée à une période. Celle ci peut être
+                  différente de la date de passage si besoin.
+                  </FormDescription>
+                </FormItem>
+                );
+              }}
+              />
 
-          <FormField
-            control={form.control}
-            name="subjectId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Matière</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+              <FormField
+              control={form.control}
+              name="subjectId"
+              render={({ field }) => {
+                const [subjectInputValue, setSubjectInputValue] = useState('');
+
+                useEffect(() => {
+                if (openSubjectPopover) {
+                  setSubjectInputValue(selectedSubject?.name || '');
+                }
+                }, [openSubjectPopover, selectedSubject]);
+
+                return (
+                <FormItem className="flex flex-col">
+                  <FormLabel className="pointer-events-none">Matière</FormLabel>
+
+                  <Popover
+                  modal
+                  open={openSubjectPopover}
+                  onOpenChange={(isOpen) => setOpenSubjectPopover(isOpen)}
+                  >
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        className="placeholder:text-muted-foreground text-blue-500"
+                    <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={openSubjectPopover ? 'true' : 'false'}
+                      className="justify-between"
+                    >
+                      {selectedSubject
+                      ? selectedSubject.name
+                      : 'Choisir une matière'}
+                      <ChevronsUpDown className="opacity-50" />
+                    </Button>
+                    </PopoverTrigger>
+                  </FormControl>
+                  <PopoverContent
+                    className="p-0 min-w-[var(--radix-popover-trigger-width)]"
+                    align="start"
+                  >
+                    <Command>
+                      <CommandInput
                         placeholder="Choisir une matière"
+                        value={subjectInputValue}
+                        onValueChange={setSubjectInputValue}
+                        className="h-9"
                       />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {subects?.map((subject) => (
-                      <SelectItem key={subject.id} value={subject.id}>
-                        {subject.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                      <CommandList>
+                      <CommandEmpty>Aucune matière trouvée</CommandEmpty>
+                      <CommandGroup>
+                      {subjects
+                        ?.filter(
+                        (subject) => subject.isDisplaySubject === false
+                        )
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((subject) => (
+                        <CommandItem
+                          key={subject.id}
+                          value={subject.name}
+                          onSelect={() => {
+                          form.setValue('subjectId', subject.id, {
+                            shouldValidate: true,
+                          });
+                          setOpenSubjectPopover(false);
+                          }}
+                        >
+                          <span>{subject.name}</span>
+                          {form.getValues('subjectId') === subject.id && (
+                          <Check className="ml-auto h-4 w-4" />
+                          )}
+                        </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                    </Command>
+                  </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+                );
+              }}
+              />
 
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2Icon className="animate-spin mr-2 size-4" />}

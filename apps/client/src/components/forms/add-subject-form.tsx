@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -184,13 +185,19 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
             control={form.control}
             name="isMainSubject"
             render={({ field }) => (
-              <FormItem className="col-span-2 flex flex-row gap-4 items-center">
-                <FormLabel>Matière principale</FormLabel>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
+              <FormItem>
+                <div className="col-span-2 flex flex-row gap-4 items-center">
+                  <FormLabel>Matière principale</FormLabel>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </div>
                 <FormMessage />
+                <FormDescription>
+                  Les matières principales sont affichées en premier dans la
+                  tableau de bord.
+                </FormDescription>
               </FormItem>
             )}
           />
@@ -199,13 +206,20 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
             control={form.control}
             name="isDisplaySubject"
             render={({ field }) => (
-              <FormItem className="col-span-2 flex flex-row gap-4 items-center">
-                <FormLabel>Catégorie</FormLabel>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
+              <FormItem>
+                <div className="col-span-2 flex flex-row gap-4 items-center">
+                  <FormLabel>Catégorie</FormLabel>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </div>
                 <FormMessage />
+                <FormDescription>
+                  Les catégories ne comptent pas dans la moyenne générale. Elles
+                  regroupent des matières, mais leurs enfants sont calculés
+                  comme au niveau supérieur. Impossible d'y ajouter des notes.
+                </FormDescription>
               </FormItem>
             )}
           />
@@ -251,7 +265,7 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
                         className=" h-9"
                       />
                       <CommandList>
-                        <CommandEmpty>Aucune période trouvée</CommandEmpty>
+                        <CommandEmpty>Aucune matière trouvée</CommandEmpty>
                         <CommandGroup>
                           {subects
                             ?.slice()
@@ -279,6 +293,10 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
                   </PopoverContent>
                 </Popover>
                 <FormMessage />
+                <FormDescription>
+                  Une matière parente regroupe plusieurs sous-matières,
+                  facilitant leur organisation.
+                </FormDescription>
               </FormItem>
             )}
           />

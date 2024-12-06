@@ -109,17 +109,19 @@ export default function DataCards({
         icon={AcademicCapIcon}
         description={
           growth > 0
-            ? `+${growth.toFixed(2)}% since the beginning`
-            : growth < 0
-            ? `${growth.toFixed(2)}% since the beginning`
-            : "No growth since the beginning"
+        ? `+${growth.toFixed(2)}% since the beginning`
+        : growth < 0
+        ? `${growth.toFixed(2)}% since the beginning`
+        : "No growth since the beginning"
         }
       >
-        <GradeValue
-          value={(average(undefined, subjects) || 0) * 100}
-          outOf={2000}
-          size="xl"
-        />
+        {average(undefined, subjects) !== null ? (
+          <GradeValue
+        value={(average(undefined, subjects) || 0) * 100}
+        outOf={2000}
+        size="xl"
+          />
+        ) : null}
       </DataCard>
 
       <DataCard

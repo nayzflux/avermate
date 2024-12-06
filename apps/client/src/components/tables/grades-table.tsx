@@ -26,6 +26,8 @@ import { Card } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import GradeBadge from "./grade-badge";
 import errorStateCard from "../skeleton/error-card";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { Button } from "../ui/button";
 
 export default function GradesTable({
   subjects,
@@ -72,7 +74,10 @@ export default function GradesTable({
           <p>Ajouter une nouvelle matière pour commencer à suivre vos notes.</p>
         </div>
         <AddSubjectDialog>
-          <AddSubjectButton />
+          <Button variant="outline">
+            <PlusCircleIcon className="size-4 mr-2" />
+            Ajouter une matière
+          </Button>
         </AddSubjectDialog>
       </Card>
     );

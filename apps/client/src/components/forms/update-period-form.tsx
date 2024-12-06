@@ -25,6 +25,7 @@ import { CalendarIcon, Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Calendar } from "../ui/calendar";
+import { useMediaQuery } from "../ui/use-media-query";
 
 const updatePeriodSchema = z.object({
   name: z.string().min(1).max(64),
@@ -201,22 +202,24 @@ export const UpdatePeriodForm = ({
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="center">
+                      <PopoverContent className="w-auto p-0" align="center">
                         <Calendar
                           weekStartsOn={1}
                           excludeDisabled
                           mode="range"
                           selected={field.value}
                           onSelect={field.onChange}
-                          numberOfMonths={3}
+                          numberOfMonths={
+                            useMediaQuery("(min-width: 1024px)") ? 2 : 1
+                          }
                           disabled={periods
-                          .filter((p) => p.id !== period.id)
-                          .map((p) => ({
-                            from: startOfDay(p.startAt),
-                            to: startOfDay(p.endAt),
-                          }))}
+                            .filter((p) => p.id !== period.id)
+                            .map((p) => ({
+                              from: startOfDay(p.startAt),
+                              to: startOfDay(p.endAt),
+                            }))}
                         />
-                        </PopoverContent>
+                      </PopoverContent>
                     </Popover>
                   </div>
                 </FormControl>

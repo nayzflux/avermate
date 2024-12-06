@@ -25,7 +25,7 @@ export default function AddSubjectCredenza({
         {children}
       </CredenzaTrigger>
 
-      <CredenzaContent className="max-h-screen h-[95%] ">
+      <CredenzaContent>
         <CredenzaHeader>
           <CredenzaTitle>Ajouter une matière</CredenzaTitle>
           <CredenzaDescription>

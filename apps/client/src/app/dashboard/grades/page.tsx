@@ -201,7 +201,7 @@ export default function GradesPage() {
             <SelectTrigger>
               <SelectValue>
                 {periods?.find((period) => period.id === selectedTab)?.name ||
-                  "Toute l&apos;année"}
+                  "Toute l'année"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
