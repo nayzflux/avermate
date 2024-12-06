@@ -21,7 +21,6 @@ import {
   SparklesIcon,
   VariableIcon,
 } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
 import SubjectAverageChart from "./subject-average-chart";
 import { Card } from "@/components/ui/card";
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
@@ -32,13 +31,13 @@ function SubjectWrapper({
   subjects,
   subject,
   period,
+  onBack, // <-- new prop passed in from the layout
 }: {
   subjects: Subject[];
   subject: Subject;
   period: Period;
+  onBack: () => void; // Type the prop accordingly
 }) {
-  const router = useRouter();
-
   // Vérification des notes pour la période donnée
   const hasGrades = subjects.some((subj) =>
     subj.grades.some((grade) => grade.periodId === period.id)
@@ -52,7 +51,7 @@ function SubjectWrapper({
           <Button
             className="text-blue-600"
             variant="link"
-            onClick={() => router.back()}
+            onClick={onBack} // Use the onBack function instead of router.back()
           >
             <ArrowLeftIcon className="size-4 mr-2" />
             Retour
@@ -103,7 +102,7 @@ function SubjectWrapper({
         <Button
           className="text-blue-600"
           variant="link"
-          onClick={() => router.back()}
+          onClick={onBack} // Use the passed-in onBack function
         >
           <ArrowLeftIcon className="size-4 mr-2" />
           Retour
@@ -160,22 +159,16 @@ function SubjectWrapper({
           title="Meilleure note"
           description={`Votre plus belle performance en ${(() => {
             const bestGradeObj = getBestGradeInSubject(subjects, subject.id);
-            if (bestGradeObj && bestGradeObj.grade !== undefined) {
-              return bestGradeObj.subject.name;
-            } else {
-              return "N/A";
-            }
+            return bestGradeObj?.subject?.name ?? "N/A";
           })()}`}
           icon={SparklesIcon}
         >
           <p className="text-3xl font-bold">
             {(() => {
               const bestGradeObj = getBestGradeInSubject(subjects, subject.id);
-              if (bestGradeObj && bestGradeObj.grade !== undefined) {
-                return bestGradeObj.grade / 100;
-              } else {
-                return "N/A";
-              }
+              return bestGradeObj?.grade !== undefined
+                ? bestGradeObj.grade / 100
+                : "N/A";
             })()}
           </p>
         </DataCard>
@@ -185,11 +178,7 @@ function SubjectWrapper({
           title="Pire note"
           description={`Votre moins bonne performance en ${(() => {
             const worstGradeObj = getWorstGradeInSubject(subjects, subject.id);
-            if (worstGradeObj && worstGradeObj.grade !== undefined) {
-              return worstGradeObj.subject.name;
-            } else {
-              return "N/A";
-            }
+            return worstGradeObj?.subject?.name ?? "N/A";
           })()}`}
           icon={SparklesIcon}
         >
@@ -199,11 +188,9 @@ function SubjectWrapper({
                 subjects,
                 subject.id
               );
-              if (worstGradeObj && worstGradeObj.grade !== undefined) {
-                return worstGradeObj.grade / 100;
-              } else {
-                return "N/A";
-              }
+              return worstGradeObj?.grade !== undefined
+                ? worstGradeObj.grade / 100
+                : "N/A";
             })()}
           </p>
         </DataCard>
@@ -214,15 +201,12 @@ function SubjectWrapper({
       {/* Charts of average evolution */}
       <div className="flex flex-col gap-4">
         <h2 className="text-xl font-semibold">Evolution de la moyenne</h2>
-
         <SubjectAverageChart
           subjectId={subject.id}
           period={period}
           subjects={subjects}
         />
       </div>
-
-      {/* Last grades */}
     </div>
   );
 }

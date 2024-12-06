@@ -20,7 +20,6 @@ import { BookOpenIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
-import AddSubjectButton from "../buttons/dashboard/add-subject-button";
 import AddSubjectDialog from "../dialogs/add-subject-dialog";
 import { Card } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
@@ -28,6 +27,7 @@ import GradeBadge from "./grade-badge";
 import errorStateCard from "../skeleton/error-card";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { Button } from "../ui/button";
+import { usePathname } from "next/navigation";
 
 export default function GradesTable({
   subjects,
@@ -36,6 +36,8 @@ export default function GradesTable({
   subjects: Subject[];
   periodId: string;
 }) {
+  const pathname = usePathname(); // Get current path
+
   const {
     data: period,
     isError: isPeriodError,
@@ -104,15 +106,24 @@ export default function GradesTable({
         </TableRow>
       </TableHeader>
 
-      <TableBody>{renderSubjects(subjects, periodId)}</TableBody>
+      <TableBody>
+        {renderSubjects(subjects, periodId, null, pathname)}
+      </TableBody>
 
       <TableFooter>
-        <TableRow>
+        {/* Desktop Footer */}
+        <TableRow className="hidden md:table-row">
           <TableCell className="font-semibold" colSpan={2}>
-            Moyenne générale
+        Moyenne générale
           </TableCell>
           <TableCell className="text-right font-semibold">
-            {overallAverage}
+        {overallAverage}
+          </TableCell>
+        </TableRow>
+        {/* Mobile Footer */}
+        <TableRow className="md:hidden">
+          <TableCell className="font-semibold text-center" colSpan={3}>
+        Moyenne générale: {overallAverage}
           </TableCell>
         </TableRow>
       </TableFooter>
@@ -121,18 +132,15 @@ export default function GradesTable({
 }
 
 function getPaddingClass(depth: number) {
-  // Tailwind spacing:
-  // p-8 = 2rem, p-12 = 3rem, p-16 = 4rem, p-20 = 5rem
-  // You can adjust these increments if needed.
   switch (depth) {
     case 1:
-      return "pl-8"; // 2rem
+      return "pl-8";
     case 2:
-      return "pl-12"; // 3rem
+      return "pl-12";
     case 3:
-      return "pl-16"; // 4rem
+      return "pl-16";
     case 4:
-      return "pl-20"; // 5rem
+      return "pl-20";
     default:
       return "";
   }
@@ -156,11 +164,9 @@ function getLinePosition(depth: number) {
 function getIndentationLinesStyle(depth: number): React.CSSProperties {
   if (depth <= 0) return {};
 
-  // Create a vertical line for each depth level.
-  // We'll space lines every 2rem. You can tweak this.
   const linePositions = Array.from(
     { length: depth },
-    (_, i) => `calc(${getLinePosition(i + 1)} - 10px)` // Subtract 1px to avoid overlapping
+    (_, i) => `calc(${getLinePosition(i + 1)} - 10px)`
   );
 
   return {
@@ -176,7 +182,8 @@ function getIndentationLinesStyle(depth: number): React.CSSProperties {
 function renderSubjects(
   subjects: Subject[],
   periodId: string,
-  parentId: string | null = null
+  parentId: string | null = null,
+  pathname: string
 ) {
   return subjects
     .filter((subject) => subject.parentId === parentId)
@@ -198,7 +205,9 @@ function renderSubjects(
               )}
             >
               <Link
-                href={`/dashboard/subjects/${subject.id}/${periodId}`}
+                href={`/dashboard/subjects/${
+                  subject.id
+                }/${periodId}?from=${encodeURIComponent(pathname)}`}
                 className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
               >
                 {subject.name + ` (` + subject.coefficient / 100 + `)`}
@@ -254,19 +263,18 @@ function renderSubjects(
             </TableCell>
           </TableRow>
 
-          {renderSubjects(subjects, periodId, subject.id)}
+          {renderSubjects(subjects, periodId, subject.id, pathname)}
         </React.Fragment>
       );
     });
 }
 
 function LoadingTable() {
-  // Simulate a few subjects loading
   const items = Array.from({ length: 5 }, (_, i) => i);
 
   return (
     <>
-      {/* Desktop layout (unchanged) */}
+      {/* Desktop layout */}
       <Table className="w-full table-auto hidden md:table">
         <TableCaption>
           <div className="flex w-full justify-center">
@@ -312,21 +320,17 @@ function LoadingTable() {
             <Skeleton className="w-64 h-[14px]" />
           </div>
         </TableCaption>
-        {/* No header on mobile */}
+
         <TableBody>
           {items.map((item) => (
             <React.Fragment key={item}>
-              {/* Subject + average row on mobile */}
               <TableRow className="border-b">
                 <TableCell className="w-full">
-                  {/* Subject name skeleton */}
                   <Skeleton className="w-3/4 h-[20px] mb-1" />
-                  {/* Mobile-only average skeleton */}
                   <Skeleton className="w-1/2 h-[14px]" />
                 </TableCell>
               </TableRow>
 
-              {/* Notes row on mobile */}
               <TableRow className="border-b">
                 <TableCell className="w-full">
                   <div className="flex gap-2 flex-wrap pt-1 pb-2">
@@ -343,4 +347,3 @@ function LoadingTable() {
     </>
   );
 }
-

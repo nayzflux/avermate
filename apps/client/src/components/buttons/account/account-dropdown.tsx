@@ -18,7 +18,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Session, User } from "better-auth/types";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LuGithub } from "react-icons/lu";
 import SignOutButton from "../sign-out-button";
 import ThemeSwitchButton from "../theme-switch-button";
@@ -29,7 +29,9 @@ export default function AccountDropdown() {
     data: { user: User; session: Session };
     isPending: boolean;
   };
+
   const router = useRouter();
+  const pathname = usePathname(); // Get the current path
 
   if (!data && !isPending) {
     router.push("/auth/sign-in");
@@ -83,19 +85,20 @@ export default function AccountDropdown() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/profile">
+          <Link href={`/profile?from=${encodeURIComponent(pathname)}`}>
             <UserIcon className="size-4 mr-2" />
             Profile
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/profile/account">
+          <Link href={`/profile/account?from=${encodeURIComponent(pathname)}`}>
             <ShieldCheckIcon className="size-4 mr-2" />
             Account
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/profile/settings">
+          {/* Pass current page as 'from' parameter */}
+          <Link href={`/profile/settings?from=${encodeURIComponent(pathname)}`}>
             <Cog6ToothIcon className="size-4 mr-2" />
             Settings
           </Link>

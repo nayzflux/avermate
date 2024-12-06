@@ -323,7 +323,7 @@ export const UpdateSubjectForm = ({
 
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2Icon className="animate-spin mr-2 size-4" />}
-            Ajouter une matière
+            Modifier la matière
           </Button>
         </form>
       </Form>
