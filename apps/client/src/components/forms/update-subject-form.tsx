@@ -193,7 +193,7 @@ export const UpdateSubjectForm = ({
                 <FormMessage />
                 {isDisplaySubject && (
                   <FormDescription>
-                    Les catégories ont un coefficient fixe de 1.
+                    Les catégories ne prennent pas en compte le coefficient
                   </FormDescription>
                 )}
               </FormItem>
