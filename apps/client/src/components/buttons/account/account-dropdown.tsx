@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
 import {
   Cog6ToothIcon,
@@ -19,12 +20,15 @@ import {
 import { Session, User } from "better-auth/types";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { LuGithub } from "react-icons/lu";
 import SignOutButton from "../sign-out-button";
 import ThemeSwitchButton from "../theme-switch-button";
 import Avatar from "./avatar";
 
 export default function AccountDropdown() {
+  const toaster = useToast();
+
   const { data, isPending } = authClient.useSession() as unknown as {
     data: { user: User; session: Session };
     isPending: boolean;
@@ -33,9 +37,33 @@ export default function AccountDropdown() {
   const router = useRouter();
   const pathname = usePathname(); // Get the current path
 
-  if (!data && !isPending) {
-    router.push("/auth/sign-in");
+  useEffect(() => {
+    if (isPending) return;
 
+    // Not logged
+    if (!data) {
+      router.push("/auth/sign-in");
+      return;
+    }
+
+    // Not verified
+    if (!data.user.emailVerified) {
+      // Send a verification link
+      authClient.sendVerificationEmail({
+        email: data.user.email,
+      });
+
+      toaster.toast({
+        title: "✉️ Email non vérifié",
+        description: `Un lien de vérification a été envoyé à l'adresse ${data.user.email}.`,
+      });
+
+      router.push("/auth/verify-email");
+      return;
+    }
+  }, [data, isPending]);
+
+  if (!data && !isPending) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger>

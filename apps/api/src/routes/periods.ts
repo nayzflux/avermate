@@ -26,6 +26,14 @@ app.post("/", zValidator("json", createPeriodSchema), async (c) => {
 
   if (!session) throw new HTTPException(401);
 
+  // If email isnt verified
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
+
   const { name, startAt, endAt } = c.req.valid("json");
 
   if (startAt > endAt) {
@@ -57,6 +65,14 @@ app.get("/", async (c) => {
 
   if (!session) throw new HTTPException(401);
 
+  // If email isnt verified
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
+
   const allPeriods = await db.query.periods.findMany({
     where: eq(periods.userId, session.user.id),
     orderBy: asc(periods.startAt),
@@ -82,23 +98,28 @@ app.get("/:periodId", zValidator("param", getPeriodSchema), async (c) => {
 
   if (!session) throw new HTTPException(401);
 
+  // If email isnt verified
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
+
   const { periodId } = c.req.valid("param");
 
   const period = await db.query.periods.findFirst({
-    where: and(eq(periods.id, periodId), eq(periods.userId, session.user.id))
+    where: and(eq(periods.id, periodId), eq(periods.userId, session.user.id)),
   });
 
   if (!period) throw new HTTPException(404);
 
-
   return c.json(period);
 });
-
 
 /**
  * Update a period by id
  */
-
 
 const updatePeriodSchema = z.object({
   name: z.string().min(1).max(64).optional(),
@@ -116,6 +137,17 @@ app.patch(
     });
 
     if (!session) throw new HTTPException(401);
+
+    // If email isnt verified
+    if (!session.user.emailVerified) {
+      return c.json(
+        {
+          code: "EMAIL_NOT_VERIFIED",
+          message: "Email verification is required",
+        },
+        403
+      );
+    }
 
     const { periodId } = c.req.valid("param");
     const { name, startAt, endAt } = c.req.valid("json");
@@ -152,6 +184,14 @@ app.delete("/:periodId", zValidator("param", deletePeriodSchema), async (c) => {
 
   if (!session) throw new HTTPException(401);
 
+  // If email isnt verified
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
+
   const { periodId } = c.req.valid("param");
 
   const period = await db
@@ -164,6 +204,5 @@ app.delete("/:periodId", zValidator("param", deletePeriodSchema), async (c) => {
 
   return c.json({ period }); // Wrap the deleted period in an object
 });
-
 
 export default app;

@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
 import { env } from "@/lib/env";
+import { BetterFetchError } from "@better-fetch/fetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff, Loader2Icon } from "lucide-react";
@@ -38,7 +39,7 @@ export const SignInForm = () => {
   const toggleVisibility = () => setIsVisible((prevState) => !prevState);
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ["sign-up"],
+    mutationKey: ["sign-in"],
     mutationFn: async ({ email, password }: SignInSchema) => {
       const data = await authClient.signIn.email({
         email,
@@ -48,22 +49,52 @@ export const SignInForm = () => {
 
       return data;
     },
-    onSuccess: (data) => {
-      // Redirection vers le tableau de bord
+    onSuccess: async (data) => {
+      // If email is not verified
+      if (!data.user.emailVerified) {
+        // Send a verification link
+        await authClient.sendVerificationEmail({
+          email: data.user.email,
+        });
+
+        toaster.toast({
+          title: "✉️ Email non vérifié",
+          description: `Un lien de vérification a été envoyé à l'adresse ${data.user.email}.`,
+        });
+
+        router.push("/auth/verify-email");
+
+        return;
+      }
+
+      // Redirect to the dashboard
       router.push("/dashboard");
 
       // Notification toast
       toaster.toast({
-        title: `Bon retour parmi nous ${data.user.name} !`,
-        description: "Nous espérons que vous avez atteint vos objectifs 🚀 !",
+        title: `👋 Ravi de vous revoir ${data.user.name} !`,
+        description: "Nous espérons que vous avez atteint vos objectifs !",
       });
     },
 
     onError: (err) => {
-      // TODO: Gestion des erreurs
+      if (err instanceof BetterFetchError) {
+        const status = err.status;
+
+        if (status === 401) {
+          toaster.toast({
+            title: "❌ Erreur",
+            description: "Email ou mot de passe incorrect",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
+      // Generic error
       toaster.toast({
-        title: "Échec de la connexion",
-        description: "Une erreur s'est produite. Veuillez réessayer plus tard.",
+        title: "❌ Erreur",
+        description: "Une erreur est survenue. Réessayez plus tard.",
         variant: "destructive",
       });
     },

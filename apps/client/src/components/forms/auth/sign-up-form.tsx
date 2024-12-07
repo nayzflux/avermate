@@ -71,14 +71,17 @@ export const SignUpForm = () => {
       return data;
     },
     onSuccess: (data) => {
-      // Redirection vers le tableau de bord
-      router.push("/dashboard");
+      if (!data.user.emailVerified) {
+        
+        toaster.toast({
+          title: "✉️ Email non vérifié",
+          description: `Un lien de vérification a été envoyé à l'adresse ${data.user.email}.`,
+        });
 
-      // Notification toast
-      toaster.toast({
-        title: `Bienvenue ${data.user.name} !`,
-        description: "Commencez à suivre vos objectifs 🚀 dès aujourd'hui !",
-      });
+        // Redirect to email verify
+        router.push("/auth/verify-email");
+        return;
+      }
     },
 
     onError: (err) => {

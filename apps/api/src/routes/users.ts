@@ -18,6 +18,14 @@ app.delete("/:id", zValidator("param", deleteUserParams), async (c) => {
 
   if (!session) throw new HTTPException(401);
 
+  // If email isnt verified
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
+
   const { id } = c.req.valid("param");
 
   if (session.user.id !== id) throw new HTTPException(403);

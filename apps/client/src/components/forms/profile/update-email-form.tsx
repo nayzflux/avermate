@@ -38,21 +38,21 @@ export const UpdateEmailForm = ({
         newEmail: email,
         callbackURL: env.NEXT_PUBLIC_CLIENT_URL + "/profile",
       });
-      return data;
+      return { data, newEmail: email };
     },
-    onSuccess: () => {
+    onSuccess: ({ data, newEmail }) => {
       // Send toast notification
       toaster.toast({
-        title: `Succès`,
-        description: "Votre email a été mis à jour avec succès !",
+        title: `✉️ Lien de vérification envoyé`,
+        description: `Cliquer sur le lien envoyé à ${newEmail} pour confirmer le changement.`,
       });
     },
 
     onError: (err) => {
       // TODO: Error handling
       toaster.toast({
-        title: "Erreur",
-        description: "Une erreur est survenue. Veuillez réessayer plus tard.",
+        title: "❌ Erreur",
+        description: "Une erreur est survenue. Réessayez plus tard.",
         variant: "destructive",
       });
     },
