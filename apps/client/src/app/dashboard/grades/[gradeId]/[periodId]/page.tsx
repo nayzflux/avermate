@@ -16,7 +16,11 @@ export default function GradePage({
 }: {
   params: Promise<{ gradeId: string; periodId: string }>;
 }) {
-  const { periodId, gradeId } = use(params);
+  let { periodId, gradeId } = use(params);
+
+  if (periodId == "null") {
+    periodId = "full-year";
+  }
 
   const searchParams = useSearchParams();
   const router = useRouter();

@@ -49,7 +49,7 @@ export default function DeletePeriodDialog({ period }: { period: Period }) {
       setOpen(false);
     },
       onError: (err) => {
-        console.log("the error was: ", err);
+        // console.log("the error was: ", err);
       toaster.toast({
         title: `Erreur`,
         description: `Une erreur est survenue lors de la suppression de la période. Réessayez plus tard.`,

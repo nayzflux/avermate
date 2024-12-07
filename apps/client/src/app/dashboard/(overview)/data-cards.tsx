@@ -90,8 +90,8 @@ export default function DataCards({
     const bestGrade = getBestGrade(subjects);
     const worstGrade = getWorstGrade(subjects);
 
-    console.log(subjects);
-    console.log("average", average(undefined, subjects));
+    // console.log(subjects);
+    // console.log("average", average(undefined, subjects));
 
     return {
       bestSubject,

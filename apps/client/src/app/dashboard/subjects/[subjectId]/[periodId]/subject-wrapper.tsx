@@ -49,14 +49,42 @@ function SubjectWrapper({
     return subjects.filter((subj) => parentIds.includes(subj.id));
   };
 
-  const hasGrades =
-    period.id === "full-year"
-      ? subjects.some((subj) => subj.grades.length > 0)
-      : subjects.some((subj) =>
-          subj.grades.some((grade) => grade.periodId === period.id)
-        );
+  // const hasGrades =
+  //   period.id === "full-year"
+  //     ? subjects.some((subj) => subj.grades.length > 0)
+  //     : subjects.some((subj) =>
+  //         subj.grades.some((grade) => grade.periodId === period.id)
+  //       );
 
-  if (!hasGrades) {
+  const hasGrades = (subjectId: string): boolean => {
+    const currentSubject = subjects.find((subj) => subj.id === subjectId);
+
+    if (!currentSubject) {
+      return false;
+    }
+
+    // Check grades in the current subject
+    const currentHasGrades =
+      period.id === "full-year"
+        ? currentSubject.grades.length > 0
+        : currentSubject.grades.some((grade) => grade.periodId === period.id);
+
+    if (currentHasGrades) {
+      return true;
+    }
+
+    // Recursively check grades in sub-subjects
+    const childSubjects = subjects.filter(
+      (subj) => subj.parentId === currentSubject.id
+    );
+    return childSubjects.some((child) => hasGrades(child.id));
+  };
+
+  // Determine if there are grades in the selected subject or its sub-subjects
+  const isGradePresent = hasGrades(subject.id);
+
+
+  if (!isGradePresent) {
     return (
       <div className="flex flex-col gap-8 m-auto max-w-[2000px]">
         <div>

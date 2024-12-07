@@ -241,9 +241,9 @@ const CustomDot = (props: any) => {
   return null;
   };
   
-  console.log(subjects);
-  console.log(chartData);
-  console.log(radarData);
+  // console.log(subjects);
+  // console.log(chartData);
+  // console.log(radarData);
 
 
 

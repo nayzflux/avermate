@@ -33,7 +33,7 @@ export default function UpdatePeriodCredenza({
     queryFn: async () => {
       const res = await apiClient.get(`periods/${periodId}`);
       const data = await res.json<Period>();
-      console.log(data);
+      // console.log(data);
       return data;
     },
   });

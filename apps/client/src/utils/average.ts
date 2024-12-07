@@ -13,7 +13,6 @@ export function average(
   if (!subjectId) {
     // Get root subjects (without parent)
     const rootSubjects = subjects.filter((s) => s.parentId === null);
-    console.log(rootSubjects);
     return calculateAverageForSubjects(rootSubjects, subjects);
   }
 

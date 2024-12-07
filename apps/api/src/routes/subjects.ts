@@ -102,7 +102,7 @@ app.get("/organized-by-periods", async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   if (!session) throw new HTTPException(401);
 
-  // If email isnt verified
+  // If email isn't verified
   if (!session.user.emailVerified) {
     return c.json(
       { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
@@ -115,10 +115,6 @@ app.get("/organized-by-periods", async (c) => {
     where: eq(periods.userId, session.user.id),
     orderBy: asc(periods.startAt),
   });
-
-  if (!userPeriods.length) {
-    return c.json({ periods: [] });
-  }
 
   // Fetch subjects with grades
   const subjectsWithGrades = await db.query.subjects.findMany({
@@ -158,8 +154,44 @@ app.get("/organized-by-periods", async (c) => {
     };
   });
 
+  // Calculate startAt and endAt for full-year period
+  const sortedPeriods = userPeriods.sort((a, b) =>
+    new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+  );
+
+  const fullYearStartAt =
+    sortedPeriods && sortedPeriods.length > 0
+      ? new Date(sortedPeriods[0].startAt)
+      : new Date(new Date().getFullYear(), 8, 1);
+  
+  const fullYearEndAt =
+    sortedPeriods && sortedPeriods.length > 0
+      ? new Date(sortedPeriods[sortedPeriods.length - 1].endAt)
+      : new Date(new Date().getFullYear() + 1, 5, 30);
+
+  // Add hardcoded full-year period with all grades
+  const fullYearPeriod = {
+    id: "full-year",
+    name: "Full Year",
+    startAt: fullYearStartAt,
+    endAt: fullYearEndAt,
+    createdAt: new Date(),
+    userId: session.user.id,
+  };
+
+  const allSubjectsWithAllGrades = subjectsWithGrades.map((subject) => ({
+    ...subject,
+    grades: subject.grades, // All grades for this subject
+  }));
+
+  periodsWithSubjects.push({
+    period: fullYearPeriod,
+    subjects: allSubjectsWithAllGrades,
+  });
+
   return c.json({ periods: periodsWithSubjects });
 });
+
 
 // Get a specific subject organized by periods
 const getSubjectByPeriodSchema = z.object({

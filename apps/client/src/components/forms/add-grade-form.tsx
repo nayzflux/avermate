@@ -171,7 +171,7 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
     const passedAt = form.watch("passedAt");
     if (passedAt) {
       const matchedPeriodId = determinePeriodId(passedAt, periods);
-      console.log("matchedPeriodId", matchedPeriodId);
+      // console.log("matchedPeriodId", matchedPeriodId);
       form.setValue("periodId", matchedPeriodId, { shouldValidate: true });
     }
   }, [form.watch("passedAt"), periods]);
