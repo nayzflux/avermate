@@ -8,7 +8,6 @@ import {
   CredenzaHeader,
   CredenzaTitle,
   CredenzaTrigger,
-  CredenzaBody,
 } from "@/components/ui/credenza";
 import { apiClient } from "@/lib/api";
 import { Grade } from "@/types/grade";

@@ -8,7 +8,6 @@ import {
   CredenzaHeader,
   CredenzaTitle,
   CredenzaTrigger,
-  CredenzaBody
 } from "@/components/ui/credenza";
 import { useState } from "react";
 import { AddSubjectForm } from "../forms/add-subject-form";
