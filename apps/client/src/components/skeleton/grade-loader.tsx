@@ -1,48 +1,11 @@
-import React from "react";
-import { Skeleton } from "../ui/skeleton";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DataCards from "@/app/dashboard/(overview)/data-cards";
-import GlobalAverageChart from "../charts/global-average-chart";
-import RecentGradesCard from "@/components/dashboard/recent-grades/recent-grades";
-import DataCard from "../dashboard/data-card";
-import { AcademicCapIcon } from "@heroicons/react/24/outline";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
-import { ChartContainer, ChartTooltipContent } from "../ui/chart";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  PolarAngleAxis,
-  PolarGrid,
-  Radar,
-  RadarChart,
-  XAxis,
-  YAxis,
-} from "recharts";
+  ArrowLeftIcon,
+  EllipsisVerticalIcon,
+} from "@heroicons/react/24/outline";
 import { Button } from "../ui/button";
-import AddGradeDialog from "../dialogs/add-grade-dialog";
-import AddPeriodDialog from "../dialogs/add-period-dialog";
-import AddSubjectDialog from "../dialogs/add-subject-dialog";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import { Card } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
 
 export default function gradeLoader() {
   return (

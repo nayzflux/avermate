@@ -2,8 +2,15 @@
 
 import GlobalAverageChart from "@/components/charts/global-average-chart";
 import RecentGradesCard from "@/components/dashboard/recent-grades/recent-grades";
-import dashboardLoader from "@/components/skeleton/dashboard-loader";
+import ErrorStateCard from "@/components/skeleton/error-card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiClient } from "@/lib/api";
@@ -16,8 +23,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Session, User } from "better-auth/types";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import errorStateCard from "@/components/skeleton/error-card";
+import DashboardLoader from "@/components/skeleton/dashboard-loader";
 
 /**
  * Vue d'ensemble des notes
@@ -127,7 +133,7 @@ export default function OverviewPage() {
   ) {
     return (
       <div>
-        {errorStateCard()}
+        <ErrorStateCard />
       </div>
     );
   }
@@ -141,9 +147,12 @@ export default function OverviewPage() {
     selectedTab === null
     // || true
   ) {
-    return <div>{dashboardLoader()}</div>;
+    return (
+      <div>
+        <DashboardLoader />
+      </div>
+    );
   }
-
 
   // // Onboarding
   // if (
@@ -238,68 +247,89 @@ export default function OverviewPage() {
             </Select>
           </div>
 
-            {periods &&
-              periods.length > 0 &&
-              periods
-                .sort(
-                  (a, b) =>
-                    new Date(a.startAt).getTime() -
-                    new Date(b.startAt).getTime()
-                )
-                .map((period) => (
-                  <TabsContent key={period.id} value={period.id}>
-                    <DataCards
-                      period={period}
+          {periods &&
+            periods.length > 0 &&
+            periods
+              .sort(
+                (a, b) =>
+                  new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+              )
+              .map((period) => (
+                <TabsContent key={period.id} value={period.id}>
+                  <DataCards
+                    period={period}
+                    subjects={
+                      organizedSubjects?.find((p) => p.period.id === period.id)
+                        ?.subjects || []
+                    }
+                  />
+
+                  <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
+                    {/* Evolution de la moyenne générale */}
+                    <GlobalAverageChart
                       subjects={
                         organizedSubjects?.find(
                           (p) => p.period.id === period.id
                         )?.subjects || []
                       }
+                      period={
+                        organizedSubjects?.find(
+                          (p) => p.period.id === period.id
+                        )?.period || {
+                          id: "full-year",
+                          name: "Toute l&apos;année",
+                          startAt:
+                            sortedPeriods && sortedPeriods.length > 0
+                              ? sortedPeriods[0].startAt
+                              : new Date(
+                                  new Date().getFullYear(),
+                                  8,
+                                  1
+                                ).toISOString(),
+                          endAt:
+                            sortedPeriods && sortedPeriods.length > 0
+                              ? sortedPeriods[sortedPeriods.length - 1].endAt
+                              : new Date(
+                                  new Date().getFullYear() + 1,
+                                  5,
+                                  30
+                                ).toISOString(),
+                          userId: "",
+                          createdAt: "",
+                        }
+                      }
                     />
 
-                    <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
-                      {/* Evolution de la moyenne générale */}
-                      <GlobalAverageChart
-                        subjects={
-                          organizedSubjects?.find(
-                            (p) => p.period.id === period.id
-                          )?.subjects || []
-                        }
-                        period={
-                          organizedSubjects?.find(
-                            (p) => p.period.id === period.id
-                          )?.period || {
-                            id: "full-year",
-                            name: "Toute l&apos;année",
-                            startAt:
-                              sortedPeriods && sortedPeriods.length > 0
-                                ? sortedPeriods[0].startAt
-                                : new Date(
-                                    new Date().getFullYear(),
-                                    8,
-                                    1
-                                  ).toISOString(),
-                            endAt:
-                              sortedPeriods && sortedPeriods.length > 0
-                                ? sortedPeriods[sortedPeriods.length - 1].endAt
-                                : new Date(
-                                    new Date().getFullYear() + 1,
-                                    5,
-                                    30
-                                  ).toISOString(),
-                            userId: "",
-                            createdAt: "",
-                          }
-                        }
-                      />
+                    {/* Dernières notes */}
+                    <RecentGradesCard recentGrades={recentGrades} />
+                  </div>
+                </TabsContent>
+              ))}
+          <TabsContent value="full-year">
+            <DataCards
+              subjects={subjects || []}
+              period={{
+                id: "full-year",
+                name: "Toute l&apos;année",
+                startAt:
+                  sortedPeriods && sortedPeriods.length > 0
+                    ? sortedPeriods[0].startAt
+                    : new Date(new Date().getFullYear(), 8, 1).toISOString(),
+                endAt:
+                  sortedPeriods && sortedPeriods.length > 0
+                    ? sortedPeriods[sortedPeriods.length - 1].endAt
+                    : new Date(
+                        new Date().getFullYear() + 1,
+                        5,
+                        30
+                      ).toISOString(),
+                userId: "",
+                createdAt: "",
+              }}
+            />
 
-                      {/* Dernières notes */}
-                      <RecentGradesCard recentGrades={recentGrades} />
-                    </div>
-                  </TabsContent>
-                ))}
-            <TabsContent value="full-year">
-              <DataCards
+            <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
+              <GlobalAverageChart
                 subjects={subjects || []}
                 period={{
                   id: "full-year",
@@ -320,37 +350,10 @@ export default function OverviewPage() {
                   createdAt: "",
                 }}
               />
-
-              <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
-                <GlobalAverageChart
-                  subjects={subjects || []}
-                  period={{
-                    id: "full-year",
-                    name: "Toute l&apos;année",
-                    startAt:
-                      sortedPeriods && sortedPeriods.length > 0
-                        ? sortedPeriods[0].startAt
-                        : new Date(
-                            new Date().getFullYear(),
-                            8,
-                            1
-                          ).toISOString(),
-                    endAt:
-                      sortedPeriods && sortedPeriods.length > 0
-                        ? sortedPeriods[sortedPeriods.length - 1].endAt
-                        : new Date(
-                            new Date().getFullYear() + 1,
-                            5,
-                            30
-                          ).toISOString(),
-                    userId: "",
-                    createdAt: "",
-                  }}
-                />
-                <RecentGradesCard recentGrades={recentGrades} />
-              </div>
-            </TabsContent>
-          </div>
+              <RecentGradesCard recentGrades={recentGrades} />
+            </div>
+          </TabsContent>
+        </div>
       </Tabs>
     </main>
   );

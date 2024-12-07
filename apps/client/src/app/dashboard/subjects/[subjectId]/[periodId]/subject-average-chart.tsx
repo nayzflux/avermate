@@ -1,24 +1,14 @@
+import { Card } from "@/components/ui/card";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { apiClient } from "@/lib/api";
+import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
 import { averageOverTime, getChildren } from "@/utils/average";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import React, { useState } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import { Period } from "@/types/period";
-import React, { useState, useCallback } from "react";
 
 const predefinedColors = [
   "#ea5545",
@@ -128,22 +118,21 @@ export default function SubjectAverageChart({
   })();
 
   // Custom dot component
-const CustomDot = (props: any) => {
-  const { cx, cy, index, stroke, activeTooltipIndex } = props;
-  if (activeTooltipIndex !== null && index === activeTooltipIndex) {
-    return (
-      <circle
-        cx={cx}
-        cy={cy}
-        r={4} // Adjust size as needed
-        fill={stroke}
-        opacity={0.8}
-      />
-    );
-  }
-  return null;
-};
-
+  const CustomDot = (props: any) => {
+    const { cx, cy, index, stroke, activeTooltipIndex } = props;
+    if (activeTooltipIndex !== null && index === activeTooltipIndex) {
+      return (
+        <circle
+          cx={cx}
+          cy={cy}
+          r={4} // Adjust size as needed
+          fill={stroke}
+          opacity={0.8}
+        />
+      );
+    }
+    return null;
+  };
 
   return (
     <Card className="p-4">

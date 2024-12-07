@@ -1,21 +1,6 @@
-import React from "react";
-import { Skeleton } from "../ui/skeleton";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DataCards from "@/app/dashboard/(overview)/data-cards";
-import GlobalAverageChart from "../charts/global-average-chart";
-import RecentGradesCard from "@/components/dashboard/recent-grades/recent-grades";
-import DataCard from "../dashboard/data-card";
-import { AcademicCapIcon } from "@heroicons/react/24/outline";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
-import { ChartContainer, ChartTooltipContent } from "../ui/chart";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Area,
   AreaChart,
@@ -27,6 +12,15 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import { ChartContainer } from "../ui/chart";
+import { Skeleton } from "../ui/skeleton";
 
 export default function dashboardLoader() {
   const chartConfig = {};
