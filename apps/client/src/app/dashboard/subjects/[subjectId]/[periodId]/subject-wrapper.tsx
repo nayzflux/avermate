@@ -1,9 +1,12 @@
 "use client";
 
+import { DifferenceBadge } from "@/app/dashboard/grades/[gradeId]/difference-badge";
 import SubjectMoreButton from "@/components/buttons/dashboard/subject/subject-more-button";
 import DataCard from "@/components/dashboard/data-card";
 import GradeValue from "@/components/dashboard/grade-value";
+import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
@@ -13,19 +16,17 @@ import {
   getWorstGradeInSubject,
   subjectImpact,
 } from "@/utils/average";
-import { formatDiff, formatGradeValue } from "@/utils/format";
+import { formatGradeValue } from "@/utils/format";
 import {
   AcademicCapIcon,
   ArrowLeftIcon,
   ArrowUpCircleIcon,
+  BookOpenIcon,
+  PlusCircleIcon,
   SparklesIcon,
   VariableIcon,
 } from "@heroicons/react/24/outline";
 import SubjectAverageChart from "./subject-average-chart";
-import { Card } from "@/components/ui/card";
-import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import { BookOpenIcon } from "@heroicons/react/24/outline";
 
 function SubjectWrapper({
   subjects,
@@ -141,9 +142,13 @@ function SubjectWrapper({
           description={`Visualisez l'impact de ${subject?.name} sur votre moyenne générale`}
           icon={ArrowUpCircleIcon}
         >
-          <p className="text-3xl font-bold">
-            {formatDiff(subjectImpact(subject.id, subjects)?.difference || 0)}
-          </p>
+          <DifferenceBadge
+            diff={
+              subjects
+                ? subjectImpact(subject.id, subjects)?.difference || 0
+                : 0
+            }
+          />
         </DataCard>
 
         {/* Coeff */}
