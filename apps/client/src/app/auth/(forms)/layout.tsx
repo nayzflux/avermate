@@ -12,7 +12,7 @@ const FormLayout = ({ children }: { children: ReactNode }) => {
         <Separator className="col-span-1" />
 
         <p className="text-center text-sm text-muted-foreground">
-          Or continue with
+          Ou continuer avec
         </p>
 
         <Separator className="col-span-1" />

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -40,6 +41,9 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import React from "react";
+import "dayjs/locale/fr";
+
+dayjs.locale("fr");
 
 const addGradeSchema = z.object({
   name: z.string().min(1).max(64),
@@ -127,9 +131,9 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
       return data;
     },
     onSuccess: (data) => {
-      // Send toast notification
+      // Envoyer une notification toast
       toaster.toast({
-        title: `Notes ajouter avec succès !`,
+        title: `Note ajoutée avec succès !`,
         description: "Vous pouvez à présent suivre votre évolution.",
       });
 
@@ -145,10 +149,10 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
     },
 
     onError: (err) => {
-      // TODO: Error handling
+      // Gestion des erreurs
       toaster.toast({
-        title: "Failed to sign-in",
-        description: "Something went wrong. Please try again later.",
+        title: "Échec de l'ajout de la note",
+        description: "Une erreur est survenue. Veuillez réessayer plus tard.",
         variant: "destructive",
       });
     },
@@ -388,6 +392,9 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
                   </PopoverContent>
                 </Popover>
                 <FormMessage />
+                <FormDescription>
+                  Une note doit être associée à une période. Celle ci peut être différente de la date de passage si besoin.
+                </FormDescription>
               </FormItem>
             )}
           />
@@ -434,24 +441,25 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
                       <CommandList>
                         <CommandEmpty>Aucune matière trouvée</CommandEmpty>
                         <CommandGroup>
-                          {subjects
-                            ?.slice()
+                            {subjects
+                            ?.filter((subject) => subject.isDisplaySubject === false)
+                            .slice()
                             .sort((a, b) => a.name.localeCompare(b.name))
                             .map((subject) => (
                               <CommandItem
-                                key={subject.id}
-                                value={subject.name}
-                                onSelect={() => {
-                                  form.setValue("subjectId", subject.id, {
-                                    shouldValidate: true,
-                                  });
-                                  setOpenSubjectPopover(false);
-                                }}
+                              key={subject.id}
+                              value={subject.name}
+                              onSelect={() => {
+                                form.setValue("subjectId", subject.id, {
+                                shouldValidate: true,
+                                });
+                                setOpenSubjectPopover(false);
+                              }}
                               >
-                                <span>{subject.name}</span>
-                                {form.getValues("subjectId") === subject.id && (
-                                  <Check className="ml-auto h-4 w-4" />
-                                )}
+                              <span>{subject.name}</span>
+                              {form.getValues("subjectId") === subject.id && (
+                                <Check className="ml-auto h-4 w-4" />
+                              )}
                               </CommandItem>
                             ))}
                         </CommandGroup>

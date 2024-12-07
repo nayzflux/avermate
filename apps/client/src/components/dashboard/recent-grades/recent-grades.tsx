@@ -20,7 +20,7 @@ export default function RecentGradesCard(
 ) {
 
   return (
-    <Card className="lg:col-span-2">
+    <Card className="lg:col-span-2 flex flex-col">
       <CardHeader>
         <CardTitle className="text-l">Notes récentes</CardTitle>
 
@@ -37,7 +37,7 @@ export default function RecentGradesCard(
         </CardDescription>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="h-full">
         <RecentGradesList recentGrades={recentGrades} />
       </CardContent>
     </Card>

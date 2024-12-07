@@ -19,7 +19,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Session, User } from "better-auth/types";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { LuGithub } from "react-icons/lu";
 import SignOutButton from "../sign-out-button";
@@ -35,6 +35,7 @@ export default function AccountDropdown() {
   };
 
   const router = useRouter();
+  const pathname = usePathname(); // Get the current path
 
   useEffect(() => {
     if (isPending) return;
@@ -63,7 +64,15 @@ export default function AccountDropdown() {
   }, [data, isPending]);
 
   if (!data && !isPending) {
-    return;
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <div className="p-2">
+            <Skeleton className="size-8 rounded-full" />
+          </div>
+        </DropdownMenuTrigger>
+      </DropdownMenu>
+    );
   }
 
   return (
@@ -104,24 +113,25 @@ export default function AccountDropdown() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/profile">
+          <Link href={`/profile?from=${encodeURIComponent(pathname)}`}>
             <UserIcon className="size-4 mr-2" />
             Profile
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/profile/account">
+          <Link href={`/profile/account?from=${encodeURIComponent(pathname)}`}>
             <ShieldCheckIcon className="size-4 mr-2" />
-            Account
+            Compte
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/profile/settings">
+          {/* Pass current page as 'from' parameter */}
+          <Link href={`/profile/settings?from=${encodeURIComponent(pathname)}`}>
             <Cog6ToothIcon className="size-4 mr-2" />
-            Settings
+            Paramètres
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+        <DropdownMenuLabel>Apparence</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <ThemeSwitchButton />
         <DropdownMenuSeparator />

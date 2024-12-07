@@ -7,6 +7,9 @@ import { useQuery } from "@tanstack/react-query";
 import { use } from "react";
 import GradeWrapper from "./grade-wrapper";
 import gradeLoader from "@/components/skeleton/grade-loader";
+import errorStateCard from "@/components/skeleton/error-card";
+import { useSearchParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function GradePage({
   params,
@@ -14,6 +17,23 @@ export default function GradePage({
   params: Promise<{ gradeId: string; periodId: string }>;
 }) {
   const { periodId, gradeId } = use(params);
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const [returnUrl, setReturnUrl] = useState("/dashboard");
+
+  // Extract `from` parameter
+  useEffect(() => {
+    const fromParam = searchParams.get("from");
+    if (fromParam) {
+      setReturnUrl(fromParam);
+    }
+  }, [searchParams]);
+
+  const handleBack = () => {
+    router.push(returnUrl);
+  };
 
   const {
     data: organizedSubjects,
@@ -42,17 +62,16 @@ export default function GradePage({
   });
 
   if (isError || organizedSubjectsIsError) {
-    return <div>Error</div>;
+    return <div>{errorStateCard()}</div>;
   }
 
-  if (isPending || organizedSubjectsIsPending
-    // || true
-  ) {
-        return <div>{gradeLoader()}</div>;
+  if (isPending || organizedSubjectsIsPending) {
+    return <div>{gradeLoader()}</div>;
   }
 
   return (
     <GradeWrapper
+      onBack={handleBack}
       subjects={
         organizedSubjects?.find((p) => p.period.id === periodId)?.subjects || []
       }

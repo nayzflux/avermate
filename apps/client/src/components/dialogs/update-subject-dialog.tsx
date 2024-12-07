@@ -8,6 +8,7 @@ import {
   CredenzaHeader,
   CredenzaTitle,
   CredenzaTrigger,
+  CredenzaBody,
 } from "@/components/ui/credenza";
 import { apiClient } from "@/lib/api";
 import { Subject } from "@/types/subject";
@@ -48,7 +49,7 @@ export default function UpdateSubjectCredenza({
         </Button>
       </CredenzaTrigger>
 
-      <CredenzaContent className="max-h-screen h-full ">
+      <CredenzaContent>
         <CredenzaHeader>
           <CredenzaTitle>Modifier la matière</CredenzaTitle>
           <CredenzaDescription>
@@ -56,9 +57,10 @@ export default function UpdateSubjectCredenza({
           </CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
-        {!isPending && !isError && (
-          <UpdateSubjectForm subject={subject} close={() => setOpen(false)} />
-        )}</CredenzaBody>
+          {!isPending && !isError && (
+            <UpdateSubjectForm subject={subject} close={() => setOpen(false)} />
+          )}
+        </CredenzaBody>
       </CredenzaContent>
     </Credenza>
   );

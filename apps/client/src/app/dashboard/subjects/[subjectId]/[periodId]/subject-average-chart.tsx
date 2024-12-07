@@ -177,6 +177,7 @@ const CustomDot = (props: any) => {
                 chartData={chartData}
                 findNearestNonNull={true}
                 labelFormatter={(value) => value}
+                valueFormatter={(val) => val.toFixed(2)}
                 onUpdateActiveTooltipIndices={handleActiveTooltipIndicesChange}
               />
             }

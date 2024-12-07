@@ -36,7 +36,7 @@ const signUpSchema = z.object({
       if (strength.strength === "weak") {
         return ctx.addIssue({
           code: "custom",
-          message: "Password is too weak.",
+          message: "Le mot de passe est trop faible.",
         });
       }
     }),
@@ -85,10 +85,10 @@ export const SignUpForm = () => {
     },
 
     onError: (err) => {
-      // TODO: Error handling
+      // TODO: Gestion des erreurs
       toaster.toast({
-        title: "Failed to create account",
-        description: "Something went wrong. Please try again later.",
+        title: "Échec de la création de compte",
+        description: "Une erreur s'est produite. Veuillez réessayer plus tard.",
         variant: "destructive",
       });
     },
@@ -125,7 +125,7 @@ export const SignUpForm = () => {
                 disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name</FormLabel>
+                    <FormLabel>Prénom</FormLabel>
                     <FormControl>
                       <Input type="text" placeholder="Louis" {...field} />
                     </FormControl>
@@ -142,7 +142,7 @@ export const SignUpForm = () => {
                 disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name</FormLabel>
+                    <FormLabel>Nom</FormLabel>
                     <FormControl>
                       <Input type="text" placeholder="Durand" {...field} />
                     </FormControl>
@@ -163,7 +163,7 @@ export const SignUpForm = () => {
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="email@example.com"
+                    placeholder="email@exemple.com"
                     {...field}
                   />
                 </FormControl>
@@ -178,10 +178,10 @@ export const SignUpForm = () => {
             disabled={isPending}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Mot de passe</FormLabel>
                 <FormControl>
                   <div>
-                    {/* Password input field with toggle visibility button */}
+                    {/* Champ de saisie du mot de passe avec bouton d'affichage/masquage */}
                     <div className="space-y-2">
                       <div className="relative">
                         <Input
@@ -196,7 +196,9 @@ export const SignUpForm = () => {
                           type="button"
                           onClick={toggleVisibility}
                           aria-label={
-                            isVisible ? "Hide password" : "Show password"
+                            isVisible
+                              ? "Masquer le mot de passe"
+                              : "Afficher le mot de passe"
                           }
                           aria-pressed={isVisible}
                           aria-controls="password"
@@ -214,7 +216,7 @@ export const SignUpForm = () => {
                       </div>
                     </div>
 
-                    {/* Password strength indicator */}
+                    {/* Indicateur de force du mot de passe */}
                     <div
                       className="mb-4 mt-3 h-1 w-full overflow-hidden rounded-full bg-border"
                       role="progressbar"
@@ -223,7 +225,7 @@ export const SignUpForm = () => {
                       }
                       aria-valuemin={0}
                       aria-valuemax={4}
-                      aria-label="Password strength"
+                      aria-label="Niveau de sécurité du mot de passe"
                     >
                       <div
                         className={cn(
@@ -253,7 +255,7 @@ export const SignUpForm = () => {
 
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
-            Sign Up
+            S'inscrire
           </Button>
         </form>
       </Form>

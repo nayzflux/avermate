@@ -8,6 +8,7 @@ import {
   CredenzaHeader,
   CredenzaTitle,
   CredenzaTrigger,
+  CredenzaBody,
 } from "@/components/ui/credenza";
 import { apiClient } from "@/lib/api";
 import { Period } from "@/types/period";
@@ -60,7 +61,7 @@ export default function UpdatePeriodCredenza({
         </Button>
       </CredenzaTrigger>
 
-      <CredenzaContent className="max-h-screen h-full ">
+      <CredenzaContent>
         <CredenzaHeader>
           <CredenzaTitle>Modifier la période</CredenzaTitle>
           <CredenzaDescription>
@@ -68,13 +69,14 @@ export default function UpdatePeriodCredenza({
           </CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
-        {!isPending && !isError && !isPeriodsPending && !isPeriodsError && (
-          <UpdatePeriodForm
-            period={period}
-            periods={periods}
-            close={() => setOpen(false)}
-          />
-        )}</CredenzaBody>
+          {!isPending && !isError && !isPeriodsPending && !isPeriodsError && (
+            <UpdatePeriodForm
+              period={period}
+              periods={periods}
+              close={() => setOpen(false)}
+            />
+          )}
+        </CredenzaBody>
       </CredenzaContent>
     </Credenza>
   );

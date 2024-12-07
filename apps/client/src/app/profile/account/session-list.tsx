@@ -16,6 +16,10 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ProfileSection from "../profile-section";
+import errorStateCard from "@/components/skeleton/error-card";
+import "dayjs/locale/fr";
+
+dayjs.locale('fr')
 
 dayjs.extend(relativeTime);
 
@@ -68,18 +72,16 @@ export default function SessionList() {
                   className="flex flex-col gap-2 border-t text-sm px-2 pt-4 w-full"
                 >
                   <div className="flex gap-2 w-full">
-                      <Skeleton className="md:w-32 w-full h-6" />
+                    <Skeleton className="md:w-32 w-full h-6" />
                   </div>
 
                   <div className="flex gap-1 text-muted-foreground">
-                    <p>
-                      <Skeleton className="w-96 h-4" />
-                    </p>
+                    <Skeleton className="md:w-32 w-full h-4" />
                   </div>
 
                   <div className="flex justify-end">
                     <Button variant="destructive" disabled>
-                      Revoke
+                      Révoquer
                     </Button>
                   </div>
                 </div>
@@ -92,13 +94,15 @@ export default function SessionList() {
   }
 
   if (isError) {
-    return <p>Error!</p>;
+    return <div>
+      {errorStateCard()}
+    </div>;
   }
 
   return (
     <ProfileSection
-      title="Active Sessions"
-      description="Manage and watch all your active sessions."
+      title="Sessions actives"
+      description="Gérez et surveillez toutes vos sessions actives."
     >
       <div className="flex flex-col gap-4">
         {sesssions?.map((session) => (
@@ -127,9 +131,9 @@ export default function SessionList() {
                 )}
               >
                 {currentSession?.session?.id === session.id ? (
-                  <p>Current</p>
+                  <p>Actuelle</p>
                 ) : session.expiresAt < new Date() ? (
-                  <p>Expired</p>
+                  <p>Expirée</p>
                 ) : (
                   <p>Active</p>
                 )}

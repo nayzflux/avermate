@@ -12,6 +12,7 @@ import DeletePeriodDialog from "@/components/dialogs/delete-period-dialog";
 import UpdatePeriodDialog from "@/components/dialogs/update-period-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import errorStateCard from "@/components/skeleton/error-card";
 
 
 export const PeriodsSection = () => {
@@ -71,6 +72,10 @@ export const PeriodsSection = () => {
         </div>
       </Card>
     );
+  }
+
+  if (isPeriodError) {
+    return <div>{errorStateCard()}</div>;
   }
 
   return (

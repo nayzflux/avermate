@@ -44,7 +44,7 @@ export default function EmailSection() {
 
                 <div className="flex w-full justify-end">
                   <Button type="submit" variant="outline" disabled={isPending}>
-                    Save changes
+                    Sauvegarder
                   </Button>
                 </div>
               </form>
@@ -56,7 +56,7 @@ export default function EmailSection() {
   }
 
   return (
-    <ProfileSection title="Your Email" description="Edit your email address.">
+    <ProfileSection title="Votre Email" description="Modifiez votre adresse email.">
       <UpdateEmailForm defaultEmail={session?.user?.email} />
     </ProfileSection>
   );

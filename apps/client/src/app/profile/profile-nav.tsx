@@ -19,28 +19,31 @@ const routes = [
   },
   {
     icon: ShieldCheckIcon,
-    label: "Account & Security",
+    label: "Compte & Sécutité",
     path: "/profile/account",
   },
   {
     icon: Cog6ToothIcon,
-    label: "Settings",
+    label: "Paramètres",
     path: "/profile/settings",
   },
   {
     icon: ArrowLeftIcon,
-    label: "Back",
-    path: "/dashboard",
+    label: "Retour",
+    action: "back",
+    path: "",
   },
 ];
 
-export default function ProfileNav() {
+export default function ProfileNav({ onBack }: { onBack: () => void }) {
   const path = usePathname();
+
+  const filteredRoutes = routes.filter((route) => route.action !== "back");
 
   return (
     <nav>
       <ul className="flex flex-col gap-1 md:gap-4">
-        {routes.map((route) => (
+        {filteredRoutes.map((route) => (
           <li key={route.path}>
             <Button
               className={cn(
@@ -57,6 +60,17 @@ export default function ProfileNav() {
             </Button>
           </li>
         ))}
+        {/* Always show the back button */}
+        <li>
+          <Button
+            className="w-full justify-start items-center"
+            variant="ghost"
+            onClick={onBack}
+          >
+            <ArrowLeftIcon className="size-4 mr-0 lg:mr-2" />
+            <p className="hidden lg:inline">Retour</p>
+          </Button>
+        </li>
       </ul>
     </nav>
   );

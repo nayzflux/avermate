@@ -7,7 +7,7 @@ import {
   ValueType,
   NameType,
 } from "recharts/types/component/DefaultTooltipContent";
-import { debounce } from "lodash"
+import { debounce } from "lodash";
 
 import { cn } from "@/lib/utils";
 
@@ -75,7 +75,7 @@ ChartContainer.displayName = "Chart";
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(
-    ([_, config]) => config.theme || config.color
+    ([_, cfg]) => cfg.theme || cfg.color
   );
 
   if (!colorConfig.length) {
@@ -120,10 +120,11 @@ const ChartTooltipContent = React.forwardRef<
       chartData?: any[];
       findNearestNonNull?: boolean;
       dataKey?: string;
-      onUpdateActiveTooltipIndex?: (index: number | null) => void;
+      onUpdateActiveTooltipIndices?: (index: number | null) => void;
       onUpdateActiveTooltipIndices?: (indices: {
         [key: string]: number | null;
       }) => void;
+      valueFormatter?: (val: number) => string; // Added prop for formatting
     }
 >(
   (
@@ -146,12 +147,12 @@ const ChartTooltipContent = React.forwardRef<
       onUpdateActiveTooltipIndices,
       findNearestNonNull = false,
       dataKey,
+      valueFormatter,
     },
     ref
   ) => {
     const { config } = useChart();
 
-    // Use useMemo to compute adjustedPayload
     const adjustedPayload = React.useMemo(() => {
       if (
         !findNearestNonNull ||
@@ -226,7 +227,6 @@ const ChartTooltipContent = React.forwardRef<
             return null;
           }
 
-          // Create a new item with the nearest non-null data point
           const nearestData = chartData[nearestIndex];
           return {
             ...item,
@@ -234,7 +234,7 @@ const ChartTooltipContent = React.forwardRef<
             value: dataKey ? nearestData?.[dataKey] : undefined,
           };
         })
-        .filter(Boolean); // Remove any null items
+        .filter(Boolean);
     }, [findNearestNonNull, chartData, payload]);
 
     React.useEffect(() => {
@@ -257,31 +257,6 @@ const ChartTooltipContent = React.forwardRef<
         }
       }
     }, [adjustedPayload, chartData, onUpdateActiveTooltipIndex]);
-
-    // React.useEffect(() => {
-    //   if (adjustedPayload && adjustedPayload.length > 0) {
-    //     const indices: { [key: string]: number | null } = {};
-
-    //     adjustedPayload.forEach((item) => {
-    //       const date = item.payload.date;
-    //       const dataKey = item.dataKey;
-    //       if (chartData && chartData.length > 0) {
-    //         const index = chartData.findIndex((d) => d.date === date);
-    //         indices[dataKey] = index >= 0 ? index : null;
-    //       } else {
-    //         indices[dataKey] = null;
-    //       }
-    //     });
-
-    //     if (onUpdateActiveTooltipIndices) {
-    //       onUpdateActiveTooltipIndices(indices);
-    //     }
-    //   } else {
-    //     if (onUpdateActiveTooltipIndices) {
-    //       onUpdateActiveTooltipIndices({});
-    //     }
-    //   }
-    // }, [adjustedPayload, chartData, onUpdateActiveTooltipIndices]);
 
     const computedIndices = React.useMemo(() => {
       if (adjustedPayload && adjustedPayload.length > 0) {
@@ -307,9 +282,8 @@ const ChartTooltipContent = React.forwardRef<
       return {};
     }, [adjustedPayload, chartData]);
 
-    // Debounce the update function
     const debouncedUpdateActiveTooltipIndices = React.useMemo(() => {
-      return debounce((indices: { [key: string]: number | null; }) => {
+      return debounce((indices: { [key: string]: number | null }) => {
         if (onUpdateActiveTooltipIndices) {
           onUpdateActiveTooltipIndices(indices);
         }
@@ -322,7 +296,6 @@ const ChartTooltipContent = React.forwardRef<
       }
     }, [computedIndices, debouncedUpdateActiveTooltipIndices]);
 
-    // Use adjustedPayload in tooltipLabel
     const tooltipLabel = React.useMemo(() => {
       if (hideLabel || !adjustedPayload?.length) {
         return null;
@@ -362,7 +335,6 @@ const ChartTooltipContent = React.forwardRef<
       labelClassName,
     ]);
 
-    // Now handle early returns
     if (!active) {
       return null;
     }
@@ -371,8 +343,14 @@ const ChartTooltipContent = React.forwardRef<
       return null;
     }
 
-    // Existing tooltip rendering logic
     const nestLabel = adjustedPayload.length === 1 && indicator !== "dot";
+
+    // Helper to format values to two decimal places if no formatter is provided
+    const defaultFormatter = (val: number) =>
+      val?.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
     return (
       <div
@@ -397,59 +375,51 @@ const ChartTooltipContent = React.forwardRef<
                   indicator === "dot" && "items-center"
                 )}
               >
-                {formatter && item?.value !== undefined && item.name ? (
-                  formatter(item.value, item.name, item, index, item.payload)
-                ) : (
-                  <>
-                    {itemConfig?.icon ? (
-                      <itemConfig.icon />
-                    ) : (
-                      !hideIndicator && (
-                        <div
-                          className={cn(
-                            "shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg]",
-                            {
-                              "h-2.5 w-2.5": indicator === "dot",
-                              "w-1": indicator === "line",
-                              "w-0 border-[1.5px] border-dashed bg-transparent":
-                                indicator === "dashed",
-                              "my-0.5": nestLabel && indicator === "dashed",
-                            }
-                          )}
-                          style={
-                            {
-                              "--color-bg": indicatorColor,
-                              "--color-border": indicatorColor,
-                            } as React.CSSProperties
-                          }
-                        />
-                      )
+                {!hideIndicator && (
+                  <div
+                    className={cn(
+                      "shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg]",
+                      {
+                        "h-2.5 w-2.5": indicator === "dot",
+                        "w-1": indicator === "line",
+                        "w-0 border-[1.5px] border-dashed bg-transparent":
+                          indicator === "dashed",
+                        "my-0.5": nestLabel && indicator === "dashed",
+                      }
                     )}
-                    <div
-                      className={cn(
-                        "flex flex-1 justify-between leading-none",
-                        nestLabel ? "items-end" : "items-center"
-                      )}
-                    >
-                      <div className="grid gap-1.5">
-                        {nestLabel ? tooltipLabel : null}
-                        <span className="text-muted-foreground">
-                          {itemConfig?.label || item?.name}
-                        </span>
-                      </div>
-                      {typeof item?.value === "number" &&
-                      !isNaN(Number(item?.value)) ? (
-                        <span className="font-mono font-medium tabular-nums text-foreground">
-                          {item?.value?.toLocaleString()}
-                        </span>
-                      ) : (
-                        <span className="font-mono font-medium tabular-nums text-foreground">
-                          N/A
-                        </span>
-                      )}
-                    </div>
-                  </>
+                    style={
+                      {
+                        "--color-bg": indicatorColor,
+                        "--color-border": indicatorColor,
+                      } as React.CSSProperties
+                    }
+                  />
                 )}
+                <div
+                  className={cn(
+                    "flex flex-1 justify-between leading-none",
+                    nestLabel ? "items-end" : "items-center"
+                  )}
+                >
+                  <div className="grid gap-1.5">
+                    {nestLabel ? tooltipLabel : null}
+                    <span className="text-muted-foreground">
+                      {itemConfig?.label || item?.name}
+                    </span>
+                  </div>
+                  {typeof item?.value === "number" &&
+                  !isNaN(Number(item?.value)) ? (
+                    <span className="font-mono font-medium tabular-nums text-foreground">
+                      {valueFormatter
+                        ? valueFormatter(item.value as number)
+                        : defaultFormatter(item.value as number)}
+                    </span>
+                  ) : (
+                    <span className="font-mono font-medium tabular-nums text-foreground">
+                      N/A
+                    </span>
+                  )}
+                </div>
               </div>
             );
           })}
@@ -460,7 +430,6 @@ const ChartTooltipContent = React.forwardRef<
 );
 ChartTooltipContent.displayName = "ChartTooltip";
 
-// Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(
   config: ChartConfig,
   payload: unknown,

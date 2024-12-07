@@ -17,62 +17,26 @@ import {
   SparklesIcon,
   VariableIcon,
 } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
 import { DifferenceBadge } from "../difference-badge";
 
 export default function GradeWrapper({
   subjects,
   grade,
   periodId,
+  onBack,
 }: {
   subjects: Subject[];
   grade: Grade;
   periodId: string;
+  onBack: () => void; // Receive the onBack prop from the parent
 }) {
-  const router = useRouter();
-
-  // const {
-  //   data: grade,
-  //   isPending,
-  //   isError,
-  // } = useQuery({
-  //   queryKey: ["grades", gradeId],
-  //   queryFn: async () => {
-  //     const res = await apiClient.get(`grades/${gradeId}`);
-  //     const data = await res.json<{ grade: Grade }>();
-  //     return data.grade;
-  //   },
-  // });
-
-  // const {
-  //   data: subjects,
-  //   isError: isSubjectsPending,
-  //   isPending: isSubjectsError,
-  // } = useQuery({
-  //   queryKey: ["subjects", "organized-by-periods"],
-  //   queryFn: async () => {
-  //     const res = await apiClient.get("subjects/organized-by-periods");
-  //     let data = await res.json<GetOrganizedSubjectsResponse>();
-
-  //     // filter the organized subjects by the periodId
-  //     data.periods = data.periods.filter((period) => period.id === periodId);
-
-  //     return data.periods[0].subjects;
-  //   },
-  // });
-
   const gradeParents = () => {
     if (!grade || !subjects) {
       return [];
     }
 
     const gradeParentsId = getParents(subjects, grade.subject.id);
-
-    const gradeParents = subjects.filter((subject) =>
-      gradeParentsId.includes(subject.id)
-    );
-
-    return gradeParents;
+    return subjects.filter((subject) => gradeParentsId.includes(subject.id));
   };
 
   return (
@@ -81,7 +45,7 @@ export default function GradeWrapper({
         <Button
           className="text-blue-600"
           variant="link"
-          onClick={() => router.back()}
+          onClick={onBack} // Use onBack instead of router.back()
         >
           <ArrowLeftIcon className="size-4 mr-2" />
           Retour
@@ -90,13 +54,12 @@ export default function GradeWrapper({
 
       <div className="flex justify-between items-center">
         <p className="text-2xl font-semibold">{grade.name}</p>
-
         <GradeMoreButton grade={grade} />
       </div>
 
       <Separator />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3  gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <DataCard
           title="Note obtenue"
           description={`Votre note obtenue lors de cette évaluation sur ${
@@ -114,6 +77,7 @@ export default function GradeWrapper({
         >
           <p className="texl-xl md:text-3xl font-bold">{grade.subject.name}</p>
         </DataCard>
+
         <DataCard
           title="Coefficient"
           description="Le coefficient de cette évaluation"
@@ -152,6 +116,7 @@ export default function GradeWrapper({
             }
           />
         </DataCard>
+
         {gradeParents().map((parent: Subject) => (
           <DataCard
             key={parent.id}
@@ -159,12 +124,6 @@ export default function GradeWrapper({
             description={`Visualisez l'impact de cette évaluation sur votre moyenne de la matière ${parent.name}`}
             icon={ArrowUpCircleIcon}
           >
-            {/* <p className="text-3xl font-bold">
-              {subjects &&
-                formatDiff(
-                  gradeImpact(grade.id, parent.id, subjects)?.difference || 0
-                )}
-            </p> */}
             <DifferenceBadge
               diff={
                 subjects

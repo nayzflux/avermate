@@ -8,6 +8,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -19,14 +20,19 @@ import { Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Badge } from "../ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { Switch } from "@/components/ui/switch";
+import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+  CommandInput,
+} from "../ui/command";
+import { CheckIcon } from "@heroicons/react/24/outline";
+import { useState, useEffect } from "react";
 
 const updateSubjectSchema = z.object({
   name: z.string().min(1).max(64),
@@ -50,8 +56,9 @@ export const UpdateSubjectForm = ({
   close: () => void;
   subject: Subject;
 }) => {
+  const [open, setOpen] = useState(false);
+  const [parentInputValue, setParentInputValue] = useState("");
   const toaster = useToast();
-
   const queryClient = useQueryClient();
 
   const { data: subjects } = useQuery({
@@ -64,7 +71,7 @@ export const UpdateSubjectForm = ({
       return data.subjects;
     },
   });
-    
+
   const filteredSubjects = subjects?.filter((s) => s.id !== subject.id);
 
   const { mutate, isPending } = useMutation({
@@ -76,7 +83,6 @@ export const UpdateSubjectForm = ({
       isMainSubject,
       isDisplaySubject,
     }: UpdateSubjectSchema) => {
-        //console.log(parentId);
       const res = await apiClient.patch(`subjects/${subject.id}`, {
         json: {
           name,
@@ -86,7 +92,7 @@ export const UpdateSubjectForm = ({
           isDisplaySubject,
         },
       });
-        
+
       const data = await res.json<{ subject: Subject }>();
       return data.subject;
     },
@@ -98,20 +104,14 @@ export const UpdateSubjectForm = ({
 
       close();
 
-      queryClient.invalidateQueries({
-        queryKey: ["subjects"],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["subject", subject.id],
-      });
+      queryClient.invalidateQueries({ queryKey: ["subjects"] });
+      queryClient.invalidateQueries({ queryKey: ["subject", subject.id] });
     },
-
     onError: () => {
       toaster.toast({
         title: "Erreur",
         description:
-          "Impossible de mettre à jour la matière. Réessayer plus tard.",
+          "Impossible de mettre à jour la matière. Réessayez plus tard.",
         variant: "destructive",
       });
     },
@@ -128,12 +128,32 @@ export const UpdateSubjectForm = ({
     },
   });
 
+  const isDisplaySubject = form.watch("isDisplaySubject");
+
+  // Update coefficient when category is toggled on
+  useEffect(() => {
+    if (isDisplaySubject) {
+      form.setValue("coefficient", 1);
+    }
+  }, [isDisplaySubject, form]);
+
   const onSubmit = (values: UpdateSubjectSchema) => {
     mutate(values);
   };
 
+  useEffect(() => {
+    if (open) {
+      const parentId = form.getValues("parentId");
+      setParentInputValue(
+        parentId && parentId !== "none"
+          ? filteredSubjects?.find((s) => s.id === parentId)?.name || ""
+          : ""
+      );
+    }
+  }, [open, filteredSubjects, form]);
+
   return (
-    <div>
+    <div className="">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -159,17 +179,23 @@ export const UpdateSubjectForm = ({
             name="coefficient"
             disabled={isPending}
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="col-span-2">
                 <FormLabel>Coefficient</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
                     placeholder={(subject.coefficient / 100).toString()}
                     {...field}
+                    disabled={isPending || isDisplaySubject}
                     onChange={(e) => field.onChange(e.target.value)}
                   />
                 </FormControl>
                 <FormMessage />
+                {isDisplaySubject && (
+                  <FormDescription>
+                    Les catégories ont un coefficient fixe de 1.
+                  </FormDescription>
+                )}
               </FormItem>
             )}
           />
@@ -178,13 +204,19 @@ export const UpdateSubjectForm = ({
             control={form.control}
             name="isMainSubject"
             render={({ field }) => (
-              <FormItem className="flex flex-row gap-4 items-center">
-                <FormLabel>Matière principale</FormLabel>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
+              <FormItem>
+                <div className="col-span-2 flex flex-row gap-4 items-center">
+                  <FormLabel>Matière principale</FormLabel>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </div>
                 <FormMessage />
+                <FormDescription>
+                  Les matières principales sont affichées en premier dans le
+                  tableau de bord.
+                </FormDescription>
               </FormItem>
             )}
           />
@@ -193,13 +225,20 @@ export const UpdateSubjectForm = ({
             control={form.control}
             name="isDisplaySubject"
             render={({ field }) => (
-              <FormItem className="flex flex-row gap-4 items-center">
-                <FormLabel>Catégorie</FormLabel>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
+              <FormItem>
+                <div className="col-span-2 flex flex-row gap-4 items-center">
+                  <FormLabel>Catégorie</FormLabel>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </div>
                 <FormMessage />
+                <FormDescription>
+                  Les catégories ne comptent pas dans la moyenne générale. Elles
+                  regroupent des matières, mais leurs enfants sont calculés
+                  comme au niveau supérieur. Impossible d'y ajouter des notes.
+                </FormDescription>
               </FormItem>
             )}
           />
@@ -208,32 +247,75 @@ export const UpdateSubjectForm = ({
             control={form.control}
             name="parentId"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col">
                 <FormLabel>
                   Sous-matière <Badge className="ml-2">Optionnel</Badge>
                 </FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value ?? undefined}
+                <Popover
+                  modal
+                  open={open}
+                  onOpenChange={(isOpen) => setOpen(isOpen)}
                 >
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder="Choisir une matière parente"
-                        className="text-blue-500 placeholder:text-muted-foreground"
-                      />
-                    </SelectTrigger>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open ? "true" : "false"}
+                        className="justify-between"
+                      >
+                        {field.value && field.value !== "none"
+                          ? filteredSubjects?.find((s) => s.id === field.value)
+                              ?.name
+                          : "Choisir une matière parente"}
+                        <ChevronUpDownIcon className="opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
                   </FormControl>
-                  <SelectContent>
-                    <SelectItem value="none">No parent</SelectItem>
-                    {filteredSubjects?.map((s) => (
-                      <SelectItem key={s.id} value={s.id}>
-                        {s.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  <PopoverContent
+                    className="p-0 min-w-[var(--radix-popover-trigger-width)]"
+                    align="start"
+                  >
+                    <Command>
+                      <CommandInput
+                        placeholder="Choisir une matière parente"
+                        value={parentInputValue}
+                        onValueChange={setParentInputValue}
+                        className="h-9"
+                      />
+                      <CommandList>
+                        <CommandEmpty>Aucune matière trouvée</CommandEmpty>
+                        <CommandGroup>
+                          {filteredSubjects
+                            ?.slice()
+                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .map((subject) => (
+                              <CommandItem
+                                key={subject.id}
+                                value={subject.name}
+                                onSelect={() => {
+                                  form.setValue("parentId", subject.id, {
+                                    shouldValidate: true,
+                                  });
+                                  setOpen(false);
+                                }}
+                              >
+                                <span>{subject.name}</span>
+                                {form.getValues("parentId") === subject.id && (
+                                  <CheckIcon className="w-4 h-4 ml-auto" />
+                                )}
+                              </CommandItem>
+                            ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
                 <FormMessage />
+                <FormDescription>
+                  Une matière parente regroupe plusieurs sous-matières,
+                  facilitant leur organisation.
+                </FormDescription>
               </FormItem>
             )}
           />

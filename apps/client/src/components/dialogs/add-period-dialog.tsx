@@ -8,6 +8,7 @@ import {
   CredenzaHeader,
   CredenzaTitle,
   CredenzaTrigger,
+  CredenzaBody,
 } from "@/components/ui/credenza";
 import { apiClient } from "@/lib/api";
 import { Period } from "@/types/period";
@@ -51,7 +52,7 @@ export default function AddPeriodCredenza({
         {children}
       </CredenzaTrigger>
 
-      <CredenzaContent className="max-h-screen h-full ">
+      <CredenzaContent>
         <CredenzaHeader>
           <CredenzaTitle>Ajouter une période</CredenzaTitle>
           <CredenzaDescription>
@@ -59,9 +60,10 @@ export default function AddPeriodCredenza({
           </CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
-        {!isPending && !isError && (
-          <AddPeriodForm periods={periods} close={() => setOpen(false)} />
-        )}</CredenzaBody>
+          {!isPending && !isError && (
+            <AddPeriodForm periods={periods} close={() => setOpen(false)} />
+          )}
+        </CredenzaBody>
       </CredenzaContent>
     </Credenza>
   );

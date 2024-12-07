@@ -95,7 +95,7 @@ export const UpdateEmailForm = ({
           <div className="flex w-full justify-end">
             <Button type="submit" variant="outline" disabled={isPending}>
               {isPending && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
-              Save changes
+              Sauvegarder
             </Button>
           </div>
         </form>

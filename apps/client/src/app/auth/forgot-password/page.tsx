@@ -6,7 +6,7 @@ const ForgotPasswordPage = () => {
     <div className="flex flex-col gap-8">
       {/* Title */}
       <div className="flex flex-col gap-2">
-        <p className="text-3xl md:text-4xl font-bold">Forgot Password</p>
+        <p className="text-3xl md:text-4xl font-bold">Mot de passe oublié</p>
 
         <div className="flex flex-col gap-0.5 text-sm md:text-base text-muted-foreground">
           <p>
@@ -14,7 +14,7 @@ const ForgotPasswordPage = () => {
           </p>
 
           <Link href="/auth/sign-in" className="underline">
-            Log In
+            Se connecter
           </Link>
         </div>
       </div>

@@ -9,6 +9,9 @@ import { useQuery } from "@tanstack/react-query";
 import { use } from "react";
 import SubjectWrapper from "./subject-wrapper";
 import subjectLoader from "@/components/skeleton/subject-loader";
+import errorStateCard from "@/components/skeleton/error-card";
+import { useSearchParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function SubjectPage({
   params,
@@ -16,6 +19,23 @@ export default function SubjectPage({
   params: Promise<{ subjectId: string; periodId: string }>;
 }) {
   const { periodId, subjectId } = use(params);
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const [returnUrl, setReturnUrl] = useState("/dashboard");
+
+  // Extract `from` parameter on mount or when searchParams change
+  useEffect(() => {
+    const fromParam = searchParams.get("from");
+    if (fromParam) {
+      setReturnUrl(fromParam);
+    }
+  }, [searchParams]);
+
+  const handleBack = () => {
+    router.push(returnUrl);
+  };
 
   const {
     data: organizedSubjects,
@@ -92,7 +112,7 @@ export default function SubjectPage({
     isSubjectError ||
     isSubjectsError
   ) {
-    return <div>Error!</div>;
+    return <div>{errorStateCard()}</div>;
   }
 
   if (
@@ -100,9 +120,7 @@ export default function SubjectPage({
     organizedSubjectIsPending ||
     isPeriodPending ||
     isSubjectPending ||
-    isSubjectPending ||
     isSubjectsPending
-    // || true
   ) {
     return <div>{subjectLoader()}</div>;
   }
@@ -115,6 +133,7 @@ export default function SubjectPage({
 
   return (
     <SubjectWrapper
+      onBack={handleBack} // Pass the handleBack function to SubjectWrapper
       subjects={
         periodId === "full-year"
           ? subjects

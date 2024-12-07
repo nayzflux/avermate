@@ -58,8 +58,7 @@ export const AddPeriodForm = ({
 }: {
   close: () => void;
   periods: Period[];
-  }) => {
-  
+}) => {
   const toaster = useToast();
   const queryClient = useQueryClient();
 
@@ -86,6 +85,18 @@ export const AddPeriodForm = ({
       toaster.toast({
         description:
           "Vous pouvez maintenant organiser vos activités dans cette période.",
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["periods"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["subjects"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["subjects", "organized-by-periods"],
       });
 
       queryClient.invalidateQueries({
@@ -215,7 +226,9 @@ export const AddPeriodForm = ({
                           mode="range"
                           selected={field.value}
                           onSelect={field.onChange}
-                          numberOfMonths={useMediaQuery("(min-width: 1024px)") ? 2 : 1}
+                          numberOfMonths={
+                            useMediaQuery("(min-width: 1024px)") ? 2 : 1
+                          }
                           disabled={periods.map((period) => ({
                             from: startOfDay(period.startAt),
                             to: startOfDay(period.endAt),

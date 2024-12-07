@@ -70,7 +70,7 @@ export const SignInForm = () => {
       // Redirect to the dashboard
       router.push("/dashboard");
 
-      // Send toast notification
+      // Notification toast
       toaster.toast({
         title: `👋 Ravi de vous revoir ${data.user.name} !`,
         description: "Nous espérons que vous avez atteint vos objectifs !",
@@ -113,7 +113,7 @@ export const SignInForm = () => {
   };
 
   return (
-    <div className="md:min-w-[500px] w-[80%]">
+    <div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -130,7 +130,7 @@ export const SignInForm = () => {
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="email@example.com"
+                    placeholder="email@exemple.com"
                     {...field}
                   />
                 </FormControl>
@@ -146,10 +146,10 @@ export const SignInForm = () => {
             disabled={isPending}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Mot de passe</FormLabel>
                 <FormControl>
                   <div>
-                    {/* Password input field with toggle visibility button */}
+                    {/* Champ de saisie du mot de passe avec bouton d'affichage/masquage */}
                     <div className="space-y-2">
                       <div className="relative">
                         <Input
@@ -164,7 +164,9 @@ export const SignInForm = () => {
                           type="button"
                           onClick={toggleVisibility}
                           aria-label={
-                            isVisible ? "Hide password" : "Show password"
+                            isVisible
+                              ? "Masquer le mot de passe"
+                              : "Afficher le mot de passe"
                           }
                           aria-pressed={isVisible}
                           aria-controls="password"
@@ -194,7 +196,7 @@ export const SignInForm = () => {
               {isPending && (
                 <Loader2Icon className="animate-spin mr-2 size-4" />
               )}
-              Sign In
+              Se connecter
             </Button>
 
             <div className="flex justify-end">

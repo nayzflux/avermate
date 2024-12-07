@@ -29,11 +29,11 @@ import {
 } from "recharts";
 
 export default function dashboardLoader() {
-    const chartConfig = {};
+  const chartConfig = {};
 
-    const chartData = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+  const chartData = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
 
-    const radarData = [{average: 15,}, {}, {}, {}, {}, {},];
+  const radarData = [{ average: 15 }, {}, {}, {}, {}, {}];
 
   return (
     <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
@@ -53,7 +53,9 @@ export default function dashboardLoader() {
         <div className="flex flex-col gap-4">
           <ScrollArea>
             <div className="flex w-full">
-              <TabsList className="flex">
+              <Skeleton className="flex md:hidden h-9 w-full" />
+
+              <TabsList className="md:flex hidden">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <TabsTrigger
                     key={index}
@@ -69,24 +71,22 @@ export default function dashboardLoader() {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
 
-          <div className="grid grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
             {Array.from({ length: 5 }).map((_, index) => (
               <Card key={index} className="p-6 rounded-lg">
                 <div className="flex flex-col gap-2">
                   <div className="flex gap-2 justify-between">
-                    <p className="font-semibold">
-                      <Skeleton className="w-20 h-6" />
-                    </p>
+                    <Skeleton className="w-20 h-6" />
                     <Skeleton className="w-6 h-6" />
                   </div>
 
                   <div className="flex flex-col gap-0.5">
-                    <Skeleton className="h-14" />
+                    <Skeleton className="h-[30.5px] md:h-[36px]" />
 
-                    <p className="text-xs text-muted-foreground font-light pt-2">
+                    <div className="text-xs text-muted-foreground font-light pt-2">
                       <Skeleton className="h-4 mb-1" />
                       <Skeleton className="w-20 h-4" />
-                    </p>
+                    </div>
                   </div>
                 </div>
               </Card>

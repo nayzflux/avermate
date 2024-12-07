@@ -16,6 +16,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Session, User } from "better-auth/types";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import errorStateCard from "@/components/skeleton/error-card";
 
 /**
  * Vue d'ensemble des notes
@@ -40,7 +42,6 @@ export default function OverviewPage() {
       return data.subjects;
     },
   });
-
   // Fetch periods from API
   const {
     data: periods,
@@ -71,8 +72,8 @@ export default function OverviewPage() {
 
   const {
     data: recentGrades,
-    isError: isPendingRecentGrades,
-    isPending: isErrorRecentGrades,
+    isError: isErrorRecentGrades,
+    isPending: isPendingRecentGrades,
   } = useQuery({
     queryKey: ["recent-grades", "grades"],
     queryFn: async () => {
@@ -117,6 +118,19 @@ export default function OverviewPage() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
+  // Error State
+  if (
+    isError ||
+    periodsIsError ||
+    organizedSubjectsIsError ||
+    isErrorRecentGrades
+  ) {
+    return (
+      <div>
+        {errorStateCard()}
+      </div>
+    );
+  }
 
   // Loading State
   if (
@@ -130,20 +144,6 @@ export default function OverviewPage() {
     return <div>{dashboardLoader()}</div>;
   }
 
-  // Error State
-  if (
-    isError ||
-    periodsIsError ||
-    organizedSubjectsIsError ||
-    isErrorRecentGrades
-  ) {
-    return (
-      <div>
-        <h2>Error</h2>
-        <p>An error occurred while loading the subjects.</p>
-      </div>
-    );
-  }
 
   // // Onboarding
   // if (
@@ -212,6 +212,31 @@ export default function OverviewPage() {
 
               <ScrollBar orientation="horizontal" />
             </ScrollArea>
+          </div>
+          <div className="flex md:hidden">
+            <Select
+              value={selectedTab}
+              onValueChange={(value) => {
+                setSelectedTab(value);
+                sessionStorage.setItem("selectedTab", value);
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue>
+                  {periods?.find((period) => period.id === selectedTab)?.name ||
+                    "Toute l'année"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {periods?.map((period) => (
+                  <SelectItem key={period.id} value={period.id}>
+                    {period.name}
+                  </SelectItem>
+                ))}
+                <SelectItem value="full-year">Toute l&apos;année</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
             {periods &&
               periods.length > 0 &&
@@ -326,7 +351,6 @@ export default function OverviewPage() {
               </div>
             </TabsContent>
           </div>
-        </div>
       </Tabs>
     </main>
   );

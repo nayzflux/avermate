@@ -28,6 +28,10 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { BookOpenIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import { Button } from "../ui/button";
+import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
+import AddGradeDialog from "../dialogs/add-grade-dialog";
 
 export const description = "A simple area chart";
 
@@ -235,7 +239,60 @@ const CustomDot = (props: any) => {
     );
   }
   return null;
-};
+  };
+  
+  console.log(subjects);
+  console.log(chartData);
+  console.log(radarData);
+
+
+
+
+  // handle if there is no subjects
+  if (subjects.length === 0) {
+    return (
+      <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
+        <BookOpenIcon className="w-12 h-12" />
+        <div className="flex flex-col items-center gap-1">
+          <h2 className="text-xl font-semibold">
+            Aucune matière pour l&apos;instant
+          </h2>
+          <p>Ajouter une nouvelle matière pour commencer à suivre vos notes.</p>
+        </div>
+        <AddSubjectDialog>
+          <Button variant="outline">
+            <PlusCircleIcon className="size-4 mr-2" />
+            Ajouter une matière
+          </Button>
+        </AddSubjectDialog>
+      </Card>
+    );
+  }
+
+  //if all the average are null
+    if (chartData.every((data) => data.average === null)) {
+      return (
+        <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
+          <BookOpenIcon className="w-12 h-12" />
+          <div className="flex flex-col items-center gap-1">
+            <h2 className="text-xl font-semibold">
+              Aucune note pour l&apos;instant
+            </h2>
+            <p>
+              Ajouter une nouvelle note pour commencer à suivre vos moyennes.
+            </p>
+          </div>
+          <AddGradeDialog>
+            <Button variant="outline">
+              <PlusCircleIcon className="size-4 mr-2" />
+              Ajouter une note
+            </Button>
+          </AddGradeDialog>
+        </Card>
+      );
+    }
+
+
 
   return (
     <Card className="lg:col-span-5">
@@ -248,7 +305,8 @@ const CustomDot = (props: any) => {
           {/* Area Chart Section */}
           <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%] lg:w-[60%]">
             <CardDescription className="pb-8">
-              Visualiser l&apos;évolution de votre moyenne générale sur ce trimestre
+              Visualiser l&apos;évolution de votre moyenne générale sur ce
+              trimestre
             </CardDescription>
             <ChartContainer config={chartConfig} className="h-[302px] w-[100%]">
               <AreaChart data={chartData} margin={{ left: -30 }}>
@@ -281,6 +339,7 @@ const CustomDot = (props: any) => {
                       findNearestNonNull={true}
                       dataKey="average"
                       labelFormatter={(value) => value}
+                      valueFormatter={(val) => val.toFixed(2)}
                       onUpdateActiveTooltipIndex={
                         handleActiveTooltipIndexChange
                       }
@@ -340,7 +399,13 @@ const CustomDot = (props: any) => {
                   fill="#2662d9"
                   fillOpacity={0.6}
                 />
-                <ChartTooltip content={<ChartTooltipContent />} />
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      valueFormatter={(val) => val.toFixed(2)}
+                    />
+                  }
+                />
               </RadarChart>
             </ChartContainer>
           </div>

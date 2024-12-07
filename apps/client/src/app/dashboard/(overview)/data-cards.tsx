@@ -105,30 +105,32 @@ export default function DataCards({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
       <DataCard
-        title="Overall average"
+        title="Moyenne générale"
         icon={AcademicCapIcon}
         description={
           growth > 0
-            ? `+${growth.toFixed(2)}% since the beginning`
+            ? `+${growth.toFixed(2)}% depuis le début`
             : growth < 0
-            ? `${growth.toFixed(2)}% since the beginning`
-            : "No growth since the beginning"
+            ? `${growth.toFixed(2)}% depuis le début`
+            : "Pas d'évolution depuis le début"
         }
       >
-        <GradeValue
-          value={(average(undefined, subjects) || 0) * 100}
-          outOf={2000}
-          size="xl"
-        />
+        {average(undefined, subjects) !== null ? (
+          <GradeValue
+            value={(average(undefined, subjects) || 0) * 100}
+            outOf={2000}
+            size="xl"
+          />
+        ) : null}
       </DataCard>
 
       <DataCard
-        title="Best grade"
+        title="Meilleure Note"
         icon={PlusIcon}
         description={
           bestGrade !== null
-            ? `In ${bestGrade?.subject?.name} ? Impressive ! (${bestGrade?.name})`
-            : "No best grade"
+            ? `En ${bestGrade?.subject?.name} ? Impressionant ! (${bestGrade?.name})`
+            : "Pas de meilleure note"
         }
       >
         {bestGrade && (
@@ -141,15 +143,15 @@ export default function DataCards({
       </DataCard>
 
       <DataCard
-        title="Best subject"
+        title="Meilleure Matière"
         icon={ArrowTrendingUpIcon}
         description={
           bestSubjectAverage !== null
-            ? `${bestSubject?.name} is ${
+            ? `${bestSubject?.name} est ${
                 bestSubjectAverageComparaison?.percentageChange?.toFixed(2) ||
                 "—"
-              }% higher than other subjects`
-            : "No best subject"
+              }% plus élevé que les autres matières`
+            : "Pas de mailleure matière"
         }
       >
         {bestSubjectAverage && (
@@ -158,12 +160,12 @@ export default function DataCards({
       </DataCard>
 
       <DataCard
-        title="Worst Grade"
+        title="Pire note"
         icon={MinusIcon}
         description={
           worstGrade !== null
-            ? `In ${worstGrade?.subject?.name} ? Yep that’s bad (${worstGrade?.name})`
-            : "No worst grade"
+            ? `En ${worstGrade?.subject?.name} ? Oui, c'est mauvais (${worstGrade?.name})`
+            : "Pas de pire note"
         }
       >
         {worstGrade && (
@@ -175,15 +177,15 @@ export default function DataCards({
         )}
       </DataCard>
       <DataCard
-        title="Worst subject"
+        title="Pire matière"
         icon={ArrowTrendingDownIcon}
         description={
           worstSubjectAverage !== null
-            ? `${worstSubject?.name} is ${
+            ? `${worstSubject?.name} est ${
                 worstSubjectAverageComparaison?.percentageChange?.toFixed(2) ||
                 "—"
-              }% lower than other subjects`
-            : "No worst subject"
+              }% plus bas que les autres matières`
+            : "Pas de pire matière"
         }
       >
         {worstSubjectAverage && (

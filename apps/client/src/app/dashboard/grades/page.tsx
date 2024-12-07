@@ -23,6 +23,7 @@ import { Subject } from "@/types/subject";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import errorStateCard from "@/components/skeleton/error-card";
 
 export default function GradesPage() {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
@@ -107,8 +108,7 @@ export default function GradesPage() {
   if (periodsIsError || organizedSubjectsIsError || subjectsIsError) {
     return (
       <div>
-        <h2>Error</h2>
-        <p>An error occurred!</p>
+        {errorStateCard()}
       </div>
     );
   }
@@ -125,7 +125,7 @@ export default function GradesPage() {
   }
 
   return (
-    <main className="flex flex-col gap-8">
+    <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
       <div className="flex gap-2 md:gap-16 justify-between items-center">
         <h1 className="text-xl md:text-3xl font-semibold">Vos notes</h1>
 
@@ -169,7 +169,7 @@ export default function GradesPage() {
         <div className="hidden md:flex gap-4">
           <ScrollArea>
             <div className="w-full relative h-10">
-              <TabsList className="flex absolute">
+              <TabsList className="flex">
                 {periods &&
                   periods.length > 0 &&
                   // Sort the periods by start date
@@ -201,7 +201,7 @@ export default function GradesPage() {
             <SelectTrigger>
               <SelectValue>
                 {periods?.find((period) => period.id === selectedTab)?.name ||
-                  "Toute l&apos;année"}
+                  "Toute l'année"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>

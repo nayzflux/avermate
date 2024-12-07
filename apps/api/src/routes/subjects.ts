@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { periods, subjects } from "@/db/schema";
+import { grades, periods, subjects } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
 import { and, asc, eq, ne, sql } from "drizzle-orm";
@@ -242,6 +242,17 @@ app.get("/:subjectId", zValidator("param", getSubjectSchema), async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   if (!session) throw new HTTPException(401);
 
+  // If email isnt verified
+  if (!session.user.emailVerified) {
+    return c.json(
+      {
+        code: "EMAIL_NOT_VERIFIED",
+        message: "Email verification is required",
+      },
+      403
+    );
+  }
+
   const { subjectId } = c.req.valid("param");
 
   const subject = await db.query.subjects.findFirst({
@@ -287,6 +298,17 @@ app.patch(
   async (c) => {
     const session = await auth.api.getSession({ headers: c.req.raw.headers });
     if (!session) throw new HTTPException(401);
+
+    // If email isnt verified
+    if (!session.user.emailVerified) {
+      return c.json(
+        {
+          code: "EMAIL_NOT_VERIFIED",
+          message: "Email verification is required",
+        },
+        403
+      );
+    }
 
     const { subjectId } = c.req.valid("param");
     const data = c.req.valid("json");
@@ -350,7 +372,13 @@ app.patch(
       const descendants = await db.query.subjects.findMany({
         where: and(
           eq(subjects.userId, session.user.id),
-          sql`${subjects.id} IN (SELECT descendant.id FROM ${subjects} AS ancestor JOIN ${subjects} AS descendant ON descendant.parentId = ancestor.id WHERE ancestor.id = ${subjectId})`,
+          sql`${subjects.id} IN (
+            SELECT descendant.id
+            FROM ${subjects} AS ancestor
+            JOIN ${subjects} AS descendant
+            ON descendant.parentId = ancestor.id
+            WHERE ancestor.id = ${subjectId}
+          )`,
           ne(subjects.id, subjectId)
         ),
       });
@@ -366,10 +394,15 @@ app.patch(
       );
     }
 
+    // If the subject is now a category (assuming `isMainSubject === true` indicates category)
+    // delete all associated grades.
+    if (data.isDisplaySubject === true) {
+      await db.delete(grades).where(eq(grades.subjectId, subjectId));
+    }
+
     return c.json({ subject: updatedSubject });
   }
 );
-
 /**
  * Delete subject by ID
  */
@@ -383,6 +416,17 @@ app.delete(
   async (c) => {
     const session = await auth.api.getSession({ headers: c.req.raw.headers });
     if (!session) throw new HTTPException(401);
+
+    // If email isnt verified
+    if (!session.user.emailVerified) {
+      return c.json(
+        {
+          code: "EMAIL_NOT_VERIFIED",
+          message: "Email verification is required",
+        },
+        403
+      );
+    }
 
     const { subjectId } = c.req.valid("param");
 

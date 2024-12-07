@@ -33,7 +33,7 @@ const resetPasswordSchema = z.object({
       if (strength.strength === "weak") {
         return ctx.addIssue({
           code: "custom",
-          message: "Password is too weak.",
+          message: "Le mot de passe est trop faible.",
         });
       }
     }),
@@ -57,21 +57,21 @@ export const ResetPasswordForm = () => {
       return data;
     },
     onSuccess: (data) => {
-      // Redirect to the dashboard
+      // Redirection vers la page de connexion
       router.push("/auth/sign-in");
 
-      // Send toast notification
+      // Notification toast
       toaster.toast({
-        title: `Password reset`,
-        description: "Your password has been reset successfully!",
+        title: "Réinitialisation du mot de passe",
+        description: "Votre mot de passe a été réinitialisé avec succès !",
       });
     },
 
     onError: (err) => {
-      // TODO: Error handling
+      // TODO: Gestion des erreurs
       toaster.toast({
-        title: "Failed to reset password",
-        description: "Something went wrong. Please try again later.",
+        title: "Échec de la réinitialisation du mot de passe",
+        description: "Une erreur s'est produite. Veuillez réessayer plus tard.",
         variant: "destructive",
       });
     },
@@ -103,10 +103,10 @@ export const ResetPasswordForm = () => {
             disabled={isPending}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Mot de passe</FormLabel>
                 <FormControl>
                   <div>
-                    {/* Password input field with toggle visibility button */}
+                    {/* Champ de saisie du mot de passe avec bouton pour afficher/masquer */}
                     <div className="space-y-2">
                       <div className="relative">
                         <Input
@@ -121,7 +121,9 @@ export const ResetPasswordForm = () => {
                           type="button"
                           onClick={toggleVisibility}
                           aria-label={
-                            isVisible ? "Hide password" : "Show password"
+                            isVisible
+                              ? "Masquer le mot de passe"
+                              : "Afficher le mot de passe"
                           }
                           aria-pressed={isVisible}
                           aria-controls="password"
@@ -139,7 +141,7 @@ export const ResetPasswordForm = () => {
                       </div>
                     </div>
 
-                    {/* Password strength indicator */}
+                    {/* Indicateur de force du mot de passe */}
                     <div
                       className="mb-4 mt-3 h-1 w-full overflow-hidden rounded-full bg-border"
                       role="progressbar"
@@ -148,7 +150,7 @@ export const ResetPasswordForm = () => {
                       }
                       aria-valuemin={0}
                       aria-valuemax={4}
-                      aria-label="Password strength"
+                      aria-label="Niveau de sécurité du mot de passe"
                     >
                       <div
                         className={cn(
@@ -178,7 +180,7 @@ export const ResetPasswordForm = () => {
 
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
-            Reset Password
+            Réinitialiser le mot de passe
           </Button>
         </form>
       </Form>

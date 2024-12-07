@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
 import ProfileSection from "../profile-section";
+import errorStateCard from "@/components/skeleton/error-card";
 
 type Account = {
   id: string;
@@ -63,12 +64,12 @@ export default function LinkedAccount() {
       </Card>
     );
 
-  if (isError) return <p>Error!</p>;
+  if (isError) return <div>{errorStateCard()}</div>;
 
   return (
     <ProfileSection
-      title="Linked Accounts"
-      description="List of all accounts linked to your user"
+      title="Comptes Liés"
+      description="Liste de tous les comptes liés à votre utilisateur"
     >
       <div className="flex flex-col gap-4">
         {accounts?.map(({ id, provider }) => (

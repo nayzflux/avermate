@@ -1,36 +1,9 @@
 import React from "react";
 import { Skeleton } from "../ui/skeleton";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DataCards from "@/app/dashboard/(overview)/data-cards";
-import GlobalAverageChart from "../charts/global-average-chart";
-import RecentGradesCard from "@/components/dashboard/recent-grades/recent-grades";
-import DataCard from "../dashboard/data-card";
-import { AcademicCapIcon } from "@heroicons/react/24/outline";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
-import { ChartContainer, ChartTooltipContent } from "../ui/chart";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  PolarAngleAxis,
-  PolarGrid,
-  Radar,
-  RadarChart,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Tabs, TabsTrigger, TabsList } from "@/components/ui/tabs";
+
 import { Button } from "../ui/button";
-import AddGradeDialog from "../dialogs/add-grade-dialog";
-import AddPeriodDialog from "../dialogs/add-period-dialog";
-import AddSubjectDialog from "../dialogs/add-subject-dialog";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import {
   Table,
@@ -41,22 +14,18 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 
 export default function gradesLoader() {
-  const chartConfig = {};
-
-  const chartData = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
-
-  const radarData = [{ average: 15 }, {}, {}, {}, {}, {}];
-
   return (
-    <main className="flex flex-col gap-8">
+    <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
       <div className="flex gap-2 md:gap-16 justify-between items-center">
         <h1 className="text-xl md:text-3xl font-semibold">
           <Skeleton className="w-40 h-[32px]" />
         </h1>
 
-        <div className="flex gap-4">
+        <div className="hidden lg:flex gap-4">
           <Button disabled={true}>
             <PlusCircleIcon className="size-4 mr-2" />
             Ajouter une note
@@ -71,12 +40,37 @@ export default function gradesLoader() {
             Ajouter une période
           </Button>
         </div>
+        <div className="flex lg:hidden">
+          <Button size="icon" variant="outline" disabled>
+            <EllipsisVerticalIcon className="size-4" />
+          </Button>
+        </div>
       </div>
       <Separator />
 
       {/* Statistiques */}
       <Tabs>
-        <Table>
+        <ScrollArea>
+          <div className="flex w-full">
+            <Skeleton className="flex md:hidden h-9 w-full" />
+
+            <TabsList className="md:flex hidden">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <TabsTrigger
+                  key={index}
+                  value={index.toString()}
+                  className="px-1 data-[state=active]:bg-background cursor-default"
+                >
+                  <Skeleton className="w-32 h-7" />
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
+
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+        {/* Desktop layout (unchanged) */}
+        <Table className="w-full table-auto hidden md:table">
           <TableCaption>
             <div className="flex w-full justify-center">
               <Skeleton className="w-64 h-[14px]" />
@@ -88,11 +82,9 @@ export default function gradesLoader() {
               <TableHead className="w-[50px] md:w-[200px]">
                 <Skeleton className="w-full h-[18px]" />
               </TableHead>
-
               <TableHead className="w-[50px] md:w-[100px] text-center">
                 <Skeleton className="w-full h-[18px]" />
               </TableHead>
-
               <TableHead>
                 <Skeleton className="w-full h-[18px]" />
               </TableHead>
@@ -100,20 +92,54 @@ export default function gradesLoader() {
           </TableHeader>
 
           <TableBody>
-            {[...Array(10)].map((_, index) => (
-              <TableRow key={index}>
+            {Array.from({ length: 10 }, (_, i) => (
+              <TableRow key={i}>
                 <TableCell>
                   <Skeleton className="w-full h-[20px]" />
                 </TableCell>
-
                 <TableCell className="text-center font-semibold">
                   <Skeleton className="w-full h-[20px]" />
                 </TableCell>
-
                 <TableCell>
                   <Skeleton className="w-full h-[20px]" />
                 </TableCell>
               </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+        {/* Mobile layout */}
+        <Table className="w-full table-auto md:hidden">
+          <TableCaption>
+            <div className="flex w-full justify-center">
+              <Skeleton className="w-64 h-[14px]" />
+            </div>
+          </TableCaption>
+          {/* No header on mobile */}
+          <TableBody>
+            {Array.from({ length: 5 }, (_, i) => i).map((item) => (
+              <React.Fragment key={item}>
+                {/* Subject + average row on mobile */}
+                <TableRow className="border-b">
+                  <TableCell className="w-full">
+                    {/* Subject name skeleton */}
+                    <Skeleton className="w-3/4 h-[20px] mb-1" />
+                    {/* Mobile-only average skeleton */}
+                    <Skeleton className="w-1/2 h-[14px]" />
+                  </TableCell>
+                </TableRow>
+
+                {/* Notes row on mobile */}
+                <TableRow className="border-b">
+                  <TableCell className="w-full">
+                    <div className="flex gap-2 flex-wrap pt-1 pb-2">
+                      <Skeleton className="w-10 h-[20px]" />
+                      <Skeleton className="w-10 h-[20px]" />
+                      <Skeleton className="w-10 h-[20px]" />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </React.Fragment>
             ))}
           </TableBody>
         </Table>

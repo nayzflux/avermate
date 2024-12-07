@@ -21,19 +21,83 @@ import {
   SparklesIcon,
   VariableIcon,
 } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
 import SubjectAverageChart from "./subject-average-chart";
+import { Card } from "@/components/ui/card";
+import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { BookOpenIcon } from "@heroicons/react/24/outline";
 
 function SubjectWrapper({
   subjects,
   subject,
   period,
+  onBack, // <-- new prop passed in from the layout
 }: {
   subjects: Subject[];
   subject: Subject;
   period: Period;
+  onBack: () => void; // Type the prop accordingly
 }) {
-  const router = useRouter();
+  // Vérification des notes pour la période donnée
+  const hasGrades =
+    period.id === "full-year"
+      ? subjects.some((subj) => subj.grades.length > 0)
+      : subjects.some((subj) =>
+          subj.grades.some((grade) => grade.periodId === period.id)
+        );
+
+  // Affiche un message si aucune note n'est présente
+  if (!hasGrades) {
+    return (
+      <div className="flex flex-col gap-8 m-auto max-w-[2000px]">
+        <div>
+          <Button
+            className="text-blue-600"
+            variant="link"
+            onClick={onBack} // Use the onBack function instead of router.back()
+          >
+            <ArrowLeftIcon className="size-4 mr-2" />
+            Retour
+          </Button>
+        </div>
+
+        <div>
+          <div className="flex justify-between items-center">
+            <p className="text-2xl font-semibold">{subject?.name}</p>
+            {subject && <SubjectMoreButton subject={subject} />}
+          </div>
+        </div>
+
+        <Separator />
+        <DataCard
+          title="Coefficient"
+          description={`Coefficient de ${subject?.name}`}
+          icon={VariableIcon}
+        >
+          <p className="text-3xl font-bold">
+            {formatGradeValue(subject?.coefficient || 0)}
+          </p>
+        </DataCard>
+        <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
+          <BookOpenIcon className="w-12 h-12" />
+          <div className="flex flex-col items-center gap-1">
+            <h2 className="text-xl font-semibold">
+              Aucune note pour l&apos;instant
+            </h2>
+            <p>
+              Ajouter une nouvelle note pour commencer à suivre vos moyennes.
+            </p>
+          </div>
+          <AddGradeDialog>
+            <Button variant="outline">
+              <PlusCircleIcon className="size-4 mr-2" />
+              Ajouter une note
+            </Button>
+          </AddGradeDialog>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-8 m-auto max-w-[2000px]">
@@ -41,7 +105,7 @@ function SubjectWrapper({
         <Button
           className="text-blue-600"
           variant="link"
-          onClick={() => router.back()}
+          onClick={onBack} // Use the passed-in onBack function
         >
           <ArrowLeftIcon className="size-4 mr-2" />
           Retour
@@ -98,22 +162,16 @@ function SubjectWrapper({
           title="Meilleure note"
           description={`Votre plus belle performance en ${(() => {
             const bestGradeObj = getBestGradeInSubject(subjects, subject.id);
-            if (bestGradeObj && bestGradeObj.grade !== undefined) {
-              return bestGradeObj.subject.name;
-            } else {
-              return "N/A";
-            }
+            return bestGradeObj?.subject?.name ?? "N/A";
           })()}`}
           icon={SparklesIcon}
         >
           <p className="text-3xl font-bold">
             {(() => {
               const bestGradeObj = getBestGradeInSubject(subjects, subject.id);
-              if (bestGradeObj && bestGradeObj.grade !== undefined) {
-                return bestGradeObj.grade / 100;
-              } else {
-                return "N/A";
-              }
+              return bestGradeObj?.grade !== undefined
+                ? bestGradeObj.grade / 100
+                : "N/A";
             })()}
           </p>
         </DataCard>
@@ -123,11 +181,7 @@ function SubjectWrapper({
           title="Pire note"
           description={`Votre moins bonne performance en ${(() => {
             const worstGradeObj = getWorstGradeInSubject(subjects, subject.id);
-            if (worstGradeObj && worstGradeObj.grade !== undefined) {
-              return worstGradeObj.subject.name;
-            } else {
-              return "N/A";
-            }
+            return worstGradeObj?.subject?.name ?? "N/A";
           })()}`}
           icon={SparklesIcon}
         >
@@ -137,11 +191,9 @@ function SubjectWrapper({
                 subjects,
                 subject.id
               );
-              if (worstGradeObj && worstGradeObj.grade !== undefined) {
-                return worstGradeObj.grade / 100;
-              } else {
-                return "N/A";
-              }
+              return worstGradeObj?.grade !== undefined
+                ? worstGradeObj.grade / 100
+                : "N/A";
             })()}
           </p>
         </DataCard>
@@ -152,15 +204,12 @@ function SubjectWrapper({
       {/* Charts of average evolution */}
       <div className="flex flex-col gap-4">
         <h2 className="text-xl font-semibold">Evolution de la moyenne</h2>
-
         <SubjectAverageChart
           subjectId={subject.id}
           period={period}
           subjects={subjects}
         />
       </div>
-
-      {/* Last grades */}
     </div>
   );
 }
