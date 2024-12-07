@@ -2,19 +2,33 @@ import SocialAuth from "@/components/buttons/auth/social-auth";
 import Consent from "@/components/paragraphs/auth/consent";
 import { Separator } from "@/components/ui/separator";
 import { ReactNode } from "react";
+import Logo from "@/components/logo";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="px-8 py-8 grid grid-cols-1 lg:grid-cols-2 h-screen">
+    <div className=" grid grid-cols-1 lg:grid-cols-2 h-screen">
       {/* Left */}
-      <div className="flex flex-col items-center justify-center">
-        <main className="flex flex-col gap-8 w-[300px] md:w-[475px] mb-32">
-          {children}
+      <div className="flex items-center justify-around content-between w-screen">
+        <main className="flex w-full md:w-[50%] justify-center py-6">
+          <div className="w-[300px] md:w-[475px] gap-8 flex flex-col">
+            {children}
+          </div>
+        </main>
+        <main className="lg:flex gap-8 md:w-[50%] hidden justify-center">
+          <div className="border-l border-gray-900 bg-[rgba(250,250,250,0.02)] shadow-[inset_0px_0px_64px_0px_rgba(255,255,255,0.05)] flex flex-col justify-between items-end p-10 flex-1 self-stretch h-screen">
+            <div className="flex items-center gap-2">
+              <Logo />
+            </div>
+            <div className="flex flex-col items-start gap-2 self-stretch">
+              <p>
+                “Avermate is giving me more time to spend on things that a
+                really important”
+              </p>
+              <p className="text-xs">- John Doe</p>
+            </div>
+          </div>
         </main>
       </div>
-
-      {/* Right */}
-      <div className="relative hidden lg:flex"></div>
     </div>
   );
 }
