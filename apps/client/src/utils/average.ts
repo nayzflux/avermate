@@ -13,6 +13,7 @@ export function average(
   if (!subjectId) {
     // Get root subjects (without parent)
     const rootSubjects = subjects.filter((s) => s.parentId === null);
+    console.log(rootSubjects);
     return calculateAverageForSubjects(rootSubjects, subjects);
   }
 
@@ -40,16 +41,20 @@ function calculateAverageForSubject(
       if (outOf === 0) continue;
 
       const percentage = gradeValue / outOf;
-
       totalWeightedPercentages += percentage * gradeCoefficient;
       totalCoefficients += gradeCoefficient;
     }
   }
 
-  // Get all non-display descendants
-  const nonDisplayDescendants = getNonDisplayDescendants(subject, subjects);
+  // Get the current subject (if non-display) and all non-display descendants
+  const allNonDisplaySubjects = getAllNonDisplaySubjects(subject, subjects);
 
-  for (const child of nonDisplayDescendants) {
+  // Filter out the subject itself because we’ve already handled its grades above
+  // (If you prefer, you could omit the subject itself from getAllNonDisplaySubjects 
+  //  and handle that logic separately)
+  const descendantsOnly = allNonDisplaySubjects.filter((s) => s.id !== subject.id);
+
+  for (const child of descendantsOnly) {
     const childAverage = calculateAverageForSubject(child, subjects);
     if (childAverage !== null) {
       const childPercentage = childAverage / 20;
@@ -60,16 +65,15 @@ function calculateAverageForSubject(
     }
   }
 
-  // If no grades from the subject or its children, return null
+  // If no coefficients were added at all (no grades + no children with grades)
   if (totalCoefficients === 0) {
     return null;
   }
 
-  // Calculate the weighted average of percentages
   const averagePercentage = totalWeightedPercentages / totalCoefficients;
-
   return averagePercentage * 20;
 }
+
 
 
 function calculateAverageForSubjects(
@@ -80,16 +84,16 @@ function calculateAverageForSubjects(
   let totalCoefficients = 0;
 
   for (const subject of subjects) {
-    const nonDisplayDescendants = getNonDisplayDescendants(subject, allSubjects);
+    const allNonDisplaySubjects = getAllNonDisplaySubjects(subject, allSubjects);
 
-    for (const descendant of nonDisplayDescendants) {
-      const descendantAverage = calculateAverageForSubject(descendant, allSubjects);
-      if (descendantAverage !== null) {
-        const descendantPercentage = descendantAverage / 20;
-        const descendantCoefficient = (descendant.coefficient ?? 100) / 100;
+    for (const nonDisplaySubject of allNonDisplaySubjects) {
+      const subjectAverage = calculateAverageForSubject(nonDisplaySubject, allSubjects);
+      if (subjectAverage !== null) {
+        const subjectPercentage = subjectAverage / 20;
+        const subjectCoefficient = (nonDisplaySubject.coefficient ?? 100) / 100;
 
-        totalWeightedPercentages += descendantPercentage * descendantCoefficient;
-        totalCoefficients += descendantCoefficient;
+        totalWeightedPercentages += subjectPercentage * subjectCoefficient;
+        totalCoefficients += subjectCoefficient;
       }
     }
   }
@@ -99,28 +103,38 @@ function calculateAverageForSubjects(
   }
 
   const averagePercentage = totalWeightedPercentages / totalCoefficients;
-
   return averagePercentage * 20;
 }
 
 
-// Recursive function to get all non-display descendants of a subject
-function getNonDisplayDescendants(
+
+function getAllNonDisplaySubjects(
   subject: Subject,
   subjects: Subject[]
 ): Subject[] {
   const children = subjects.filter((s) => s.parentId === subject.id);
 
-  return children.flatMap((child) => {
+  let nonDisplayList: Subject[] = [];
+
+  // If the subject itself is not a display subject, include it
+  if (!subject.isDisplaySubject) {
+    nonDisplayList.push(subject);
+  }
+
+  // Now process the children
+  for (const child of children) {
     if (child.isDisplaySubject) {
-      // Recursively process display subjects to flatten their children
-      return getNonDisplayDescendants(child, subjects);
+      // Recursively get non-display subjects from display subject children
+      nonDisplayList = nonDisplayList.concat(getAllNonDisplaySubjects(child, subjects));
     } else {
-      // If not a display subject, include it directly
-      return [child];
+      // Non-display child subjects are included directly
+      nonDisplayList.push(child);
     }
-  });
+  }
+
+  return nonDisplayList;
 }
+
 
 
 export function averageOverTime(
@@ -609,36 +623,38 @@ export function gradeImpact(
 
 // Logic validated ✅
 // Function to calculate the impact of a subject on the general average
+// Function to calculate the impact of a subject on another specified subject
 export function subjectImpact(
-  subjectId: string,
+  impactingSubjectId: string,
+  impactedSubjectId: string | undefined,
   subjects: Subject[]
 ): { difference: number; percentageChange: number | null } | null {
   // Deep clone the subjects array to prevent mutations
   const subjectsCopy = deepCloneSubjects(subjects);
 
-  // Get the list of subject IDs to exclude (the subject and all its children)
+  // Identify the subjects to exclude (impacting subject and its children)
   const subjectsToExclude = [
-    subjectId,
-    ...getChildren(subjectsCopy, subjectId),
+    impactingSubjectId,
+    ...getChildren(subjectsCopy, impactingSubjectId),
   ];
 
-  // Compute the general average with the subject included
-  const averageWithSubject = average(undefined, subjectsCopy);
+  // Compute the average with the impacting subject included
+  const averageWithImpact = average(impactedSubjectId, subjectsCopy);
 
-  // Remove the subject and its children from the subjects array
-  const subjectsWithoutSubject = subjectsCopy.filter(
+  // Remove the impacting subject and its children from the subjects array
+  const subjectsWithoutImpacting = subjectsCopy.filter(
     (subject) => !subjectsToExclude.includes(subject.id)
   );
 
-  // Compute the general average without the subject
-  const averageWithoutSubject = average(undefined, subjectsWithoutSubject);
+  // Compute the average without the impacting subject
+  const averageWithoutImpact = average(impactedSubjectId, subjectsWithoutImpacting);
 
   // Compute the impact
-  if (averageWithSubject !== null && averageWithoutSubject !== null) {
-    const difference = averageWithSubject - averageWithoutSubject;
+  if (averageWithImpact !== null && averageWithoutImpact !== null) {
+    const difference = averageWithImpact - averageWithoutImpact;
     let percentageChange: number | null = null;
-    if (averageWithoutSubject !== 0) {
-      percentageChange = (difference / averageWithoutSubject) * 100;
+    if (averageWithoutImpact !== 0) {
+      percentageChange = (difference / averageWithoutImpact) * 100;
     }
     return { difference, percentageChange };
   } else {

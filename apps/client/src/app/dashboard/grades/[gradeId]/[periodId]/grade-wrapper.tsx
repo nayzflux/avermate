@@ -102,25 +102,10 @@ export default function GradeWrapper({
           />
         </DataCard>
 
-        <DataCard
-          title="Impact sur la moyenne de la matière"
-          description={`Visualisez l'impact de cette évaluation sur votre moyenne de la matière ${grade.subject.name}`}
-          icon={ArrowUpCircleIcon}
-        >
-          <DifferenceBadge
-            diff={
-              subjects
-                ? gradeImpact(grade.id, grade.subjectId, subjects)
-                    ?.difference || 0
-                : 0
-            }
-          />
-        </DataCard>
-
         {gradeParents().map((parent: Subject) => (
           <DataCard
             key={parent.id}
-            title={`Impact sur la moyenne de ${parent.name}`}
+            title={`Impact sur ${parent.name}`}
             description={`Visualisez l'impact de cette évaluation sur votre moyenne de la matière ${parent.name}`}
             icon={ArrowUpCircleIcon}
           >
@@ -133,6 +118,21 @@ export default function GradeWrapper({
             />
           </DataCard>
         ))}
+
+        <DataCard
+          title={`Impact sur ${grade.subject.name}`}
+          description={`Visualisez l'impact de cette évaluation sur votre moyenne de la matière ${grade.subject.name}`}
+          icon={ArrowUpCircleIcon}
+        >
+          <DifferenceBadge
+            diff={
+              subjects
+                ? gradeImpact(grade.id, grade.subjectId, subjects)
+                    ?.difference || 0
+                : 0
+            }
+          />
+        </DataCard>
 
         <DataCard
           title="Date de passage"

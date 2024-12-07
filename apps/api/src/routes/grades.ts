@@ -187,7 +187,7 @@ const updateGradeBodySchema = z.object({
     .optional(),
   passedAt: z.coerce.date().max(new Date()).optional(),
   subjectId: z.string().min(1).max(64).optional(),
-  periodId: z.string().min(1).max(64).optional(),
+  periodId: z.string().min(1).max(64).optional().nullable(),
 });
 
 const updateGradeParamSchema = z.object({

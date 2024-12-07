@@ -163,7 +163,7 @@ app.get("/organized-by-periods", async (c) => {
 
 // Get a specific subject organized by periods
 const getSubjectByPeriodSchema = z.object({
-  subjectId: z.string().min(1).max(64),
+  subjectId: z.string().min(1).max(64).nullable(),
 });
 
 app.get(
@@ -185,6 +185,19 @@ app.get(
     }
 
     const { subjectId } = c.req.valid("param");
+
+    //if period is null, then get all the grades from all periods
+    if (!subjectId) {
+      const allSubjects = await db.query.subjects.findMany({
+        where: eq(subjects.userId, session.user.id),
+        with: {
+          grades: true,
+        },
+        orderBy: sql`COALESCE(${subjects.parentId}, ${subjects.id}), ${subjects.parentId} IS NULL DESC, ${subjects.name} ASC`,
+      });
+
+      return c.json({ subjects: allSubjects });
+    }
 
     // Fetch the subject with grades
     const subject = await db.query.subjects.findFirst({

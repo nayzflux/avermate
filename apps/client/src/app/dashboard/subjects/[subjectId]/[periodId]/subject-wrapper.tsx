@@ -15,6 +15,7 @@ import {
   getBestGradeInSubject,
   getWorstGradeInSubject,
   subjectImpact,
+  getParents, // Import the utility to get parent subjects
 } from "@/utils/average";
 import { formatGradeValue } from "@/utils/format";
 import {
@@ -32,14 +33,22 @@ function SubjectWrapper({
   subjects,
   subject,
   period,
-  onBack, // <-- new prop passed in from the layout
+  onBack,
 }: {
   subjects: Subject[];
   subject: Subject;
   period: Period;
-  onBack: () => void; // Type the prop accordingly
+  onBack: () => void;
 }) {
-  // Vérification des notes pour la période donnée
+  const parentSubjects = () => {
+    if (!subject || !subjects) {
+      return [];
+    }
+
+    const parentIds = getParents(subjects, subject.id);
+    return subjects.filter((subj) => parentIds.includes(subj.id));
+  };
+
   const hasGrades =
     period.id === "full-year"
       ? subjects.some((subj) => subj.grades.length > 0)
@@ -47,7 +56,6 @@ function SubjectWrapper({
           subj.grades.some((grade) => grade.periodId === period.id)
         );
 
-  // Affiche un message si aucune note n'est présente
   if (!hasGrades) {
     return (
       <div className="flex flex-col gap-8 m-auto max-w-[2000px]">
@@ -103,11 +111,7 @@ function SubjectWrapper({
   return (
     <div className="flex flex-col gap-8 m-auto max-w-[2000px]">
       <div>
-        <Button
-          className="text-blue-600"
-          variant="link"
-          onClick={onBack} // Use the passed-in onBack function
-        >
+        <Button className="text-blue-600" variant="link" onClick={onBack}>
           <ArrowLeftIcon className="size-4 mr-2" />
           Retour
         </Button>
@@ -122,9 +126,9 @@ function SubjectWrapper({
 
       <Separator />
 
-      {/* Data card */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Subject average */}
+      {/* Main Data Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Subject Average */}
         <DataCard
           title="Moyenne"
           description={`Votre moyenne actuelle en ${subject?.name}`}
@@ -135,23 +139,7 @@ function SubjectWrapper({
             outOf={2000}
           />
         </DataCard>
-
-        {/* Subject impact on average */}
-        <DataCard
-          title="Impact sur la moyenne"
-          description={`Visualisez l'impact de ${subject?.name} sur votre moyenne générale`}
-          icon={ArrowUpCircleIcon}
-        >
-          <DifferenceBadge
-            diff={
-              subjects
-                ? subjectImpact(subject.id, subjects)?.difference || 0
-                : 0
-            }
-          />
-        </DataCard>
-
-        {/* Coeff */}
+        {/* Coefficient */}
         <DataCard
           title="Coefficient"
           description={`Coefficient de ${subject?.name}`}
@@ -161,8 +149,41 @@ function SubjectWrapper({
             {formatGradeValue(subject?.coefficient || 0)}
           </p>
         </DataCard>
+        {/* Subject Impact */}
+        <DataCard
+          title="Impact sur la moyenne générale"
+          description={`Impact de ${subject?.name} sur la moyenne générale`}
+          icon={ArrowUpCircleIcon}
+        >
+          <DifferenceBadge
+            diff={
+              subjects
+                ? subjectImpact(subject.id, undefined, subjects)?.difference ||
+                  0
+                : 0
+            }
+          />
+        </DataCard>
 
-        {/* Best grade */}
+
+
+        {parentSubjects().map((parent) => (
+          <DataCard
+            key={parent.id}
+            title={`Impact sur ${parent.name}`}
+            description={`Impact de ${subject?.name} sur la moyenne de ${parent.name}`}
+            icon={ArrowUpCircleIcon}
+          >
+            <DifferenceBadge
+              diff={
+                subjects
+                  ? subjectImpact(subject.id, parent.id, subjects)
+                      ?.difference || 0
+                  : 0
+              }
+            />
+          </DataCard>
+        ))}
         <DataCard
           title="Meilleure note"
           description={`Votre plus belle performance en ${(() => {
@@ -206,7 +227,7 @@ function SubjectWrapper({
 
       <Separator />
 
-      {/* Charts of average evolution */}
+      {/* Charts */}
       <div className="flex flex-col gap-4">
         <h2 className="text-xl font-semibold">Evolution de la moyenne</h2>
         <SubjectAverageChart

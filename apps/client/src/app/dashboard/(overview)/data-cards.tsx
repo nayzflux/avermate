@@ -72,23 +72,26 @@ export default function DataCards({
   } = useMemo(() => {
     //calculate the percentage of growth of the average between the first and last date
     const bestSubject = getBestSubject(subjects, true);
-    const bestSubjectAverage = average(bestSubject?.id, subjects);
-    const bestSubjectAverageComparaison = getSubjectAverageComparison(
-      subjects,
-      bestSubject?.id || "",
-      true
-    );
+    const bestSubjectAverage = bestSubject
+      ? average(bestSubject.id, subjects)
+      : null;
+    const bestSubjectAverageComparaison = bestSubject
+      ? getSubjectAverageComparison(subjects, bestSubject.id, true)
+      : null;
 
     const worstSubject = getWorstSubject(subjects, true);
-    const worstSubjectAverage = average(worstSubject?.id, subjects);
-    const worstSubjectAverageComparaison = getSubjectAverageComparison(
-      subjects,
-      worstSubject?.id || "",
-      true
-    );
+    const worstSubjectAverage = worstSubject
+      ? average(worstSubject.id, subjects)
+      : null;
+    const worstSubjectAverageComparaison = worstSubject
+      ? getSubjectAverageComparison(subjects, worstSubject.id, true)
+      : null;
 
     const bestGrade = getBestGrade(subjects);
     const worstGrade = getWorstGrade(subjects);
+
+    console.log(subjects);
+    console.log("average", average(undefined, subjects));
 
     return {
       bestSubject,
@@ -154,7 +157,7 @@ export default function DataCards({
             : "Pas de mailleure matière"
         }
       >
-        {bestSubjectAverage && (
+        {bestSubjectAverage !== null && (
           <GradeValue value={bestSubjectAverage * 100} outOf={2000} size="xl" />
         )}
       </DataCard>
@@ -188,7 +191,7 @@ export default function DataCards({
             : "Pas de pire matière"
         }
       >
-        {worstSubjectAverage && (
+        {worstSubjectAverage !== null && (
           <GradeValue
             value={worstSubjectAverage * 100}
             outOf={2000}
