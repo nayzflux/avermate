@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
 import { env } from "@/lib/env";
+import { BetterFetchError } from "@better-fetch/fetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff, Loader2Icon } from "lucide-react";
@@ -38,7 +39,7 @@ export const SignInForm = () => {
   const toggleVisibility = () => setIsVisible((prevState) => !prevState);
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ["sign-up"],
+    mutationKey: ["sign-in"],
     mutationFn: async ({ email, password }: SignInSchema) => {
       const data = await authClient.signIn.email({
         email,
@@ -48,22 +49,52 @@ export const SignInForm = () => {
 
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      // If email is not verified
+      if (!data.user.emailVerified) {
+        // Send a verification link
+        await authClient.sendVerificationEmail({
+          email: data.user.email,
+        });
+
+        toaster.toast({
+          title: "✉️ Email non vérifié",
+          description: `Un lien de vérification a été envoyé à l'adresse ${data.user.email}.`,
+        });
+
+        router.push("/auth/verify-email");
+
+        return;
+      }
+
       // Redirect to the dashboard
       router.push("/dashboard");
 
       // Send toast notification
       toaster.toast({
-        title: `Welcome back ${data.user.name}!`,
-        description: "We hope you reached your goals 🚀!",
+        title: `👋 Ravi de vous revoir ${data.user.name} !`,
+        description: "Nous espérons que vous avez atteint vos objectifs !",
       });
     },
 
     onError: (err) => {
-      // TODO: Error handling
+      if (err instanceof BetterFetchError) {
+        const status = err.status;
+
+        if (status === 401) {
+          toaster.toast({
+            title: "❌ Erreur",
+            description: "Email ou mot de passe incorrect",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
+      // Generic error
       toaster.toast({
-        title: "Failed to sign-in",
-        description: "Something went wrong. Please try again later.",
+        title: "❌ Erreur",
+        description: "Une erreur est survenue. Réessayez plus tard.",
         variant: "destructive",
       });
     },

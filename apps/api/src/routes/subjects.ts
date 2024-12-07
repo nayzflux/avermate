@@ -1,13 +1,11 @@
 import { db } from "@/db";
-import { subjects } from "@/db/schema";
+import { periods, subjects } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
-import { and, eq, asc, sql, ne } from "drizzle-orm";
+import { and, asc, eq, ne, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { periods } from "@/db/schema";
-
 
 const app = new Hono();
 
@@ -31,7 +29,16 @@ app.post("/", zValidator("json", createSubjectSchema), async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   if (!session) throw new HTTPException(401);
 
-  const { name, coefficient, parentId, isMainSubject, isDisplaySubject } = c.req.valid("json");
+  // If email isnt verified
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
+
+  const { name, coefficient, parentId, isMainSubject, isDisplaySubject } =
+    c.req.valid("json");
 
   let depth = 0;
 
@@ -72,6 +79,14 @@ app.get("/", async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   if (!session) throw new HTTPException(401);
 
+  // If email isnt verified
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
+
   const allSubjects = await db.query.subjects.findMany({
     where: eq(subjects.userId, session.user.id),
     with: {
@@ -86,6 +101,14 @@ app.get("/", async (c) => {
 app.get("/organized-by-periods", async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   if (!session) throw new HTTPException(401);
+
+  // If email isnt verified
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
 
   // Fetch periods for the user
   const userPeriods = await db.query.periods.findMany({
@@ -150,6 +173,17 @@ app.get(
     const session = await auth.api.getSession({ headers: c.req.raw.headers });
     if (!session) throw new HTTPException(401);
 
+    // If email isnt verified
+    if (!session.user.emailVerified) {
+      return c.json(
+        {
+          code: "EMAIL_NOT_VERIFIED",
+          message: "Email verification is required",
+        },
+        403
+      );
+    }
+
     const { subjectId } = c.req.valid("param");
 
     // Fetch the subject with grades
@@ -196,7 +230,6 @@ app.get(
     return c.json({ subject: { ...subject, periods: periodsWithGrades } });
   }
 );
-
 
 /**
  * Get subject by ID
@@ -285,7 +318,8 @@ app.patch(
         });
 
         if (!parentSubject) throw new HTTPException(404);
-        if (parentSubject.userId !== session.user.id) throw new HTTPException(403);
+        if (parentSubject.userId !== session.user.id)
+          throw new HTTPException(403);
 
         // Compute new depth
         newDepth = parentSubject.depth + 1;

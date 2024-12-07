@@ -41,6 +41,14 @@ app.post("/", zValidator("json", createGradeSchema), async (c) => {
 
   if (!session) throw new HTTPException(401);
 
+  // If email isnt verified
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
+
   const { name, outOf, value, coefficient, passedAt, subjectId, periodId } =
     c.req.valid("json");
 
@@ -63,7 +71,7 @@ app.post("/", zValidator("json", createGradeSchema), async (c) => {
       createdAt: new Date(),
       userId: session.user.id,
       subjectId: subject.id,
-      periodId
+      periodId,
     })
     .returning()
     .get();
@@ -85,6 +93,14 @@ app.get("/", zValidator("query", getGradesQuerySchema), async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   if (!session) throw new HTTPException(401);
 
+  // If email isnt verified
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
+
   const { from, to, limit } = c.req.valid("query");
 
   let allGrades = await db.query.grades.findMany({
@@ -100,13 +116,14 @@ app.get("/", zValidator("query", getGradesQuerySchema), async (c) => {
         columns: {
           id: true,
           name: true,
-        }
-      }
+        },
+      },
     },
   });
 
-  allGrades = allGrades.sort((a, b) => b.passedAt.getTime() - a.passedAt.getTime());
-
+  allGrades = allGrades.sort(
+    (a, b) => b.passedAt.getTime() - a.passedAt.getTime()
+  );
 
   return c.json({ grades: allGrades });
 });
@@ -121,6 +138,14 @@ const getGradeSchema = z.object({
 app.get("/:gradeId", zValidator("param", getGradeSchema), async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   if (!session) throw new HTTPException(401);
+
+  // If email isnt verified
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
 
   const { gradeId } = c.req.valid("param");
 
@@ -178,6 +203,17 @@ app.patch(
 
     if (!session) throw new HTTPException(401);
 
+    // If email isnt verified
+    if (!session.user.emailVerified) {
+      return c.json(
+        {
+          code: "EMAIL_NOT_VERIFIED",
+          message: "Email verification is required",
+        },
+        403
+      );
+    }
+
     const { gradeId } = c.req.valid("param");
     const data = c.req.valid("json");
 
@@ -203,6 +239,14 @@ app.delete("/:gradeId", zValidator("param", deleteGradeSchema), async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
   if (!session) throw new HTTPException(401);
+
+  // If email isnt verified
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
 
   const { gradeId } = c.req.valid("param");
 

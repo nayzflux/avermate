@@ -2,6 +2,7 @@
 
 import {
   Credenza,
+  CredenzaBody,
   CredenzaContent,
   CredenzaDescription,
   CredenzaHeader,
