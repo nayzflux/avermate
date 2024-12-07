@@ -42,15 +42,15 @@ export const ForgotPasswordForm = () => {
     },
     onSuccess: (data) => {
       toaster.toast({
-        title: `Password reset email sent`,
-        description: "Please check your email for further instructions.",
+        title: `Email de réinitialisation du mot de passe envoyé`,
+        description: "Veuillez vérifier votre email pour plus d'instructions.",
       });
     },
 
     onError: (err) => {
       toaster.toast({
-        title: "Failed to send password reset email",
-        description: "Something went wrong. Please try again later.",
+        title: "Échec de l'envoi de l'email de réinitialisation du mot de passe",
+        description: "Une erreur est survenue. Veuillez réessayer plus tard.",
         variant: "destructive",
       });
     },
@@ -85,7 +85,7 @@ export const ForgotPasswordForm = () => {
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="email@example.com"
+                    placeholder="email@exemple.com"
                     {...field}
                   />
                 </FormControl>
@@ -97,7 +97,7 @@ export const ForgotPasswordForm = () => {
 
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2Icon className="animate-spin mr-2 size-4" />}
-            Reset Password
+            Réinitialiser le mot de passe
           </Button>
         </form>
       </Form>

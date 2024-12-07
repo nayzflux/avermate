@@ -93,17 +93,17 @@ export default function AccountDropdown() {
         <DropdownMenuItem asChild>
           <Link href={`/profile/account?from=${encodeURIComponent(pathname)}`}>
             <ShieldCheckIcon className="size-4 mr-2" />
-            Account
+            Compte
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           {/* Pass current page as 'from' parameter */}
           <Link href={`/profile/settings?from=${encodeURIComponent(pathname)}`}>
             <Cog6ToothIcon className="size-4 mr-2" />
-            Settings
+            Paramètres
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+        <DropdownMenuLabel>Apparence</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <ThemeSwitchButton />
         <DropdownMenuSeparator />

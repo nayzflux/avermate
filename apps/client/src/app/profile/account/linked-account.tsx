@@ -68,8 +68,8 @@ export default function LinkedAccount() {
 
   return (
     <ProfileSection
-      title="Linked Accounts"
-      description="List of all accounts linked to your user"
+      title="Comptes Liés"
+      description="Liste de tous les comptes liés à votre utilisateur"
     >
       <div className="flex flex-col gap-4">
         {accounts?.map(({ id, provider }) => (

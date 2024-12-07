@@ -44,6 +44,9 @@ import React from "react";
 import { Check } from "lucide-react";
 import { FormDescription } from "@/components/ui/form";
 import { ChevronsUpDown } from "lucide-react";
+import "dayjs/locale/fr";
+
+dayjs.locale("fr");
 
 const updateGradeSchema = z.object({
   name: z.string().min(1).max(64),

@@ -1,4 +1,7 @@
 import dayjs from "dayjs";
+import 'dayjs/locale/fr'
+
+dayjs.locale('fr')
 
 export const formatGradeValue = (value: number) => {
   return parseFloat((value / 100).toFixed(2));
@@ -11,5 +14,5 @@ export const formatDiff = (value: number, decimals?: number) => {
 };
 
 export const formatDate = (date: Date) => {
-  return dayjs(date).format("DD MMM[.] YYYY");
+  return dayjs(date).format("DD MMM YYYY");
 };

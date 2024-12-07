@@ -20,12 +20,12 @@ export default function ThemeSwitchButton() {
       {theme.resolvedTheme === "dark" ? (
         <>
           <SunIcon className="size-4 mr-2" />
-          Switch to light mode
+          Basculer en mode clair
         </>
       ) : (
         <>
           <MoonIcon className="size-4 mr-2" />
-          Switch to dark mode
+          Basculer en mode sombre
         </>
       )}
     </DropdownMenuItem>

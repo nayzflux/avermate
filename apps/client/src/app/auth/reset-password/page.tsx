@@ -6,7 +6,7 @@ const ResetPasswordPage = () => {
     <div className="flex flex-col gap-8">
       {/* Title */}
       <div className="flex flex-col gap-2">
-        <p className="text-3xl md:text-4xl font-bold">Reset Password</p>
+        <p className="text-3xl md:text-4xl font-bold">Réinitialiser le mot de passe</p>
 
         <div className="flex flex-col gap-0.5 text-sm md:text-base text-muted-foreground">
           <p>
@@ -15,7 +15,7 @@ const ResetPasswordPage = () => {
           </p>
 
           <Link href="/auth/sign-in" className="underline">
-            Log In
+            Se connecter
           </Link>
         </div>
       </div>

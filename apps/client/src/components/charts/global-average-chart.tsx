@@ -305,7 +305,8 @@ const CustomDot = (props: any) => {
           {/* Area Chart Section */}
           <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%] lg:w-[60%]">
             <CardDescription className="pb-8">
-              Visualiser l&apos;évolution de votre moyenne générale sur ce trimestre
+              Visualiser l&apos;évolution de votre moyenne générale sur ce
+              trimestre
             </CardDescription>
             <ChartContainer config={chartConfig} className="h-[302px] w-[100%]">
               <AreaChart data={chartData} margin={{ left: -30 }}>
@@ -338,6 +339,7 @@ const CustomDot = (props: any) => {
                       findNearestNonNull={true}
                       dataKey="average"
                       labelFormatter={(value) => value}
+                      valueFormatter={(val) => val.toFixed(2)}
                       onUpdateActiveTooltipIndex={
                         handleActiveTooltipIndexChange
                       }
@@ -397,7 +399,13 @@ const CustomDot = (props: any) => {
                   fill="#2662d9"
                   fillOpacity={0.6}
                 />
-                <ChartTooltip content={<ChartTooltipContent />} />
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      valueFormatter={(val) => val.toFixed(2)}
+                    />
+                  }
+                />
               </RadarChart>
             </ChartContainer>
           </div>

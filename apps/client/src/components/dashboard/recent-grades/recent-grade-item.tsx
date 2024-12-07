@@ -19,7 +19,9 @@ export default function RecentGradeItem({ grade }: { grade: Grade }) {
           <p className="font-semibold">{grade?.subject?.name}</p>
           <p className="text-sm text-muted-foreground truncate">{grade.name}</p>
         </div>
-        <GradeValue value={grade.value} outOf={grade.outOf} size="sm" />
+        <div className="w-[60px]">
+          <GradeValue value={grade.value} outOf={grade.outOf} size="sm" />
+        </div>
       </div>
     </Link>
   );

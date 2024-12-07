@@ -41,6 +41,9 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import React from "react";
+import "dayjs/locale/fr";
+
+dayjs.locale("fr");
 
 const addGradeSchema = z.object({
   name: z.string().min(1).max(64),
@@ -128,9 +131,9 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
       return data;
     },
     onSuccess: (data) => {
-      // Send toast notification
+      // Envoyer une notification toast
       toaster.toast({
-        title: `Notes ajouter avec succès !`,
+        title: `Note ajoutée avec succès !`,
         description: "Vous pouvez à présent suivre votre évolution.",
       });
 
@@ -146,10 +149,10 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
     },
 
     onError: (err) => {
-      // TODO: Error handling
+      // Gestion des erreurs
       toaster.toast({
-        title: "Failed to sign-in",
-        description: "Something went wrong. Please try again later.",
+        title: "Échec de l'ajout de la note",
+        description: "Une erreur est survenue. Veuillez réessayer plus tard.",
         variant: "destructive",
       });
     },

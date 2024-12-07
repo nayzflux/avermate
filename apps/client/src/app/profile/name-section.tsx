@@ -42,7 +42,7 @@ export default function NameSection() {
 
                 <div className="flex w-full justify-end">
                   <Button type="submit" variant="outline" disabled={isPending}>
-                    Save changes
+                    Sauvegarder
                   </Button>
                 </div>
               </form>
@@ -55,8 +55,8 @@ export default function NameSection() {
 
   return (
     <ProfileSection
-      title="Your Name"
-      description="Edit how your appear on Avermate."
+      title="Votre nom"
+      description="Modifiez comment vous apparaissez sur Avermate."
     >
       <UpdateNameForm defaultName={session?.user?.name} />
     </ProfileSection>

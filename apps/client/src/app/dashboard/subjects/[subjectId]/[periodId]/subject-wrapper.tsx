@@ -39,9 +39,12 @@ function SubjectWrapper({
   onBack: () => void; // Type the prop accordingly
 }) {
   // Vérification des notes pour la période donnée
-  const hasGrades = subjects.some((subj) =>
-    subj.grades.some((grade) => grade.periodId === period.id)
-  );
+  const hasGrades =
+    period.id === "full-year"
+      ? subjects.some((subj) => subj.grades.length > 0)
+      : subjects.some((subj) =>
+          subj.grades.some((grade) => grade.periodId === period.id)
+        );
 
   // Affiche un message si aucune note n'est présente
   if (!hasGrades) {

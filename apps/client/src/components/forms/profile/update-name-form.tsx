@@ -35,18 +35,18 @@ export const UpdateNameForm = ({ defaultName }: { defaultName: string }) => {
       return data;
     },
     onSuccess: () => {
-      // Send toast notification
+      // Envoyer une notification toast
       toaster.toast({
-        title: `Success`,
-        description: "Your name has been successfully updated!",
+        title: `Succès`,
+        description: "Votre nom a été mis à jour avec succès !",
       });
     },
 
     onError: (err) => {
-      // TODO: Error handling
+      // TODO: Gestion des erreurs
       toaster.toast({
-        title: "Error",
-        description: "Something went wrong. Please try again later.",
+        title: "Erreur",
+        description: "Une erreur est survenue. Veuillez réessayer plus tard.",
         variant: "destructive",
       });
     },
@@ -89,7 +89,7 @@ export const UpdateNameForm = ({ defaultName }: { defaultName: string }) => {
           <div className="flex w-full justify-end">
             <Button type="submit" variant="outline" disabled={isPending}>
               {isPending && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
-              Save changes
+              Sauvegarder
             </Button>
           </div>
         </form>

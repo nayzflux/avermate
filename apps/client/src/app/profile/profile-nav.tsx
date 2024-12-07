@@ -19,17 +19,17 @@ const routes = [
   },
   {
     icon: ShieldCheckIcon,
-    label: "Account & Security",
+    label: "Compte & Sécutité",
     path: "/profile/account",
   },
   {
     icon: Cog6ToothIcon,
-    label: "Settings",
+    label: "Paramètres",
     path: "/profile/settings",
   },
   {
     icon: ArrowLeftIcon,
-    label: "Back",
+    label: "Retour",
     action: "back",
     path: "",
   },
@@ -68,7 +68,7 @@ export default function ProfileNav({ onBack }: { onBack: () => void }) {
             onClick={onBack}
           >
             <ArrowLeftIcon className="size-4 mr-0 lg:mr-2" />
-            <p className="hidden lg:inline">Back</p>
+            <p className="hidden lg:inline">Retour</p>
           </Button>
         </li>
       </ul>

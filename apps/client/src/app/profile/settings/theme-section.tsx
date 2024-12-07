@@ -20,29 +20,29 @@ export const ThemeSection = () => {
 
   return (
     <ProfileSection
-      title="Appearance"
-      description="Customize wich theme will be used."
+      title="Apparence"
+      description="Personnalisez le thème qui sera utilisé."
     >
       <div className="flex flex-col gap-4">
-        <Label>Theme</Label>
+      <Label>Thème</Label>
 
-        <Select
-          onValueChange={handleThemeChange}
-          defaultValue={theme.theme}
-          value={theme.theme}
-        >
-          <SelectTrigger className="capitalize">
-            <SelectValue placeholder="Select a theme" />
-          </SelectTrigger>
+      <Select
+        onValueChange={handleThemeChange}
+        defaultValue={theme.theme}
+        value={theme.theme}
+      >
+        <SelectTrigger className="capitalize">
+        <SelectValue placeholder="Sélectionnez un thème" />
+        </SelectTrigger>
 
-          <SelectContent>
-            <SelectItem value="system">System</SelectItem>
+        <SelectContent>
+        <SelectItem value="system">Système</SelectItem>
 
-            <SelectItem value="light">Light</SelectItem>
+        <SelectItem value="light">Clair</SelectItem>
 
-            <SelectItem value="dark">Dark</SelectItem>
-          </SelectContent>
-        </Select>
+        <SelectItem value="dark">Sombre</SelectItem>
+        </SelectContent>
+      </Select>
       </div>
     </ProfileSection>
   );

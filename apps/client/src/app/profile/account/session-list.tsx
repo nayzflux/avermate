@@ -17,6 +17,9 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ProfileSection from "../profile-section";
 import errorStateCard from "@/components/skeleton/error-card";
+import "dayjs/locale/fr";
+
+dayjs.locale('fr')
 
 dayjs.extend(relativeTime);
 
@@ -78,7 +81,7 @@ export default function SessionList() {
 
                   <div className="flex justify-end">
                     <Button variant="destructive" disabled>
-                      Revoke
+                      Révoquer
                     </Button>
                   </div>
                 </div>
@@ -98,8 +101,8 @@ export default function SessionList() {
 
   return (
     <ProfileSection
-      title="Active Sessions"
-      description="Manage and watch all your active sessions."
+      title="Sessions actives"
+      description="Gérez et surveillez toutes vos sessions actives."
     >
       <div className="flex flex-col gap-4">
         {sesssions?.map((session) => (
@@ -128,9 +131,9 @@ export default function SessionList() {
                 )}
               >
                 {currentSession?.session?.id === session.id ? (
-                  <p>Current</p>
+                  <p>Actuelle</p>
                 ) : session.expiresAt < new Date() ? (
-                  <p>Expired</p>
+                  <p>Expirée</p>
                 ) : (
                   <p>Active</p>
                 )}

@@ -6,13 +6,16 @@ const SignInPage = () => {
     <div className="flex flex-col gap-8">
       {/* Title */}
       <div className="flex flex-col gap-2">
-        <p className="text-3xl md:text-4xl font-bold">Sign In</p>
+        <p className="text-3xl md:text-4xl font-bold">Se connecter</p>
 
         <div className="flex flex-col gap-0.5 text-sm md:text-base text-muted-foreground">
-          <p>Log in to stay on top of your averages and reach your goals.</p>
+          <p>
+            Connectez vous pour rester au top de vos moyennes et atteindre vos
+            objectifs.
+          </p>
 
           <Link href="/auth/sign-up" className="underline">
-            I don&apos;t have an account
+            Je n'ai pas de compte
           </Link>
         </div>
       </div>

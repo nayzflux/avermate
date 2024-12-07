@@ -46,36 +46,17 @@ function calculateAverageForSubject(
     }
   }
 
-  // Calculate averages of child subjects
-  const childSubjects = subjects.filter((s) => s.parentId === subject.id);
+  // Get all non-display descendants
+  const nonDisplayDescendants = getNonDisplayDescendants(subject, subjects);
 
-  for (const child of childSubjects) {
-    if (child.isDisplaySubject) {
-      // Flatten display subjects and process their children
-      const grandChildren = subjects.filter((s) => s.parentId === child.id);
-      for (const grandChild of grandChildren) {
-        const grandChildAverage = calculateAverageForSubject(
-          grandChild,
-          subjects
-        );
-        if (grandChildAverage !== null) {
-          const grandChildPercentage = grandChildAverage / 20;
-          const grandChildCoefficient = (grandChild.coefficient ?? 100) / 100;
+  for (const child of nonDisplayDescendants) {
+    const childAverage = calculateAverageForSubject(child, subjects);
+    if (childAverage !== null) {
+      const childPercentage = childAverage / 20;
+      const childCoefficient = (child.coefficient ?? 100) / 100;
 
-          totalWeightedPercentages +=
-            grandChildPercentage * grandChildCoefficient;
-          totalCoefficients += grandChildCoefficient;
-        }
-      }
-    } else {
-      const childAverage = calculateAverageForSubject(child, subjects);
-      if (childAverage !== null) {
-        const childPercentage = childAverage / 20;
-        const childCoefficient = (child.coefficient ?? 100) / 100;
-
-        totalWeightedPercentages += childPercentage * childCoefficient;
-        totalCoefficients += childCoefficient;
-      }
+      totalWeightedPercentages += childPercentage * childCoefficient;
+      totalCoefficients += childCoefficient;
     }
   }
 
@@ -90,6 +71,7 @@ function calculateAverageForSubject(
   return averagePercentage * 20;
 }
 
+
 function calculateAverageForSubjects(
   subjects: Subject[],
   allSubjects: Subject[]
@@ -98,33 +80,16 @@ function calculateAverageForSubjects(
   let totalCoefficients = 0;
 
   for (const subject of subjects) {
-    if (subject.isDisplaySubject) {
-      // Flatten display subjects and process their children
-      const childSubjects = allSubjects.filter(
-        (s) => s.parentId === subject.id
-      );
-      for (const child of childSubjects) {
-        const childAverage = calculateAverageForSubject(child, allSubjects);
-        if (childAverage !== null) {
-          const childPercentage = childAverage / 20;
-          const childCoefficient = (child.coefficient ?? 100) / 100;
+    const nonDisplayDescendants = getNonDisplayDescendants(subject, allSubjects);
 
-          totalWeightedPercentages += childPercentage * childCoefficient;
-          totalCoefficients += childCoefficient;
-        }
-      }
-    } else {
-      const subjectAverage = calculateAverageForSubject(subject, allSubjects);
-      if (subjectAverage !== null) {
-        // Convert the subject's average to a percentage
-        const subjectPercentage = subjectAverage / 20;
+    for (const descendant of nonDisplayDescendants) {
+      const descendantAverage = calculateAverageForSubject(descendant, allSubjects);
+      if (descendantAverage !== null) {
+        const descendantPercentage = descendantAverage / 20;
+        const descendantCoefficient = (descendant.coefficient ?? 100) / 100;
 
-        // Adjust the subject's coefficient (divide by 100)
-        const subjectCoefficient = (subject.coefficient ?? 100) / 100;
-
-        // Add the weighted average of the subject
-        totalWeightedPercentages += subjectPercentage * subjectCoefficient;
-        totalCoefficients += subjectCoefficient;
+        totalWeightedPercentages += descendantPercentage * descendantCoefficient;
+        totalCoefficients += descendantCoefficient;
       }
     }
   }
@@ -137,6 +102,26 @@ function calculateAverageForSubjects(
 
   return averagePercentage * 20;
 }
+
+
+// Recursive function to get all non-display descendants of a subject
+function getNonDisplayDescendants(
+  subject: Subject,
+  subjects: Subject[]
+): Subject[] {
+  const children = subjects.filter((s) => s.parentId === subject.id);
+
+  return children.flatMap((child) => {
+    if (child.isDisplaySubject) {
+      // Recursively process display subjects to flatten their children
+      return getNonDisplayDescendants(child, subjects);
+    } else {
+      // If not a display subject, include it directly
+      return [child];
+    }
+  });
+}
+
 
 export function averageOverTime(
   subjects: Subject[],

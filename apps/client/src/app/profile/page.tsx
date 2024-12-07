@@ -4,7 +4,7 @@ import NameSection from "./name-section";
 
 export default function ProfilePage() {
   return (
-    <main className="flex flex-col gap-8 w-full">
+    <main className="flex flex-col gap-8 w-full ">
       <AvatarSection />
       <NameSection />
       <EmailSection />

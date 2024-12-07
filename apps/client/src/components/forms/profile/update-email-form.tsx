@@ -43,16 +43,16 @@ export const UpdateEmailForm = ({
     onSuccess: () => {
       // Send toast notification
       toaster.toast({
-        title: `Success`,
-        description: "Your email has been successfully updated!",
+        title: `Succès`,
+        description: "Votre email a été mis à jour avec succès !",
       });
     },
 
     onError: (err) => {
       // TODO: Error handling
       toaster.toast({
-        title: "Error",
-        description: "Something went wrong. Please try again later.",
+        title: "Erreur",
+        description: "Une erreur est survenue. Veuillez réessayer plus tard.",
         variant: "destructive",
       });
     },
@@ -95,7 +95,7 @@ export const UpdateEmailForm = ({
           <div className="flex w-full justify-end">
             <Button type="submit" variant="outline" disabled={isPending}>
               {isPending && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
-              Save changes
+              Sauvegarder
             </Button>
           </div>
         </form>

@@ -32,8 +32,8 @@ export default function SignOutButton() {
       router.push("/");
 
       toaster.toast({
-        title: "Signed-Out",
-        description: "See you soon 👋!",
+        title: "Déconnecté",
+        description: "À bientôt 👋!",
       });
     },
   });
@@ -51,24 +51,24 @@ export default function SignOutButton() {
           onSelect={(e) => e.preventDefault()}
         >
           <LogOutIcon className="size-4 mr-2" />
-          Sign out
+          Se déconnecter
         </DropdownMenuItem>
       </AlertDialogTrigger>
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Sign Out</AlertDialogTitle>
+          <AlertDialogTitle>Se déconnecter</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to sign out?
+            Êtes-vous sûr de vouloir vous déconnecter ?
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Stay in</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>Rester</AlertDialogCancel>
 
           <Button variant="destructive" asChild>
             <AlertDialogAction disabled={isPending} onClick={handleSignOut}>
-              Sign out
+              Se déconnecter
             </AlertDialogAction>
           </Button>
         </AlertDialogFooter>

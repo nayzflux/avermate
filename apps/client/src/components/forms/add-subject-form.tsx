@@ -58,10 +58,9 @@ type AddSubjectSchema = z.infer<typeof addSubjectSchema>;
 export const AddSubjectForm = ({ close }: { close: () => void }) => {
   const [open, setOpen] = useState(false);
   const toaster = useToast();
-
   const queryClient = useQueryClient();
 
-  const { data: subects, isError } = useQuery({
+  const { data: subects } = useQuery({
     queryKey: ["subjects"],
     queryFn: async () => {
       const res = await apiClient.get("subjects");
@@ -94,10 +93,9 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
       const data = await res.json();
       return data;
     },
-    onSuccess: (data) => {
-      // Send toast notification
+    onSuccess: () => {
       toaster.toast({
-        title: `Matière ajouter avec succès !`,
+        title: `Matière ajoutée avec succès !`,
         description:
           "Ajouter des notes à cette matière pour commencer à suivre votre progression.",
       });
@@ -113,11 +111,10 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
       });
     },
 
-    onError: (err) => {
-      // TODO: Error handling
+    onError: () => {
       toaster.toast({
-        title: "Failed to sign-in",
-        description: "Something went wrong. Please try again later.",
+        title: "Erreur",
+        description: "Une erreur s'est produite. Réessayez plus tard.",
         variant: "destructive",
       });
     },
@@ -128,8 +125,20 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
     defaultValues: {
       name: "",
       parentId: "",
+      isDisplaySubject: false,
+      isMainSubject: false,
+      coefficient: undefined,
     },
   });
+
+  const isDisplaySubject = form.watch("isDisplaySubject");
+
+  // Update coefficient when category is toggled on
+  useEffect(() => {
+    if (isDisplaySubject) {
+      form.setValue("coefficient", 1);
+    }
+  }, [isDisplaySubject, form]);
 
   const onSubmit = (values: AddSubjectSchema) => {
     mutate(values);
@@ -149,11 +158,9 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Nom</FormLabel>
-
                 <FormControl>
                   <Input type="text" placeholder="Mathématiques" {...field} />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -162,21 +169,24 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
           <FormField
             control={form.control}
             name="coefficient"
-            disabled={isPending}
             render={({ field }) => (
               <FormItem className="col-span-2">
                 <FormLabel>Coefficient</FormLabel>
-
                 <FormControl>
                   <Input
                     type="number"
                     placeholder="2"
                     {...field}
+                    disabled={isPending || isDisplaySubject}
                     onChange={(e) => field.onChange(e.target.value)}
                   />
                 </FormControl>
-
                 <FormMessage />
+                {isDisplaySubject && (
+                  <FormDescription>
+                    Les catégories ont un coefficient fixe de 1.
+                  </FormDescription>
+                )}
               </FormItem>
             )}
           />
@@ -195,7 +205,7 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
                 </div>
                 <FormMessage />
                 <FormDescription>
-                  Les matières principales sont affichées en premier dans la
+                  Les matières principales sont affichées en premier dans le
                   tableau de bord.
                 </FormDescription>
               </FormItem>

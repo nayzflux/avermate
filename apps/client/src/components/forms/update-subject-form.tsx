@@ -20,13 +20,6 @@ import { Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Badge } from "../ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { Switch } from "@/components/ui/switch";
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -66,7 +59,6 @@ export const UpdateSubjectForm = ({
   const [open, setOpen] = useState(false);
   const [parentInputValue, setParentInputValue] = useState("");
   const toaster = useToast();
-
   const queryClient = useQueryClient();
 
   const { data: subjects } = useQuery({
@@ -91,7 +83,6 @@ export const UpdateSubjectForm = ({
       isMainSubject,
       isDisplaySubject,
     }: UpdateSubjectSchema) => {
-      //console.log(parentId);
       const res = await apiClient.patch(`subjects/${subject.id}`, {
         json: {
           name,
@@ -113,20 +104,14 @@ export const UpdateSubjectForm = ({
 
       close();
 
-      queryClient.invalidateQueries({
-        queryKey: ["subjects"],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["subject", subject.id],
-      });
+      queryClient.invalidateQueries({ queryKey: ["subjects"] });
+      queryClient.invalidateQueries({ queryKey: ["subject", subject.id] });
     },
-
     onError: () => {
       toaster.toast({
         title: "Erreur",
         description:
-          "Impossible de mettre à jour la matière. Réessayer plus tard.",
+          "Impossible de mettre à jour la matière. Réessayez plus tard.",
         variant: "destructive",
       });
     },
@@ -143,11 +128,19 @@ export const UpdateSubjectForm = ({
     },
   });
 
+  const isDisplaySubject = form.watch("isDisplaySubject");
+
+  // Update coefficient when category is toggled on
+  useEffect(() => {
+    if (isDisplaySubject) {
+      form.setValue("coefficient", 1);
+    }
+  }, [isDisplaySubject, form]);
+
   const onSubmit = (values: UpdateSubjectSchema) => {
     mutate(values);
   };
 
-  // When the popover opens, set the input value to the currently selected parent's name (if any)
   useEffect(() => {
     if (open) {
       const parentId = form.getValues("parentId");
@@ -193,10 +186,16 @@ export const UpdateSubjectForm = ({
                     type="number"
                     placeholder={(subject.coefficient / 100).toString()}
                     {...field}
+                    disabled={isPending || isDisplaySubject}
                     onChange={(e) => field.onChange(e.target.value)}
                   />
                 </FormControl>
                 <FormMessage />
+                {isDisplaySubject && (
+                  <FormDescription>
+                    Les catégories ont un coefficient fixe de 1.
+                  </FormDescription>
+                )}
               </FormItem>
             )}
           />
@@ -215,7 +214,7 @@ export const UpdateSubjectForm = ({
                 </div>
                 <FormMessage />
                 <FormDescription>
-                  Les matières principales sont affichées en premier dans la
+                  Les matières principales sont affichées en premier dans le
                   tableau de bord.
                 </FormDescription>
               </FormItem>

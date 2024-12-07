@@ -210,7 +210,7 @@ function renderSubjects(
                 }/${periodId}?from=${encodeURIComponent(pathname)}`}
                 className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
               >
-                {subject.name + ` (` + subject.coefficient / 100 + `)`}
+                {subject.name + (!subject.isDisplaySubject ? ` (${subject.coefficient / 100})` : '')}
               </Link>
 
               {/* Mobile-only average display (hidden on md+) */}
