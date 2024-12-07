@@ -31,7 +31,7 @@ const createGradeSchema = z.object({
     .transform((f) => Math.round(f * 100)),
   passedAt: z.coerce.date().max(new Date()).optional().default(new Date()),
   subjectId: z.string().min(1).max(64),
-  periodId: z.string().min(1).max(64),
+  periodId: z.string().min(1).max(64).nullable(),
 });
 
 app.post("/", zValidator("json", createGradeSchema), async (c) => {

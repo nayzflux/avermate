@@ -13,6 +13,8 @@ import UpdatePeriodDialog from "@/components/dialogs/update-period-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import errorStateCard from "@/components/skeleton/error-card";
+import { BookOpenIcon, PlusCircleIcon } from "lucide-react";
+import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 
 
 export const PeriodsSection = () => {
@@ -76,6 +78,31 @@ export const PeriodsSection = () => {
 
   if (isPeriodError) {
     return <div>{errorStateCard()}</div>;
+  }
+
+  if (period.length == 0) {
+    return (
+      <ProfileSection
+        title="Périodes"
+        description="Gérez vos périodes scolaires"
+      >
+        <div className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
+          <BookOpenIcon className="w-12 h-12" />
+          <div className="flex flex-col items-center gap-1">
+            <h2 className="text-xl font-semibold">
+              Aucune période pour l&apos;instant
+            </h2>
+            <p>Ajouter une nouvelle période</p>
+          </div>
+          <AddPeriodDialog>
+            <Button variant="outline">
+              <PlusCircleIcon className="size-4 mr-2" />
+              Ajouter une période
+            </Button>
+          </AddPeriodDialog>
+        </div>
+      </ProfileSection>
+    );
   }
 
   return (

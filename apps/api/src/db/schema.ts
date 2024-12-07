@@ -90,7 +90,6 @@ export const grades = sqliteTable("grades", {
   createdAt: integer({ mode: "timestamp" }).notNull(),
 
   periodId: text()
-    .notNull()
     .references(() => periods.id, { onUpdate: "cascade", onDelete: "cascade" }),
 
   subjectId: text()

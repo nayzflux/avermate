@@ -47,8 +47,6 @@ export default function DeletePeriodDialog({ period }: { period: Period }) {
       });
 
       setOpen(false);
-
-      router.back();
     },
       onError: (err) => {
         console.log("the error was: ", err);

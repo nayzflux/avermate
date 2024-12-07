@@ -52,7 +52,7 @@ const addGradeSchema = z.object({
   coefficient: z.coerce.number().min(0).max(1000),
   passedAt: z.date(),
   subjectId: z.string().min(1).max(64),
-  periodId: z.string().min(1).max(64),
+  periodId: z.string().min(1).max(64).nullable(),
 });
 
 type AddGradeSchema = z.infer<typeof addGradeSchema>;
@@ -68,7 +68,7 @@ const determinePeriodId = (
       formattedDate.isAfter(dayjs(period.startAt)) &&
       formattedDate.isBefore(dayjs(period.endAt))
   );
-  return matchedPeriod ? matchedPeriod.id : "";
+  return matchedPeriod ? matchedPeriod.id : "full-year";
 };
 
 export const AddGradeForm = ({ close }: { close: () => void }) => {
@@ -185,7 +185,12 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
   );
 
   const onSubmit = (values: AddGradeSchema) => {
-    mutate(values);
+    const processedValues = {
+      ...values,
+      periodId: values.periodId === "full-year" ? null : values.periodId,
+    };
+
+    mutate(processedValues);
   };
 
   return (
@@ -328,7 +333,6 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="periodId"
@@ -352,6 +356,8 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
                       >
                         {selectedPeriod
                           ? selectedPeriod.name
+                          : form.getValues("periodId") === "full-year"
+                          ? "Année complète"
                           : "Choisir une période"}
                         <ChevronsUpDown className="opacity-50" />
                       </Button>
@@ -386,6 +392,21 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
                               )}
                             </CommandItem>
                           ))}
+                          <CommandItem
+                            key="full-year"
+                            value="Année complète"
+                            onSelect={() => {
+                              form.setValue("periodId", "full-year", {
+                                shouldValidate: true,
+                              });
+                              setOpen(false);
+                            }}
+                          >
+                            <span>Année complète</span>
+                            {form.getValues("periodId") === "full-year" && (
+                              <Check className="ml-auto h-4 w-4" />
+                            )}
+                          </CommandItem>
                         </CommandGroup>
                       </CommandList>
                     </Command>
@@ -393,7 +414,8 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
                 </Popover>
                 <FormMessage />
                 <FormDescription>
-                  Une note doit être associée à une période. Celle ci peut être différente de la date de passage si besoin.
+                  Une note doit être associée à une période. Celle ci peut être
+                  différente de la date de passage si besoin.
                 </FormDescription>
               </FormItem>
             )}
@@ -441,25 +463,27 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
                       <CommandList>
                         <CommandEmpty>Aucune matière trouvée</CommandEmpty>
                         <CommandGroup>
-                            {subjects
-                            ?.filter((subject) => subject.isDisplaySubject === false)
+                          {subjects
+                            ?.filter(
+                              (subject) => subject.isDisplaySubject === false
+                            )
                             .slice()
                             .sort((a, b) => a.name.localeCompare(b.name))
                             .map((subject) => (
                               <CommandItem
-                              key={subject.id}
-                              value={subject.name}
-                              onSelect={() => {
-                                form.setValue("subjectId", subject.id, {
-                                shouldValidate: true,
-                                });
-                                setOpenSubjectPopover(false);
-                              }}
+                                key={subject.id}
+                                value={subject.name}
+                                onSelect={() => {
+                                  form.setValue("subjectId", subject.id, {
+                                    shouldValidate: true,
+                                  });
+                                  setOpenSubjectPopover(false);
+                                }}
                               >
-                              <span>{subject.name}</span>
-                              {form.getValues("subjectId") === subject.id && (
-                                <Check className="ml-auto h-4 w-4" />
-                              )}
+                                <span>{subject.name}</span>
+                                {form.getValues("subjectId") === subject.id && (
+                                  <Check className="ml-auto h-4 w-4" />
+                                )}
                               </CommandItem>
                             ))}
                         </CommandGroup>
