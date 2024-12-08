@@ -7,9 +7,11 @@ import {
   Cog6ToothIcon,
   ShieldCheckIcon,
   UserIcon,
+  InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import path from "path";
 
 const routes = [
   {
@@ -26,6 +28,11 @@ const routes = [
     icon: Cog6ToothIcon,
     label: "Paramètres",
     path: "/profile/settings",
+  },
+  {
+    icon: InformationCircleIcon,
+    label: "À propos",
+    path: "/profile/about",
   },
   {
     icon: ArrowLeftIcon,

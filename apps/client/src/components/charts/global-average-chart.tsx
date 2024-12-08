@@ -251,13 +251,13 @@ const CustomDot = (props: any) => {
   // handle if there is no subjects
   if (subjects.length === 0) {
     return (
-      <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
+      <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-[400px]">
         <BookOpenIcon className="w-12 h-12" />
         <div className="flex flex-col items-center gap-1">
           <h2 className="text-xl font-semibold">
             Aucune matière pour l&apos;instant
           </h2>
-          <p>Ajouter une nouvelle matière pour commencer à suivre vos notes.</p>
+          <p className="text-center">Ajouter une nouvelle matière pour commencer à suivre vos notes.</p>
         </div>
         <AddSubjectDialog>
           <Button variant="outline">

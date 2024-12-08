@@ -177,8 +177,8 @@ export default function OverviewPage() {
   return (
     <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
       <div className="flex flex-wrap items-center justify-between">
-        <h1 className="text-3xl font-bold">Vue d&apos;ensemble</h1>
-        <h1 className="text-3xl font-normal">
+        <h1 className="md:text-3xl font-bold text-xl">Vue d&apos;ensemble</h1>
+        <h1 className="md:text-3xl font-normal text-lg">
           Bonjour {session?.user?.name ? session?.user?.name.split(" ")[0] : ""}{" "}
           👋
         </h1>
