@@ -81,7 +81,7 @@ export default function DashboardNav() {
     // </div>
 
     <nav className="sticky px-4 sm:px-16 lg:px-32 2xl:px-64 3xl:px-96 pt-4">
-      <ul className="flex items-center border-b">
+      <ul className="flex items-center border-b mx-auto max-w-[2000px]">
         {routes.map((route) => (
           <Link key={route.path} href={route.path}>
             <li
