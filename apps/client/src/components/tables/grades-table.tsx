@@ -70,10 +70,12 @@ export default function GradesTable({
       <Card className="flex flex-col justify-center items-center p-4 gap-8 w-full h-[400px]">
         <BookOpenIcon className="w-12 h-12" />
         <div className="flex flex-col items-center gap-1">
-          <h2 className="text-xl font-semibold">
+          <h2 className="text-xl font-semibold text-center">
             Aucune matière pour l&apos;instant
           </h2>
-          <p>Ajouter une nouvelle matière pour commencer à suivre vos notes.</p>
+          <p className="text-center">
+            Ajouter une nouvelle matière pour commencer à suivre vos notes.
+          </p>
         </div>
         <AddSubjectDialog>
           <Button variant="outline">

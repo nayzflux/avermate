@@ -14,7 +14,7 @@ export default function RecentGradesList({
   if (recentGrades.length === 0)
     return (
       <div className="flex flex-col items-center justify-center gap-6 h-full">
-        <p>Aucune note récente</p>
+        <p className="text-center">Aucune note récente</p>
         <AddGradeDialog>
           <Button variant="outline">
             <PlusCircleIcon className="size-4 mr-2" />
