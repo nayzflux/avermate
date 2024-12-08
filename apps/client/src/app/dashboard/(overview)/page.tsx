@@ -176,7 +176,7 @@ export default function OverviewPage() {
     );
 
   return (
-    <main className="flex flex-col gap-4 md:gap-8 max-w-[2000px]">
+    <main className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
       <div className="flex flex-wrap items-center justify-between">
         <h1 className="md:text-3xl font-bold text-xl">Vue d&apos;ensemble</h1>
         <h1 className="md:text-3xl font-normal text-lg">

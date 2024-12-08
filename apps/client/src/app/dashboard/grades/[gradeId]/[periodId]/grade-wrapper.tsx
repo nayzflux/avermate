@@ -40,7 +40,7 @@ export default function GradeWrapper({
   };
 
   return (
-    <div className="flex flex-col gap-4 md:gap-8 max-w-[2000px]">
+    <div className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
       <div>
         <Button
           className="text-blue-600"

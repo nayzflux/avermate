@@ -1,10 +1,14 @@
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 import { Skeleton } from "../ui/skeleton";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsTrigger, TabsList } from "@/components/ui/tabs";
 
+import {
+  EllipsisVerticalIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/24/outline";
 import { Button } from "../ui/button";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import {
   Table,
   TableBody,
@@ -14,12 +18,10 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 
 export default function gradesLoader() {
   return (
-    <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
+    <main className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
       <div className="flex gap-2 md:gap-16 justify-between items-center">
         <h1 className="text-xl md:text-3xl font-semibold">
           <Skeleton className="w-40 h-[32px]" />

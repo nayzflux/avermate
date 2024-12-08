@@ -121,7 +121,7 @@ export default function GradesPage() {
   }
 
   return (
-    <main className="flex flex-col gap-4 md:gap-8 m-auto max-w-[2000px]">
+    <main className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
       <div className="flex gap-2 md:gap-16 justify-between items-center">
         <h1 className="text-xl md:text-3xl font-semibold">Vos notes</h1>
 
