@@ -1,0 +1,7 @@
+services:
+  api:
+    image: avermate-api
+    ports:
+      - 5000:5000
+    env_file:
+      - ./apps/api/.env
