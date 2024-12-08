@@ -22,18 +22,19 @@ export default function GradePage({
     periodId = "full-year";
   }
 
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const [returnUrl, setReturnUrl] = useState("/dashboard");
 
-  // Extract `from` parameter
   useEffect(() => {
-    const fromParam = searchParams.get("from");
-    if (fromParam) {
-      setReturnUrl(fromParam);
+    // Try to get from localStorage
+    const storedFrom = localStorage.getItem("backFromGradeOrSubject");
+    if (storedFrom) {
+      setReturnUrl(storedFrom);
+    } else {
+      setReturnUrl("/dashboard");
     }
-  }, [searchParams]);
+  }, []);
 
   const handleBack = () => {
     router.push(returnUrl);

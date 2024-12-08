@@ -8,18 +8,22 @@ import { usePathname } from "next/navigation";
 export default function RecentGradeItem({ grade }: { grade: Grade }) {
   const pathname = usePathname();
 
+  const handleClick = () => {
+    // Store the current page as the one to return to from a grade page
+    localStorage.setItem("backFromGradeOrSubject", pathname);
+  };
+
   return (
     <Link
-      href={`/dashboard/grades/${grade.id}/${
-        grade.periodId
-      }?from=${encodeURIComponent(pathname)}`}
+      href={`/dashboard/grades/${grade.id}/${grade.periodId}`}
+      onClick={handleClick}
     >
-      <div className="flex items-center justify-between gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2">
-        <div className="flex flex-col gap-0.5 w-[80%]">
-          <p className="font-semibold">{grade?.subject?.name}</p>
+      <div className="flex items-center justify-between gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2 overflow-hidden min-w-0">
+        <div className="flex flex-col gap-0.5 w-[80%] min-w-0 overflow-hidden">
+          <p className="font-semibold truncate">{grade?.subject?.name}</p>
           <p className="text-sm text-muted-foreground truncate">{grade.name}</p>
         </div>
-        <div className="w-[60px]">
+        <div className="w-[60px] flex-shrink-0 overflow-hidden">
           <GradeValue value={grade.value} outOf={grade.outOf} size="sm" />
         </div>
       </div>

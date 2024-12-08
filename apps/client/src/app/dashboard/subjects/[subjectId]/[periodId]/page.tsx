@@ -20,18 +20,18 @@ export default function SubjectPage({
 }) {
   const { periodId, subjectId } = use(params);
 
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const [returnUrl, setReturnUrl] = useState("/dashboard");
 
-  // Extract `from` parameter on mount or when searchParams change
   useEffect(() => {
-    const fromParam = searchParams.get("from");
-    if (fromParam) {
-      setReturnUrl(fromParam);
+    const storedFrom = localStorage.getItem("backFromGradeOrSubject");
+    if (storedFrom) {
+      setReturnUrl(storedFrom);
+    } else {
+      setReturnUrl("/dashboard");
     }
-  }, [searchParams]);
+  }, []);
 
   const handleBack = () => {
     router.push(returnUrl);

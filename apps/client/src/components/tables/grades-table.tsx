@@ -205,12 +205,16 @@ function renderSubjects(
               )}
             >
               <Link
-                href={`/dashboard/subjects/${
-                  subject.id
-                }/${periodId}?from=${encodeURIComponent(pathname)}`}
+                href={`/dashboard/subjects/${subject.id}/${periodId}`}
+                onClick={() => {
+                  localStorage.setItem("backFromGradeOrSubject", pathname);
+                }}
                 className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
               >
-                {subject.name + (!subject.isDisplaySubject ? ` (${subject.coefficient / 100})` : '')}
+                {subject.name +
+                  (!subject.isDisplaySubject
+                    ? ` (${subject.coefficient / 100})`
+                    : "")}
               </Link>
 
               {/* Mobile-only average display (hidden on md+) */}

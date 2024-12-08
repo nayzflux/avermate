@@ -17,16 +17,18 @@ export default function ProfileLayout({
   const [returnUrl, setReturnUrl] = useState("/dashboard");
 
   useEffect(() => {
-    const fromParam = searchParams.get("from");
-    if (fromParam) {
-      setReturnUrl(fromParam);
+    const storedFrom = localStorage.getItem("backFromSettings");
+    if (storedFrom) {
+      setReturnUrl(storedFrom);
+    } else {
+      setReturnUrl("/dashboard");
     }
-  }, [searchParams]);
+  }, []);
 
   const handleBack = () => {
     router.push(returnUrl);
   };
-
+  
   return (
     <div className="flex flex-col">
       <DashboardHeader />

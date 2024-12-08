@@ -21,12 +21,13 @@ export default function GradeBadge({
 }) {
   const pathname = usePathname();
 
+    const handleClick = () => {
+      // Store the current page as the one to return to from a grade page
+      localStorage.setItem("backFromGradeOrSubject", pathname);
+    };
+
   return (
-    <Link
-      href={`/dashboard/grades/${id}/${periodId}?from=${encodeURIComponent(
-        pathname
-      )}`}
-    >
+    <Link href={`/dashboard/grades/${id}/${periodId}`} onClick={handleClick}>
       <span
         className={cn(
           "flex items-center justify-center text-center align-middle px-2 py-0.5 bg-muted font-semibold rounded text-sm bg-opacity-40",
