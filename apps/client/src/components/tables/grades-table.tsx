@@ -16,18 +16,17 @@ import { cn } from "@/lib/utils";
 import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
 import { average } from "@/utils/average";
-import { BookOpenIcon } from "@heroicons/react/24/outline";
+import { BookOpenIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 import AddSubjectDialog from "../dialogs/add-subject-dialog";
+import errorStateCard from "../skeleton/error-card";
+import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import GradeBadge from "./grade-badge";
-import errorStateCard from "../skeleton/error-card";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import { Button } from "../ui/button";
-import { usePathname } from "next/navigation";
 
 export default function GradesTable({
   subjects,
@@ -116,16 +115,16 @@ export default function GradesTable({
         {/* Desktop Footer */}
         <TableRow className="hidden md:table-row">
           <TableCell className="font-semibold" colSpan={2}>
-        Moyenne générale
+            Moyenne générale
           </TableCell>
           <TableCell className="text-right font-semibold">
-        {overallAverage}
+            {overallAverage}
           </TableCell>
         </TableRow>
         {/* Mobile Footer */}
         <TableRow className="md:hidden">
           <TableCell className="font-semibold text-center" colSpan={3}>
-        Moyenne générale: {overallAverage}
+            Moyenne générale: {overallAverage}
           </TableCell>
         </TableRow>
       </TableFooter>
