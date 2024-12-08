@@ -1,22 +1,20 @@
 "use client";
 
+import errorStateCard from "@/components/skeleton/error-card";
+import gradeLoader from "@/components/skeleton/grade-loader";
 import { apiClient } from "@/lib/api";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
 import { Grade } from "@/types/grade";
 import { useQuery } from "@tanstack/react-query";
-import { use } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import GradeWrapper from "./grade-wrapper";
-import gradeLoader from "@/components/skeleton/grade-loader";
-import errorStateCard from "@/components/skeleton/error-card";
-import { useSearchParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
 
-export default function GradePage({
-  params,
-}: {
-  params: Promise<{ gradeId: string; periodId: string }>;
-}) {
-  let { periodId, gradeId } = use(params);
+export default function GradePage({}: {}) {
+  let { periodId, gradeId } = useParams() as {
+    periodId: string;
+    gradeId: string;
+  };
 
   if (periodId == "null") {
     periodId = "full-year";

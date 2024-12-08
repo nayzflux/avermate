@@ -2,6 +2,7 @@
 
 import GlobalAverageChart from "@/components/charts/global-average-chart";
 import RecentGradesCard from "@/components/dashboard/recent-grades/recent-grades";
+import DashboardLoader from "@/components/skeleton/dashboard-loader";
 import ErrorStateCard from "@/components/skeleton/error-card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
@@ -23,7 +24,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Session, User } from "better-auth/types";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
-import DashboardLoader from "@/components/skeleton/dashboard-loader";
 
 /**
  * Vue d'ensemble des notes
@@ -48,6 +48,7 @@ export default function OverviewPage() {
       return data.subjects;
     },
   });
+
   // Fetch periods from API
   const {
     data: periods,
@@ -175,7 +176,7 @@ export default function OverviewPage() {
     );
 
   return (
-    <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
+    <main className="flex flex-col gap-4 md:gap-8 max-w-[2000px]">
       <div className="flex flex-wrap items-center justify-between">
         <h1 className="md:text-3xl font-bold text-xl">Vue d&apos;ensemble</h1>
         <h1 className="md:text-3xl font-normal text-lg">
@@ -202,7 +203,7 @@ export default function OverviewPage() {
           sessionStorage.setItem("selectedTab", value);
         }}
       >
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2 md:gap-4">
           <div className="hidden md:flex gap-4">
             <ScrollArea>
               <div className="flex w-full">
@@ -222,6 +223,7 @@ export default function OverviewPage() {
               <ScrollBar orientation="horizontal" />
             </ScrollArea>
           </div>
+
           <div className="flex md:hidden">
             <Select
               value={selectedTab}
@@ -350,6 +352,7 @@ export default function OverviewPage() {
                   createdAt: "",
                 }}
               />
+
               <RecentGradesCard recentGrades={recentGrades} />
             </div>
           </TabsContent>
