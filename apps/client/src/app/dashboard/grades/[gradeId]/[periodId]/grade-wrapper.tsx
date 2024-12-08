@@ -40,7 +40,7 @@ export default function GradeWrapper({
   };
 
   return (
-    <div className="flex flex-col gap-8 m-auto max-w-[2000px]">
+    <div className="flex flex-col gap-4 md:gap-8 max-w-[2000px]">
       <div>
         <Button
           className="text-blue-600"
@@ -59,7 +59,7 @@ export default function GradeWrapper({
 
       <Separator />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-4">
         <DataCard
           title="Note obtenue"
           description={`Votre note obtenue lors de cette évaluation sur ${

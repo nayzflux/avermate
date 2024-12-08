@@ -4,6 +4,7 @@ import MobileAddButtons from "@/components/buttons/dashboard/mobile-add-buttons"
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
+import errorStateCard from "@/components/skeleton/error-card";
 import gradesLoader from "@/components/skeleton/grades-loader";
 import GradesTable from "@/components/tables/grades-table";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,6 @@ import { Subject } from "@/types/subject";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import errorStateCard from "@/components/skeleton/error-card";
 
 export default function GradesPage() {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
@@ -106,11 +106,7 @@ export default function GradesPage() {
 
   // Error State
   if (periodsIsError || organizedSubjectsIsError || subjectsIsError) {
-    return (
-      <div>
-        {errorStateCard()}
-      </div>
-    );
+    return <div>{errorStateCard()}</div>;
   }
 
   // Loading State
@@ -125,7 +121,7 @@ export default function GradesPage() {
   }
 
   return (
-    <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
+    <main className="flex flex-col gap-4 md:gap-8 m-auto max-w-[2000px]">
       <div className="flex gap-2 md:gap-16 justify-between items-center">
         <h1 className="text-xl md:text-3xl font-semibold">Vos notes</h1>
 

@@ -13,9 +13,9 @@ import { Subject } from "@/types/subject";
 import {
   average,
   getBestGradeInSubject,
+  getParents,
   getWorstGradeInSubject,
   subjectImpact,
-  getParents, // Import the utility to get parent subjects
 } from "@/utils/average";
 import { formatGradeValue } from "@/utils/format";
 import {
@@ -83,7 +83,6 @@ function SubjectWrapper({
   // Determine if there are grades in the selected subject or its sub-subjects
   const isGradePresent = hasGrades(subject.id);
 
-
   if (!isGradePresent) {
     return (
       <div className="flex flex-col gap-8 m-auto max-w-[2000px]">
@@ -137,7 +136,7 @@ function SubjectWrapper({
   }
 
   return (
-    <div className="flex flex-col gap-8 m-auto max-w-[2000px]">
+    <div className="flex flex-col gap-4 md:gap-8 m-auto max-w-[2000px]">
       <div>
         <Button className="text-blue-600" variant="link" onClick={onBack}>
           <ArrowLeftIcon className="size-4 mr-2" />
@@ -192,8 +191,6 @@ function SubjectWrapper({
             }
           />
         </DataCard>
-
-
 
         {parentSubjects().map((parent) => (
           <DataCard
