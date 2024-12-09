@@ -1,37 +1,34 @@
 "use client";
 
+import errorStateCard from "@/components/skeleton/error-card";
+import subjectLoader from "@/components/skeleton/subject-loader";
 import { apiClient } from "@/lib/api";
-import { authClient } from "@/lib/auth";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
 import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
 import { useQuery } from "@tanstack/react-query";
-import { use } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import SubjectWrapper from "./subject-wrapper";
-import subjectLoader from "@/components/skeleton/subject-loader";
-import errorStateCard from "@/components/skeleton/error-card";
-import { useSearchParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
 
-export default function SubjectPage({
-  params,
-}: {
-  params: Promise<{ subjectId: string; periodId: string }>;
-}) {
-  const { periodId, subjectId } = use(params);
+export default function SubjectPage({}: {}) {
+  const { periodId, subjectId } = useParams() as {
+    periodId: string;
+    subjectId: string;
+  };
 
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const [returnUrl, setReturnUrl] = useState("/dashboard");
 
-  // Extract `from` parameter on mount or when searchParams change
   useEffect(() => {
-    const fromParam = searchParams.get("from");
-    if (fromParam) {
-      setReturnUrl(fromParam);
+    const storedFrom = localStorage.getItem("backFromGradeOrSubject");
+    if (storedFrom) {
+      setReturnUrl(storedFrom);
+    } else {
+      setReturnUrl("/dashboard");
     }
-  }, [searchParams]);
+  }, []);
 
   const handleBack = () => {
     router.push(returnUrl);

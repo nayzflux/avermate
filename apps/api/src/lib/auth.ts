@@ -45,6 +45,12 @@ export const auth = betterAuth({
     },
   },
 
+  account: {
+    accountLinking: {
+      enabled: true,
+    },
+  },
+
   // User
   user: {
     changeEmail: {

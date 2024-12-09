@@ -17,22 +17,24 @@ export default function ProfileLayout({
   const [returnUrl, setReturnUrl] = useState("/dashboard");
 
   useEffect(() => {
-    const fromParam = searchParams.get("from");
-    if (fromParam) {
-      setReturnUrl(fromParam);
+    const storedFrom = localStorage.getItem("backFromSettings");
+    if (storedFrom) {
+      setReturnUrl(storedFrom);
+    } else {
+      setReturnUrl("/dashboard");
     }
-  }, [searchParams]);
+  }, []);
 
   const handleBack = () => {
     router.push(returnUrl);
   };
-
+  
   return (
     <div className="flex flex-col">
       <DashboardHeader />
       <div className="px-4 sm:px-16 lg:px-32 2xl:px-64 3xl:px-96 py-4 sm:py-16">
         {/* Pass the handleBack function to ProfileNav */}
-        <div className="flex gap-8 m-auto max-w-[2000px] ">
+        <div className="flex gap-4 md:gap-8 m-auto max-w-[2000px] ">
           <ProfileNav onBack={handleBack} />
           {children}
         </div>

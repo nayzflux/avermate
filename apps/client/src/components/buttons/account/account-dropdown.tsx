@@ -37,6 +37,11 @@ export default function AccountDropdown() {
   const router = useRouter();
   const pathname = usePathname(); // Get the current path
 
+    const handleClick = () => {
+      // Store the current page as the one to return to from a grade page
+      localStorage.setItem("backFromSettings", pathname);
+    };
+
   useEffect(() => {
     if (isPending) return;
 
@@ -113,20 +118,20 @@ export default function AccountDropdown() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={`/profile?from=${encodeURIComponent(pathname)}`}>
+          <Link href={`/profile`} onClick={handleClick}>
             <UserIcon className="size-4 mr-2" />
             Profile
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href={`/profile/account?from=${encodeURIComponent(pathname)}`}>
+          <Link href={`/profile/account`} onClick={handleClick}>
             <ShieldCheckIcon className="size-4 mr-2" />
             Compte
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           {/* Pass current page as 'from' parameter */}
-          <Link href={`/profile/settings?from=${encodeURIComponent(pathname)}`}>
+          <Link href={`/profile/settings`} onClick={handleClick}>
             <Cog6ToothIcon className="size-4 mr-2" />
             Paramètres
           </Link>

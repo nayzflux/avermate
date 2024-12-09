@@ -4,10 +4,10 @@ import SessionList from "./session-list";
 
 export default function AccountPage() {
   return (
-    <div className="flex flex-col gap-8 w-full">
+    <main className="flex flex-col md:gap-8 gap-4 w-full ">
       <LinkedAccount />
       <SessionList />
       <DeleteAccount />
-    </div>
+    </main>
   );
 }

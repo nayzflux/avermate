@@ -13,9 +13,9 @@ import { Subject } from "@/types/subject";
 import {
   average,
   getBestGradeInSubject,
+  getParents,
   getWorstGradeInSubject,
   subjectImpact,
-  getParents, // Import the utility to get parent subjects
 } from "@/utils/average";
 import { formatGradeValue } from "@/utils/format";
 import {
@@ -83,10 +83,9 @@ function SubjectWrapper({
   // Determine if there are grades in the selected subject or its sub-subjects
   const isGradePresent = hasGrades(subject.id);
 
-
   if (!isGradePresent) {
     return (
-      <div className="flex flex-col gap-8 m-auto max-w-[2000px]">
+      <div className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
         <div>
           <Button
             className="text-blue-600"
@@ -118,10 +117,10 @@ function SubjectWrapper({
         <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
           <BookOpenIcon className="w-12 h-12" />
           <div className="flex flex-col items-center gap-1">
-            <h2 className="text-xl font-semibold">
+            <h2 className="text-xl font-semibold text-center">
               Aucune note pour l&apos;instant
             </h2>
-            <p>
+            <p className="text-center">
               Ajouter une nouvelle note pour commencer à suivre vos moyennes.
             </p>
           </div>
@@ -137,7 +136,7 @@ function SubjectWrapper({
   }
 
   return (
-    <div className="flex flex-col gap-8 m-auto max-w-[2000px]">
+    <div className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
       <div>
         <Button className="text-blue-600" variant="link" onClick={onBack}>
           <ArrowLeftIcon className="size-4 mr-2" />
@@ -192,8 +191,6 @@ function SubjectWrapper({
             }
           />
         </DataCard>
-
-
 
         {parentSubjects().map((parent) => (
           <DataCard
