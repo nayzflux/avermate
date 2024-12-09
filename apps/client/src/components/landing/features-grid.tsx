@@ -3,9 +3,10 @@ import {
   CubeTransparentIcon,
   PresentationChartLineIcon,
 } from "@heroicons/react/24/outline";
-import { Share2Icon } from "lucide-react";
 import { BentoCard, BentoGrid } from "../magicui/bento-grid";
 import OrbitingCircles from "../ui/orbiting-circles";
+import { BentoBackground } from "./bento/bento-background";
+import { MockAverageChart } from "./bento/mock-average-chart";
 import MockGradesTable from "./bento/mock-grades-table";
 
 const features = [
@@ -28,11 +29,9 @@ const features = [
     cta: "En savoir plus",
     className: "col-span-1 row-span-2",
     background: (
-      <div className="absolute h-full w-full transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] group-hover:scale-105 cursor-default pointer-events-none">
-        <div className="p-8">
-          <MockGradesTable />
-        </div>
-      </div>
+      <BentoBackground>
+        <MockGradesTable />
+      </BentoBackground>
     ),
   },
   {
@@ -42,19 +41,23 @@ const features = [
       "Suivez l'évolution de vos résultats en temps réel grâce à des graphiques détaillés. Visualisez vos progrès et ajustez vos efforts.",
     href: "#",
     cta: "Utilisez",
-    className: "col-span-1",
-    background: <div></div>,
+    className: "col-span-2",
+    background: (
+      <BentoBackground>
+        <MockAverageChart />
+      </BentoBackground>
+    ),
   },
-  {
-    Icon: Share2Icon,
-    name: "Intégration avec les ENT",
-    description:
-      "Connectez-vous à votre ENT pour importer vos notes et vos matières en un clic. Gagnez du temps et concentrez-vous sur l'essentiel.",
-    href: "#",
-    cta: "Utilisez",
-    className: "col-span-1",
-    background: <OrbitingCirclesDemo />,
-  },
+  // {
+  //   Icon: Share2Icon,
+  //   name: "Intégration avec les ENT",
+  //   description:
+  //     "Connectez-vous à votre ENT pour importer vos notes et vos matières en un clic. Gagnez du temps et concentrez-vous sur l'essentiel.",
+  //   href: "#",
+  //   cta: "Utilisez",
+  //   className: "col-span-1",
+  //   background: <OrbitingCirclesDemo />,
+  // },
 ];
 
 export const FeaturesGrid = () => {
