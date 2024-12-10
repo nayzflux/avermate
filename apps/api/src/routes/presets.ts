@@ -1,10 +1,15 @@
+import { db } from "@/db";
+import { subjects } from "@/db/schema";
+import { auth } from "@/lib/auth";
+import { generateId } from "@/lib/nanoid";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 
 const router = new Hono();
 
-const presets = [
+const presets: Preset[] = [
   {
     id: "CPE_PREPA_SUP_NUM",
     name: "Prépa CPE Sup Numérique",
@@ -301,11 +306,13 @@ const presets = [
       },
     ],
   },
-] satisfies {
+];
+
+type Preset = {
   id: string;
   name: string;
   subjects: PresetSubject[];
-}[];
+};
 
 type PresetSubject = {
   name: string;
@@ -333,7 +340,84 @@ router.post(
       id: z.enum(["CPE_PREPA_SUP_NUM"]),
     })
   ),
-  async (c) => {}
+  async (c) => {
+    const { id } = c.req.valid("param");
+
+    const preset = presets.find((p) => p.id === id);
+
+    if (!preset) throw new HTTPException(404);
+
+    const session = await auth.api.getSession({
+      headers: c.req.raw.headers,
+    });
+
+    if (!session) throw new HTTPException(401);
+
+    // If email isnt verified
+    if (!session.user.emailVerified) {
+      return c.json(
+        {
+          code: "EMAIL_NOT_VERIFIED",
+          message: "Email verification is required",
+        },
+        403
+      );
+    }
+
+    // TODO: Rate limiting
+
+    // Thx chat GPT
+    const flattenSubjects = (
+      subjects: PresetSubject[],
+      parentId: string | null = null,
+      depth: number = 0
+    ): {
+      id: string;
+      name: string;
+      parentId: string | null;
+      coefficient: number;
+      depth: number;
+      isMainSubject: boolean;
+      isDisplaySubject: boolean;
+      createdAt: Date;
+      userId: string;
+    }[] => {
+      return subjects.flatMap((subject) => {
+        const id = generateId("sub");
+
+        const flatSubject = {
+          id,
+          name: subject.name,
+          coefficient: (subject?.coefficient || 1) * 100,
+          isMainSubject: subject?.isMainSubject || false,
+          isDisplaySubject: subject?.isDisplaySubject || false,
+          parentId,
+          createdAt: new Date(),
+          depth,
+          userId: session.user.id,
+        };
+
+        if (subject.subjects) {
+          return [
+            flatSubject,
+            ...flattenSubjects(subject.subjects, id, depth + 1),
+          ];
+        }
+        return flatSubject;
+      });
+    };
+
+    const presetSubjects = flattenSubjects(preset.subjects);
+
+    // Insert in database
+    const insertedSubjects = db
+      .insert(subjects)
+      .values(presetSubjects)
+      .returning()
+      .all();
+
+    return c.json({ subjects: insertedSubjects }, 201);
+  }
 );
 
 export default router;
