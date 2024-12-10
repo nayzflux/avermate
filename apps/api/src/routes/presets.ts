@@ -410,7 +410,7 @@ router.post(
     const presetSubjects = flattenSubjects(preset.subjects);
 
     // Insert in database
-    const insertedSubjects = db
+    const insertedSubjects = await db
       .insert(subjects)
       .values(presetSubjects)
       .returning()
