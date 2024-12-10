@@ -1,5 +1,4 @@
-"use client";
-
+import GradeBadge from "@/components/tables/grade-badge";
 import {
   Table,
   TableBody,
@@ -10,87 +9,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-import { apiClient } from "@/lib/api";
+import { subjects } from "@/data/mock";
 import { cn } from "@/lib/utils";
-import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
 import { average } from "@/utils/average";
-import { BookOpenIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import React from "react";
-import AddSubjectDialog from "../dialogs/add-subject-dialog";
-import errorStateCard from "../skeleton/error-card";
-import { Button } from "../ui/button";
-import { Card } from "../ui/card";
-import { Skeleton } from "../ui/skeleton";
-import GradeBadge from "./grade-badge";
 
-export default function GradesTable({
-  subjects,
-  periodId,
-}: {
-  subjects: Subject[];
-  periodId: string;
-}) {
-  const pathname = usePathname(); // Get current path
-
-  const {
-    data: period,
-    isError: isPeriodError,
-    isPending: isPeriodPending,
-  } = useQuery({
-    queryKey: ["periods-name", periodId],
-    queryFn: async () => {
-      if (periodId === "full-year") {
-        return null;
-      }
-      const res = await apiClient.get(`periods/${periodId}`);
-      const data = await res.json<Period>();
-      return data;
-    },
-  });
-
-  // Loading State
-  if (isPeriodPending) {
-    return <LoadingTable />;
-  }
-
-  // Error State
-  if (isPeriodError) {
-    return <div>{errorStateCard()}</div>;
-  }
-
-  // Empty State
-  if (subjects.length === 0) {
-    return (
-      <Card className="flex flex-col justify-center items-center p-4 gap-8 w-full h-[400px]">
-        <BookOpenIcon className="w-12 h-12" />
-        <div className="flex flex-col items-center gap-1">
-          <h2 className="text-xl font-semibold text-center">
-            Aucune matière pour l&apos;instant
-          </h2>
-          <p className="text-center">
-            Ajouter une nouvelle matière pour commencer à suivre vos notes.
-          </p>
-        </div>
-        <AddSubjectDialog>
-          <Button variant="outline">
-            <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une matière
-          </Button>
-        </AddSubjectDialog>
-      </Card>
-    );
-  }
-
-  const periodName = periodId !== "full-year" ? period?.name : "Année complète";
-  const overallAverage =
-    average(undefined, subjects) !== null
-      ? average(undefined, subjects)?.toFixed(2)
-      : "—";
+const MockGradesTable = () => {
+  const periodName = "Année complète";
+  const overallAverage = "12.34";
 
   return (
     <Table>
@@ -107,9 +35,7 @@ export default function GradesTable({
         </TableRow>
       </TableHeader>
 
-      <TableBody>
-        {renderSubjects(subjects, periodId, null, pathname)}
-      </TableBody>
+      <TableBody>{renderSubjects(subjects, "full-year", null)}</TableBody>
 
       <TableFooter>
         {/* Desktop Footer */}
@@ -130,7 +56,7 @@ export default function GradesTable({
       </TableFooter>
     </Table>
   );
-}
+};
 
 function getPaddingClass(depth: number) {
   switch (depth) {
@@ -183,8 +109,7 @@ function getIndentationLinesStyle(depth: number): React.CSSProperties {
 function renderSubjects(
   subjects: Subject[],
   periodId: string,
-  parentId: string | null = null,
-  pathname: string
+  parentId: string | null = null
 ) {
   return subjects
     .filter((subject) => subject.parentId === parentId)
@@ -206,10 +131,7 @@ function renderSubjects(
               )}
             >
               <Link
-                href={`/dashboard/subjects/${subject.id}/${periodId}`}
-                onClick={() => {
-                  localStorage.setItem("backFromGradeOrSubject", pathname);
-                }}
+                href={`#features`}
                 className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
               >
                 {subject.name +
@@ -268,87 +190,10 @@ function renderSubjects(
             </TableCell>
           </TableRow>
 
-          {renderSubjects(subjects, periodId, subject.id, pathname)}
+          {renderSubjects(subjects, periodId, subject.id)}
         </React.Fragment>
       );
     });
 }
 
-function LoadingTable() {
-  const items = Array.from({ length: 5 }, (_, i) => i);
-
-  return (
-    <>
-      {/* Desktop layout */}
-      <Table className="w-full table-auto hidden md:table">
-        <TableCaption>
-          <div className="flex w-full justify-center">
-            <Skeleton className="w-64 h-[14px]" />
-          </div>
-        </TableCaption>
-
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[50px] md:w-[200px]">
-              <Skeleton className="w-full h-[18px]" />
-            </TableHead>
-            <TableHead className="w-[50px] md:w-[100px] text-center">
-              <Skeleton className="w-full h-[18px]" />
-            </TableHead>
-            <TableHead>
-              <Skeleton className="w-full h-[18px]" />
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {Array.from({ length: 10 }, (_, i) => (
-            <TableRow key={i}>
-              <TableCell>
-                <Skeleton className="w-full h-[20px]" />
-              </TableCell>
-              <TableCell className="text-center font-semibold">
-                <Skeleton className="w-full h-[20px]" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="w-full h-[20px]" />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-      {/* Mobile layout */}
-      <Table className="w-full table-auto md:hidden">
-        <TableCaption>
-          <div className="flex w-full justify-center">
-            <Skeleton className="w-64 h-[14px]" />
-          </div>
-        </TableCaption>
-
-        <TableBody>
-          {items.map((item) => (
-            <React.Fragment key={item}>
-              <TableRow className="border-b">
-                <TableCell className="w-full">
-                  <Skeleton className="w-3/4 h-[20px] mb-1" />
-                  <Skeleton className="w-1/2 h-[14px]" />
-                </TableCell>
-              </TableRow>
-
-              <TableRow className="border-b">
-                <TableCell className="w-full">
-                  <div className="flex gap-2 flex-wrap pt-1 pb-2">
-                    <Skeleton className="w-10 h-[20px]" />
-                    <Skeleton className="w-10 h-[20px]" />
-                    <Skeleton className="w-10 h-[20px]" />
-                  </div>
-                </TableCell>
-              </TableRow>
-            </React.Fragment>
-          ))}
-        </TableBody>
-      </Table>
-    </>
-  );
-}
+export default MockGradesTable;

@@ -5,16 +5,21 @@ import { LandingSection } from "./landing-section";
 
 export const Product = () => {
   return (
-    <LandingSection>
-      <div className="flex flex-col items-center gap-4">
-        <SubHeading as="h3">Découvrez nos fonctionnalitées</SubHeading>
+    <div id="features">
+      <LandingSection>
+        <div className="flex flex-col items-center gap-4">
+          <SubHeading as="h3">Découvrez nos fonctionnalitées</SubHeading>
 
-        <Heading className="max-w-[550px]" as="h2">
-          Suivez votre progression en un coup d&apos;oeil
-        </Heading>
-      </div>
+          <Heading className="max-w-[550px]" as="h2">
+            Suivez votre progression en un coup d&apos;oeil
+          </Heading>
+        </div>
 
-      <FeaturesGrid />
-    </LandingSection>
+        <FeaturesGrid />
+
+        {/* <MockGradesTable /> */}
+        {/* <MockAverageChart /> */}
+      </LandingSection>
+    </div>
   );
 };
