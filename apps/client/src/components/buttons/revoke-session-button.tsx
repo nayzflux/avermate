@@ -81,7 +81,7 @@ export default function RevokeSessionButton({
       <AlertDialogHeader>
         <AlertDialogTitle>Révoquer la session</AlertDialogTitle>
         <AlertDialogDescription>
-        L'utilisateur sera invité à se réauthentifier.
+        L&apos;utilisateur sera invité à se réauthentifier.
         </AlertDialogDescription>
       </AlertDialogHeader>
 

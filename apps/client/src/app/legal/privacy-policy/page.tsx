@@ -167,7 +167,7 @@ const PrivacyPolicy = () => {
         Usage Data is collected automatically when using the Service.
       </p>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Usage Data may include information such as Your Device's Internet
+        Usage Data may include information such as Your Device&apos;s Internet
         Protocol address (e.g. IP address), browser type, browser version, the
         pages of our Service that You visit, the time and date of Your visit,
         the time spent on those pages, unique device identifiers, and other
@@ -220,7 +220,7 @@ const PrivacyPolicy = () => {
           <p>
             <strong>To contact You:</strong> To contact You by email, telephone
             calls, SMS, or other equivalent forms of electronic communication,
-            such as a mobile application's push notifications regarding updates
+            such as a mobile application&apos;s push notifications regarding updates
             or informative communications related to the functionalities,
             products, or contracted services, including security updates, when
             necessary or reasonable for their implementation.
@@ -324,7 +324,7 @@ const PrivacyPolicy = () => {
         Transfer of Your Personal Data
       </h3>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Your information, including Personal Data, is processed at the Company's
+        Your information, including Personal Data, is processed at the Company&apos;s
         operating offices and in any other places where the parties involved in
         the processing are located. It means that this information may be
         transferred to — and maintained on — computers located outside of Your
@@ -420,7 +420,7 @@ const PrivacyPolicy = () => {
       </p>
 
       <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        Children's Privacy
+        Children&apos;s Privacy
       </h2>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
         Our Service does not address anyone under the age of 13. We do not
@@ -434,7 +434,7 @@ const PrivacyPolicy = () => {
       <p className="leading-7 [&:not(:first-child)]:mt-6">
         If We need to rely on consent as a legal basis for processing Your
         information and Your country requires consent from a parent, We may
-        require Your parent's consent before We collect and use that
+        require Your parent&apos;s consent before We collect and use that
         information.
       </p>
 
@@ -444,7 +444,7 @@ const PrivacyPolicy = () => {
       <p className="leading-7 [&:not(:first-child)]:mt-6">
         Our Service may contain links to other websites that are not operated by
         Us. If You click on a third party link, You will be directed to that
-        third party's site. We strongly advise You to review the Privacy Policy
+        third party&apos;s site. We strongly advise You to review the Privacy Policy
         of every site You visit.
       </p>
       <p className="leading-7 [&:not(:first-child)]:mt-6">

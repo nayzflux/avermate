@@ -6,9 +6,9 @@ export default function Consent() {
       <p className="text-center text-sm text-muted-foreground py-8 max-w-[400px]">
       En continuant, vous acceptez les{" "}
       <Link href="/legal/terms-of-service" className="underline">
-        Conditions d'utilisation
+        Conditions d&apos;utilisation
       </Link>{" "}
-      d'Avermate et la{" "}
+      d&apos;Avermate et la{" "}
       <Link href="/legal/privacy-policy" className="underline">
         Politique de confidentialité
       </Link>

@@ -139,7 +139,7 @@ export default function LinkedAccount() {
         {/* Add Account Section */}
         <div className="mt-4">
           <h3 className="text-lg font-semibold pb-4">
-            Lier avec d'autres services
+            Lier avec d&apos;autres services
           </h3>
           <div className="flex flex-col gap-2">
             {providers

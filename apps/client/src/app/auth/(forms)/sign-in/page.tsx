@@ -15,7 +15,7 @@ const SignInPage = () => {
           </p>
 
           <Link href="/auth/sign-up" className="underline">
-            Je n'ai pas de compte
+            Je n&apos;ai pas de compte
           </Link>
         </div>
       </div>
