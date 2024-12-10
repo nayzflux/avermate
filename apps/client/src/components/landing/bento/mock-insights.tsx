@@ -10,7 +10,7 @@ import {
 
 export const MockInsights = () => {
   return (
-    <div className="grid grid-cols-2 3xl:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 3xl:grid-cols-3 gap-4">
       <DataCard
         title="Note obtenue"
         description="Votre note obtenue lors de cette évaluation sur 20"
