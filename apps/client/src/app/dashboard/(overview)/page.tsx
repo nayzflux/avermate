@@ -155,20 +155,6 @@ export default function OverviewPage() {
     );
   }
 
-  // // Onboarding
-  // if (
-  //   (!subjects || subjects.length === 0) &&
-  //   (!periods || periods.length === 0) &&
-  //   session?.user?.createdAt &&
-  //   new Date(session?.user?.createdAt).getTime() > Date.now() - 1000 * 60 * 60 * 24
-  // ) {
-  //   return (
-  //     <div>
-  //       {Onboardding()}
-  //     </div>
-  //   );
-  // }
-
   const sortedPeriods = periods
     ?.slice()
     .sort(

@@ -16,15 +16,12 @@ import { cn } from "@/lib/utils";
 import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
 import { average } from "@/utils/average";
-import { BookOpenIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import AddSubjectDialog from "../dialogs/add-subject-dialog";
+import { SubjectEmptyState } from "../empty-states/subject-empty-state";
 import errorStateCard from "../skeleton/error-card";
-import { Button } from "../ui/button";
-import { Card } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import GradeBadge from "./grade-badge";
 
@@ -65,25 +62,7 @@ export default function GradesTable({
 
   // Empty State
   if (subjects.length === 0) {
-    return (
-      <Card className="flex flex-col justify-center items-center p-4 gap-8 w-full h-[400px]">
-        <BookOpenIcon className="w-12 h-12" />
-        <div className="flex flex-col items-center gap-1">
-          <h2 className="text-xl font-semibold text-center">
-            Aucune matière pour l&apos;instant
-          </h2>
-          <p className="text-center">
-            Ajouter une nouvelle matière pour commencer à suivre vos notes.
-          </p>
-        </div>
-        <AddSubjectDialog>
-          <Button variant="outline">
-            <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une matière
-          </Button>
-        </AddSubjectDialog>
-      </Card>
-    );
+    return <SubjectEmptyState />;
   }
 
   const periodName = periodId !== "full-year" ? period?.name : "Année complète";
