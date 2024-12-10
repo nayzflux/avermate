@@ -8,6 +8,7 @@ import OrbitingCircles from "../ui/orbiting-circles";
 import { BentoBackground } from "./bento/bento-background";
 import { MockAverageChart } from "./bento/mock-average-chart";
 import MockGradesTable from "./bento/mock-grades-table";
+import { MockInsights } from "./bento/mock-insights";
 
 const features = [
   {
@@ -18,7 +19,11 @@ const features = [
     href: "#",
     cta: "Découvrir",
     className: "col-span-2",
-    background: <div></div>,
+    background: (
+      <BentoBackground>
+        <MockInsights />
+      </BentoBackground>
+    ),
   },
   {
     Icon: CubeTransparentIcon,

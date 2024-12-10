@@ -9,19 +9,19 @@ import { LandingSection } from "./landing-section";
 const questions = [
   {
     q: "Comment mes données sont elles stockées ?",
-    a: "",
+    a: "Vos données sont stockées de façon sécurisée dans notre base de données.",
   },
   {
-    q: "Qui d'autres peut voir mes notes ?",
-    a: "",
+    q: "Qui d&apos;autres peut voir mes notes ?",
+    a: "Vous êtes le seul à avoir accès au vos notes.",
   },
   {
-    q: "Pourquoi utilisé Avermate plutôt qu'Excel ?",
-    a: "",
+    q: "Pourquoi utilisé Avermate plutôt qu&apos;Excel ?",
+    a: "Contrairement à Excel, tout est déjà prêt : suivez vos moyennes automatiquement, visualisez vos progrès avec des graphiques clairs et gérez vos matières et coefficients facilement. Plus besoin de créer des formules ou des tableaux compliqués, on s&apos;occupe de tout pour vous simplifier la vie !",
   },
   {
     q: "Combien coûte Avermate ?",
-    a: "",
+    a: "Notre service est entièrement gratuit. Profitez de toutes nos fonctionnalités sans aucun frais !",
   },
 ];
 
