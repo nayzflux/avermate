@@ -19,7 +19,7 @@ export const Product = () => {
         <FeaturesGrid />
 
         {/* <MockGradesTable /> */}
-        <MockAverageChart />
+        {/* <MockAverageChart /> */}
       </LandingSection>
     </div>
   );
