@@ -25,7 +25,14 @@ export async function ratelimit(c: Context, next: Next) {
   c.header("RateLimit-Remaining", remaining.toString());
   c.header("RateLimit-Reset", resetIn.toString());
 
-  if (isExceeded) return c.text("Rate limit exceeded!", 429);
+  if (isExceeded)
+    return c.json(
+      {
+        code: "ERR_RATE_LIMIT_EXCEEDED",
+        message: "You're being rate limited!",
+      },
+      429
+    );
 
   await next();
 
