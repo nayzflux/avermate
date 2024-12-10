@@ -15,6 +15,7 @@ const presets: Preset[] = [
   {
     id: "CPE_PREPA_SUP_NUM",
     name: "Prépa CPE Sup Numérique",
+    description: "Préset des matières pour la prépa CPE Sup Numérique",
     subjects: [
       {
         name: "Module Scientifique",
@@ -153,8 +154,9 @@ const presets: Preset[] = [
    * Prépa CPE Sup Chimie
    */
   {
-    id: "CPE_PREPA_SUP_NUM",
-    name: "Prépa CPE Sup Numérique",
+    id: "CPE_PREPA_SUP_CHI",
+    name: "Prépa CPE Sup Chimie",
+    description: "Préset des matières pour la prépa CPE Sup Chimie",
     subjects: [
       {
         name: "Module Scientifique",
@@ -313,6 +315,7 @@ const presets: Preset[] = [
 type Preset = {
   id: string;
   name: string;
+  description: string;
   subjects: PresetSubject[];
 };
 
@@ -339,7 +342,7 @@ router.post(
   zValidator(
     "param",
     z.object({
-      id: z.enum(["CPE_PREPA_SUP_NUM"]),
+      id: z.enum(["CPE_PREPA_SUP_NUM", "CPE_PREPA_SUP_CHI"]),
     })
   ),
   async (c) => {

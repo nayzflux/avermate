@@ -172,11 +172,13 @@ export default function Step3() {
               <span className="font-bold truncate">{subject.name}</span>
             </div>
             <div className="flex items-center space-x-2 flex-shrink-0">
+              {!subject.isDisplaySubject && (
               <AddGradeDialog parentId={subject.id}>
                 <Button variant="outline" size="icon">
                   <PlusCircleIcon className="size-4" />
                 </Button>
-              </AddGradeDialog>
+                </AddGradeDialog>
+              )}
             </div>
           </div>
           <div className="flex flex-wrap gap-2 mt-2">
@@ -200,12 +202,12 @@ export default function Step3() {
       <h2 className="text-2xl font-bold text-primary">Subjects</h2>
       <div>{renderSubjects(subjects ?? [])}</div>
       <div className="flex flex-col items-center justify-center space-y-4">
-        <AddSubjectDialog>
+        <AddGradeDialog>
           <Button variant="outline">
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une nouvelle matière
+            Ajouter une nouvelle note
           </Button>
-        </AddSubjectDialog>
+        </AddGradeDialog>
       </div>
     </div>
   );

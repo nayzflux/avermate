@@ -93,14 +93,20 @@ export default function OnboardingPage() {
         </div>
 
         <div className="flex flex-row items-center md:space-y-0 md:space-x-4">
-          <Button
-            size="sm"
-            variant="link"
-            onClick={handleBack}
-            disabled={currentStep === 0}
-          >
-            Précédent
-          </Button>
+            {currentStep === 0 ? (
+            <Button size="sm" variant="link" onClick={() => router.push("/dashboard")}>
+              Retour
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              variant="link"
+              onClick={handleBack}
+              disabled={currentStep === 0}
+            >
+              Précédent
+            </Button>
+          )}
           {currentStep === 0 ? (
             <Button
               className="animate-pulse hover:animate-none"

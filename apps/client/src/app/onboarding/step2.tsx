@@ -18,6 +18,7 @@ import DeleteSubjectDialog from "@/components/dialogs/delete-subject-dialog";
 import { Subject } from "@/types/subject";
 import { Badge } from "@/components/ui/badge";
 import errorStateCard from "@/components/skeleton/error-card";
+import ListPresetsDialog from "@/components/dialogs/list-presets-dialog";
 
 export default function Step2() {
   const {
@@ -50,32 +51,45 @@ export default function Step2() {
           <br />
           <ul>
             <li>
-          Les matières peuvent être configurées comme "matière principale" ces
-          matières seront affichées dans les données et les graphiques de la
-          page d'accueil. Il faut donc marquer les matières comme Mathématiques,
-          Français, Anglais, etc. comme matières principales.
-          </li><br /><li>
-          Les matières peuvent être configurées comme "catégories". Elles n'ont
-          pas d'existance propre, mais permettent de regrouper des matières pour
-          mieux les organiser. Par exemple, vous pouvez créer une catégorie
-          "Langues" et y ajouter les matières "Anglais", "Espagnol", "Allemand",
-          etc. Pour calculer la moyenne on ne fera pas la moyenne de la
-          catégorie mais c'est comme si les matières de la catégorie étaient
-          regroupées hors de la catégorie.
-          </li><br /><li>
-          Les matières peuvent être regroupées en "sous-matières". Par exemple,
-          si vous avez une matière "Mathématiques" vous pouvez créer des
-          sous-matières "Ecrit" et "Oral" si elles sont notées différemment. Les
-          sous-matières permettent de mieux organiser les notes et de calculer
-          des moyennes
-        </li></ul></p>
-
+              Les matières peuvent être configurées comme "matière principale"
+              ces matières seront affichées dans les données et les graphiques
+              de la page d'accueil. Il faut donc marquer les matières comme
+              Mathématiques, Français, Anglais, etc. comme matières principales.
+            </li>
+            <br />
+            <li>
+              Les matières peuvent être configurées comme "catégories". Elles
+              n'ont pas d'existance propre, mais permettent de regrouper des
+              matières pour mieux les organiser. Par exemple, vous pouvez créer
+              une catégorie "Langues" et y ajouter les matières "Anglais",
+              "Espagnol", "Allemand", etc. Pour calculer la moyenne on ne fera
+              pas la moyenne de la catégorie mais c'est comme si les matières de
+              la catégorie étaient regroupées hors de la catégorie.
+            </li>
+            <br />
+            <li>
+              Les matières peuvent être regroupées en "sous-matières". Par
+              exemple, si vous avez une matière "Mathématiques" vous pouvez
+              créer des sous-matières "Ecrit" et "Oral" si elles sont notées
+              différemment. Les sous-matières permettent de mieux organiser les
+              notes et de calculer des moyennes
+            </li>
+          </ul>
+        </p>
+      <div className="flex flex-row items-center justify-center space-x-4">
         <AddSubjectDialog>
           <Button variant="outline">
             <PlusCircleIcon className="size-4 mr-2" />
             Ajouter une matière
           </Button>
         </AddSubjectDialog>
+        <ListPresetsDialog>
+          <Button>
+            <PlusCircleIcon className="size-4 mr-2" />
+            Ajouter une préconfiguration
+          </Button>
+          </ListPresetsDialog>
+          </div>
       </div>
     );
   }
@@ -97,9 +111,11 @@ export default function Step2() {
           <div className="flex md:flex-row md:items-center justify-between min-w-0 pb-4 gap-4">
             <div className="flex items-center space-x-2  flex-1 min-w-0">
               <span className="font-bold truncate">{subject.name}</span>
-              <span className="text-sm text-muted-foreground">
-                ({subject.coefficient / 100})
-              </span>
+              {!subject.isDisplaySubject && (
+                <span className="text-sm text-muted-foreground">
+                  ({subject.coefficient / 100})
+                </span>
+              )}
               {subject.isMainSubject && (
                 <>
                   <span className="hidden md:block text-xs text-blue-500">
@@ -134,7 +150,10 @@ export default function Step2() {
                     <UpdateSubjectDialog subjectId={subject.id} />
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <DeleteSubjectDialog subject={subject} backOnDelete={false} />
+                    <DeleteSubjectDialog
+                      subject={subject}
+                      backOnDelete={false}
+                    />
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -144,7 +163,6 @@ export default function Step2() {
         </div>
       ));
 
-
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-2xl font-bold text-primary">Subjects</h2>
@@ -153,7 +171,7 @@ export default function Step2() {
         <AddSubjectDialog>
           <Button variant="outline">
             <PlusCircleIcon className="size-4 mr-2" />
-             Ajouter une nouvelle matière
+            Ajouter une nouvelle matière
           </Button>
         </AddSubjectDialog>
       </div>

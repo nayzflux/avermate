@@ -28,7 +28,7 @@ export const Benefits = () => {
         </Heading>
       </div>
 
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-4">
           <h4 className="text-sm text-muted-foreground">Sans Avermate</h4>
 
