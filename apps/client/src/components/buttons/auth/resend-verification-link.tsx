@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
+import { env } from "@/lib/env";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
 
@@ -14,6 +15,7 @@ const ResendVerificationLink = ({ email }: { email: string }) => {
     mutationFn: async () => {
       await authClient.sendVerificationEmail({
         email,
+        callbackURL: `${env.NEXT_PUBLIC_CLIENT_URL}/onboarding`,
       });
     },
     onSuccess: () => {
