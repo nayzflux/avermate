@@ -1,6 +1,5 @@
-import Link from "next/link";
+import { DiscoverFeaturesButton } from "../buttons/discover-features-button";
 import { Heading } from "../texts/heading";
-import { Button } from "../ui/button";
 import { GetStarted } from "./get-started";
 import { LandingSection } from "./landing-section";
 
@@ -22,9 +21,7 @@ export const Headline = () => {
           {/* Call to action */}
           <GetStarted />
 
-          <Button variant="link" asChild>
-            <Link href="#features">Découvrir les fonctionnalitées</Link>
-          </Button>
+          <DiscoverFeaturesButton />
         </div>
       </div>
     </LandingSection>
