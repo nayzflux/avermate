@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 import { Card } from "../ui/card";
 
@@ -8,11 +9,13 @@ export default function DataCard({
   description,
   children,
   icon: Icon,
+  className,
 }: {
   title: string;
   description: string;
   children: ReactNode;
   icon: any;
+  className?: string;
 }) {
   // const [isMounted, setIsMounted] = useState(false);
 
@@ -25,7 +28,7 @@ export default function DataCard({
   // }
 
   return (
-    <Card className="p-6 rounded-lg">
+    <Card className={cn("p-6 rounded-lg", className)}>
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 justify-between">
           <p className="font-semibold">{title}</p>

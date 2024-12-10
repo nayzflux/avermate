@@ -1,5 +1,6 @@
 import { Heading } from "../texts/heading";
 import { SubHeading } from "../texts/subheading";
+import { MockAverageChart } from "./bento/mock-average-chart";
 import { FeaturesGrid } from "./features-grid";
 import { LandingSection } from "./landing-section";
 
