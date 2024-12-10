@@ -9,7 +9,7 @@ import usersRoutes from "@/routes/users";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import { ratelimit } from "./middlewares/ratelimit";
+import { ratelimit } from "@/middlewares/ratelimit";
 
 const app = new Hono<{
   Variables: {

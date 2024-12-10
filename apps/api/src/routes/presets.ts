@@ -1,9 +1,11 @@
 import { db } from "@/db";
 import { subjects } from "@/db/schema";
 import { auth } from "@/lib/auth";
+import { limitable } from "@/lib/limitable";
 import { generateId } from "@/lib/nanoid";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
+import { getConnInfo } from "hono/bun";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 
@@ -364,7 +366,28 @@ router.post(
       );
     }
 
-    // TODO: Rate limiting
+    const info = getConnInfo(c);
+
+    const identifier = info.remote.address || "anon";
+
+    const { isExceeded, remaining, limit, resetIn } = await limitable.verify(
+      identifier,
+      "preset"
+    );
+
+    // Set rate limit headers
+    c.header("RateLimit-Limit", limit.toString());
+    c.header("RateLimit-Remaining", remaining.toString());
+    c.header("RateLimit-Reset", resetIn.toString());
+
+    if (isExceeded)
+      return c.json(
+        {
+          code: "ERR_RATE_LIMIT_EXCEEDED",
+          message: "You're being rate limited!",
+        },
+        429
+      );
 
     // Thx chat GPT
     const flattenSubjects = (
