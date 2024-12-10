@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 
+
 const config: Config = {
   darkMode: ["class"],
   content: [
@@ -98,6 +99,16 @@ const config: Config = {
       backgroundColor: ["last"],
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("tailwindcss/plugin")(function ({ addVariant }) {
+      addVariant("light-mobile", "@media (max-width: 640px) { :not(.dark) & }");
+      addVariant("light-desktop", "@media (min-width: 641px) { :not(.dark) & }");
+      addVariant("dark-mobile", "@media (max-width: 640px) { .dark & }");
+      addVariant("dark-desktop", "@media (min-width: 641px) { .dark & }");
+
+    }),
+  ],
+
 };
 export default config;

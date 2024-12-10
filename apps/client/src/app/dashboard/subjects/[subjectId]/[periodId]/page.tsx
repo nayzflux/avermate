@@ -31,7 +31,8 @@ export default function SubjectPage({}: {}) {
   }, []);
 
   const handleBack = () => {
-    router.push(returnUrl);
+    router.replace(returnUrl);
+    localStorage.removeItem("backFromGradeOrSubject");
   };
 
   const {

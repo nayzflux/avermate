@@ -27,7 +27,7 @@ const VerifyEmailPage = () => {
     },
     // Poll every 30 seconds
     staleTime: 30 * 1000,
-    refetchInterval: 15 * 1000,
+    refetchInterval: 5 * 1000,
   });
 
   useEffect(() => {

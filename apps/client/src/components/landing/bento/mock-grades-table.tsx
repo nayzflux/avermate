@@ -169,26 +169,28 @@ function renderSubjects(
           </TableRow>
 
           {/* Mobile-only second row for notes */}
-          <TableRow className="border-b md:hidden">
-            <TableCell
-              colSpan={1}
-              style={getIndentationLinesStyle(subject.depth)}
-              className={cn(getPaddingClass(subject.depth))}
-            >
-              <div className="flex gap-2 flex-wrap pt-1 pb-2">
-                {subject.grades.map((grade) => (
-                  <GradeBadge
-                    key={grade.id}
-                    value={grade.value}
-                    outOf={grade.outOf}
-                    coefficient={grade.coefficient}
-                    id={grade.id}
-                    periodId={grade.periodId}
-                  />
-                ))}
-              </div>
-            </TableCell>
-          </TableRow>
+          {!subject.isDisplaySubject && subject.grades.length !== 0 && (
+            <TableRow className="border-b md:hidden">
+              <TableCell
+                colSpan={1}
+                style={getIndentationLinesStyle(subject.depth)}
+                className={cn(getPaddingClass(subject.depth))}
+              >
+                <div className="flex gap-2 flex-wrap pt-1 pb-2">
+                  {subject.grades.map((grade) => (
+                    <GradeBadge
+                      key={grade.id}
+                      value={grade.value}
+                      outOf={grade.outOf}
+                      coefficient={grade.coefficient}
+                      id={grade.id}
+                      periodId={grade.periodId}
+                    />
+                  ))}
+                </div>
+              </TableCell>
+            </TableRow>
+          )}
 
           {renderSubjects(subjects, periodId, subject.id)}
         </React.Fragment>

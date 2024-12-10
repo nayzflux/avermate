@@ -71,7 +71,13 @@ const determinePeriodId = (
   return matchedPeriod ? matchedPeriod.id : "full-year";
 };
 
-export const AddGradeForm = ({ close }: { close: () => void }) => {
+export const AddGradeForm = ({
+  close,
+  parentId,
+}: {
+  close: () => void;
+  parentId?: string;
+}) => {
   const toaster = useToast();
   const [open, setOpen] = useState(false);
   const [openSubjectPopover, setOpenSubjectPopover] = useState(false);
@@ -162,7 +168,7 @@ export const AddGradeForm = ({ close }: { close: () => void }) => {
     resolver: zodResolver(addGradeSchema),
     defaultValues: {
       name: "",
-      subjectId: "",
+      subjectId: parentId || "",
     },
   });
 

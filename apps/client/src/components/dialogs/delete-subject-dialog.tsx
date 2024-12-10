@@ -21,7 +21,9 @@ import {
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 
-export default function DeleteSubjectDialog({ subject }: { subject: Subject }) {
+export default function DeleteSubjectDialog(
+  { subject, backOnDelete = true }: { subject: Subject; backOnDelete?: boolean }
+) {
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
@@ -49,7 +51,9 @@ export default function DeleteSubjectDialog({ subject }: { subject: Subject }) {
 
       setOpen(false);
 
-      router.back();
+      if (backOnDelete) {
+        router.back();
+      }
     },
     onError: (err) => {
       toaster.toast({

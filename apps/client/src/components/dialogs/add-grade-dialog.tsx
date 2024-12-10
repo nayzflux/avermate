@@ -15,8 +15,10 @@ import { AddGradeForm } from "../forms/add-grade-form";
 
 export default function AddGradeDialog({
   children,
+  parentId,
 }: {
-  children: React.ReactNode;
+    children: React.ReactNode;
+    parentId?: string;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -51,7 +53,7 @@ export default function AddGradeDialog({
           </CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
-          <AddGradeForm close={() => setOpen(false)} />
+          <AddGradeForm close={() => setOpen(false)} parentId={parentId} />
         </CredenzaBody>
       </CredenzaContent>
     </Credenza>

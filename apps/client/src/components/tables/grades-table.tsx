@@ -208,7 +208,9 @@ function renderSubjects(
               <Link
                 href={`/dashboard/subjects/${subject.id}/${periodId}`}
                 onClick={() => {
-                  localStorage.setItem("backFromGradeOrSubject", pathname);
+                  const currentPath =
+                    pathname + window.location.search || "/dashboard";
+                  localStorage.setItem("backFromGradeOrSubject", currentPath);
                 }}
                 className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
               >
@@ -247,26 +249,28 @@ function renderSubjects(
           </TableRow>
 
           {/* Mobile-only second row for notes */}
-          <TableRow className="border-b md:hidden">
-            <TableCell
-              colSpan={1}
-              style={getIndentationLinesStyle(subject.depth)}
-              className={cn(getPaddingClass(subject.depth))}
-            >
-              <div className="flex gap-2 flex-wrap pt-1 pb-2">
-                {subject.grades.map((grade) => (
-                  <GradeBadge
-                    key={grade.id}
-                    value={grade.value}
-                    outOf={grade.outOf}
-                    coefficient={grade.coefficient}
-                    id={grade.id}
-                    periodId={grade.periodId}
-                  />
-                ))}
-              </div>
-            </TableCell>
-          </TableRow>
+          {!subject.isDisplaySubject && subject.grades.length !== 0 && (
+            <TableRow className="border-b md:hidden">
+              <TableCell
+                colSpan={1}
+                style={getIndentationLinesStyle(subject.depth)}
+                className={cn(getPaddingClass(subject.depth))}
+              >
+                <div className="flex gap-2 flex-wrap pt-1 pb-2">
+                  {subject.grades.map((grade) => (
+                    <GradeBadge
+                      key={grade.id}
+                      value={grade.value}
+                      outOf={grade.outOf}
+                      coefficient={grade.coefficient}
+                      id={grade.id}
+                      periodId={grade.periodId}
+                    />
+                  ))}
+                </div>
+              </TableCell>
+            </TableRow>
+          )}
 
           {renderSubjects(subjects, periodId, subject.id, pathname)}
         </React.Fragment>

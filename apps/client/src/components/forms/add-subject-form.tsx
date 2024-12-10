@@ -55,7 +55,13 @@ const addSubjectSchema = z.object({
 
 type AddSubjectSchema = z.infer<typeof addSubjectSchema>;
 
-export const AddSubjectForm = ({ close }: { close: () => void }) => {
+export const AddSubjectForm = ({
+  close,
+  parentId,
+}: {
+  close: () => void;
+  parentId? : string;
+}) => {
   const [open, setOpen] = useState(false);
   const toaster = useToast();
   const queryClient = useQueryClient();
@@ -124,7 +130,7 @@ export const AddSubjectForm = ({ close }: { close: () => void }) => {
     resolver: zodResolver(addSubjectSchema),
     defaultValues: {
       name: "",
-      parentId: "",
+      parentId: parentId?.toString() || "",
       isDisplaySubject: false,
       isMainSubject: false,
       coefficient: undefined,
