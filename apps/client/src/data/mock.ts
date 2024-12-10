@@ -1,3 +1,5 @@
+import { Subject } from "@/types/subject";
+
 export const getRandomDate = () => {
   const start = new Date(new Date().getFullYear(), 8, 1);
   const end = new Date(new Date().getFullYear() + 1, 5, 30);
@@ -707,4 +709,4 @@ export const subjects = [
       },
     ],
   },
-];
+] satisfies Subject[];
