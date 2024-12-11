@@ -1,7 +1,5 @@
 services:
-  api:
-    image: avermate-api:latest
+  cache:
+    image: redis:latest
     ports:
-      - 5000:5000
-    env_file:
-      - ./apps/api/.env
+      - 6379:6379

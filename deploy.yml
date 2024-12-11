@@ -1,0 +1,58 @@
+services:
+  # API
+  api:
+    image: avermate-api:latest
+    environment:
+      # Database
+      - DATABASE_URL=
+      - DATABASE_AUTH_TOKEN=
+      # Cache
+      - REDIS_URL=
+      # Better Auth
+      - BETTER_AUTH_URL=
+      - BETTER_AUTH_SECRET=
+      # Client
+      - CLIENT_URL=
+      # OAuth
+      # Microsoft OAuth
+      - MICROSOFT_CLIENT_ID=
+      - MICROSOFT_CLIENT_SECRET=
+      # Google OAuth
+      - GOOGLE_CLIENT_ID=
+      - GOOGLE_CLIENT_SECRET=
+      # Resend
+      - RESEND_API_KEY=
+      - EMAIL_FROM=
+    ports:
+      - 5000
+    depends_on:
+      - cache
+    networks:
+      - internal
+      - webgateway
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.avermate-api.rule=Host(`api.avermate.fr`)"
+      - "traefik.http.services.avermate-api.loadbalancer.server.port=5000"
+      - "traefik.http.routers.avermate-api.entrypoints=websecure"
+      - "traefik.http.routers.avermate-api.tls.certresolver=myresolver"
+      - "traefik.http.routers.avermate-api.tls=true"
+
+  # Web
+  # Cache
+  cache:
+    image: redis:latest
+    expose:
+      - 6379
+    networks:
+      - internal
+    environment:
+      - REDIS_PASSWORD=
+
+networks:
+  # Internal network
+  internal:
+  # Reverse proxy network
+  webgateway:
+    external: true
+    name: webgateway

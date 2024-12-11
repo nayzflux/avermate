@@ -1,7 +1,9 @@
-import { Limitable, MemoryAdapter } from "@limitable/ratelimit";
+import { Limitable, MemoryAdapter, RedisAdapter } from "@limitable/ratelimit";
+import { env } from "@/lib/env";
 
-// Switch to redis for production
-const adapter = new MemoryAdapter();
+const adapter = new RedisAdapter({
+  url: env.REDIS_URL,
+});
 
 export const limitable = new Limitable({
   appId: "avermate",
