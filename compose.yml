@@ -1,6 +1,6 @@
 services:
   api:
-    image: avermate-api
+    image: avermate-api:latest
     ports:
       - 5000:5000
     env_file:

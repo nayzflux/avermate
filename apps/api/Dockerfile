@@ -5,12 +5,12 @@ WORKDIR /app
 # Cache packages
 COPY package.json package.json
 COPY bun.lockb bun.lockb
-
 COPY /apps/api/package.json ./apps/api/package.json
 
 RUN bun install
 
-COPY /apps/api ./apps/api
+
+COPY . .
 
 ENV NODE_ENV=production
 
@@ -20,6 +20,8 @@ RUN bun build \
 	--minify-syntax \
 	--target bun \
 	--outfile api \
+	--sourcemap \
+	--bytecode \
 	./apps/api/src/index.ts
 
 FROM gcr.io/distroless/base
