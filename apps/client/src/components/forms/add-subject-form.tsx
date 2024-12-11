@@ -234,7 +234,7 @@ export const AddSubjectForm = ({
                 <FormDescription>
                   Les catégories ne comptent pas dans la moyenne générale. Elles
                   regroupent des matières, mais leurs enfants sont calculés
-                  comme au niveau supérieur. Impossible d'y ajouter des notes.
+                  comme au niveau supérieur. Impossible d&apos;y ajouter des notes.
                 </FormDescription>
               </FormItem>
             )}

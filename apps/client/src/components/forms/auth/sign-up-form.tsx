@@ -254,7 +254,7 @@ export const SignUpForm = () => {
 
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
-            S'inscrire
+            S&apos;inscrire
           </Button>
         </form>
       </Form>

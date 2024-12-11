@@ -76,7 +76,7 @@ export default async function AboutPage() {
             <div className="pb-4">
               <Logo />
             </div>
-            <CardTitle>À propos d'{repo?.name ?? "Your App"}</CardTitle>
+            <CardTitle>À propos d&apos;{repo?.name ?? "Your App"}</CardTitle>
             <CardDescription>
               {repo?.description ?? "Prenez le contrôle de vos notes"}
             </CardDescription>
@@ -130,7 +130,7 @@ export default async function AboutPage() {
                 ))
               ) : (
                 <p>
-                  Aucun contributeur pour l'instant. Soyez le premier à
+                  Aucun contributeur pour l&apos;instant. Soyez le premier à
                   contribuer!
                 </p>
               )}

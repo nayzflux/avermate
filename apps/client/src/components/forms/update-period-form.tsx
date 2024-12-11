@@ -109,6 +109,8 @@ export const UpdatePeriodForm = ({
     },
   });
 
+  const numberOfMonths = useMediaQuery("(min-width: 1024px)") ? 2 : 1;
+
   const onSubmit = (values: UpdatePeriodSchema) => {
     const { from: startAt, to: endAt } = values.dateRange;
 
@@ -209,9 +211,7 @@ export const UpdatePeriodForm = ({
                           mode="range"
                           selected={field.value}
                           onSelect={field.onChange}
-                          numberOfMonths={
-                            useMediaQuery("(min-width: 1024px)") ? 2 : 1
-                          }
+                          numberOfMonths={numberOfMonths}
                           disabled={periods
                             .filter((p) => p.id !== period.id)
                             .map((p) => ({

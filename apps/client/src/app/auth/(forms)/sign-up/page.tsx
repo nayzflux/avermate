@@ -6,7 +6,7 @@ export default function SignUpPage() {
     <div className="flex flex-col gap-8">
       {/* Title */}
       <div className="flex flex-col gap-2">
-        <p className="text-3xl md:text-4xl font-bold">S'inscrire</p>
+        <p className="text-3xl md:text-4xl font-bold">S&apos;inscrire</p>
 
         <div className="flex flex-col gap-0.5 text-sm md:text-base text-muted-foreground">
           <p>
@@ -15,7 +15,7 @@ export default function SignUpPage() {
           </p>
 
           <Link href="/auth/sign-in" className="underline">
-            J'ai déjà un compte
+            J&apos;ai déjà un compte
           </Link>
         </div>
       </div>

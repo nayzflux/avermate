@@ -5,6 +5,10 @@ export const env = createEnv({
   server: {
     // Database
     DATABASE_URL: z.string().url(),
+    DATABASE_AUTH_TOKEN: z.string(),
+
+    // Cache
+    REDIS_URL: z.string().url(),
 
     // Better Auth
     BETTER_AUTH_URL: z.string().url(),

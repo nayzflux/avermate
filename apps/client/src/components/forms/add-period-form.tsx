@@ -116,6 +116,8 @@ export const AddPeriodForm = ({
     },
   });
 
+  const numberOfMonths = useMediaQuery("(min-width: 1024px)") ? 2 : 1;
+
   const form = useForm<AddPeriodSchema>({
     resolver: zodResolver(addPeriodSchema),
     defaultValues: {
@@ -226,9 +228,7 @@ export const AddPeriodForm = ({
                           mode="range"
                           selected={field.value}
                           onSelect={field.onChange}
-                          numberOfMonths={
-                            useMediaQuery("(min-width: 1024px)") ? 2 : 1
-                          }
+                          numberOfMonths={numberOfMonths}
                           disabled={periods.map((period) => ({
                             from: startOfDay(period.startAt),
                             to: startOfDay(period.endAt),
