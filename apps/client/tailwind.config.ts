@@ -10,7 +10,7 @@ const config: Config = {
   theme: {
   	extend: {
   		screens: {
-  			'xs': '375px',
+  			xs: '375px',
   			'3xl': '1920px'
   		},
   		colors: {
@@ -63,7 +63,9 @@ const config: Config = {
   		animation: {
   			'shiny-text': 'shiny-text 8s infinite',
   			'pulse-dimmer': 'pulse-dimmer 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-  			orbit: 'orbit calc(var(--duration)*1s) linear infinite'
+  			orbit: 'orbit calc(var(--duration)*1s) linear infinite',
+  			'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out'
   		},
   		keyframes: {
   			'shiny-text': {
@@ -76,10 +78,10 @@ const config: Config = {
   			},
   			'pulse-dimmer': {
   				'0%, 100%': {
-  					'opacity': '0.1'
+  					opacity: '0.1'
   				},
   				'50%': {
-  					'opacity': '0.05'
+  					opacity: '0.05'
   				}
   			},
   			orbit: {
@@ -88,6 +90,22 @@ const config: Config = {
   				},
   				'100%': {
   					transform: 'rotate(360deg) translateY(calc(var(--radius) * 1px)) rotate(-360deg)'
+  				}
+  			},
+  			'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
   				}
   			}
   		}
@@ -98,6 +116,17 @@ const config: Config = {
       backgroundColor: ["last"],
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("tailwindcss/plugin")(function ({ addVariant }) {
+      addVariant("light-mobile", "@media (max-width: 640px) { :not(.dark) & }");
+      addVariant(
+        "light-desktop",
+        "@media (min-width: 641px) { :not(.dark) & }"
+      );
+      addVariant("dark-mobile", "@media (max-width: 640px) { .dark & }");
+      addVariant("dark-desktop", "@media (min-width: 641px) { .dark & }");
+    }),
+  ],
 };
 export default config;

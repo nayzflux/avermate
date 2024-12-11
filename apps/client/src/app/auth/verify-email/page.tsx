@@ -28,13 +28,14 @@ const VerifyEmailPage = () => {
     // Poll every 30 seconds
     staleTime: 30 * 1000,
     refetchInterval: 15 * 1000,
+    refetchOnWindowFocus: true,
   });
 
   useEffect(() => {
     // When email is verified redirect to dashboard
     if (session?.user.emailVerified) {
-      // Redirect to the dashboard
-      router.push("/dashboard");
+      // Redirect to the onboarding
+      router.push("/onboarding");
 
       // Send toast notification
       toaster.toast({

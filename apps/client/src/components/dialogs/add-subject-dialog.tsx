@@ -14,8 +14,10 @@ import { AddSubjectForm } from "../forms/add-subject-form";
 
 export default function AddSubjectCredenza({
   children,
+  parentId,
 }: {
   children: React.ReactNode;
+  parentId?: string;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -33,7 +35,7 @@ export default function AddSubjectCredenza({
           </CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
-          <AddSubjectForm close={() => setOpen(false)} />
+          <AddSubjectForm close={() => setOpen(false)} parentId={parentId} />
         </CredenzaBody>
       </CredenzaContent>
     </Credenza>

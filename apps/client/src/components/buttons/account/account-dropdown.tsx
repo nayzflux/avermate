@@ -36,11 +36,10 @@ export default function AccountDropdown() {
 
   const router = useRouter();
   const pathname = usePathname(); // Get the current path
-
-    const handleClick = () => {
-      // Store the current page as the one to return to from a grade page
-      localStorage.setItem("backFromSettings", pathname);
-    };
+  const handleClick = () => {
+    const currentPath = pathname + window.location.search || "/dashboard";
+    localStorage.setItem("backFromSettings", currentPath);
+  };
 
   useEffect(() => {
     if (isPending) return;

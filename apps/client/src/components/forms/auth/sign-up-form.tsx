@@ -65,14 +65,13 @@ export const SignUpForm = () => {
         name,
         email,
         password,
-        callbackURL: `${env.NEXT_PUBLIC_CLIENT_URL}/dashboard`,
+        callbackURL: `${env.NEXT_PUBLIC_CLIENT_URL}/onboarding`,
       });
 
       return data;
     },
     onSuccess: (data) => {
       if (!data.user.emailVerified) {
-        
         toaster.toast({
           title: "✉️ Email non vérifié",
           description: `Un lien de vérification a été envoyé à l'adresse ${data.user.email}.`,

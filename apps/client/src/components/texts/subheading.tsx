@@ -13,7 +13,7 @@ export const SubHeading = ({
   return (
     <As
       className={cn(
-        "max-w-[450px] text-center text-muted-foreground",
+        "max-w-[200px] md:max-w-[450px] text-sm md:text-base text-center text-muted-foreground",
         className
       )}
     >

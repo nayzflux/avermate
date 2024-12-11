@@ -1,3 +1,6 @@
+import { Subject } from "@/types/subject";
+import { startOfDay } from "date-fns";
+
 export const getRandomDate = () => {
   const start = new Date(new Date().getFullYear(), 8, 1);
   const end = new Date(new Date().getFullYear() + 1, 5, 30);
@@ -5,7 +8,10 @@ export const getRandomDate = () => {
   const date = new Date(
     start.getTime() + Math.random() * (end.getTime() - start.getTime())
   );
-  return date.toISOString();
+
+  const normalizedDate = startOfDay(date);
+
+  return normalizedDate.toISOString();
 };
 
 export const subjects = [
@@ -707,4 +713,4 @@ export const subjects = [
       },
     ],
   },
-];
+] satisfies Subject[];

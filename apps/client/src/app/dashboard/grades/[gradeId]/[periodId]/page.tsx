@@ -36,6 +36,7 @@ export default function GradePage({}: {}) {
 
   const handleBack = () => {
     router.push(returnUrl);
+    localStorage.removeItem("backFromGradeOrSubject");
   };
 
   const {

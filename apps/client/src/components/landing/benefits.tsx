@@ -28,13 +28,13 @@ export const Benefits = () => {
         </Heading>
       </div>
 
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-4">
           <h4 className="text-sm text-muted-foreground">Sans Avermate</h4>
 
           <ul className="flex flex-col gap-2">
             {cons.map((con) => (
-              <li className="flex text-red-500" key={con}>
+              <li className="flex items-center text-red-500" key={con}>
                 <XMarkIcon className="size-4 mr-2" />
                 {con}
               </li>
@@ -47,7 +47,7 @@ export const Benefits = () => {
 
           <ul className="flex flex-col gap-2">
             {benefits.map((benefit) => (
-              <li className="flex text-emerald-500" key={benefit}>
+              <li className="flex items-center text-emerald-500" key={benefit}>
                 <CheckIcon className="size-4 mr-2" />
                 {benefit}
               </li>

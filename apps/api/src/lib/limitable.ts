@@ -20,5 +20,11 @@ export const limitable = new Limitable({
       windowMs: 10 * 60 * 1000,
       maxRequest: 50,
     },
+    // Use preset
+    preset: {
+      // 10 req/1h
+      windowMs: 60 * 60 * 1000,
+      maxRequest: 10,
+    },
   },
 });

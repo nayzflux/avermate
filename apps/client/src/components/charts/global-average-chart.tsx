@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -17,6 +16,8 @@ import { Separator } from "@/components/ui/separator";
 import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
 import { average, averageOverTime } from "@/utils/average";
+import { BookOpenIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 import {
   Area,
   AreaChart,
@@ -28,10 +29,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { BookOpenIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
-import { Button } from "../ui/button";
-import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
 import AddGradeDialog from "../dialogs/add-grade-dialog";
+import { SubjectEmptyState } from "../empty-states/subject-empty-state";
+import { Button } from "../ui/button";
 
 export const description = "A simple area chart";
 
@@ -225,76 +225,53 @@ export default function GlobalAverageChart({
   };
 
   // Custom dot component
-const CustomDot = (props: any) => {
-  const { cx, cy, index, stroke, activeTooltipIndex } = props;
-  if (activeTooltipIndex !== null && index === activeTooltipIndex) {
-    return (
-      <circle
-        cx={cx}
-        cy={cy}
-        r={4} // Adjust size as needed
-        fill={stroke}
-        opacity={0.8}
-      />
-    );
-  }
-  return null;
+  const CustomDot = (props: any) => {
+    const { cx, cy, index, stroke, activeTooltipIndex } = props;
+    if (activeTooltipIndex !== null && index === activeTooltipIndex) {
+      return (
+        <circle
+          cx={cx}
+          cy={cy}
+          r={4} // Adjust size as needed
+          fill={stroke}
+          opacity={0.8}
+        />
+      );
+    }
+    return null;
   };
-  
+
   // console.log(subjects);
   // console.log(chartData);
   // console.log(radarData);
 
-
-
-
   // handle if there is no subjects
   if (subjects.length === 0) {
-    return (
-      <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-[400px]">
-        <BookOpenIcon className="w-12 h-12" />
-        <div className="flex flex-col items-center gap-1">
-          <h2 className="text-xl font-semibold text-center">
-            Aucune matière pour l&apos;instant
-          </h2>
-          <p className="text-center">
-            Ajouter une nouvelle matière pour commencer à suivre vos notes.
-          </p>
-        </div>
-        <AddSubjectDialog>
-          <Button variant="outline">
-            <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une matière
-          </Button>
-        </AddSubjectDialog>
-      </Card>
-    );
+    return <SubjectEmptyState />;
   }
 
   //if all the average are null
-    if (chartData.every((data) => data.average === null)) {
-      return (
-        <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
-          <BookOpenIcon className="w-12 h-12" />
-          <div className="flex flex-col items-center gap-1">
-            <h2 className="text-xl font-semibold text-center">
-              Aucune note pour l&apos;instant
-            </h2>
-            <p className="text-center">
-              Ajouter une nouvelle note pour commencer à suivre vos moyennes.
-            </p>
-          </div>
-          <AddGradeDialog>
-            <Button variant="outline">
-              <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une note
-            </Button>
-          </AddGradeDialog>
-        </Card>
-      );
-    }
-
-
+  if (chartData.every((data) => data.average === null)) {
+    return (
+      <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
+        <BookOpenIcon className="w-12 h-12" />
+        <div className="flex flex-col items-center gap-1">
+          <h2 className="text-xl font-semibold text-center">
+            Aucune note pour l&apos;instant
+          </h2>
+          <p className="text-center">
+            Ajouter une nouvelle note pour commencer à suivre vos moyennes.
+          </p>
+        </div>
+        <AddGradeDialog>
+          <Button variant="outline">
+            <PlusCircleIcon className="size-4 mr-2" />
+            Ajouter une note
+          </Button>
+        </AddGradeDialog>
+      </Card>
+    );
+  }
 
   return (
     <Card className="lg:col-span-5">
