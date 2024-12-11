@@ -1,7 +1,7 @@
 services:
   # API
   api:
-    image: avermate-api:latest
+    image: nayzbysodium/avermate-api:latest
     environment:
       # Database
       - DATABASE_URL=
