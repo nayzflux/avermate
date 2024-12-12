@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import Step1 from "./step1";
 import Step2 from "./step2";
@@ -15,9 +15,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ConfettiButton } from "@/components/ui/confetti";
 import Link from "next/link";
 
-// Define unique identifiers for each step
 const stepIds = ["welcome", "periodes", "matieres", "notes"];
-
 const steps = [
   { title: "Bienvenue", component: WelcomeScreen, id: "welcome" },
   { title: "Périodes", component: Step1, id: "periodes" },
@@ -25,40 +23,33 @@ const steps = [
   { title: "Notes", component: Step3, id: "notes" },
 ];
 
-export default function OnboardingPage() {
+function OnboardingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Function to map 'step' query parameter to step index
   const getStepIndexFromParams = useCallback(() => {
     const step = searchParams.get("step")?.toLowerCase() || "";
     const index = stepIds.indexOf(step);
-    return index !== -1 ? index : 0; // Default to first step if step not found
+    return index !== -1 ? index : 0;
   }, [searchParams]);
 
-  // Initialize currentStep based on URL query parameter
   const [currentStep, setCurrentStep] = useState(getStepIndexFromParams());
 
   const { data: session } = authClient.useSession() as unknown as {
     data: { session: Session; user: User };
   };
 
-  // Update the URL query parameter whenever currentStep changes
   useEffect(() => {
     const stepId = steps[currentStep].id;
     const currentStepParam = searchParams.get("step")?.toLowerCase();
 
     if (currentStepParam !== stepId) {
-      // Construct new search parameters
       const newSearchParams = new URLSearchParams(searchParams.toString());
       newSearchParams.set("step", stepId);
-
-      // Update the URL without adding a new history entry
       router.replace(`?${newSearchParams.toString()}`);
     }
   }, [currentStep, router, searchParams]);
 
-  // Listen for changes in search parameters (e.g., user manually changes the query or uses browser navigation)
   useEffect(() => {
     const newStep = getStepIndexFromParams();
     setCurrentStep(newStep);
@@ -93,8 +84,12 @@ export default function OnboardingPage() {
         </div>
 
         <div className="flex flex-row items-center md:space-y-0 md:space-x-4">
-            {currentStep === 0 ? (
-            <Button size="sm" variant="link" onClick={() => router.push("/dashboard")}>
+          {currentStep === 0 ? (
+            <Button
+              size="sm"
+              variant="link"
+              onClick={() => router.push("/dashboard")}
+            >
               Retour
             </Button>
           ) : (
@@ -148,5 +143,13 @@ export default function OnboardingPage() {
         </AnimatePresence>
       </div>
     </div>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <OnboardingContent />
+    </Suspense>
   );
 }
