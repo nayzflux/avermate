@@ -47,49 +47,53 @@ export default function Step2() {
       <div className="flex flex-col items-center justify-center space-y-4">
         <h2 className="text-2xl font-bold text-primary">Matières</h2>
         <p className="text-muted-foreground text-justify">
-          Avant d'ajouter votre première matière quelques choses à savoir:
+          Avant d&apos;ajouter votre première matière quelques choses à savoir:
           <br />
           <ul>
             <li>
-              Les matières peuvent être configurées comme "matière principale"
-              ces matières seront affichées dans les données et les graphiques
-              de la page d'accueil. Il faut donc marquer les matières comme
-              Mathématiques, Français, Anglais, etc. comme matières principales.
+              Les matières peuvent être configurées comme &quot;matière
+              principale&quot; ces matières seront affichées dans les données et
+              les graphiques de la page d&apos;accueil. Il faut donc marquer les
+              matières comme Mathématiques, Français, Anglais, etc. comme
+              matières principales.
             </li>
             <br />
             <li>
-              Les matières peuvent être configurées comme "catégories". Elles
-              n'ont pas d'existance propre, mais permettent de regrouper des
-              matières pour mieux les organiser. Par exemple, vous pouvez créer
-              une catégorie "Langues" et y ajouter les matières "Anglais",
-              "Espagnol", "Allemand", etc. Pour calculer la moyenne on ne fera
-              pas la moyenne de la catégorie mais c'est comme si les matières de
-              la catégorie étaient regroupées hors de la catégorie.
+              Les matières peuvent être configurées comme
+              &quot;catégories&quot;. Elles n&apos;ont pas d&apos;existance
+              propre, mais permettent de regrouper des matières pour mieux les
+              organiser. Par exemple, vous pouvez créer une catégorie
+              &quot;Langues&quot; et y ajouter les matières &quot;Anglais&quot;,
+              &quot;Espagnol&quot;, &quot;Allemand&quot;, etc. Pour calculer la
+              moyenne on ne fera pas la moyenne de la catégorie mais c&apos;est
+              comme si les matières de la catégorie étaient regroupées hors de
+              la catégorie.
             </li>
             <br />
             <li>
-              Les matières peuvent être regroupées en "sous-matières". Par
-              exemple, si vous avez une matière "Mathématiques" vous pouvez
-              créer des sous-matières "Ecrit" et "Oral" si elles sont notées
-              différemment. Les sous-matières permettent de mieux organiser les
-              notes et de calculer des moyennes
+              Les matières peuvent être regroupées en &quot;sous-matières&quot;.
+              Par exemple, si vous avez une matière &quot;Mathématiques&quot;
+              vous pouvez créer des sous-matières &quot;Ecrit&quot; et
+              &quot;Oral&quot; si elles sont notées différemment. Les
+              sous-matières permettent de mieux organiser les notes et de
+              calculer des moyennes
             </li>
           </ul>
         </p>
-      <div className="flex flex-row items-center justify-center space-x-4">
-        <AddSubjectDialog>
-          <Button variant="outline">
-            <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une matière
-          </Button>
-        </AddSubjectDialog>
-        <ListPresetsDialog>
-          <Button>
-            <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une préconfiguration
-          </Button>
+        <div className="flex flex-row items-center justify-center space-x-4">
+          <AddSubjectDialog>
+            <Button variant="outline">
+              <PlusCircleIcon className="size-4 mr-2" />
+              Ajouter une matière
+            </Button>
+          </AddSubjectDialog>
+          <ListPresetsDialog>
+            <Button>
+              <PlusCircleIcon className="size-4 mr-2" />
+              Ajouter une préconfiguration
+            </Button>
           </ListPresetsDialog>
-          </div>
+        </div>
       </div>
     );
   }

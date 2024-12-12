@@ -11,7 +11,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import SubjectWrapper from "./subject-wrapper";
 
-export default function SubjectPage({}: {}) {
+export default function SubjectPage() {
   const { periodId, subjectId } = useParams() as {
     periodId: string;
     subjectId: string;

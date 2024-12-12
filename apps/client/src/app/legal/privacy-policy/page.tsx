@@ -68,9 +68,9 @@ const PrivacyPolicy = () => {
           <p>
             <strong>Affiliate</strong> means an entity that controls, is
             controlled by, or is under common control with a party, where
-            "control" means ownership of 50% or more of the shares, equity
-            interest, or other securities entitled to vote for the election of
-            directors or other managing authority.
+            &quot;control&quot; means ownership of 50% or more of the shares,
+            equity interest, or other securities entitled to vote for the
+            election of directors or other managing authority.
           </p>
         </li>
         <li>
@@ -81,8 +81,9 @@ const PrivacyPolicy = () => {
         </li>
         <li>
           <p>
-            <strong>Company</strong> (referred to as either "the Company", "We",
-            "Us", or "Our" in this Agreement) refers to Avermate.
+            <strong>Company</strong> (referred to as either &quot;the
+            Company&quot;, &quot;We&quot;, &quot;Us&quot;, or &quot;Our&quot; in
+            this Agreement) refers to Avermate.
           </p>
         </li>
         <li>
@@ -220,10 +221,11 @@ const PrivacyPolicy = () => {
           <p>
             <strong>To contact You:</strong> To contact You by email, telephone
             calls, SMS, or other equivalent forms of electronic communication,
-            such as a mobile application&apos;s push notifications regarding updates
-            or informative communications related to the functionalities,
-            products, or contracted services, including security updates, when
-            necessary or reasonable for their implementation.
+            such as a mobile application&apos;s push notifications regarding
+            updates or informative communications related to the
+            functionalities, products, or contracted services, including
+            security updates, when necessary or reasonable for their
+            implementation.
           </p>
         </li>
         <li>
@@ -324,12 +326,13 @@ const PrivacyPolicy = () => {
         Transfer of Your Personal Data
       </h3>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Your information, including Personal Data, is processed at the Company&apos;s
-        operating offices and in any other places where the parties involved in
-        the processing are located. It means that this information may be
-        transferred to — and maintained on — computers located outside of Your
-        state, province, country, or other governmental jurisdiction where the
-        data protection laws may differ from those of Your jurisdiction.
+        Your information, including Personal Data, is processed at the
+        Company&apos;s operating offices and in any other places where the
+        parties involved in the processing are located. It means that this
+        information may be transferred to — and maintained on — computers
+        located outside of Your state, province, country, or other governmental
+        jurisdiction where the data protection laws may differ from those of
+        Your jurisdiction.
       </p>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
         Your consent to this Privacy Policy followed by Your submission of such
@@ -444,8 +447,8 @@ const PrivacyPolicy = () => {
       <p className="leading-7 [&:not(:first-child)]:mt-6">
         Our Service may contain links to other websites that are not operated by
         Us. If You click on a third party link, You will be directed to that
-        third party&apos;s site. We strongly advise You to review the Privacy Policy
-        of every site You visit.
+        third party&apos;s site. We strongly advise You to review the Privacy
+        Policy of every site You visit.
       </p>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
         We have no control over and assume no responsibility for the content,
@@ -461,8 +464,8 @@ const PrivacyPolicy = () => {
       </p>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
         We will let You know via email and/or a prominent notice on Our Service,
-        prior to the change becoming effective and update the "Last updated"
-        date at the top of this Privacy Policy.
+        prior to the change becoming effective and update the &quot;Last
+        updated&quot; date at the top of this Privacy Policy.
       </p>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
         You are advised to review this Privacy Policy periodically for any
