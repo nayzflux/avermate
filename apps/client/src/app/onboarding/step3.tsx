@@ -1,25 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
+import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
+import errorStateCard from "@/components/skeleton/error-card";
+import GradeBadge from "@/components/tables/grade-badge";
+import { Button } from "@/components/ui/button";
 import { apiClient } from "@/lib/api";
 import { GetSubjectsResponse } from "@/types/get-subjects-response";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import {
-  PlusCircleIcon,
-  EllipsisVerticalIcon,
-} from "@heroicons/react/24/outline";
-import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
-import UpdateSubjectDialog from "@/components/dialogs/update-subject-dialog";
-import DeleteSubjectDialog from "@/components/dialogs/delete-subject-dialog";
 import { Subject } from "@/types/subject";
-import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
-import GradeBadge from "@/components/tables/grade-badge";
-import { Badge } from "@/components/ui/badge";
-import errorStateCard from "@/components/skeleton/error-card";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { useQuery } from "@tanstack/react-query";
 
 // export default function Step3() {
 //   const {
@@ -106,12 +94,6 @@ import errorStateCard from "@/components/skeleton/error-card";
 //   );
 // }
 
-
-
-
-
-
-
 export default function Step3() {
   const {
     data: subjects,
@@ -140,7 +122,8 @@ export default function Step3() {
         <h2 className="text-2xl font-bold text-primary">Notes</h2>
         <p className="text-muted-foreground text-justify">
           Vous pouvez maintenant ajouter des notes à vos matières. Cliquez sur
-          le bouton "+" à côté de chaque matière pour y ajouter une note.
+          le bouton &quot;+&quot; à côté de chaque matière pour y ajouter une
+          note.
         </p>
 
         <AddSubjectDialog>
@@ -173,10 +156,10 @@ export default function Step3() {
             </div>
             <div className="flex items-center space-x-2 flex-shrink-0">
               {!subject.isDisplaySubject && (
-              <AddGradeDialog parentId={subject.id}>
-                <Button variant="outline" size="icon">
-                  <PlusCircleIcon className="size-4" />
-                </Button>
+                <AddGradeDialog parentId={subject.id}>
+                  <Button variant="outline" size="icon">
+                    <PlusCircleIcon className="size-4" />
+                  </Button>
                 </AddGradeDialog>
               )}
             </div>

@@ -10,14 +10,16 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import GradeWrapper from "./grade-wrapper";
 
-export default function GradePage({}: {}) {
-  let { periodId, gradeId } = useParams() as {
+export default function GradePage() {
+  const { periodId, gradeId } = useParams() as {
     periodId: string;
     gradeId: string;
   };
 
-  if (periodId == "null") {
-    periodId = "full-year";
+  let periodIdCorrected = periodId;
+
+  if (periodIdCorrected == "null") {
+    periodIdCorrected = "full-year";
   }
 
   const router = useRouter();
@@ -77,10 +79,11 @@ export default function GradePage({}: {}) {
     <GradeWrapper
       onBack={handleBack}
       subjects={
-        organizedSubjects?.find((p) => p.period.id === periodId)?.subjects || []
+        organizedSubjects?.find((p) => p.period.id === periodIdCorrected)
+          ?.subjects || []
       }
       grade={grade}
-      periodId={periodId}
+      periodId={periodIdCorrected}
     />
   );
 }
