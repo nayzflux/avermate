@@ -118,7 +118,7 @@ const config: Config = {
   },
   plugins: [
     require("tailwindcss-animate"),
-    require("tailwindcss/plugin")(function ({ addVariant }) {
+	require("tailwindcss/plugin")(function ({ addVariant }: { addVariant: (name: string, value: string) => void }) {
       addVariant("light-mobile", "@media (max-width: 640px) { :not(.dark) & }");
       addVariant(
         "light-desktop",
