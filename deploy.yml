@@ -39,6 +39,24 @@ services:
       - "traefik.http.routers.avermate-api.tls=true"
 
   # Web
+  web:
+    image: nayzbysodium/avermate-web:latest
+    environment:
+      - NEXT_PUBLIC_API_URL=
+      - NEXT_PUBLIC_CLIENT_URL=
+    expose:
+      - 5000
+    networks:
+      - internal
+      - webgateway
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.avermate-web.rule=Host(`avermate.nayz.fr`)"
+      - "traefik.http.services.avermate-web.loadbalancer.server.port=5000"
+      - "traefik.http.routers.avermate-web.entrypoints=websecure"
+      - "traefik.http.routers.avermate-web.tls.certresolver=myresolver"
+      - "traefik.http.routers.avermate-web.tls=true"
+
   # Cache
   cache:
     image: redis:latest

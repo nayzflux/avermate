@@ -10,7 +10,7 @@ export const Product = () => {
         <div className="flex flex-col items-center gap-4">
           <SubHeading as="h3">Découvrez nos fonctionnalitées</SubHeading>
 
-          <Heading className="max-w-[550px]" as="h2">
+          <Heading className="max-w-[280px] md:max-w-[550px]" as="h2">
             Suivez votre progression en un coup d&apos;oeil
           </Heading>
         </div>

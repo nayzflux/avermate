@@ -1,7 +1,6 @@
 import { LandingSection } from "./landing-section";
 
 export const Picture = () => {
-
   return (
     <LandingSection>
       <div className="flex flex-col gap-16 items-center">
@@ -24,14 +23,14 @@ export const Picture = () => {
           <img
             src="/images/landing/main-mobile-dark.png"
             alt="Dashboard Mobile Dark"
-            className="hidden dark-mobile:block w-full rounded-3xl max-w-[2000px] [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)]"
+            className="hidden dark-mobile:block w-full rounded-3xl max-w-[2000px] shadow-lg"
           />
 
           {/* Mobile Light Theme */}
           <img
             src="/images/landing/main-mobile-light.png"
             alt="Dashboard Mobile Light"
-            className="hidden light-mobile:block dark:hidden w-full rounded-3xl max-w-[2000px] [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)]"
+            className="hidden light-mobile:block dark:hidden w-full rounded-3xl max-w-[2000px] shadow-lg"
           />
         </div>
       </div>

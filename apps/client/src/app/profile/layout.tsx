@@ -1,16 +1,15 @@
 "use client";
 
 import DashboardHeader from "@/components/dashboard/dashboard-header";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import ProfileNav from "./profile-nav";
-import { useSearchParams, useRouter } from "next/navigation";
 
 export default function ProfileLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   // Retrieve the `from` param if it exists, otherwise default to "/"
@@ -28,7 +27,7 @@ export default function ProfileLayout({
   const handleBack = () => {
     router.push(returnUrl);
   };
-  
+
   return (
     <div className="flex flex-col">
       <DashboardHeader />

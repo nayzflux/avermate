@@ -19,11 +19,11 @@ export const Benefits = () => {
   return (
     <LandingSection>
       <div className="flex flex-col gap-4 items-center">
-        <SubHeading as="h3">
+        <SubHeading className="max-w-[175px]" as="h3">
           Restez concentré sur ce qui compte vraiment
         </SubHeading>
 
-        <Heading className="max-w-[500px]" as="h2">
+        <Heading className="max-w-[250px] md:max-w-[500px]" as="h2">
           Laissez-nous simplifier vos résultats
         </Heading>
       </div>
