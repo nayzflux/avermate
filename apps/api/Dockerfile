@@ -7,30 +7,37 @@ COPY package.json package.json
 COPY bun.lockb bun.lockb
 COPY /apps/api/package.json ./apps/api/package.json
 
-RUN bun install
+# use the official Bun image
+# see all versions at https://hub.docker.com/r/oven/bun/tags
+FROM oven/bun:1 AS base
+WORKDIR /usr/src/app
 
-COPY /apps/api ./apps/api
+# install dependencies into temp directory
+# this will cache them and speed up future builds
+FROM base AS install
 
+COPY ./package.json .
+COPY ./bun.lockb .
+COPY ./apps/api/package.json .
+
+RUN cd ./apps/api/ && bun install --frozen-lockfile --production
+
+# copy node_modules from temp directory
+# then copy all (non-ignored) project files into the image
+FROM base AS prerelease
+COPY --from=install /temp/dev/node_modules node_modules
+COPY . .
+
+# [optional] tests & build
 ENV NODE_ENV=production
 
-RUN bun build \
-	--compile \
-	--minify-whitespace \
-	--minify-syntax \
-	--target bun \
-	--outfile api \
-	--sourcemap \
-	--bytecode \
-	./apps/api/src/index.ts
+# copy production dependencies and source code into final image
+FROM oven/bun:distroless AS release
+COPY --from=install /temp/prod/node_modules node_modules
+COPY --from=prerelease /usr/src/app/api/index.ts .
+COPY --from=prerelease /usr/src/app/api/package.json .
 
-FROM gcr.io/distroless/base
-
-WORKDIR /app
-
-COPY --from=build /app/api api
-
-ENV NODE_ENV=production
-
-EXPOSE 5000/tcp
-
-CMD ["./api"]
+# run the app
+USER bun
+EXPOSE 3000/tcp
+ENTRYPOINT [ "bun", "run", "index.ts" ]
