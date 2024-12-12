@@ -1,7 +1,7 @@
 services:
   # API
   api:
-    image: nayzbysodium/avermate-api:latest
+    image: avermate-api:test
     environment:
       # Database
       - DATABASE_URL=
@@ -23,7 +23,7 @@ services:
       # Resend
       - RESEND_API_KEY=
       - EMAIL_FROM=
-    ports:
+    expose:
       - 5000
     depends_on:
       - cache
@@ -32,7 +32,7 @@ services:
       - webgateway
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.avermate-api.rule=Host(`api.avermate.fr`)"
+      - "traefik.http.routers.avermate-api.rule=Host(`api.avermate.nayz.fr`)"
       - "traefik.http.services.avermate-api.loadbalancer.server.port=5000"
       - "traefik.http.routers.avermate-api.entrypoints=websecure"
       - "traefik.http.routers.avermate-api.tls.certresolver=myresolver"
