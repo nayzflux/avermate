@@ -120,7 +120,7 @@ const ChartTooltipContent = React.forwardRef<
       chartData?: any[];
       findNearestNonNull?: boolean;
       dataKey?: string;
-      onUpdateActiveTooltipIndices?: (index: number | null) => void;
+      onUpdateActiveTooltipIndex?: (index: number | null) => void;
       onUpdateActiveTooltipIndices?: (indices: {
         [key: string]: number | null;
       }) => void;
