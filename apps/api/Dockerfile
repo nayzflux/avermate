@@ -9,8 +9,7 @@ COPY /apps/api/package.json ./apps/api/package.json
 
 RUN bun install
 
-
-COPY . .
+COPY /apps/api ./apps/api
 
 ENV NODE_ENV=production
 
