@@ -113,7 +113,7 @@ export default function OnboardingPage() {
               onClick={handleNext}
               size="sm"
             >
-              Commencer l'aventure
+              Commencer l&apos;aventure
               <Rocket className="w-6 h-6 ml-2" />
             </Button>
           ) : currentStep === steps.length - 1 ? (
