@@ -37,3 +37,6 @@ jobs:
           file: ./apps/client/Dockerfile
           push: true
           tags: nayzbysodium/avermate-web:latest
+        env:
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_CLIENT_URL: ${{ vars.NEXT_PUBLIC_CLIENT_URL }}
