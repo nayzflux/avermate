@@ -19,7 +19,6 @@ const VerifyEmailPage = () => {
   } = useQuery({
     queryKey: ["session"],
     queryFn: async () => {
-      // @ts-expect-error - Types are not correct
       const data = authClient.getSession();
 
       if (!data) throw new Error("No session found");
