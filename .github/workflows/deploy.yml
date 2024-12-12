@@ -25,4 +25,4 @@ jobs:
           script: |
             cd $DIRECTORY
             docker compose pull
-            docker compose up --no-deps -d api
+            docker compose up --no-deps -d api web
