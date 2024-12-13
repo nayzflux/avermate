@@ -1,5 +1,6 @@
 import { type Session, type User } from "@/lib/auth";
 import { env } from "@/lib/env";
+import { ratelimit } from "@/middlewares/ratelimit";
 import authRoutes from "@/routes/auth";
 import gradesRoutes from "@/routes/grades";
 import periodsRoutes from "@/routes/periods";
@@ -9,7 +10,6 @@ import usersRoutes from "@/routes/users";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import { ratelimit } from "@/middlewares/ratelimit";
 
 const app = new Hono<{
   Variables: {
@@ -17,9 +17,6 @@ const app = new Hono<{
     session: Session | null;
   };
 }>().basePath("/api");
-
-// Ratelimit
-app.use(ratelimit);
 
 // Logger
 app.use(logger());
@@ -32,6 +29,9 @@ app.use(
     credentials: true,
   })
 );
+
+// Ratelimit
+app.use(ratelimit);
 
 app.route("/auth", authRoutes);
 
