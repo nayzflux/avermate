@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import ThemeProvider from "@/providers/theme-provider";
 import { Gabarito } from "next/font/google";
 import { Viewport } from "next";
+import ThemeColorUpdater from "./theme-color-updater";
 
 const gabarito = Gabarito({
   subsets: ["latin"],
@@ -25,10 +26,10 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-  ],
+  // themeColor: [
+  //   { media: "(prefers-color-scheme: dark)", color: "#09090b" },
+  //   { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+  // ],
 };
 
 export default function RootLayout({
@@ -38,19 +39,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
-        <head>
-          <link rel="manifest" href="/manifest.webmanifest" />
-        </head>
-        <body className={cn("", gabarito.className)}>
-          <QueryProvider>
-            <ThemeProvider>
-              <div data-vaul-drawer-wrapper="" className="bg-background">
-                {children}
-              </div>
-              <Toaster />
-            </ThemeProvider>
-          </QueryProvider>
-        </body>
+      <head>
+        <link rel="manifest" href="/manifest.webmanifest" />
+      </head>
+      <body className={cn("", gabarito.className)}>
+        <ThemeColorUpdater />
+        <QueryProvider>
+          <ThemeProvider>
+            <div data-vaul-drawer-wrapper="" className="bg-background">
+              {children}
+            </div>
+            <Toaster />
+          </ThemeProvider>
+        </QueryProvider>
+      </body>
     </html>
   );
 }
