@@ -79,10 +79,10 @@ export const auth = betterAuth({
   },
 
   // Rate limiting 10 req each 10 minutes
-  rateLimit: {
-    window: 10 * 60,
-    max: 10,
-  },
+  // rateLimit: {
+  //   window: 10 * 60,
+  //   max: 10,
+  // },
 
   // Email / Password
   emailAndPassword: {
