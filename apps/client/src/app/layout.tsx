@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import ThemeProvider from "@/providers/theme-provider";
 import { Gabarito } from "next/font/google";
-import ThemeColorMetaTag from "@/components/root/theme-color-meta-tag";
+import HeadHelmetProvider from "@/components/root/helmet-provider";
 
 const gabarito = Gabarito({
   subsets: ["latin"],
@@ -20,25 +20,25 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
-      <head>
-        <link rel="manifest" href="/manifest.webmanifest" />
-        <meta id="themeColor" name="theme-color" content="#09090b" />
-      </head>
-      <body className={cn("", gabarito.className)}>
-        <QueryProvider>
-          <ThemeProvider>
-            <div data-vaul-drawer-wrapper="" className="bg-background">
-              {children}
-            </div>
-            <Toaster />
-          </ThemeProvider>
-        </QueryProvider>
-      </body>
+        <head>
+          <link rel="manifest" href="/manifest.webmanifest" />
+        </head>
+        <body className={cn("", gabarito.className)}>
+          <QueryProvider>
+            <ThemeProvider>
+              <HeadHelmetProvider />
+              <div data-vaul-drawer-wrapper="" className="bg-background">
+                {children}
+              </div>
+              <Toaster />
+            </ThemeProvider>
+          </QueryProvider>
+        </body>
     </html>
   );
 }
