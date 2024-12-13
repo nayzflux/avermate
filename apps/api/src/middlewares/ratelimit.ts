@@ -13,6 +13,8 @@ export async function ratelimit(c: Context, next: Next) {
 
   const identifier = info.remote.address || "anon";
 
+  console.log("IP: ", identifier);
+
   const rule = c.req.method === "GET" ? "default" : "restricted";
 
   const { isExceeded, remaining, limit, resetIn } = await limitable.verify(
