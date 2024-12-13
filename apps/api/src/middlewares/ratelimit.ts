@@ -39,7 +39,7 @@ export async function ratelimit(c: Context, next: Next) {
       429
     );
 
-  await next();
+  console.time("ratelimit");
 
-  console.timeEnd("ratelimit");
+  await next();
 }
