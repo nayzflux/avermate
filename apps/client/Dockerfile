@@ -14,6 +14,11 @@ COPY bun.lockb bun.lockb
 COPY patches/ ./patches/
 COPY ./apps/client/package.json ./apps/client/package.json
 
+COPY . .  
+
+RUN bun install
+RUN bun run patch-package
+
 RUN cd ./apps/client/ && bun install && bun run patch-package
 
 # Rebuild the source code only when needed
