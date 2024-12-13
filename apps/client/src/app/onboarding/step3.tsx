@@ -121,9 +121,8 @@ export default function Step3() {
       <div className="flex flex-col items-center justify-center space-y-4">
         <h2 className="text-2xl font-bold text-primary">Notes</h2>
         <p className="text-muted-foreground text-justify">
-          Vous pouvez maintenant ajouter des notes à vos matières. Cliquez sur
-          le bouton &quot;+&quot; à côté de chaque matière pour y ajouter une
-          note.
+          Il semble que vous n'ayez pas encore ajouté de matières. Veuillez
+          ajouter des matières pour pouvoir ajouter des notes.
         </p>
 
         <AddSubjectDialog>

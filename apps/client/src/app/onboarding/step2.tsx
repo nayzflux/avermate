@@ -80,7 +80,7 @@ export default function Step2() {
             </li>
           </ul>
         </p>
-        <div className="flex flex-row md:flex-col items-center justify-center space-x-4">
+        <div className="flex md:flex-row flex-col items-center justify-center md:space-x-4 space-x-0 gap-2 md:gap-0">
           <AddSubjectDialog>
             <Button variant="outline">
               <PlusCircleIcon className="size-4 mr-2" />
