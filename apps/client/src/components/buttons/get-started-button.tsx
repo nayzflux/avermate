@@ -9,7 +9,7 @@ export const GetStartedButton = () => {
   const size = useMediaQuery("(min-width: 600px)") ? "default" : "sm";
 
   return (
-    <Button size="sm" asChild>
+    <Button size={size} asChild>
       <Link href="/auth/sign-up">
         <ArrowRightIcon className="size-4 mr-2" />
         Commencer maintenant

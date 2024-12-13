@@ -71,10 +71,10 @@ export const SignUpForm = () => {
       return data;
     },
     onSuccess: (data) => {
-      if (!data.user.emailVerified) {
+      if (!data.emailVerified) {
         toaster.toast({
           title: "✉️ Email non vérifié",
-          description: `Un lien de vérification a été envoyé à l'adresse ${data.user.email}.`,
+          description: `Un lien de vérification a été envoyé à l'adresse ${data.emailVerified}.`,
         });
 
         // Redirect to email verify
