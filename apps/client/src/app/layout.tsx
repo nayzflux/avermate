@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import ThemeProvider from "@/providers/theme-provider";
 import { Gabarito } from "next/font/google";
 import { Viewport } from "next";
-import ThemeColorUpdater from "./theme-color-updater";
+import ThemeColorUpdater from "@/components/theme-color-updater";
 
 const gabarito = Gabarito({
   subsets: ["latin"],
@@ -41,6 +41,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <head>
         <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="theme-color" content="#ffffff" />
       </head>
       <body className={cn("", gabarito.className)}>
         <ThemeColorUpdater />
