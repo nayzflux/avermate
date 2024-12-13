@@ -7,7 +7,7 @@ export default function ThemeColorMetaTag() {
     <meta
       id="themeColor"
       name="theme-color"
-      content={theme.resolvedTheme === "dark" ? "#09090b" : "#ffffff"}
+      content={theme.resolvedTheme === "dark" ? "#09090b" : "#09090b"}
     />
   );
 }
