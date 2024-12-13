@@ -2,6 +2,8 @@ import { limitable } from "@/lib/limitable";
 import type { Context, Next } from "hono";
 import { getConnInfo } from "hono/bun";
 
+const restrictedMethods = ["POST", "PATCH", "PUT", "DELETE"];
+
 export async function ratelimit(c: Context, next: Next) {
   const info = getConnInfo(c);
 
@@ -11,15 +13,12 @@ export async function ratelimit(c: Context, next: Next) {
     return await next();
   }
 
-  console.log("Forwarded For", c.req.header("X-Forwarded-For"));
+  const forwardedFor = c.req.header("x-forwarded-for");
+  const identifier = forwardedFor || info.remote.address || "anon";
 
-  console.log("Headers", c.req.raw.headers.toJSON());
-
-  const identifier = info.remote.address || "anon";
-
-  console.log("IP: ", identifier);
-
-  const rule = c.req.method === "GET" ? "default" : "restricted";
+  const rule = restrictedMethods.includes(c.req.method)
+    ? "restricted"
+    : "default";
 
   const { isExceeded, remaining, limit, resetIn } = await limitable.verify(
     identifier,
