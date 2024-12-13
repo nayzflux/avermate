@@ -1,5 +1,5 @@
-import { Limitable, MemoryAdapter, RedisAdapter } from "@limitable/ratelimit";
 import { env } from "@/lib/env";
+import { Limitable, RedisAdapter } from "@limitable/ratelimit";
 
 const adapter = new RedisAdapter({
   url: env.REDIS_URL,
@@ -20,13 +20,28 @@ export const limitable = new Limitable({
     restricted: {
       // 10 minutes
       windowMs: 10 * 60 * 1000,
-      maxRequest: 50,
+      maxRequest: 20,
     },
+
     // Use preset
     preset: {
       // 10 req/1h
       windowMs: 60 * 60 * 1000,
       maxRequest: 10,
+    },
+
+    // Send email verification
+    emailRestricted: {
+      // 3 req/1h
+      windowMs: 60 * 60 * 1000,
+      maxRequest: 3,
+    },
+
+    // Sign In
+    authRestricted: {
+      // 10 req/10m
+      windowMs: 60 * 60 * 1000,
+      maxRequest: 20,
     },
   },
 });

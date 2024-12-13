@@ -16,9 +16,41 @@ export async function ratelimit(c: Context, next: Next) {
   const forwardedFor = c.req.header("x-forwarded-for");
   const identifier = forwardedFor || info.remote.address || "anon";
 
-  const rule = restrictedMethods.includes(c.req.method)
-    ? "restricted"
-    : "default";
+  /**
+   * Auth routes
+   * - sign up
+   * - sign in
+   * - send email verification
+   * - reset password
+   */
+
+  const path = c.req.path;
+
+  let rule = "default";
+
+  switch (path) {
+    case "/api/auth/sign-up/email":
+      rule = "authRestricted";
+      break;
+
+    case "/api/auth/sign-in/email":
+      rule = "authRestricted";
+      break;
+
+    case "/api/auth/forget-password":
+      rule = "emailRestricted";
+      break;
+
+    case "/api/auth/send-verification-email":
+      rule = "emailRestricted";
+      break;
+
+    default:
+      rule = restrictedMethods.includes(c.req.method)
+        ? "restricted"
+        : "default";
+      break;
+  }
 
   const { isExceeded, remaining, limit, resetIn } = await limitable.verify(
     identifier,
@@ -30,7 +62,10 @@ export async function ratelimit(c: Context, next: Next) {
   c.header("RateLimit-Remaining", remaining.toString());
   c.header("RateLimit-Reset", resetIn.toString());
 
-  if (isExceeded)
+  console.timeEnd("ratelimit");
+
+  if (isExceeded) {
+    console.log(identifier, " is being rate limited for ", rule);
     return c.json(
       {
         code: "ERR_RATE_LIMIT_EXCEEDED",
@@ -38,8 +73,7 @@ export async function ratelimit(c: Context, next: Next) {
       },
       429
     );
-
-  console.time("ratelimit");
+  }
 
   await next();
 }
