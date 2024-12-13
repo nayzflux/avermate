@@ -30,13 +30,13 @@ export default function dashboardLoader() {
   const radarData = [{ average: 15 }, {}, {}, {}, {}, {}];
 
   return (
-    <main className="flex flex-col gap-8 m-auto max-w-[2000px]">
+    <main className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
       <div className="flex flex-wrap items-center justify-between">
         <h1 className="text-3xl font-bold">
-          <Skeleton className="w-40 h-[32px]" />
+          <Skeleton className="w-[150px] md:w-[180px] h-6" />
         </h1>
         <h1 className="text-3xl font-normal pt-1">
-          <Skeleton className="w-[250px] h-9" />
+          <Skeleton className="w-[100px] md:w-[250px] h-6" />
         </h1>
       </div>
 
@@ -65,7 +65,7 @@ export default function dashboardLoader() {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 pb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-5 gap-2 md:gap-4 pb-4">
             {Array.from({ length: 5 }).map((_, index) => (
               <Card key={index} className="p-6 rounded-lg">
                 <div className="flex flex-col gap-2">
