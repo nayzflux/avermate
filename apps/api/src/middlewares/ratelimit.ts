@@ -11,6 +11,10 @@ export async function ratelimit(c: Context, next: Next) {
     return await next();
   }
 
+  console.log("Forwarded For", c.req.header("X-Forwarded-For"));
+
+  console.log("Headers", c.req.raw.headers.toJSON());
+
   const identifier = info.remote.address || "anon";
 
   console.log("IP: ", identifier);
