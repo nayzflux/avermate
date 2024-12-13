@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import ThemeProvider from "@/providers/theme-provider";
 import { Gabarito } from "next/font/google";
+import ThemeColorMetaTag from "@/components/root/theme-color-meta-tag";
 
 const gabarito = Gabarito({
   subsets: ["latin"],
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <head>
         <link rel="manifest" href="/manifest.webmanifest" />
+        <ThemeColorMetaTag />
       </head>
       <body className={cn("", gabarito.className)}>
         <QueryProvider>

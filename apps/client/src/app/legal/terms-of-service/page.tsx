@@ -359,7 +359,7 @@ const Tos = () => {
         contact us:
       </p>
       <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
-        <li>By email: noreply@test.nayz.fr</li>
+        <li>By email: noreply@avermate.fr</li>
       </ul>
     </div>
   );
