@@ -42,66 +42,6 @@ export default function GlobalAverageChart({
   subjects: Subject[];
   period: Period;
 }) {
-  // const {
-  //   data: subjects,
-  //   isError,
-  //   isPending,
-  // } = useQuery({
-  //   queryKey: ["subjects"],
-  //   queryFn: async () => {
-  //     const res = await apiClient.get("subjects");
-  //     const data = await res.json<{ subjects: Subject[] }>();
-  //     return data.subjects;
-  //   },
-  // });
-
-  // if (isPending) {
-  //   return (
-  //     <Card className="lg:col-span-5">
-  //       <CardHeader>
-  //         <CardTitle>Moyenne Générale</CardTitle>
-  //       </CardHeader>
-
-  //       <CardContent>
-  //         <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
-  //           {/* Area Chart Section */}
-  //           <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%]">
-  //             <CardDescription className="pb-8">
-  //               Visualiser l'évolution de votre moyenne générale sur ce
-  //               trimestre
-  //             </CardDescription>
-  //           </div>
-  //         </div>
-  //       </CardContent>
-  //     </Card>
-  //   );
-  // }
-
-  // if (isError) {
-  //   return (
-  //     <Card className="lg:col-span-5">
-  //       <CardHeader>
-  //         <CardTitle>Error</CardTitle>
-  //       </CardHeader>
-
-  //       <CardContent>
-  //         <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2"></div>
-  //       </CardContent>
-  //     </Card>
-  //   );
-  // }
-
-  // const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
-  //   [key: string]: number | null;
-  // }>({});
-
-  // // Callback to update active tooltip index
-  // const handleActiveTooltipIndicesChange = React.useCallback(
-  //   (indices: { [key: string]: number | null }) => {
-  //     setActiveTooltipIndices(indices);
-  //   },
-  //   []
-  // );
 
   // State to manage the active index for the data series
   const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(

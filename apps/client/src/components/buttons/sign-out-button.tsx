@@ -26,7 +26,7 @@ export default function SignOutButton() {
   const { mutate, isPending } = useMutation({
     mutationKey: ["sign-out"],
     mutationFn: async () => {
-      const data = authClient.signOut();
+      const data = await authClient.signOut();
     },
     onSuccess: () => {
       router.push("/");
