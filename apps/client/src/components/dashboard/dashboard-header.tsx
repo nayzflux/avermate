@@ -13,10 +13,12 @@ export default function DashboardHeader() {
     //   </div>
     // </header>
 
-    <header className="sticky flex items-center justify-between gap-8 px-4 sm:px-16 lg:px-32 2xl:px-64 3xl:px-96 py-4 sm:py-8 border-b">
-      <Logo />
+    <header className="sticky border-b">
+      <div className="flex items-center justify-between gap-8 px-4 sm:px-16 lg:px-32 2xl:px-64 3xl:px-96 py-4 sm:py-8  max-w-[2000px] m-auto">
+        <Logo />
 
-      <AccountDropdown />
+        <AccountDropdown />
+      </div>
     </header>
   );
 }
