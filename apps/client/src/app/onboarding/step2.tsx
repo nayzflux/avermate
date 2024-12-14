@@ -35,7 +35,7 @@ export default function Step2() {
   });
 
   if (isLoading) {
-    return <div>Loading subjects...</div>;
+    return <div></div>;
   }
 
   if (isError) {
@@ -44,39 +44,21 @@ export default function Step2() {
 
   if (!subjects || subjects.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-4">
+      <div className="flex flex-col items-center justify-center space-y-8">
         <h2 className="text-2xl font-bold text-primary">Matières</h2>
-        <p className="text-muted-foreground text-justify">
-          Avant d&apos;ajouter votre première matière quelques choses à savoir:
-          <br />
+        <p className="text-muted-foreground text-center">
           <ul>
             <li>
-              Les matières peuvent être configurées comme &quot;matière
-              principale&quot; ces matières seront affichées dans les données et
-              les graphiques de la page d&apos;accueil. Il faut donc marquer les
-              matières comme Mathématiques, Français, Anglais, etc. comme
-              matières principales.
+              Les matières principales (ex. <b>Mathématiques</b>) apparaissent
+              sur la page d&apos;accueil.
             </li>
-            <br />
             <li>
-              Les matières peuvent être configurées comme
-              &quot;catégories&quot;. Elles n&apos;ont pas d&apos;existance
-              propre, mais permettent de regrouper des matières pour mieux les
-              organiser. Par exemple, vous pouvez créer une catégorie
-              &quot;Langues&quot; et y ajouter les matières &quot;Anglais&quot;,
-              &quot;Espagnol&quot;, &quot;Allemand&quot;, etc. Pour calculer la
-              moyenne on ne fera pas la moyenne de la catégorie mais c&apos;est
-              comme si les matières de la catégorie étaient regroupées hors de
-              la catégorie.
+              Les catégories (ex. <b>"Langues"</b>) regroupent des matières sans
+              moyenne propre.
             </li>
-            <br />
             <li>
-              Les matières peuvent être regroupées en &quot;sous-matières&quot;.
-              Par exemple, si vous avez une matière &quot;Mathématiques&quot;
-              vous pouvez créer des sous-matières &quot;Ecrit&quot; et
-              &quot;Oral&quot; si elles sont notées différemment. Les
-              sous-matières permettent de mieux organiser les notes et de
-              calculer des moyennes
+              Les sous-matières (ex. <b>"Écrit"</b>, <b>"Oral"</b>) organisent
+              les notes.
             </li>
           </ul>
         </p>
@@ -90,7 +72,7 @@ export default function Step2() {
           <ListPresetsDialog>
             <Button>
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une préconfiguration
+              Ajouter des matières prédéfinies
             </Button>
           </ListPresetsDialog>
         </div>

@@ -94,7 +94,7 @@ export default function WelcomeScreen() {
 
         {/* Conditionally show the PWA install button if installable */}
         {canInstall && (
-          <div className="flex items-center justify-center space-x-4">
+          <div className="flex flex-col md:flex-row items-center justify-center space-x-4">
             <p className="text-muted-foreground">
               Installer l&apos;application pour un accès rapide
             </p>

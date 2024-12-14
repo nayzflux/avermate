@@ -66,13 +66,14 @@ function OnboardingContent() {
   const CurrentStepComponent = steps[currentStep].component;
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col max-w-[2000px] mx-auto">
       <div className="flex flex-col md:flex-row items-center justify-between p-6">
         <div className="flex flex-col mb-4 md:mb-0">
           <h1 className="md:text-3xl font-bold text-xl">
             {steps[currentStep].title === "Bienvenue"
               ? "Bienvenue sur Avermate"
-              : steps[currentStep].title}{""}
+              : steps[currentStep].title}
+            {""}
             {currentStep === 0 && session?.user?.name
               ? `, ${session.user.name.split(" ")[0]}`
               : ""}
@@ -83,7 +84,7 @@ function OnboardingContent() {
           </p>
         </div>
 
-        <div className="flex flex-row items-center md:space-y-0 md:space-x-4">
+        <div className="flex flex-row md:items-center md:space-y-0 md:space-x-4 justify-between w-full md:justify-end md:w-auto">
           {currentStep === 0 ? (
             <Button
               size="sm"

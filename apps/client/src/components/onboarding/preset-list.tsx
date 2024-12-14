@@ -74,7 +74,7 @@ export const PresetList = ({ close }: { close: () => void }) => {
   };
 
   if (isLoading) {
-    return <div>Chargement des presets...</div>;
+    return <div></div>;
   }
 
   if (isError) {

@@ -33,14 +33,12 @@ export default function Step1() {
   // if the period field is empty, we display a message explaining what periods are and how to create them (we also say that they are optional)
   if (!periods || periods.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-4">
+      <div className="flex flex-col items-center justify-center space-y-8">
         <h2 className="text-2xl font-bold text-primary">Périodes</h2>
         <p className="text-muted-foreground text-center">
-          Les périodes sont des intervalles de temps qui vous permettent de
-          regrouper vos notes. Vous pouvez les créer pour chaque année scolaire,
-          semestre, trimestre, etc. Elles sont optionnelles. Si vous ne créez
-          pas de périodes, toutes vos notes seront regroupées dans la même
-          section.
+          Les périodes,  <b className="text-foreground">facultatives</b>, sont des intervalles de temps (année
+          scolaire, semestre, trimestre, etc.) pour regrouper vos notes. Sans
+          elles, toutes vos notes sont regroupées dans une seule section.
         </p>
         <AddPeriodDialog>
           <Button variant="outline">
@@ -53,7 +51,7 @@ export default function Step1() {
   }
 
   if (periodsIsPending) {
-    return <div>Loading periods...</div>;
+    return <div></div>;
   }
 
   if (periodsIsError) {

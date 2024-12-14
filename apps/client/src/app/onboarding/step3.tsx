@@ -109,7 +109,7 @@ export default function Step3() {
   });
 
   if (isLoading) {
-    return <div>Loading subjects...</div>;
+    return <div></div>;
   }
 
   if (isError) {
@@ -118,7 +118,7 @@ export default function Step3() {
 
   if (!subjects || subjects.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-4">
+      <div className="flex flex-col items-center justify-center space-y-8">
         <h2 className="text-2xl font-bold text-primary">Notes</h2>
         <p className="text-muted-foreground text-justify">
           Il semble que vous n&apos;ayez pas encore ajouté de matières. Veuillez
