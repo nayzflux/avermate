@@ -18,7 +18,7 @@ export function ThemeColorMetaTag() {
     const metaTag = document.querySelector('meta[name="theme-color"]');
     if (metaTag) {
       // Adjust color accordingly
-      metaTag.setAttribute("content", theme === "dark" ? "#09090b" : "#ffffff");
+      metaTag.setAttribute("content", theme === "light" ? "#ffffff" : "#09090b");
     }
   }, [theme]);
 

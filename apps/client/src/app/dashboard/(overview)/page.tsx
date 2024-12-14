@@ -24,7 +24,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Session, User } from "better-auth/types";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
-
+import { useRouter } from "next/navigation";
 /**
  * Vue d'ensemble des notes
  */
@@ -32,6 +32,13 @@ export default function OverviewPage() {
   const { data: session } = authClient.useSession() as unknown as {
     data: { session: Session; user: User };
   };
+
+  type Account = {
+    id: string;
+    provider: string;
+  };
+
+  const router = useRouter();
 
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
 
@@ -93,6 +100,18 @@ export default function OverviewPage() {
       const data = await res.json<{ grades: Grade[] }>();
 
       return data.grades;
+    },
+  });
+
+  const {
+    data: accounts,
+    isPending: isPendingAccount,
+    isError: isErrorAccount,
+  } = useQuery({
+    queryKey: ["accounts"],
+    queryFn: async () => {
+      const accounts = (await authClient.listAccounts()) satisfies Account[];
+      return accounts;
     },
   });
 
@@ -160,6 +179,17 @@ export default function OverviewPage() {
     .sort(
       (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
     );
+
+  
+  const linkedProviders = new Set(accounts?.map((acc) => acc.provider));
+
+  if (
+    new Date(session?.user?.createdAt).getTime() > Date.now() - 1000 * 60 * 1 &&
+    (!subjects || subjects.length === 0) &&
+    (linkedProviders.has("google") || linkedProviders.has("microsoft"))
+  ) {
+    router.push("/onboarding");
+  }
 
   return (
     <main className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
