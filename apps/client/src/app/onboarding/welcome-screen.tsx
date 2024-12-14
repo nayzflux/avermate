@@ -43,8 +43,7 @@ export default function WelcomeScreen() {
 
   const handleInstallClick = async () => {
     if (!installPrompt) return;
-    // @ts-ignore - 'prompt()' is part of the BeforeInstallPromptEvent
-    const result = await (installPrompt as any).prompt();
+    const result = await(installPrompt as any).prompt();
     console.log(`Install prompt outcome: ${result.outcome}`);
     disableInAppInstallPrompt();
   };
