@@ -40,7 +40,7 @@ export default function SocialAuth() {
           onClick={() => handleSignIn(id)}
           asChild
         >
-          <Link href={`${env.NEXT_PUBLIC_API_URL}/auth/${id}`}>
+          <Link href={`${env.NEXT_PUBLIC_API_URL}/api/auth/${id}`}>
             <Icon className="size-4 mr-2" />
             {label}
           </Link>
