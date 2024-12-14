@@ -1,7 +1,6 @@
 "use client";
 
 import { useToast } from "@/hooks/use-toast";
-import { apiClient } from "@/lib/api";
 import { authClient } from "@/lib/auth";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { User } from "better-auth/types";
@@ -37,14 +36,13 @@ export default function DeleteAccountDialog() {
   const { mutate, isPending } = useMutation({
     mutationKey: ["users", "delete", session?.user?.id],
     mutationFn: async () => {
-      const res = await apiClient.delete(`users/${session?.user?.id}`);
-      const data = await res.json<{ user: User }>();
-      return data.user;
+      const { message, success } = await authClient.deleteUser();
+      return { message, success };
     },
-    onSuccess: (user) => {
+    onSuccess: () => {
       toaster.toast({
         title: `Compte supprimée`,
-        description: `${user.email} a été supprimée avec succès.`,
+        description: `Votre compe a été supprimée avec succès.`,
       });
 
       setOpen(false);
