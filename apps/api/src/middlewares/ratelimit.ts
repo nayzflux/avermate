@@ -64,6 +64,15 @@ export async function ratelimit(c: Context, next: Next) {
 
   console.timeEnd("ratelimit");
 
+  console.log({
+    identifier,
+    rule,
+    isExceeded,
+    remaining,
+    limit,
+    resetIn,
+  });
+
   if (isExceeded) {
     console.log(identifier, " is being rate limited for ", rule);
     return c.json(
