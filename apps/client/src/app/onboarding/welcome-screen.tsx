@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Rocket, ArrowRight, Sparkles } from "lucide-react";
-import { Session, User } from "better-auth/types";
 import { authClient } from "@/lib/auth";
+import { Session, User } from "better-auth/types";
+import { ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function WelcomeScreen() {
   const { data: session } = authClient.useSession() as unknown as {
