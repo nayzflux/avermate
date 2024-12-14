@@ -72,7 +72,7 @@ function OnboardingContent() {
           <h1 className="md:text-3xl font-bold text-xl">
             {steps[currentStep].title === "Bienvenue"
               ? "Bienvenue sur Avermate"
-              : steps[currentStep].title}{" "}
+              : steps[currentStep].title}{""}
             {currentStep === 0 && session?.user?.name
               ? `, ${session.user.name.split(" ")[0]}`
               : ""}

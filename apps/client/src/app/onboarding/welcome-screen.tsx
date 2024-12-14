@@ -16,7 +16,7 @@ export default function WelcomeScreen() {
         <Sparkles className="w-8 h-8 text-yellow-400 absolute top-0 right-0 animate-pulse" />
       </div> */}
       <h2 className="text-4xl font-bold text-primary">
-        Bienvenue sur Averamte,{" "}
+        Bienvenue sur Avermate,{" "}
         {session?.user?.name ? session.user.name.split(" ")[0] : ""}! 🎉
       </h2>
       <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

@@ -149,7 +149,7 @@ export default function Step3() {
             level > 0 ? "border-l-2 border-gray-300 pl-2 md:pl-4 " : ""
           }`}
         >
-          <div className="flex md:flex-row md:items-center justify-between min-w-0 pb-4 gap-4">
+          <div className="flex md:flex-row md:items-center justify-between min-w-0 gap-4">
             <div className="flex items-center space-x-2  flex-1 min-w-0">
               <span className="font-bold truncate">{subject.name}</span>
             </div>
