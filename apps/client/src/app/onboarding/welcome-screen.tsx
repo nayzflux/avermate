@@ -43,7 +43,7 @@ export default function WelcomeScreen() {
 
   const handleInstallClick = async () => {
     if (!installPrompt) return;
-    const result = await(installPrompt as any).prompt();
+    const result = await (installPrompt as any).prompt();
     console.log(`Install prompt outcome: ${result.outcome}`);
     disableInAppInstallPrompt();
   };
@@ -94,9 +94,14 @@ export default function WelcomeScreen() {
 
         {/* Conditionally show the PWA install button if installable */}
         {canInstall && (
-          <Button variant="default" onClick={handleInstallClick}>
-            Installer l&apos;application
-          </Button>
+          <div className="flex items-center justify-center space-x-4">
+            <p className="text-muted-foreground">
+              Installer l&apos;application pour un accès rapide
+            </p>
+            <Button variant="default" onClick={handleInstallClick}>
+              Installer l&apos;application
+            </Button>
+          </div>
         )}
       </div>
     </div>
