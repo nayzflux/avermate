@@ -163,7 +163,7 @@ export default function Step3() {
               )}
             </div>
           </div>
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="flex flex-wrap gap-2 pb-2">
             {subject.grades?.map((grade) => (
               <GradeBadge
                 key={grade.id}
