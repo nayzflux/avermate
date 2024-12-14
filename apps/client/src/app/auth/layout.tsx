@@ -1,8 +1,5 @@
-import SocialAuth from "@/components/buttons/auth/social-auth";
-import Consent from "@/components/paragraphs/auth/consent";
-import { Separator } from "@/components/ui/separator";
-import { ReactNode } from "react";
 import Logo from "@/components/logo";
+import { ReactNode } from "react";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
@@ -19,13 +16,13 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             <div className="flex items-center gap-2">
               <Logo />
             </div>
-            <div className="flex flex-col items-start gap-2 self-stretch">
+            {/* <div className="flex flex-col items-start gap-2 self-stretch">
               <p>
                 “Avermate is giving me more time to spend on things that a
                 really important”
               </p>
               <p className="text-xs">- John Doe</p>
-            </div>
+            </div> */}
           </div>
         </main>
       </div>
