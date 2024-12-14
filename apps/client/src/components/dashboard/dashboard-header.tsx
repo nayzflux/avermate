@@ -13,8 +13,8 @@ export default function DashboardHeader() {
     //   </div>
     // </header>
 
-    <header className="sticky border-b">
-      <div className="flex items-center justify-between gap-8 px-4 sm:px-16 lg:px-32 2xl:px-64 3xl:px-96 py-4 sm:py-8  max-w-[2000px] m-auto">
+    <header className="sticky border-b px-4 sm:px-16 lg:px-32 2xl:px-64 3xl:px-96 py-4 sm:py-8  max-w-[2000px] m-auto">
+      <div className="flex items-center justify-between gap-8">
         <Logo />
 
         <AccountDropdown />
