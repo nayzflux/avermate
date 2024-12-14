@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import ThemeProvider from "@/providers/theme-provider";
 import { Gabarito } from "next/font/google";
 import { ThemeColorMetaTag } from "@/components/color";
-
+import { Viewport } from "next";
 
 const gabarito = Gabarito({
   subsets: ["latin"],
@@ -17,6 +17,15 @@ export const metadata: Metadata = {
   title: "Avermate",
   description:
     "Obtenez un aperçu instantané et précis de vos notes et de vos moyennes. Suivez votre progression en temps réel pour atteindre vos objectifs.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  minimumScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

@@ -6,6 +6,7 @@ import gradesRoutes from "@/routes/grades";
 import periodsRoutes from "@/routes/periods";
 import presetsRoutes from "@/routes/presets";
 import subjectsRoutes from "@/routes/subjects";
+import landingRoutes from "@/routes/landing";
 import usersRoutes from "@/routes/users";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -44,6 +45,8 @@ app.route("/periods", periodsRoutes);
 app.route("/users", usersRoutes);
 
 app.route("/presets", presetsRoutes);
+
+app.route("/landing", landingRoutes);
 
 export default {
   fetch: app.fetch,
