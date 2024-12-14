@@ -184,7 +184,7 @@ export default function OverviewPage() {
   const linkedProviders = new Set(accounts?.map((acc) => acc.provider));
 
   if (
-    new Date(session?.user?.createdAt).getTime() > Date.now() - 1000 * 5 &&
+    new Date(session?.user?.createdAt).getTime() > Date.now() - 1000 * 1 &&
     (!subjects || subjects.length === 0) &&
     (linkedProviders.has("google") || linkedProviders.has("microsoft"))
   ) {
