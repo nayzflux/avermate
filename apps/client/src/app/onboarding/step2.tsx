@@ -53,12 +53,12 @@ export default function Step2() {
               sur la page d&apos;accueil.
             </li>
             <li>
-              Les catégories (ex. <b>"Langues"</b>) regroupent des matières sans
-              moyenne propre.
+              Les catégories (ex. <b>&quot;Langues&quot;</b>) regroupent des
+              matières sans moyenne propre.
             </li>
             <li>
-              Les sous-matières (ex. <b>"Écrit"</b>, <b>"Oral"</b>) organisent
-              les notes.
+              Les sous-matières (ex. <b>&quot;Écrit&quot;</b>,{" "}
+              <b>&quot;Oral&quot;</b>) organisent les notes.
             </li>
           </ul>
         </p>
