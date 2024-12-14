@@ -3,7 +3,7 @@
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api";
 import { authClient } from "@/lib/auth";
-import { useMutation } from "@tanstack/react-query";
+import { QueryClient, useMutation } from "@tanstack/react-query";
 import { User } from "better-auth/types";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -28,6 +28,8 @@ export default function DeleteAccountDialog() {
 
   const toaster = useToast();
 
+  const queryClient = new QueryClient();
+
   const { data: session } = authClient.useSession() as unknown as {
     data: { user: User };
   };
@@ -48,6 +50,8 @@ export default function DeleteAccountDialog() {
       setOpen(false);
 
       router.push("/");
+
+      queryClient.invalidateQueries();
     },
     onError: () => {
       toaster.toast({
