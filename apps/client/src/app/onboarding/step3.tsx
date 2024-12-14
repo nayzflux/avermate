@@ -121,7 +121,7 @@ export default function Step3() {
       <div className="flex flex-col items-center justify-center space-y-4">
         <h2 className="text-2xl font-bold text-primary">Notes</h2>
         <p className="text-muted-foreground text-justify">
-          Il semble que vous n'ayez pas encore ajouté de matières. Veuillez
+          Il semble que vous n&apos;ayez pas encore ajouté de matières. Veuillez
           ajouter des matières pour pouvoir ajouter des notes.
         </p>
 
