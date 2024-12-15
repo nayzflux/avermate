@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth";
 import { Session, User } from "better-auth/types";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ShareIcon, SquarePlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -10,7 +10,17 @@ export default function WelcomeScreen() {
     data: { session: Session; user: User };
   };
 
-  // -- PWA install logic --
+  // -- Detect iOS (iPhone) --
+  const [isIos, setIsIos] = useState(false);
+
+  useEffect(() => {
+    // Basic detection: check if user agent has 'iPhone'
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const onIphone = /iphone/.test(userAgent);
+    setIsIos(onIphone);
+  }, []);
+
+  // -- PWA install logic (mostly for Android/Chrome) --
   const [installPrompt, setInstallPrompt] = useState<Event | null>(null);
   const [canInstall, setCanInstall] = useState(false);
 
@@ -101,7 +111,7 @@ export default function WelcomeScreen() {
           </ul>
         </div>
 
-        {/* Conditionally show the PWA install button if installable */}
+        {/* If canInstall is true (Android/Chrome), show the install button */}
         {canInstall && (
           <div className="flex flex-col md:flex-row items-center justify-center space-x-4">
             <p className="text-muted-foreground">
@@ -110,6 +120,33 @@ export default function WelcomeScreen() {
             <Button variant="default" onClick={handleInstallClick}>
               Installer l&apos;application
             </Button>
+          </div>
+        )}
+
+        {/* If not installable (no beforeinstallprompt) but on iPhone, show iOS instructions */}
+        {!canInstall && isIos && (
+          <div className="text-left bg-secondary p-4 rounded-lg">
+            <h4 className="text-lg font-semibold mb-2">Installer sur iPhone</h4>
+            <p className="text-muted-foreground mb-2">
+              Pour installer Avermate sur votre iPhone :
+            </p>
+            <ol className="list-decimal list-inside text-muted-foreground space-y-1">
+              <li>Ouvrez Avermate dans Safari.</li>
+              <li>
+                Touchez l&apos;icône <strong>Partager</strong>{" "}
+                <ShareIcon className="inline-block w-4 h-4 ml-1 align-text-bottom" />{" "}
+                en bas de l&apos;écran.
+              </li>
+              <li>
+                Sélectionnez{" "}
+                <strong>Ajouter à l&apos;écran d&apos;accueil</strong>{" "}
+                <SquarePlusIcon className="inline-block w-4 h-4 ml-1 align-text-bottom" />
+                .
+              </li>
+              <li>
+                Appuyez sur <strong>Ajouter</strong> pour confirmer.
+              </li>
+            </ol>
           </div>
         )}
       </div>
