@@ -1,13 +1,20 @@
 import { db } from "@/db";
 import { grades, subjects } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { type Session, type User } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
 import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 
-const app = new Hono();
+const app = new Hono<{
+  Variables: {
+    session: {
+      user: User;
+      session: Session;
+    } | null;
+  };
+}>();
 
 /**
  * Create a new grade
@@ -35,16 +42,17 @@ const createGradeSchema = z.object({
 });
 
 app.post("/", zValidator("json", createGradeSchema), async (c) => {
-  const session = await auth.api.getSession({
-    headers: c.req.raw.headers,
-  });
+  const session = c.get("session");
 
   if (!session) throw new HTTPException(401);
 
   // If email isnt verified
   if (!session.user.emailVerified) {
     return c.json(
-      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      {
+        code: "EMAIL_NOT_VERIFIED",
+        message: "Email verification is required",
+      },
       403
     );
   }
@@ -90,7 +98,7 @@ const getGradesQuerySchema = z.object({
 });
 
 app.get("/", zValidator("query", getGradesQuerySchema), async (c) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  const session = c.get("session");
   if (!session) throw new HTTPException(401);
 
   // If email isnt verified
@@ -136,7 +144,7 @@ const getGradeSchema = z.object({
 });
 
 app.get("/:gradeId", zValidator("param", getGradeSchema), async (c) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  const session = c.get("session");
   if (!session) throw new HTTPException(401);
 
   // If email isnt verified
@@ -199,7 +207,7 @@ app.patch(
   zValidator("param", updateGradeParamSchema),
   zValidator("json", updateGradeBodySchema),
   async (c) => {
-    const session = await auth.api.getSession({ headers: c.req.raw.headers });
+    const session = c.get("session");
 
     if (!session) throw new HTTPException(401);
 
@@ -236,7 +244,7 @@ const deleteGradeSchema = z.object({
 });
 
 app.delete("/:gradeId", zValidator("param", deleteGradeSchema), async (c) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  const session = c.get("session");
 
   if (!session) throw new HTTPException(401);
 

@@ -1,20 +1,27 @@
 import { db } from "@/db";
 import { users } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { auth, type Session, type User } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 
-const app = new Hono();
+const app = new Hono<{
+  Variables: {
+    session: {
+      user: User;
+      session: Session;
+    } | null;
+  };
+}>();
 
 const deleteUserParams = z.object({
   id: z.string().min(1).max(64),
 });
 
 app.delete("/:id", zValidator("param", deleteUserParams), async (c) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  const session = c.get("session");
 
   if (!session) throw new HTTPException(401);
 

@@ -1,13 +1,20 @@
 import { db } from "@/db";
 import { grades, periods, subjects } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { type Session, type User } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
 import { and, asc, eq, ne, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 
-const app = new Hono();
+const app = new Hono<{
+  Variables: {
+    session: {
+      user: User;
+      session: Session;
+    } | null;
+  };
+}>();
 
 /**
  * Create a new subject
@@ -26,7 +33,7 @@ const createSubjectSchema = z.object({
 });
 
 app.post("/", zValidator("json", createSubjectSchema), async (c) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  const session = c.get("session");
   if (!session) throw new HTTPException(401);
 
   // If email isnt verified
@@ -76,7 +83,7 @@ app.post("/", zValidator("json", createSubjectSchema), async (c) => {
  * Get all subjects
  */
 app.get("/", async (c) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  const session = c.get("session");
   if (!session) throw new HTTPException(401);
 
   // If email isnt verified
@@ -99,7 +106,7 @@ app.get("/", async (c) => {
 });
 
 app.get("/organized-by-periods", async (c) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  const session = c.get("session");
   if (!session) throw new HTTPException(401);
 
   // If email isn't verified
@@ -155,15 +162,15 @@ app.get("/organized-by-periods", async (c) => {
   });
 
   // Calculate startAt and endAt for full-year period
-  const sortedPeriods = userPeriods.sort((a, b) =>
-    new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+  const sortedPeriods = userPeriods.sort(
+    (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
   );
 
   const fullYearStartAt =
     sortedPeriods && sortedPeriods.length > 0
       ? new Date(sortedPeriods[0].startAt)
       : new Date(new Date().getFullYear(), 8, 1);
-  
+
   const fullYearEndAt =
     sortedPeriods && sortedPeriods.length > 0
       ? new Date(sortedPeriods[sortedPeriods.length - 1].endAt)
@@ -192,7 +199,6 @@ app.get("/organized-by-periods", async (c) => {
   return c.json({ periods: periodsWithSubjects });
 });
 
-
 // Get a specific subject organized by periods
 const getSubjectByPeriodSchema = z.object({
   subjectId: z.string().min(1).max(64).nullable(),
@@ -202,7 +208,7 @@ app.get(
   "/organized-by-periods/:subjectId",
   zValidator("param", getSubjectByPeriodSchema),
   async (c) => {
-    const session = await auth.api.getSession({ headers: c.req.raw.headers });
+    const session = c.get("session");
     if (!session) throw new HTTPException(401);
 
     // If email isnt verified
@@ -284,7 +290,7 @@ const getSubjectSchema = z.object({
 });
 
 app.get("/:subjectId", zValidator("param", getSubjectSchema), async (c) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  const session = c.get("session");
   if (!session) throw new HTTPException(401);
 
   // If email isnt verified
@@ -341,7 +347,7 @@ app.patch(
   zValidator("param", updateSubjectParamSchema),
   zValidator("json", updateSubjectBodySchema),
   async (c) => {
-    const session = await auth.api.getSession({ headers: c.req.raw.headers });
+    const session = c.get("session");
     if (!session) throw new HTTPException(401);
 
     // If email isnt verified
@@ -459,7 +465,7 @@ app.delete(
   "/:subjectId",
   zValidator("param", deleteSubjectSchema),
   async (c) => {
-    const session = await auth.api.getSession({ headers: c.req.raw.headers });
+    const session = c.get("session");
     if (!session) throw new HTTPException(401);
 
     // If email isnt verified

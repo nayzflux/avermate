@@ -1,13 +1,20 @@
 import { db } from "@/db";
 import { periods } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { type Session, type User } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
 import { and, asc, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 
-const app = new Hono();
+const app = new Hono<{
+  Variables: {
+    session: {
+      user: User;
+      session: Session;
+    } | null;
+  };
+}>();
 
 /**
  * Create a new period
@@ -20,9 +27,7 @@ const createPeriodSchema = z.object({
 });
 
 app.post("/", zValidator("json", createPeriodSchema), async (c) => {
-  const session = await auth.api.getSession({
-    headers: c.req.raw.headers,
-  });
+  const session = c.get("session");
 
   if (!session) throw new HTTPException(401);
 
@@ -59,9 +64,7 @@ app.post("/", zValidator("json", createPeriodSchema), async (c) => {
  * Get all periods
  */
 app.get("/", async (c) => {
-  const session = await auth.api.getSession({
-    headers: c.req.raw.headers,
-  });
+  const session = c.get("session");
 
   if (!session) throw new HTTPException(401);
 
@@ -92,9 +95,7 @@ const getPeriodSchema = z.object({
 });
 
 app.get("/:periodId", zValidator("param", getPeriodSchema), async (c) => {
-  const session = await auth.api.getSession({
-    headers: c.req.raw.headers,
-  });
+  const session = c.get("session");
 
   if (!session) throw new HTTPException(401);
 
@@ -132,9 +133,7 @@ app.patch(
   zValidator("param", getPeriodSchema),
   zValidator("json", updatePeriodSchema),
   async (c) => {
-    const session = await auth.api.getSession({
-      headers: c.req.raw.headers,
-    });
+    const session = c.get("session");
 
     if (!session) throw new HTTPException(401);
 
@@ -178,9 +177,7 @@ const deletePeriodSchema = z.object({
 });
 
 app.delete("/:periodId", zValidator("param", deletePeriodSchema), async (c) => {
-  const session = await auth.api.getSession({
-    headers: c.req.raw.headers,
-  });
+  const session = c.get("session");
 
   if (!session) throw new HTTPException(401);
 

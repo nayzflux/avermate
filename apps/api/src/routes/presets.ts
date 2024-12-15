@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { subjects } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { type Session, type User } from "@/lib/auth";
 import { limitable } from "@/lib/limitable";
 import { generateId } from "@/lib/nanoid";
 import { zValidator } from "@hono/zod-validator";
@@ -9,7 +9,14 @@ import { getConnInfo } from "hono/bun";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 
-const router = new Hono();
+const router = new Hono<{
+  Variables: {
+    session: {
+      user: User;
+      session: Session;
+    } | null;
+  };
+}>();
 
 const presets: Preset[] = [
   {
@@ -352,9 +359,7 @@ router.post(
 
     if (!preset) throw new HTTPException(404);
 
-    const session = await auth.api.getSession({
-      headers: c.req.raw.headers,
-    });
+    const session = c.get("session");
 
     if (!session) throw new HTTPException(401);
 
