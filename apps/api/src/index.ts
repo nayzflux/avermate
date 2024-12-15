@@ -1,12 +1,13 @@
 import { type Session, type User } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { ratelimit } from "@/middlewares/ratelimit";
+import { sessionMiddleware } from "@/middlewares/session";
 import authRoutes from "@/routes/auth";
 import gradesRoutes from "@/routes/grades";
+import landingRoutes from "@/routes/landing";
 import periodsRoutes from "@/routes/periods";
 import presetsRoutes from "@/routes/presets";
 import subjectsRoutes from "@/routes/subjects";
-import landingRoutes from "@/routes/landing";
 import usersRoutes from "@/routes/users";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -14,8 +15,10 @@ import { logger } from "hono/logger";
 
 const app = new Hono<{
   Variables: {
-    user: User | null;
-    session: Session | null;
+    session: {
+      user: User;
+      session: Session;
+    } | null;
   };
 }>().basePath("/api");
 
@@ -30,6 +33,9 @@ app.use(
     credentials: true,
   })
 );
+
+// Session
+app.use(sessionMiddleware);
 
 // Ratelimit
 app.use(ratelimit);

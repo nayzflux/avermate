@@ -13,8 +13,10 @@ export async function ratelimit(c: Context, next: Next) {
     return await next();
   }
 
+  const session = c.get("session");
   const forwardedFor = c.req.header("x-forwarded-for");
-  const identifier = forwardedFor || info.remote.address || "anon";
+  const identifier =
+    session?.user?.id || forwardedFor || info.remote.address || "anon";
 
   /**
    * Auth routes
@@ -63,15 +65,6 @@ export async function ratelimit(c: Context, next: Next) {
   c.header("RateLimit-Reset", resetIn.toString());
 
   console.timeEnd("ratelimit");
-
-  console.log({
-    identifier,
-    rule,
-    isExceeded,
-    remaining,
-    limit,
-    resetIn,
-  });
 
   if (isExceeded) {
     console.log(identifier, " is being rate limited for ", rule);
