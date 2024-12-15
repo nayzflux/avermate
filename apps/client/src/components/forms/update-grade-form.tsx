@@ -21,7 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { Loader2Icon, Check, ChevronsUpDown } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Calendar } from "../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -53,8 +53,10 @@ const updateGradeSchema = z.object({
 type UpdateGradeSchema = z.infer<typeof updateGradeSchema>;
 
 const determinePeriodId = (
-  date: string | number | Date | dayjs.Dayjs | null | undefined,
-  periods: any[] | undefined
+  date: Date | null | undefined,
+  periods:
+    | { id: string; name: string; startAt: string; endAt: string }[]
+    | undefined
 ) => {
   if (!date || !periods) return "";
   const formattedDate = dayjs(date);
@@ -85,6 +87,12 @@ export const UpdateGradeForm = ({
 
   const [periodInputValue, setPeriodInputValue] = useState("");
   const [subjectInputValue, setSubjectInputValue] = useState("");
+
+  // Track if period was manually selected
+  const [isManualPeriod, setIsManualPeriod] = useState(false);
+
+  // Store initial date so we only apply date->period logic after date changes
+  const [initialDate] = useState(grade.passedAt);
 
   const { data: subjects } = useQuery({
     queryKey: ["subjects"],
@@ -157,6 +165,26 @@ export const UpdateGradeForm = ({
     },
   });
 
+  const watchedPassedAt = useWatch({ control: form.control, name: "passedAt" });
+
+  // When the date changes, if not manually selected and if actually changed from initial, update the periodId
+  useEffect(() => {
+    if (
+      watchedPassedAt &&
+      initialDate &&
+      new Date(watchedPassedAt).getTime() !== new Date(initialDate).getTime() &&
+      !isManualPeriod &&
+      periods
+    ) {
+      const matchedPeriodId = determinePeriodId(watchedPassedAt, periods);
+      const currentPeriodId = form.getValues("periodId");
+
+      if (matchedPeriodId !== currentPeriodId) {
+        form.setValue("periodId", matchedPeriodId, { shouldValidate: true });
+      }
+    }
+  }, [watchedPassedAt, periods, form, isManualPeriod, initialDate]);
+
   useEffect(() => {
     if (!isDesktop && openPeriod) {
       setTimeout(() => periodInputRef.current?.focus(), 350);
@@ -168,21 +196,6 @@ export const UpdateGradeForm = ({
       setTimeout(() => subjectInputRef.current?.focus(), 350);
     }
   }, [openSubject, isDesktop]);
-
-  useEffect(() => {
-    const passedAt = form.watch("passedAt");
-    if (!passedAt || !periods) return;
-
-    const matchedPeriodId = determinePeriodId(passedAt, periods);
-    const currentPeriodId = form.getValues("periodId");
-
-    // Only setValue if the new ID differs, to avoid repeated renders.
-    if ((matchedPeriodId || "full-year") !== currentPeriodId) {
-      form.setValue("periodId", matchedPeriodId || "full-year", {
-        shouldValidate: true,
-      });
-    }
-  }, [form.watch("passedAt"), periods, form]);
 
   const selectedPeriodValue = form.getValues("periodId");
   const selectedPeriod =
@@ -198,7 +211,23 @@ export const UpdateGradeForm = ({
     mutate(values);
   };
 
-  // Update periodInputValue when the popover is opened or selectedPeriod changes
+  // Filter periods based on input
+  const filteredPeriods = periods
+    ?.filter((p) =>
+      p.name.toLowerCase().includes(periodInputValue.toLowerCase())
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  // Filter subjects based on input
+  const filteredSubjects = subjects
+    ?.filter(
+      (subject) =>
+        subject.isDisplaySubject === false &&
+        subject.name.toLowerCase().includes(subjectInputValue.toLowerCase())
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  // Update periodInputValue when popover/drawer opens
   useEffect(() => {
     if (openPeriod) {
       setPeriodInputValue(
@@ -208,7 +237,7 @@ export const UpdateGradeForm = ({
     }
   }, [openPeriod, selectedPeriod, selectedPeriodValue]);
 
-  // Update subjectInputValue when the subject popover is opened or selectedSubject changes
+  // Update subjectInputValue when popover/drawer opens
   useEffect(() => {
     if (openSubject) {
       setSubjectInputValue(selectedSubject?.name || "");
@@ -325,7 +354,10 @@ export const UpdateGradeForm = ({
                     <Calendar
                       mode="single"
                       selected={field.value}
-                      onSelect={field.onChange}
+                      onSelect={(date) => {
+                        field.onChange(date);
+                        setIsManualPeriod(false);
+                      }}
                       disabled={(date) =>
                         date > new Date() || date < new Date("2023-01-02")
                       }
@@ -392,6 +424,7 @@ export const UpdateGradeForm = ({
                                   form.setValue("periodId", period.id, {
                                     shouldValidate: true,
                                   });
+                                  setIsManualPeriod(true);
                                   setOpenPeriod(false);
                                 }}
                               >
@@ -408,6 +441,7 @@ export const UpdateGradeForm = ({
                                 form.setValue("periodId", "full-year", {
                                   shouldValidate: true,
                                 });
+                                setIsManualPeriod(true);
                                 setOpenPeriod(false);
                               }}
                             >
@@ -460,6 +494,7 @@ export const UpdateGradeForm = ({
                                   form.setValue("periodId", period.id, {
                                     shouldValidate: true,
                                   });
+                                  setIsManualPeriod(true);
                                   setOpenPeriod(false);
                                 }}
                               >
@@ -476,6 +511,7 @@ export const UpdateGradeForm = ({
                                 form.setValue("periodId", "full-year", {
                                   shouldValidate: true,
                                 });
+                                setIsManualPeriod(true);
                                 setOpenPeriod(false);
                               }}
                             >
@@ -591,6 +627,7 @@ export const UpdateGradeForm = ({
                           placeholder="Choisir une matière"
                           className="h-9"
                           value={subjectInputValue}
+                          onValueChange={setSubjectInputValue}
                         />
                         <CommandList>
                           <CommandEmpty>Aucune matière trouvée</CommandEmpty>
