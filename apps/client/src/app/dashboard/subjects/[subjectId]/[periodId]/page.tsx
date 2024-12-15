@@ -129,6 +129,8 @@ export default function SubjectPage() {
       (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
     );
 
+  const currentDate = new Date().toISOString();
+
   return (
     <SubjectWrapper
       onBack={handleBack} // Pass the handleBack function to SubjectWrapper
@@ -149,7 +151,9 @@ export default function SubjectPage() {
               : new Date(new Date().getFullYear(), 8, 1).toISOString(),
           endAt:
             sortedPeriods && sortedPeriods.length > 0
-              ? sortedPeriods[sortedPeriods.length - 1].endAt
+              ? new Date(sortedPeriods[sortedPeriods.length - 1].endAt).getTime() > new Date().getTime()
+                ? currentDate
+                : sortedPeriods[sortedPeriods.length - 1].endAt
               : new Date(new Date().getFullYear() + 1, 5, 30).toISOString(),
           userId: "",
           createdAt: "",

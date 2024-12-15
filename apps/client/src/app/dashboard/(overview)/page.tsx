@@ -310,7 +310,11 @@ export default function OverviewPage() {
                                 ).toISOString(),
                           endAt:
                             sortedPeriods && sortedPeriods.length > 0
-                              ? sortedPeriods[sortedPeriods.length - 1].endAt
+                              ? new Date(
+                                  sortedPeriods[sortedPeriods.length - 1].endAt
+                                ) > new Date()
+                                ? new Date().toISOString()
+                                : sortedPeriods[sortedPeriods.length - 1].endAt
                               : new Date(
                                   new Date().getFullYear() + 1,
                                   5,
@@ -341,7 +345,10 @@ export default function OverviewPage() {
                     : new Date(new Date().getFullYear(), 8, 1).toISOString(),
                 endAt:
                   sortedPeriods && sortedPeriods.length > 0
-                    ? sortedPeriods[sortedPeriods.length - 1].endAt
+                    ? new Date(sortedPeriods[sortedPeriods.length - 1].endAt) >
+                      new Date()
+                      ? new Date().toISOString()
+                      : sortedPeriods[sortedPeriods.length - 1].endAt
                     : new Date(
                         new Date().getFullYear() + 1,
                         5,
@@ -364,7 +371,11 @@ export default function OverviewPage() {
                       : new Date(new Date().getFullYear(), 8, 1).toISOString(),
                   endAt:
                     sortedPeriods && sortedPeriods.length > 0
-                      ? sortedPeriods[sortedPeriods.length - 1].endAt
+                      ? new Date(
+                          sortedPeriods[sortedPeriods.length - 1].endAt
+                        ) > new Date()
+                        ? new Date().toISOString()
+                        : sortedPeriods[sortedPeriods.length - 1].endAt
                       : new Date(
                           new Date().getFullYear() + 1,
                           5,
