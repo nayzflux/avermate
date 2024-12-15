@@ -128,15 +128,13 @@ export default function SubjectPage() {
     ?.slice()
     .sort(
       (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
-  );
-  
- 
-  let periods =
+    );
+
+  const periods =
     periodId === "full-year"
       ? fullYearPeriod(subjects)
       : organizedSubjects?.find((p) => p.period.id === periodId)?.period ||
         fullYearPeriod(subjects);
-  
 
   return (
     <SubjectWrapper
