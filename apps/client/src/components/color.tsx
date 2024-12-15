@@ -12,13 +12,20 @@ export const viewport: Viewport = {
 };
 
 export function ThemeColorMetaTag() {
-  const { theme } = useTheme(); // "dark" or "light" for example
+  const { theme } = useTheme(); // could be "dark", "light", "system", etc.
 
   useEffect(() => {
     const metaTag = document.querySelector('meta[name="theme-color"]');
-    if (metaTag) {
-      // Adjust color accordingly
-      metaTag.setAttribute("content", theme === "light" ? "#ffffff" : "#09090b");
+    if (!metaTag) return;
+
+    if (theme === "light") {
+      metaTag.setAttribute("content", "#ffffff");
+    } else if (theme === "dark") {
+      metaTag.setAttribute("content", "#09090b");
+    } else {
+      // Fallback to OS preference if theme is neither "light" nor "dark"
+      const osPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      metaTag.setAttribute("content", osPrefersDark ? "#09090b" : "#ffffff");
     }
   }, [theme]);
 
