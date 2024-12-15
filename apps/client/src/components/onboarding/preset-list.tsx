@@ -16,23 +16,17 @@ import {
 import { Loader2Icon } from "lucide-react";
 import { CheckIcon } from "lucide-react";
 
-export const PresetList = ({ close }: { close: () => void }) => {
+export const PresetList = ({
+  close,
+  presets,
+}: {
+  close: () => void;
+  presets: Preset[];
+}) => {
   const toaster = useToast();
   const queryClient = useQueryClient();
 
   // Fetch the list of presets
-  const {
-    data: presets,
-    isError,
-    isLoading,
-  } = useQuery<Preset[], Error>({
-    queryKey: ["presets"],
-    queryFn: async () => {
-      const res = await apiClient.get("presets");
-      const data = await res.json<GetPresetResponse>();
-      return data.presets;
-    },
-  });
 
   // Define the mutation to apply a preset
   const { mutate, isPending } = useMutation<
@@ -73,14 +67,6 @@ export const PresetList = ({ close }: { close: () => void }) => {
     mutate({ presetId: preset.id });
   };
 
-  if (isLoading) {
-    return <div></div>;
-  }
-
-  if (isError) {
-    return <div>Erreur lors du chargement des presets.</div>;
-  }
-
   return (
     <div className="grid grid-cols-1 gap-4">
       {presets?.map((preset) => (
@@ -94,8 +80,8 @@ export const PresetList = ({ close }: { close: () => void }) => {
               {isPending && (
                 <Loader2Icon className="animate-spin mr-2 size-4" />
               )}
-                      Sélectionner
-                      <CheckIcon className="ml-1 size-4" />
+              Sélectionner
+              <CheckIcon className="ml-1 size-4" />
             </Button>
           </CardContent>
         </Card>

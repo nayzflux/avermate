@@ -220,7 +220,7 @@ function renderSubjects(
                     outOf={grade.outOf}
                     coefficient={grade.coefficient}
                     id={grade.id}
-                    periodId={grade.periodId}
+                    periodId={periodId}
                   />
                 ))}
               </div>
@@ -243,7 +243,7 @@ function renderSubjects(
                       outOf={grade.outOf}
                       coefficient={grade.coefficient}
                       id={grade.id}
-                      periodId={grade.periodId}
+                      periodId={periodId}
                     />
                   ))}
                 </div>

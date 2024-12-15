@@ -3,6 +3,7 @@ import { authClient } from "@/lib/auth";
 import { Session, User } from "better-auth/types";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function WelcomeScreen() {
   const { data: session } = authClient.useSession() as unknown as {
@@ -65,9 +66,17 @@ export default function WelcomeScreen() {
       */}
 
       <h2 className="text-4xl font-bold text-primary">
-        Bienvenue sur Avermate,{" "}
-        {session?.user?.name ? session.user.name.split(" ")[0] : ""}! 🎉
+        Bienvenue sur Avermate,&nbsp;
+        <span className="items-center">
+          {session?.user?.name ? (
+            session.user.name.split(" ")[0]
+          ) : (
+            <Skeleton className="w-32 h-11 inline-block align-middle" />
+          )}
+        </span>
+        &nbsp;! 🎉
       </h2>
+
       <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
         Nous sommes ravis de vous accueillir à bord. Préparez-vous à décoller
         vers une expérience exceptionnelle !

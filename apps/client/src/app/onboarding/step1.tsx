@@ -15,6 +15,7 @@ import UpdatePeriodDialog from "@/components/dialogs/update-period-dialog";
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import errorStateCard from "@/components/skeleton/error-card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Step1() {
   const {
@@ -30,15 +31,57 @@ export default function Step1() {
     },
   });
 
+  if (periodsIsPending) {
+    return (
+      <div className="flex flex-col gap-4">
+        <h2 className="text-2xl font-bold text-primary">Vos Périodes</h2>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2
+              "
+          >
+            <div className="flex flex-col gap-1 w-full">
+              <Label>
+                <Skeleton className="md:w-64 h-6" />
+              </Label>
+              <span className="text-muted-foreground text-sm">
+                <Skeleton className="w-full md:w-32 h-4" />
+              </span>
+            </div>
+            <div>
+              <Button size="icon" variant="outline" disabled>
+                <EllipsisVerticalIcon className="size-4" />
+              </Button>
+            </div>
+          </div>
+        ))}
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <AddPeriodDialog>
+            <Button variant="outline" disabled>
+              <PlusCircleIcon className="size-4 mr-2" />
+              Ajouter une nouvelle période
+            </Button>
+          </AddPeriodDialog>
+        </div>
+      </div>
+    );
+  }
+
+  if (periodsIsError) {
+    return errorStateCard();
+  }
+
   // if the period field is empty, we display a message explaining what periods are and how to create them (we also say that they are optional)
   if (!periods || periods.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center space-y-8">
         <h2 className="text-2xl font-bold text-primary">Périodes</h2>
         <p className="text-muted-foreground text-center">
-          Les périodes,  <b className="text-foreground">facultatives</b>, sont des intervalles de temps (année
-          scolaire, semestre, trimestre, etc.) pour regrouper vos notes. Sans
-          elles, toutes vos notes sont regroupées dans une seule section.
+          Les périodes, <b className="text-foreground">facultatives</b>, sont
+          des intervalles de temps (année scolaire, semestre, trimestre, etc.)
+          pour regrouper vos notes. Sans elles, toutes vos notes sont regroupées
+          dans une seule section.
         </p>
         <AddPeriodDialog>
           <Button variant="outline">
@@ -48,14 +91,6 @@ export default function Step1() {
         </AddPeriodDialog>
       </div>
     );
-  }
-
-  if (periodsIsPending) {
-    return <div></div>;
-  }
-
-  if (periodsIsError) {
-    return errorStateCard();
   }
 
   return (

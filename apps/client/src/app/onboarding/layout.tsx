@@ -8,7 +8,7 @@ export default function AuthenticatedLayout({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col shadow-[0px_4px_64px_0px_rgba(255,255,255,0.05)_inset] min-h-screen h-full">
+    <div className="flex flex-col shadow-[0px_4px_64px_0px_rgba(255,255,255,0.05)_inset] min-h-screen h-full overflow-x-hidden">
       {/* Header */}
       <DashboardHeader />
 

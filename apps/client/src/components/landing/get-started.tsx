@@ -14,7 +14,7 @@ export const GetStarted = () => {
     },
   });
 
-  if (isLoading || !session) {
+  if (isLoading || !session || isError) {
     return <GetStartedButton />;
   }
 

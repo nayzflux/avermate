@@ -19,6 +19,17 @@ import { Subject } from "@/types/subject";
 import { Badge } from "@/components/ui/badge";
 import errorStateCard from "@/components/skeleton/error-card";
 import ListPresetsDialog from "@/components/dialogs/list-presets-dialog";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import React from "react";
 
 export default function Step2() {
   const {
@@ -35,7 +46,82 @@ export default function Step2() {
   });
 
   if (isLoading) {
-    return <div></div>;
+    return (
+      <div>
+        <h2 className="text-2xl font-bold text-primary">Subjects</h2>
+        <Table className="w-full table-auto hidden md:table">
+          <TableCaption>
+            <div className="flex w-full justify-center">
+              <Skeleton className="w-64 h-[14px]" />
+            </div>
+          </TableCaption>
+
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[50px] md:w-[200px]">
+                <Skeleton className="w-full h-[18px]" />
+              </TableHead>
+              <TableHead className="w-[50px] md:w-[100px] text-center">
+                <Skeleton className="w-full h-[18px]" />
+              </TableHead>
+              <TableHead>
+                <Skeleton className="w-full h-[18px]" />
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {Array.from({ length: 10 }, (_, i) => (
+              <TableRow key={i}>
+                <TableCell>
+                  <Skeleton className="w-full h-[20px]" />
+                </TableCell>
+                <TableCell className="text-center font-semibold">
+                  <Skeleton className="w-full h-[20px]" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="w-full h-[20px]" />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <Table className="w-full table-auto md:hidden">
+          <TableCaption>
+            <div className="flex w-full justify-center">
+              <Skeleton className="w-64 h-[14px]" />
+            </div>
+          </TableCaption>
+          {/* No header on mobile */}
+          <TableBody>
+            {Array.from({ length: 5 }, (_, i) => i).map((item) => (
+              <React.Fragment key={item}>
+                {/* Subject + average row on mobile */}
+                <TableRow className="border-b">
+                  <TableCell className="w-full">
+                    {/* Subject name skeleton */}
+                    <Skeleton className="w-3/4 h-[20px] mb-1" />
+                    {/* Mobile-only average skeleton */}
+                    <Skeleton className="w-1/2 h-[14px]" />
+                  </TableCell>
+                </TableRow>
+
+                {/* Notes row on mobile */}
+                <TableRow className="border-b">
+                  <TableCell className="w-full">
+                    <div className="flex gap-2 flex-wrap pt-1 pb-2">
+                      <Skeleton className="w-10 h-[20px]" />
+                      <Skeleton className="w-10 h-[20px]" />
+                      <Skeleton className="w-10 h-[20px]" />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </React.Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    );
   }
 
   if (isError) {

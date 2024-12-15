@@ -149,7 +149,8 @@ export default function OverviewPage() {
     isError ||
     periodsIsError ||
     organizedSubjectsIsError ||
-    isErrorRecentGrades
+    isErrorRecentGrades ||
+    isErrorAccount
   ) {
     return (
       <div>
@@ -164,6 +165,7 @@ export default function OverviewPage() {
     periodsIsPending ||
     organizedSubjectsIsPending ||
     isPendingRecentGrades ||
+    isPendingAccount ||
     selectedTab === null
     // || true
   ) {
@@ -184,9 +186,10 @@ export default function OverviewPage() {
   const linkedProviders = new Set(accounts?.map((acc) => acc.provider));
 
   if (
-    new Date(session?.user?.createdAt).getTime() > Date.now() - 1000 * 1 &&
+    new Date(session?.user?.createdAt).getTime() > Date.now() - 1000 * 5 &&
     (!subjects || subjects.length === 0) &&
-    (linkedProviders.has("google") || linkedProviders.has("microsoft"))
+    (linkedProviders.has("google") || linkedProviders.has("microsoft")) &&
+    localStorage.getItem("isOnboardingCompleted") !== "true"
   ) {
     router.push("/onboarding");
   }

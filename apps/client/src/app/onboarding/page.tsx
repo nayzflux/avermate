@@ -14,6 +14,7 @@ import { Rocket } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ConfettiButton } from "@/components/ui/confetti";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const stepIds = ["welcome", "periodes", "matieres", "notes"];
 const steps = [
@@ -65,6 +66,12 @@ function OnboardingContent() {
 
   const CurrentStepComponent = steps[currentStep].component;
 
+  // create a new function to handle the onboarding completion
+  const handleOnboardingCompletion = () => {
+    localStorage.setItem("isOnboardingCompleted", "true");
+    router.push("/dashboard");
+  };
+
   return (
     <div className="flex-1 flex flex-col max-w-[2000px] mx-auto">
       <div className="flex flex-col md:flex-row items-center justify-between p-6">
@@ -73,12 +80,21 @@ function OnboardingContent() {
             {steps[currentStep].title === "Bienvenue"
               ? "Bienvenue sur Avermate"
               : steps[currentStep].title}
-            {""}
-            {currentStep === 0 && session?.user?.name
-              ? `, ${session.user.name.split(" ")[0]}`
-              : ""}
-            {currentStep === 0 ? " 👋" : ""}
+            {currentStep === 0 && (
+              <>
+                ,&nbsp;
+                <span className="items-center">
+                  {session?.user?.name ? (
+                    session.user.name.split(" ")[0]
+                  ) : (
+                    <Skeleton className="w-20 h-6 inline-block align-middle mx-1" />
+                  )}
+                </span>
+                &nbsp;👋
+              </>
+            )}
           </h1>
+
           <p className="text-muted-foreground text-sm">
             Configurons quelques choses avant de commencer
           </p>
@@ -89,7 +105,7 @@ function OnboardingContent() {
             <Button
               size="sm"
               variant="link"
-              onClick={() => router.push("/dashboard")}
+              onClick={handleOnboardingCompletion}
             >
               Retour
             </Button>
@@ -113,8 +129,8 @@ function OnboardingContent() {
               <Rocket className="w-6 h-6 ml-2" />
             </Button>
           ) : currentStep === steps.length - 1 ? (
-            <Link href="/dashboard">
-              <ConfettiButton size="sm">Terminer</ConfettiButton>
+            <Link href="/dashboard" onClick={handleOnboardingCompletion}>
+              <ConfettiButton size="sm">Terminer 🎉</ConfettiButton>
             </Link>
           ) : (
             <Button size="sm" onClick={handleNext}>
@@ -149,7 +165,7 @@ function OnboardingContent() {
 
 export default function OnboardingPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div></div>}>
       <OnboardingContent />
     </Suspense>
   );
