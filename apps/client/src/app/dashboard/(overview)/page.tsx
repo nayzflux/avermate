@@ -185,7 +185,7 @@ export default function OverviewPage() {
   
   const linkedProviders = new Set(accounts?.map((acc) => acc.provider));
 
-//todo implement a custom field 
+  //todo implement a custom field
   if (
     new Date(session?.user?.createdAt).getTime() > Date.now() - 1000 * 60 &&
     (!subjects || subjects.length === 0) &&
@@ -323,7 +323,9 @@ export default function OverviewPage() {
                     />
 
                     {/* Dernières notes */}
-                    <RecentGradesCard recentGrades={recentGrades} />
+                    {subjects.length > 0 && (
+                      <RecentGradesCard recentGrades={recentGrades} />
+                    )}
                   </div>
                 </TabsContent>
               ))}
@@ -373,7 +375,9 @@ export default function OverviewPage() {
                 }}
               />
 
-              <RecentGradesCard recentGrades={recentGrades} />
+              {subjects.length > 0 && (
+                <RecentGradesCard recentGrades={recentGrades} />
+              )}
             </div>
           </TabsContent>
         </div>
