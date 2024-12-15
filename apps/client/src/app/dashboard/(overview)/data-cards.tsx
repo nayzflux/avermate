@@ -105,6 +105,18 @@ export default function DataCards({
     };
   }, [subjects]);
 
+
+  // if all datacards are in the empty state, return a global empty state
+  if (
+    average(undefined, subjects) === null &&
+    bestGrade === null &&
+    bestSubjectAverage === null &&
+    worstGrade === null &&
+    worstSubjectAverage === null
+  ) {
+    return null;
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-5 gap-2 md:gap-4 pb-4">
       <DataCard

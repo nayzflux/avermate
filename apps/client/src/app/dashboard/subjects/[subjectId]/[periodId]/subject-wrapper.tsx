@@ -124,12 +124,21 @@ function SubjectWrapper({
               Ajouter une nouvelle note pour commencer à suivre vos moyennes.
             </p>
           </div>
-          <AddGradeDialog>
-            <Button variant="outline">
-              <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une note
-            </Button>
-          </AddGradeDialog>
+          {!subject.isDisplaySubject ? (
+            <AddGradeDialog parentId={subject.id}>
+              <Button variant="outline">
+                <PlusCircleIcon className="size-4 mr-2" />
+                Ajouter une note dans {subject.name}
+              </Button>
+            </AddGradeDialog>
+          ) : (
+            <AddGradeDialog>
+              <Button variant="outline">
+                <PlusCircleIcon className="size-4 mr-2" />
+                Ajouter une note
+              </Button>
+            </AddGradeDialog>
+          )}
         </Card>
       </div>
     );
