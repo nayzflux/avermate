@@ -15,4 +15,5 @@ jobs:
 
       - name: Lint
         run: |
+          cd apps/client && npm install
           cd apps/client && npm run lint
