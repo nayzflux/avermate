@@ -6,7 +6,7 @@ import "dayjs/locale/fr";
 import { z } from "zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Check, ChevronsUpDown, Loader2Icon } from "lucide-react";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 
@@ -85,6 +85,9 @@ export const AddGradeForm = ({
   const [openPeriod, setOpenPeriod] = useState(false);
   const [openSubject, setOpenSubject] = useState(false);
 
+  // Flag to track manual selection of period
+  const [isManualPeriod, setIsManualPeriod] = useState(false);
+
   // Queries
   const { data: subjects } = useQuery({
     queryKey: ["subjects"],
@@ -158,14 +161,20 @@ export const AddGradeForm = ({
     },
   });
 
-  // Automatically set the periodId when passedAt changes
+  // Watch the `passedAt` field
+  const watchedPassedAt = useWatch({ control: form.control, name: "passedAt" });
+
+  // Automatically set the periodId when passedAt changes, unless manually changed
   useEffect(() => {
-    const passedAt = form.watch("passedAt");
-    if (passedAt) {
-      const matchedPeriodId = determinePeriodId(passedAt, periods);
-      form.setValue("periodId", matchedPeriodId, { shouldValidate: true });
+    if (!isManualPeriod && watchedPassedAt && periods) {
+      const matchedPeriodId = determinePeriodId(watchedPassedAt, periods);
+      const currentPeriodId = form.getValues("periodId");
+
+      if (matchedPeriodId !== currentPeriodId) {
+        form.setValue("periodId", matchedPeriodId, { shouldValidate: true });
+      }
     }
-  }, [form, form.watch("passedAt"), periods]);
+  }, [watchedPassedAt, periods, form, isManualPeriod]);
 
   const selectedPeriod = periods?.find(
     (period) => period.id === form.getValues("periodId")
@@ -188,7 +197,6 @@ export const AddGradeForm = ({
   // Focus the CommandInput inside the Drawer whenever it opens
   useEffect(() => {
     if (!isDesktop && openPeriod) {
-      // Delay a bit to ensure the Drawer content is mounted
       setTimeout(() => periodInputRef.current?.focus(), 350);
     }
   }, [openPeriod, isDesktop]);
@@ -319,12 +327,16 @@ export const AddGradeForm = ({
                     <Calendar
                       mode="single"
                       selected={field.value}
-                      onSelect={field.onChange}
+                      onSelect={(date) => {
+                        field.onChange(date);
+                        setIsManualPeriod(false); // Reset manual period selection
+                      }}
                       disabled={(date) =>
                         date > new Date() || date < new Date("2023-01-02")
                       }
                       autoFocus
                       weekStartsOn={1}
+                      defaultMonth={field.value || new Date()}
                     />
                   </PopoverContent>
                 </Popover>
@@ -386,6 +398,7 @@ export const AddGradeForm = ({
                                   form.setValue("periodId", period.id, {
                                     shouldValidate: true,
                                   });
+                                  setIsManualPeriod(true); // Mark as manually selected
                                   setOpenPeriod(false);
                                 }}
                               >
@@ -402,6 +415,7 @@ export const AddGradeForm = ({
                                 form.setValue("periodId", "full-year", {
                                   shouldValidate: true,
                                 });
+                                setIsManualPeriod(true); // Mark as manually selected
                                 setOpenPeriod(false);
                               }}
                             >
@@ -456,6 +470,7 @@ export const AddGradeForm = ({
                                     form.setValue("periodId", period.id, {
                                       shouldValidate: true,
                                     });
+                                    setIsManualPeriod(true); // Mark as manually selected
                                     setOpenPeriod(false);
                                   }}
                                 >
@@ -472,6 +487,7 @@ export const AddGradeForm = ({
                                   form.setValue("periodId", "full-year", {
                                     shouldValidate: true,
                                   });
+                                  setIsManualPeriod(true); // Mark as manually selected
                                   setOpenPeriod(false);
                                 }}
                               >
