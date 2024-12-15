@@ -6,6 +6,7 @@ import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { fr } from "react-day-picker/locale";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -63,6 +64,7 @@ function Calendar({
         hidden: "invisible",
         ...classNames,
       }}
+      locale={fr}
       components={{
         Chevron: ({ ...props }) =>
           props.orientation === "left" ? (

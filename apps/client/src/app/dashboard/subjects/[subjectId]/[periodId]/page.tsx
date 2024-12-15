@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import SubjectWrapper from "./subject-wrapper";
+import { fullYearPeriod } from "@/utils/average";
 
 export default function SubjectPage() {
   const { periodId, subjectId } = useParams() as {
@@ -127,13 +128,19 @@ export default function SubjectPage() {
     ?.slice()
     .sort(
       (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
-    );
-
-  const currentDate = new Date().toISOString();
+  );
+  
+ 
+  let periods =
+    periodId === "full-year"
+      ? fullYearPeriod(subjects)
+      : organizedSubjects?.find((p) => p.period.id === periodId)?.period ||
+        fullYearPeriod(subjects);
+  
 
   return (
     <SubjectWrapper
-      onBack={handleBack} // Pass the handleBack function to SubjectWrapper
+      onBack={handleBack}
       subjects={
         periodId === "full-year"
           ? subjects
@@ -141,24 +148,7 @@ export default function SubjectPage() {
               ?.subjects || []
       }
       subject={organizedSubject}
-      period={
-        organizedSubjects?.find((p) => p.period.id === periodId)?.period || {
-          id: "full-year",
-          name: "Toute l'année",
-          startAt:
-            sortedPeriods && sortedPeriods.length > 0
-              ? sortedPeriods[0].startAt
-              : new Date(new Date().getFullYear(), 8, 1).toISOString(),
-          endAt:
-            sortedPeriods && sortedPeriods.length > 0
-              ? new Date(sortedPeriods[sortedPeriods.length - 1].endAt).getTime() > new Date().getTime()
-                ? currentDate
-                : sortedPeriods[sortedPeriods.length - 1].endAt
-              : new Date(new Date().getFullYear() + 1, 5, 30).toISOString(),
-          userId: "",
-          createdAt: "",
-        }
-      }
+      period={periods}
     />
   );
 }

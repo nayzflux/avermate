@@ -159,7 +159,7 @@ export const UpdatePeriodForm = ({
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mx-1">
                 <FormLabel>Nom</FormLabel>
                 <FormControl>
                   <Input
@@ -177,7 +177,7 @@ export const UpdatePeriodForm = ({
             control={form.control}
             name="dateRange"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mx-1">
                 <FormLabel>Date de la période</FormLabel>
                 <FormControl>
                   <div className="flex flex-col gap-2">

@@ -25,6 +25,7 @@ import { Session, User } from "better-auth/types";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
 import { useRouter } from "next/navigation";
+import { fullYearPeriod } from "@/utils/average";
 /**
  * Vue d'ensemble des notes
  */
@@ -182,7 +183,6 @@ export default function OverviewPage() {
       (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
     );
 
-  
   const linkedProviders = new Set(accounts?.map((acc) => acc.provider));
 
   //todo implement a custom field
@@ -297,32 +297,7 @@ export default function OverviewPage() {
                       period={
                         organizedSubjects?.find(
                           (p) => p.period.id === period.id
-                        )?.period || {
-                          id: "full-year",
-                          name: "Toute l&apos;année",
-                          startAt:
-                            sortedPeriods && sortedPeriods.length > 0
-                              ? sortedPeriods[0].startAt
-                              : new Date(
-                                  new Date().getFullYear(),
-                                  8,
-                                  1
-                                ).toISOString(),
-                          endAt:
-                            sortedPeriods && sortedPeriods.length > 0
-                              ? new Date(
-                                  sortedPeriods[sortedPeriods.length - 1].endAt
-                                ) > new Date()
-                                ? new Date().toISOString()
-                                : sortedPeriods[sortedPeriods.length - 1].endAt
-                              : new Date(
-                                  new Date().getFullYear() + 1,
-                                  5,
-                                  30
-                                ).toISOString(),
-                          userId: "",
-                          createdAt: "",
-                        }
+                        )?.period || fullYearPeriod(subjects)
                       }
                     />
 
@@ -336,54 +311,13 @@ export default function OverviewPage() {
           <TabsContent value="full-year">
             <DataCards
               subjects={subjects || []}
-              period={{
-                id: "full-year",
-                name: "Toute l&apos;année",
-                startAt:
-                  sortedPeriods && sortedPeriods.length > 0
-                    ? sortedPeriods[0].startAt
-                    : new Date(new Date().getFullYear(), 8, 1).toISOString(),
-                endAt:
-                  sortedPeriods && sortedPeriods.length > 0
-                    ? new Date(sortedPeriods[sortedPeriods.length - 1].endAt) >
-                      new Date()
-                      ? new Date().toISOString()
-                      : sortedPeriods[sortedPeriods.length - 1].endAt
-                    : new Date(
-                        new Date().getFullYear() + 1,
-                        5,
-                        30
-                      ).toISOString(),
-                userId: "",
-                createdAt: "",
-              }}
+              period={fullYearPeriod(subjects)}
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
               <GlobalAverageChart
                 subjects={subjects || []}
-                period={{
-                  id: "full-year",
-                  name: "Toute l&apos;année",
-                  startAt:
-                    sortedPeriods && sortedPeriods.length > 0
-                      ? sortedPeriods[0].startAt
-                      : new Date(new Date().getFullYear(), 8, 1).toISOString(),
-                  endAt:
-                    sortedPeriods && sortedPeriods.length > 0
-                      ? new Date(
-                          sortedPeriods[sortedPeriods.length - 1].endAt
-                        ) > new Date()
-                        ? new Date().toISOString()
-                        : sortedPeriods[sortedPeriods.length - 1].endAt
-                      : new Date(
-                          new Date().getFullYear() + 1,
-                          5,
-                          30
-                        ).toISOString(),
-                  userId: "",
-                  createdAt: "",
-                }}
+                period={fullYearPeriod(subjects)}
               />
 
               {subjects.length > 0 && (

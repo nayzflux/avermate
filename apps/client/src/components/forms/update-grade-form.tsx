@@ -157,16 +157,21 @@ export const UpdateGradeForm = ({
   });
 
   // Automatically set the periodId when passedAt changes
-  useEffect(() => {
-    const passedAt = form.watch("passedAt");
-    if (passedAt && periods) {
-      const matchedPeriodId = determinePeriodId(passedAt, periods);
-      // If no matching period, we fallback to full-year
-      form.setValue("periodId", matchedPeriodId || "full-year", {
-        shouldValidate: true,
-      });
-    }
-  }, [form, periods]);
+useEffect(() => {
+  const passedAt = form.watch("passedAt");
+  if (!passedAt || !periods) return;
+
+  const matchedPeriodId = determinePeriodId(passedAt, periods);
+  const currentPeriodId = form.getValues("periodId");
+
+  // Only setValue if the new ID differs, to avoid repeated renders.
+  if ((matchedPeriodId || "full-year") !== currentPeriodId) {
+    form.setValue("periodId", matchedPeriodId || "full-year", {
+      shouldValidate: true,
+    });
+  }
+}, [form.watch("passedAt"), periods, form]);
+
 
   const selectedPeriodValue = form.getValues("periodId");
   const selectedPeriod =
@@ -211,7 +216,7 @@ export const UpdateGradeForm = ({
             name="name"
             disabled={isPending}
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mx-1">
                 <FormLabel>Nom</FormLabel>
                 <FormControl>
                   <Input type="text" {...field} />
@@ -227,7 +232,7 @@ export const UpdateGradeForm = ({
               name="value"
               disabled={isPending}
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="mx-1">
                   <FormLabel>Note</FormLabel>
                   <FormControl>
                     <Input
@@ -246,7 +251,7 @@ export const UpdateGradeForm = ({
               name="outOf"
               disabled={isPending}
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="mx-1">
                   <FormLabel>Sur</FormLabel>
                   <FormControl>
                     <Input
@@ -265,7 +270,7 @@ export const UpdateGradeForm = ({
               name="coefficient"
               disabled={isPending}
               render={({ field }) => (
-                <FormItem className="col-span-2">
+                <FormItem className="col-span-2 mx-1">
                   <FormLabel>Coefficient</FormLabel>
                   <FormControl>
                     <Input
@@ -284,7 +289,7 @@ export const UpdateGradeForm = ({
             control={form.control}
             name="passedAt"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col mx-1">
                 <FormLabel>Passé le</FormLabel>
                 <Popover modal>
                   <PopoverTrigger asChild>
@@ -326,7 +331,7 @@ export const UpdateGradeForm = ({
             control={form.control}
             name="periodId"
             render={() => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col mx-1">
                 <FormLabel className="pointer-events-none">Période</FormLabel>
                 <Popover
                   modal
@@ -415,7 +420,7 @@ export const UpdateGradeForm = ({
             control={form.control}
             name="subjectId"
             render={() => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col mx-1">
                 <FormLabel className="pointer-events-none">Matière</FormLabel>
                 <Popover
                   modal

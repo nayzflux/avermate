@@ -211,7 +211,7 @@ export const AddGradeForm = ({
             name="name"
             disabled={isPending}
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mx-1">
                 <FormLabel>Nom</FormLabel>
 
                 <FormControl>
@@ -233,7 +233,7 @@ export const AddGradeForm = ({
               name="value"
               disabled={isPending}
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="mx-1">
                   <FormLabel>Note</FormLabel>
 
                   <FormControl>
@@ -255,7 +255,7 @@ export const AddGradeForm = ({
               name="outOf"
               disabled={isPending}
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="mx-1">
                   <FormLabel>Sur</FormLabel>
 
                   <FormControl>
@@ -277,7 +277,7 @@ export const AddGradeForm = ({
               name="coefficient"
               disabled={isPending}
               render={({ field }) => (
-                <FormItem className="col-span-2">
+                <FormItem className="col-span-2 mx-1">
                   <FormLabel>Coefficient</FormLabel>
 
                   <FormControl>
@@ -299,7 +299,7 @@ export const AddGradeForm = ({
             control={form.control}
             name="passedAt"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col mx-1">
                 <FormLabel htmlFor="">Passé le</FormLabel>
 
                 <Popover modal>
@@ -343,7 +343,7 @@ export const AddGradeForm = ({
             control={form.control}
             name="periodId"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col mx-1">
                 <FormLabel className="pointer-events-none">Période</FormLabel>
 
                 <Popover
@@ -431,7 +431,7 @@ export const AddGradeForm = ({
             control={form.control}
             name="subjectId"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col mx-1">
                 <FormLabel className="pointer-events-none">Matière</FormLabel>
 
                 <Popover

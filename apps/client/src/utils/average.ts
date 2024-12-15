@@ -1,4 +1,5 @@
 import { Subject } from "@/types/subject";
+import { Period } from "@/types/period";
 import { startOfDay } from "date-fns";
 
 /**
@@ -882,4 +883,30 @@ export function getGradeDates(subjects: Subject[], subjectId?: string): Date[] {
     });
   }
   return dates;
+}
+
+export function findPeriodBounds(period: Period, subjects: Subject[]): { startAt: Date; endAt: Date } {
+  // if the period id is full-year or null, then the bounds are the start of the first date of the first period and the end of the last date of the last period if the end date is inferior to the current date otherwise the end date is the current date for the full year we must check if all grades are included in the bounds, if not we must extend the bounds to include all grades. If there is no period, we return the 1st of september of the current year and the current date and make sure to include all grades in the bounds
+  if (period.id === "full-year" || period.id === null) {
+    const startDate = new Date(new Date().getFullYear(), 8, 1); // 1st of september of the current year
+    const endDate = new Date();
+    const allGradeDates = getGradeDates(subjects);
+    const firstGradeDate = allGradeDates.reduce((acc, date) => (date < acc ? date : acc), endDate);
+    const lastGradeDate = allGradeDates.reduce((acc, date) => (date > acc ? date : acc), startDate);
+    return { startAt: firstGradeDate < startDate ? firstGradeDate : startDate, endAt: lastGradeDate > endDate ? lastGradeDate : endDate };
+  }
+  // else we return the start and end date of the period
+  return { startAt: new Date(period.startAt), endAt: new Date(period.endAt) };
+}
+
+// just a template for the full year period
+export function fullYearPeriod(subjects: Subject[]): Period {
+  return {
+    id: "full-year",
+    name: "Toute l'année",
+    startAt: findPeriodBounds({ id: "full-year" } as Period, subjects).startAt.toISOString(),
+    endAt: findPeriodBounds({ id: "full-year" } as Period, subjects).endAt.toISOString(),
+    createdAt: new Date().toISOString(),
+    userId: "",
+  };
 }

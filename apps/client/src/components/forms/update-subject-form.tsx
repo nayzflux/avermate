@@ -164,7 +164,7 @@ export const UpdateSubjectForm = ({
             name="name"
             disabled={isPending}
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mx-1">
                 <FormLabel>Nom</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder={subject.name} {...field} />
@@ -179,7 +179,7 @@ export const UpdateSubjectForm = ({
             name="coefficient"
             disabled={isPending}
             render={({ field }) => (
-              <FormItem className="col-span-2">
+              <FormItem className="col-span-2 mx-1">
                 <FormLabel>Coefficient</FormLabel>
                 <FormControl>
                   <Input
@@ -204,7 +204,7 @@ export const UpdateSubjectForm = ({
             control={form.control}
             name="isMainSubject"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mx-1">
                 <div className="col-span-2 flex flex-row gap-4 items-center">
                   <FormLabel>Matière principale</FormLabel>
                   <Switch
@@ -225,7 +225,7 @@ export const UpdateSubjectForm = ({
             control={form.control}
             name="isDisplaySubject"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mx-1">
                 <div className="col-span-2 flex flex-row gap-4 items-center">
                   <FormLabel>Catégorie</FormLabel>
                   <Switch
@@ -237,7 +237,8 @@ export const UpdateSubjectForm = ({
                 <FormDescription>
                   Les catégories ne comptent pas dans la moyenne générale. Elles
                   regroupent des matières, mais leurs enfants sont calculés
-                  comme au niveau supérieur. Impossible d&apos;y ajouter des notes.
+                  comme au niveau supérieur. Impossible d&apos;y ajouter des
+                  notes.
                 </FormDescription>
               </FormItem>
             )}
@@ -247,7 +248,7 @@ export const UpdateSubjectForm = ({
             control={form.control}
             name="parentId"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col mx-1">
                 <FormLabel>
                   Sous-matière <Badge className="ml-2">Optionnel</Badge>
                 </FormLabel>
