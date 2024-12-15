@@ -218,6 +218,7 @@ export const UpdatePeriodForm = ({
                               from: startOfDay(p.startAt),
                               to: startOfDay(p.endAt),
                             }))}
+                          defaultMonth={field.value?.from || new Date()}
                         />
                       </PopoverContent>
                     </Popover>

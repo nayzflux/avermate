@@ -32,7 +32,9 @@ import {
   CommandInput,
 } from "../ui/command";
 import { CheckIcon } from "@heroicons/react/24/outline";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { useMediaQuery } from "@/components/ui/use-media-query";
 
 const updateSubjectSchema = z.object({
   name: z.string().min(1).max(64),
@@ -56,10 +58,20 @@ export const UpdateSubjectForm = ({
   close: () => void;
   subject: Subject;
 }) => {
-  const [open, setOpen] = useState(false);
+  const [openParent, setOpenParent] = useState(false);
   const [parentInputValue, setParentInputValue] = useState("");
   const toaster = useToast();
   const queryClient = useQueryClient();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const parentInputRef = useRef<HTMLInputElement>(null);
+
+  // Focus the CommandInput inside the Drawer whenever it opens on mobile
+  useEffect(() => {
+    if (!isDesktop && openParent) {
+      setTimeout(() => parentInputRef.current?.focus(), 350);
+    }
+  }, [openParent, isDesktop]);
 
   const { data: subjects } = useQuery({
     queryKey: ["subjects"],
@@ -142,7 +154,7 @@ export const UpdateSubjectForm = ({
   };
 
   useEffect(() => {
-    if (open) {
+    if (openParent) {
       const parentId = form.getValues("parentId");
       setParentInputValue(
         parentId && parentId !== "none"
@@ -150,7 +162,7 @@ export const UpdateSubjectForm = ({
           : ""
       );
     }
-  }, [open, filteredSubjects, form]);
+  }, [openParent, filteredSubjects, form]);
 
   return (
     <div className="">
@@ -244,6 +256,7 @@ export const UpdateSubjectForm = ({
             )}
           />
 
+          {/* Responsive Combobox for ParentId */}
           <FormField
             control={form.control}
             name="parentId"
@@ -252,66 +265,136 @@ export const UpdateSubjectForm = ({
                 <FormLabel>
                   Sous-matière <Badge className="ml-2">Optionnel</Badge>
                 </FormLabel>
-                <Popover
-                  modal
-                  open={open}
-                  onOpenChange={(isOpen) => setOpen(isOpen)}
-                >
-                  <FormControl>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open ? "true" : "false"}
-                        className="justify-between"
-                      >
-                        {field.value && field.value !== "none"
-                          ? filteredSubjects?.find((s) => s.id === field.value)
-                              ?.name
-                          : "Choisir une matière parente"}
-                        <ChevronUpDownIcon className="opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                  </FormControl>
-                  <PopoverContent
-                    className="p-0 min-w-[var(--radix-popover-trigger-width)]"
-                    align="start"
+
+                {isDesktop ? (
+                  // Desktop: Popover
+                  <Popover
+                    modal
+                    open={openParent}
+                    onOpenChange={(isOpen) => setOpenParent(isOpen)}
                   >
-                    <Command>
-                      <CommandInput
-                        placeholder="Choisir une matière parente"
-                        value={parentInputValue}
-                        onValueChange={setParentInputValue}
-                        className="h-9"
-                      />
-                      <CommandList>
-                        <CommandEmpty>Aucune matière trouvée</CommandEmpty>
-                        <CommandGroup>
-                          {filteredSubjects
-                            ?.slice()
-                            .sort((a, b) => a.name.localeCompare(b.name))
-                            .map((subject) => (
-                              <CommandItem
-                                key={subject.id}
-                                value={subject.name}
-                                onSelect={() => {
-                                  form.setValue("parentId", subject.id, {
-                                    shouldValidate: true,
-                                  });
-                                  setOpen(false);
-                                }}
-                              >
-                                <span>{subject.name}</span>
-                                {form.getValues("parentId") === subject.id && (
-                                  <CheckIcon className="w-4 h-4 ml-auto" />
-                                )}
-                              </CommandItem>
-                            ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                    <FormControl>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={openParent ? "true" : "false"}
+                          className="justify-between"
+                          onClick={() => setOpenParent(!openParent)}
+                        >
+                          {field.value && field.value !== "none"
+                            ? filteredSubjects?.find(
+                                (s) => s.id === field.value
+                              )?.name
+                            : "Choisir une matière parente"}
+                          <ChevronUpDownIcon className="opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                    </FormControl>
+                    <PopoverContent
+                      className="p-0 min-w-[var(--radix-popover-trigger-width)]"
+                      align="center"
+                    >
+                      <Command>
+                        <CommandInput
+                          placeholder="Choisir une matière parente"
+                          value={parentInputValue}
+                          onValueChange={setParentInputValue}
+                          className="h-9"
+                        />
+                        <CommandList>
+                          <CommandEmpty>Aucune matière trouvée</CommandEmpty>
+                          <CommandGroup>
+                            {filteredSubjects
+                              ?.slice()
+                              .sort((a, b) => a.name.localeCompare(b.name))
+                              .map((subject) => (
+                                <CommandItem
+                                  key={subject.id}
+                                  value={subject.name}
+                                  onSelect={() => {
+                                    form.setValue("parentId", subject.id, {
+                                      shouldValidate: true,
+                                    });
+                                    setOpenParent(false);
+                                  }}
+                                >
+                                  <span>{subject.name}</span>
+                                  {form.getValues("parentId") ===
+                                    subject.id && (
+                                    <CheckIcon className="w-4 h-4 ml-auto" />
+                                  )}
+                                </CommandItem>
+                              ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                ) : (
+                  // Mobile: Drawer
+                  <Drawer open={openParent} onOpenChange={setOpenParent}>
+                    <DrawerTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={openParent ? "true" : "false"}
+                          className="justify-between"
+                          onClick={() => setOpenParent(!openParent)}
+                        >
+                          {field.value && field.value !== "none"
+                            ? filteredSubjects?.find(
+                                (s) => s.id === field.value
+                              )?.name
+                            : "Choisir une matière parente"}
+                          <ChevronUpDownIcon className="opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                      <div className="mt-4 border-t p-4">
+                        <Command>
+                          <CommandInput
+                            ref={parentInputRef}
+                            autoFocus
+                            placeholder="Choisir une matière parente"
+                            value={parentInputValue}
+                            onValueChange={setParentInputValue}
+                            className="h-9"
+                          />
+                          <CommandList>
+                            <CommandEmpty>Aucune matière trouvée</CommandEmpty>
+                            <CommandGroup>
+                              {filteredSubjects
+                                ?.slice()
+                                .sort((a, b) => a.name.localeCompare(b.name))
+                                .map((subject) => (
+                                  <CommandItem
+                                    key={subject.id}
+                                    value={subject.name}
+                                    onSelect={() => {
+                                      form.setValue("parentId", subject.id, {
+                                        shouldValidate: true,
+                                      });
+                                      setOpenParent(false);
+                                    }}
+                                  >
+                                    <span>{subject.name}</span>
+                                    {form.getValues("parentId") ===
+                                      subject.id && (
+                                      <CheckIcon className="w-4 h-4 ml-auto" />
+                                    )}
+                                  </CommandItem>
+                                ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </div>
+                    </DrawerContent>
+                  </Drawer>
+                )}
+
                 <FormMessage />
                 <FormDescription>
                   Une matière parente regroupe plusieurs sous-matières,
