@@ -69,7 +69,7 @@ export const ResetPasswordForm = () => {
     },
 
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
     },
   });
 

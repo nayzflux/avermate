@@ -92,7 +92,7 @@ export const SignInForm = () => {
         }
       }
 
-      handleError(err);
+      handleError(err, toaster);
     },
   });
 

@@ -121,7 +121,7 @@ export const UpdateSubjectForm = ({
       queryClient.invalidateQueries({ queryKey: ["subject", subject.id] });
     },
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
     },
   });
 

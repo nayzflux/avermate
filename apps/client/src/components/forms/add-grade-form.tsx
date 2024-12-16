@@ -146,7 +146,7 @@ export const AddGradeForm = ({
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
     },
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
     },
   });
 

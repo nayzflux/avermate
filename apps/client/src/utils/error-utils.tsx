@@ -1,5 +1,4 @@
 import { HTTPError } from "ky";
-import { useToast } from "@/hooks/use-toast";
 
 const errorMessages: Record<number, string> = {
   401: "Vous n'êtes pas autorisé à effectuer cette action. Veuillez réessayer plus tard.",
@@ -11,9 +10,10 @@ const errorMessages: Record<number, string> = {
   400: "Une erreur s'est produite. Veuillez réessayer plus tard.",
 };
 
-export function handleError(error: unknown) {
-  const toaster = useToast();
-
+export function handleError(
+  error: unknown,
+  toaster: ReturnType<typeof import("@/hooks/use-toast").useToast>
+) {
   if (error instanceof HTTPError) {
     const status = error.response.status;
     const message =

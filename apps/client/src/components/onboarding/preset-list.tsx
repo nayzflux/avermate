@@ -58,7 +58,7 @@ export const PresetList = ({
       setLoadingPresetId(null);
     },
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
 
       // Reset loading state
       setLoadingPresetId(null);

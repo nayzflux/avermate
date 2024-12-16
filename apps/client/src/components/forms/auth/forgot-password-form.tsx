@@ -49,7 +49,7 @@ export const ForgotPasswordForm = () => {
     },
 
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
     },
   });
 

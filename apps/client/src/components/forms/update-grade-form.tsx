@@ -144,7 +144,7 @@ export const UpdateGradeForm = ({
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
     },
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
     },
   });
 

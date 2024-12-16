@@ -26,7 +26,7 @@ const ResendVerificationLink = ({ email }: { email: string }) => {
       });
     },
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
     },
   });
 

@@ -91,7 +91,7 @@ export const UpdatePeriodForm = ({
       close();
     },
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
     },
   });
 

@@ -61,7 +61,7 @@ export default function DeleteSubjectDialog({
       }
     },
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
     },
   });
 

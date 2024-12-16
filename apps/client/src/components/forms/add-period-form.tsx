@@ -108,7 +108,7 @@ export const AddPeriodForm = ({
     },
 
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
     },
   });
 

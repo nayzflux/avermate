@@ -44,7 +44,7 @@ export const UpdateNameForm = ({ defaultName }: { defaultName: string }) => {
     },
 
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
     },
   });
 

@@ -57,7 +57,7 @@ export default function DeleteAccountDialog() {
       localStorage.clear();
     },
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
     },
   });
 

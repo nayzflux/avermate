@@ -50,7 +50,7 @@ export default function DeletePeriodDialog({ period }: { period: Period }) {
       setOpen(false);
     },
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
     },
   });
 

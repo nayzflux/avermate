@@ -57,7 +57,7 @@ export default function RevokeSessionButton({
       }
     },
     onError: (error) => {
-      handleError(error);
+      handleError(error, toaster);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["sessions-list"] });
