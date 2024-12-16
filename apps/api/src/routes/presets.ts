@@ -90,7 +90,7 @@ const presets: Preset[] = [
            * TIPE
            */
           {
-            name: "TIPE",
+            name: "TIPE - Compétences Scientifiques",
             coefficient: 2,
           },
         ],
@@ -250,6 +250,147 @@ const presets: Preset[] = [
            * TIPE
            */
           {
+            name: "TIPE - Compétences Scientifiques",
+            coefficient: 2,
+          },
+        ],
+      },
+      /**
+       * Module Sciences Humaines
+       */
+      {
+        name: "Module Sciences Humaines",
+        isDisplaySubject: true,
+        subjects: [
+          /**
+           * Français
+           */
+          {
+            name: "Français",
+            isMainSubject: true,
+            isDisplaySubject: true,
+            subjects: [
+              {
+                name: "Français - Écrit",
+                coefficient: 6,
+              },
+              {
+                name: "Français - Oral",
+                coefficient: 3,
+              },
+            ],
+          },
+          /**
+           * Anglais
+           */
+          {
+            name: "Anglais",
+            isMainSubject: true,
+            isDisplaySubject: true,
+            subjects: [
+              {
+                name: "Anglais - Écrit",
+                coefficient: 5,
+              },
+              {
+                name: "Anglais - Oral",
+                coefficient: 2,
+              },
+            ],
+          },
+          /**
+           * LV2
+           */
+          {
+            name: "LV2",
+            isMainSubject: true,
+            coefficient: 3,
+          },
+          /**
+           * TIPE Compétences Transversales
+           */
+          {
+            name: "TIPE - Compétences Transversales",
+            coefficient: 1,
+          },
+        ],
+      },
+    ],
+  },
+  /**
+   * Prépa CPE SPE PSI
+   */
+  {
+    id: "CPE_PREPA_SPE_PSI",
+    name: "Prépa CPE Spé PSI",
+    description: "Préset des matières pour la prépa CPE Spé PSI",
+    subjects: [
+      {
+        name: "Module Scientifique",
+        isDisplaySubject: true,
+        subjects: [
+          {
+            name: "Mathématiques",
+            isMainSubject: true,
+            isDisplaySubject: true,
+            subjects: [
+              {
+                name: "Mathématiques - Écrit",
+                coefficient: 7,
+              },
+              {
+                name: "Mathématiques - Oral",
+                coefficient: 3,
+              },
+            ],
+          },
+          {
+            name: "Physique-Chimie",
+            isMainSubject: true,
+            isDisplaySubject: true,
+            subjects: [
+              {
+                name: "Physique-Chimie - Écrit",
+                coefficient: 7,
+              },
+              {
+                name: "Physique-Chimie - Oral",
+                coefficient: 3,
+              },
+              {
+                name: "Physique-Chimie - TP",
+                coefficient: 2,
+              },
+            ],
+          },
+          {
+            name: "Sciences-Industrielles",
+            isMainSubject: true,
+            isDisplaySubject: true,
+            subjects: [
+              {
+                name: "SI - Écrit",
+                coefficient: 4,
+              },
+              {
+                name: "SI - Oral",
+                coefficient: 1.5,
+              },
+              {
+                name: "SI - TP",
+                coefficient: 1.5,
+              },
+            ],
+          },
+          {
+            name: "Informatique",
+            isMainSubject: true,
+            coefficient: 3,
+          },
+          /**
+           * TIPE
+           */
+          {
             name: "TIPE",
             coefficient: 2,
           },
@@ -311,6 +452,161 @@ const presets: Preset[] = [
            */
           {
             name: "TIPE - Compétences Transversales",
+            coefficient: 1,
+          },
+          /**
+           * Sport
+           */
+          {
+            name: "Sport",
+            coefficient: 1,
+          },
+        ],
+      },
+    ],
+  },
+  /**
+   * Prépa CPE Spé PC
+   */
+  {
+    id: "CPE_PREPA_SPE_PC",
+    name: "Prépa CPE Spé PC",
+    description: "Préset des matières pour la prépa CPE Spé PC",
+    subjects: [
+      {
+        name: "Module Scientifique",
+        isDisplaySubject: true,
+        subjects: [
+          {
+            name: "Mathématiques",
+            isMainSubject: true,
+            isDisplaySubject: true,
+            subjects: [
+              {
+                name: "Mathématiques - Écrit",
+                coefficient: 7,
+              },
+              {
+                name: "Mathématiques - Oral",
+                coefficient: 3,
+              },
+            ],
+          },
+          {
+            name: "Physique",
+            isMainSubject: true,
+            isDisplaySubject: true,
+            subjects: [
+              {
+                name: "Physique - Écrit",
+                coefficient: 5,
+              },
+              {
+                name: "Physique - Oral",
+                coefficient: 3,
+              },
+              {
+                name: "Physique - TP",
+                coefficient: 2,
+              },
+            ],
+          },
+          {
+            name: "Chimie",
+            isMainSubject: true,
+            isDisplaySubject: true,
+            subjects: [
+              {
+                name: "Chimie - Écrit",
+                coefficient: 5,
+              },
+              {
+                name: "Chimie - Oral",
+                coefficient: 3,
+              },
+              {
+                name: "Chimie - TP",
+                coefficient: 2,
+              },
+            ],
+          },
+          {
+            name: "Informatique",
+            isMainSubject: true,
+            coefficient: 3,
+          },
+          /**
+           * TIPE
+           */
+          {
+            name: "TIPE - Compétences Scientifiques",
+            coefficient: 2,
+          },
+        ],
+      },
+      /**
+       * Module Sciences Humaines
+       */
+      {
+        name: "Module Sciences Humaines",
+        isDisplaySubject: true,
+        subjects: [
+          /**
+           * Français
+           */
+          {
+            name: "Français",
+            isMainSubject: true,
+            isDisplaySubject: true,
+            subjects: [
+              {
+                name: "Français - Écrit",
+                coefficient: 6,
+              },
+              {
+                name: "Français - Oral",
+                coefficient: 3,
+              },
+            ],
+          },
+          /**
+           * Anglais
+           */
+          {
+            name: "Anglais",
+            isMainSubject: true,
+            isDisplaySubject: true,
+            subjects: [
+              {
+                name: "Anglais - Écrit",
+                coefficient: 5,
+              },
+              {
+                name: "Anglais - Oral",
+                coefficient: 2,
+              },
+            ],
+          },
+          /**
+           * LV2
+           */
+          {
+            name: "LV2",
+            isMainSubject: true,
+            coefficient: 3,
+          },
+          /**
+           * TIPE Compétences Transversales
+           */
+          {
+            name: "TIPE - Compétences Transversales",
+            coefficient: 1,
+          },
+          /**
+           * Sport
+           */
+          {
+            name: "Sport",
             coefficient: 1,
           },
         ],
