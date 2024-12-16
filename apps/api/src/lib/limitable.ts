@@ -20,7 +20,7 @@ export const limitable = new Limitable({
     restricted: {
       // 10 minutes
       windowMs: 10 * 60 * 1000,
-      maxRequest: 20,
+      maxRequest: 35,
     },
 
     // Use preset
