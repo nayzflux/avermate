@@ -43,8 +43,8 @@ export default function RevokeSessionButton({
         token: sessionToken,
       });
       return data;
-        },
-        onSuccess: () => {
+    },
+    onSuccess: () => {
       // Envoyer une notification toast
       toaster.toast({
         title: `Session révoquée`,
@@ -54,50 +54,50 @@ export default function RevokeSessionButton({
       if (sessionId === currentSession?.session?.id) {
         router.push("/");
       }
-        },
-        onError: () => {
+    },
+    onError: (error) => {
       // Envoyer une notification toast
       toaster.toast({
         title: `Erreur`,
-        description: "Une erreur s'est produite. Veuillez réessayer plus tard.",
+        description: `Une erreur s'est produite. Veuillez réessayer plus tard. ${error.message}`,
       });
-        },
-        onSettled: () => {
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["sessions-list"] });
-        },
-      });
+    },
+  });
 
-      function handleRevokeSession() {
-        mutate();
-      }
+  function handleRevokeSession() {
+    mutate();
+  }
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-      <Button variant="destructive">Révoquer</Button>
+        <Button variant="destructive">Révoquer</Button>
       </AlertDialogTrigger>
 
       <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>Révoquer la session</AlertDialogTitle>
-        <AlertDialogDescription>
-        L&apos;utilisateur sera invité à se réauthentifier.
-        </AlertDialogDescription>
-      </AlertDialogHeader>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Révoquer la session</AlertDialogTitle>
+          <AlertDialogDescription>
+            L&apos;utilisateur sera invité à se réauthentifier.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
 
-      <AlertDialogFooter>
-        <AlertDialogCancel>Annuler</AlertDialogCancel>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Annuler</AlertDialogCancel>
 
-        <Button variant="destructive" disabled={isPending} asChild>
-        <AlertDialogAction
-          disabled={isPending}
-          onClick={() => handleRevokeSession()}
-        >
-          {isPending && <Loader2 className="size-4 mr-2 animate-spin" />}
-          Révoquer la session
-        </AlertDialogAction>
-        </Button>
-      </AlertDialogFooter>
+          <Button variant="destructive" disabled={isPending} asChild>
+            <AlertDialogAction
+              disabled={isPending}
+              onClick={() => handleRevokeSession()}
+            >
+              {isPending && <Loader2 className="size-4 mr-2 animate-spin" />}
+              Révoquer la session
+            </AlertDialogAction>
+          </Button>
+        </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );

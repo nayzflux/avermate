@@ -32,7 +32,6 @@ export default function SignOutButton() {
       localStorage.removeItem("isOnboardingCompleted");
       localStorage.removeItem("selectedTab");
 
-
       router.push("/");
 
       toaster.toast({

@@ -145,23 +145,20 @@ export default function LinkedAccount() {
             {providers
               .filter(({ id }) => !linkedProviders.has(id))
               .map(({ id, label, icon: Icon }) => (
-              <Button
-                key={id}
-                variant="outline"
-                onClick={() => handleLinkAccount(id)}
-                disabled={linkingProvider === id}
-              >
-                <Icon className="mr-2" />
-                {linkingProvider === id
-                ? `Lien en cours avec ${label}...`
-                : `Lier ${label}`}
-              </Button>
+                <Button
+                  key={id}
+                  variant="outline"
+                  onClick={() => handleLinkAccount(id)}
+                  disabled={linkingProvider === id}
+                >
+                  <Icon className="mr-2" />
+                  {linkingProvider === id
+                    ? `Lien en cours avec ${label}...`
+                    : `Lier ${label}`}
+                </Button>
               ))}
             {!accounts.some((acc) => acc.provider === "credential") && (
-              <Button
-                variant="outline"
-                asChild
-            >
+              <Button variant="outline" asChild>
                 <Link href="/auth/forgot-password" className="flex gap-2">
                   <KeyRoundIcon />
                   Lier avec Mot de Passe

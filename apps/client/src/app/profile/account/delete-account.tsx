@@ -10,10 +10,10 @@ export default function DeleteAccount() {
       className="border-red-500"
     >
       <div className="flex flex-col gap-4 ">
-      <Separator className="bg-red-500 bg-opacity-40" />
-      <div className="flex justify-end">
-        <DeleteAccountDialog />
-      </div>
+        <Separator className="bg-red-500 bg-opacity-40" />
+        <div className="flex justify-end">
+          <DeleteAccountDialog />
+        </div>
       </div>
     </ProfileSection>
   );

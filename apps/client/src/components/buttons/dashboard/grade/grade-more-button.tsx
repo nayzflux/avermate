@@ -28,10 +28,7 @@ export default function GradeMoreButton({ grade }: { grade: Grade }) {
         </DropdownMenuItem>
 
         {/* Delete grade */}
-        <DropdownMenuItem
-          asChild
-          onSelect={(e) => e.preventDefault()}
-        >
+        <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
           <DeleteGradeDialog grade={grade} />
         </DropdownMenuItem>
       </DropdownMenuContent>

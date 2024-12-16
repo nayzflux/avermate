@@ -49,7 +49,8 @@ export const ForgotPasswordForm = () => {
 
     onError: (err) => {
       toaster.toast({
-        title: "Échec de l'envoi de l'email de réinitialisation du mot de passe",
+        title:
+          "Échec de l'envoi de l'email de réinitialisation du mot de passe",
         description: "Une erreur est survenue. Veuillez réessayer plus tard.",
         variant: "destructive",
       });

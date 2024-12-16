@@ -1,5 +1,4 @@
 import DashboardHeader from "@/components/dashboard/dashboard-header";
-import DashboardNav from "@/components/nav/dashboard-nav";
 import { ReactNode } from "react";
 
 export default function AuthenticatedLayout({

@@ -21,9 +21,13 @@ import {
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 
-export default function DeleteSubjectDialog(
-  { subject, backOnDelete = true }: { subject: Subject; backOnDelete?: boolean }
-) {
+export default function DeleteSubjectDialog({
+  subject,
+  backOnDelete = true,
+}: {
+  subject: Subject;
+  backOnDelete?: boolean;
+}) {
   const [open, setOpen] = useState(false);
 
   const router = useRouter();

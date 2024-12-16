@@ -156,7 +156,19 @@ function SubjectWrapper({
       <div>
         <div className="flex justify-between items-center">
           <p className="text-2xl font-semibold">{subject?.name}</p>
-          {subject && <SubjectMoreButton subject={subject} />}
+          {subject && (
+            <div className="flex gap-4">
+              {!subject.isDisplaySubject ? (
+                <AddGradeDialog parentId={subject.id}>
+                  <Button className="hidden md:flex">
+                    <PlusCircleIcon className="size-4 mr-2" />
+                    Ajouter une note
+                  </Button>
+                </AddGradeDialog>
+              ) : null}
+              <SubjectMoreButton subject={subject} />
+            </div>
+          )}
         </div>
       </div>
 

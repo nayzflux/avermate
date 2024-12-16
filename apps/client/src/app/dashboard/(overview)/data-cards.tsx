@@ -105,7 +105,6 @@ export default function DataCards({
     };
   }, [subjects]);
 
-
   // if all datacards are in the empty state, return a global empty state
   if (
     average(undefined, subjects) === null &&

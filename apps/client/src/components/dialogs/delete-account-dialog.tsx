@@ -48,13 +48,12 @@ export default function DeleteAccountDialog() {
       setOpen(false);
 
       router.push("/");
-      
+
       queryClient.clear();
       queryClient.invalidateQueries();
       queryClient.cancelQueries();
 
       localStorage.clear();
-
     },
     onError: () => {
       toaster.toast({

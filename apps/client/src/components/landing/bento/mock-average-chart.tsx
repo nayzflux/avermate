@@ -40,7 +40,7 @@ export const MockAverageChart = () => {
     userId: "",
     createdAt: "",
   };
-  
+
   // Calculate the start and end dates
   const endDate = new Date(period.endAt);
   const startDate = new Date(period.startAt);

@@ -42,7 +42,6 @@ export default function GlobalAverageChart({
   subjects: Subject[];
   period: Period;
 }) {
-
   // State to manage the active index for the data series
   const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(
     null

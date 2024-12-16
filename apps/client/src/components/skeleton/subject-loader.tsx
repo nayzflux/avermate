@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { ChartContainer } from "../ui/chart";
 import { Skeleton } from "../ui/skeleton";
+import { PlusCircleIcon } from "lucide-react";
 
 export default function subjectLoader() {
   const chartConfig = {};
@@ -47,9 +48,15 @@ export default function subjectLoader() {
       <div className="flex justify-between items-center">
         <Skeleton className="h-9 w-96" />
 
-        <Button size="icon" variant="outline" disabled>
-          <EllipsisVerticalIcon className="size-4" />
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" className="hidden md:flex" disabled>
+            <PlusCircleIcon className="size-4 mr-2" />
+            Ajouter une note
+          </Button>{" "}
+          <Button size="icon" variant="outline" disabled>
+            <EllipsisVerticalIcon className="size-4" />
+          </Button>
+        </div>
       </div>
 
       <Separator />

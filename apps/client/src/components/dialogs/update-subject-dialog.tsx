@@ -42,7 +42,7 @@ export default function UpdateSubjectCredenza({
   return (
     <Credenza open={open} onOpenChange={setOpen}>
       <CredenzaTrigger asChild>
-        <Button variant="ghost">
+        <Button variant="ghost" className="w-full flex justify-start">
           <PencilIcon className="size-4 mr-2" />
           Modifier la matière
         </Button>

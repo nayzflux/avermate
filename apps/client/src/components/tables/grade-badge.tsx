@@ -21,10 +21,10 @@ export default function GradeBadge({
 }) {
   const pathname = usePathname();
 
-const handleClick = () => {
+  const handleClick = () => {
     const currentPath = pathname + window.location.search || "/dashboard";
-  localStorage.setItem("backFromGradeOrSubject", currentPath);
-};
+    localStorage.setItem("backFromGradeOrSubject", currentPath);
+  };
 
   return (
     <Link href={`/dashboard/grades/${id}/${periodId}`} onClick={handleClick}>
