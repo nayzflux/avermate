@@ -29,6 +29,10 @@ export default function SignOutButton() {
       const data = await authClient.signOut();
     },
     onSuccess: () => {
+      localStorage.removeItem("isOnboardingCompleted");
+      localStorage.removeItem("selectedTab");
+
+
       router.push("/");
 
       toaster.toast({

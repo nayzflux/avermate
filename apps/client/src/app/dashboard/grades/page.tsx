@@ -77,7 +77,7 @@ export default function GradesPage() {
   useEffect(() => {
     if (!periods) return;
 
-    const savedTab = sessionStorage.getItem("selectedTab");
+    const savedTab = localStorage.getItem("selectedTab");
 
     if (savedTab) {
       setSelectedTab(savedTab);
@@ -92,17 +92,17 @@ export default function GradesPage() {
     }
   }, [periods]);
 
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      sessionStorage.removeItem("selectedTab");
-    };
+  // useEffect(() => {
+  //   const handleBeforeUnload = () => {
+  //     localStorage.removeItem("selectedTab");
+  //   };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
 
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, []);
 
   // Error State
   if (periodsIsError || organizedSubjectsIsError || subjectsIsError) {
@@ -159,7 +159,7 @@ export default function GradesPage() {
         value={selectedTab}
         onValueChange={(value) => {
           setSelectedTab(value);
-          sessionStorage.setItem("selectedTab", value);
+          localStorage.setItem("selectedTab", value);
         }}
       >
         <div className="hidden md:flex gap-4">
@@ -191,7 +191,7 @@ export default function GradesPage() {
             value={selectedTab}
             onValueChange={(value) => {
               setSelectedTab(value);
-              sessionStorage.setItem("selectedTab", value);
+              localStorage.setItem("selectedTab", value);
             }}
           >
             <SelectTrigger>

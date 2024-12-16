@@ -17,7 +17,13 @@ export default function ProfileLayout({
 
   useEffect(() => {
     const storedFrom = localStorage.getItem("backFromSettings");
-    if (storedFrom) {
+    if (
+      storedFrom &&
+      storedFrom !== "/profile" &&
+      storedFrom !== "/profile/account" &&
+      storedFrom !== "/profile/settings" &&
+      storedFrom !== "/profile/about"
+    ) {
       setReturnUrl(storedFrom);
     } else {
       setReturnUrl("/dashboard");
@@ -26,6 +32,7 @@ export default function ProfileLayout({
 
   const handleBack = () => {
     router.push(returnUrl);
+    localStorage.removeItem("backFromSettings");
   };
 
   return (

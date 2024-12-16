@@ -52,6 +52,9 @@ export default function DeleteAccountDialog() {
       queryClient.clear();
       queryClient.invalidateQueries();
       queryClient.cancelQueries();
+
+      localStorage.clear();
+
     },
     onError: () => {
       toaster.toast({

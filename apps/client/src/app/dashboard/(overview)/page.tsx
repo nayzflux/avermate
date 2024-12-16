@@ -119,7 +119,7 @@ export default function OverviewPage() {
   useEffect(() => {
     if (!periods) return;
 
-    const savedTab = sessionStorage.getItem("selectedTab");
+    const savedTab = localStorage.getItem("selectedTab");
 
     if (savedTab) {
       setSelectedTab(savedTab);
@@ -134,17 +134,17 @@ export default function OverviewPage() {
     }
   }, [periods]);
 
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      sessionStorage.removeItem("selectedTab");
-    };
+  // useEffect(() => {
+  //   const handleBeforeUnload = () => {
+  //     localStorage.removeItem("selectedTab");
+  //   };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
 
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, []);
   // Error State
   if (
     isError ||
@@ -220,7 +220,7 @@ export default function OverviewPage() {
         value={selectedTab}
         onValueChange={(value) => {
           setSelectedTab(value);
-          sessionStorage.setItem("selectedTab", value);
+          localStorage.setItem("selectedTab", value);
         }}
       >
         <div className="flex flex-col gap-2 md:gap-4">
@@ -249,7 +249,7 @@ export default function OverviewPage() {
               value={selectedTab}
               onValueChange={(value) => {
                 setSelectedTab(value);
-                sessionStorage.setItem("selectedTab", value);
+                localStorage.setItem("selectedTab", value);
               }}
             >
               <SelectTrigger>
