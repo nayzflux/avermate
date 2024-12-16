@@ -26,8 +26,7 @@ const presets: Preset[] = [
     subjects: [
       {
         name: "Module Scientifique",
-        // isDisplaySubject: true,
-        coefficient: 1,
+        isDisplaySubject: true,
         subjects: [
           {
             name: "Mathématiques",
@@ -101,8 +100,7 @@ const presets: Preset[] = [
        */
       {
         name: "Module Sciences Humaines",
-        // isDisplaySubject: true,
-        coefficient: 1,
+        isDisplaySubject: true,
         subjects: [
           /**
            * Français
