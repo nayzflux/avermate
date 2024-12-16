@@ -645,7 +645,12 @@ router.post(
   zValidator(
     "param",
     z.object({
-      id: z.enum(["CPE_PREPA_SUP_NUM", "CPE_PREPA_SUP_CHI", "CPE_PREPA_SPE_PC", "CPE_PREPA_SPE_PSI"]),
+      id: z.enum([
+        "CPE_PREPA_SUP_NUM",
+        "CPE_PREPA_SUP_CHI",
+        "CPE_PREPA_SPE_PC",
+        "CPE_PREPA_SPE_PSI",
+      ]),
     })
   ),
   async (c) => {
@@ -672,7 +677,9 @@ router.post(
 
     const info = getConnInfo(c);
 
-    const identifier = info.remote.address || "anon";
+    const forwardedFor = c.req.header("x-forwarded-for");
+    const identifier =
+      session?.user?.id || forwardedFor || info?.remote?.address || "anon";
 
     const { isExceeded, remaining, limit, resetIn } = await limitable.verify(
       identifier,
