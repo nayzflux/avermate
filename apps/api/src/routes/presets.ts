@@ -645,7 +645,7 @@ router.post(
   zValidator(
     "param",
     z.object({
-      id: z.enum(["CPE_PREPA_SUP_NUM", "CPE_PREPA_SUP_CHI"]),
+      id: z.enum(["CPE_PREPA_SUP_NUM", "CPE_PREPA_SUP_CHI", "CPE_PREPA_SPE_PC", "CPE_PREPA_SPE_PSI"]),
     })
   ),
   async (c) => {
