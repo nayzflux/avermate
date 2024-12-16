@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { handleError } from "@/utils/error-utils";
 import { getPasswordStrength } from "@/utils/password";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -67,13 +68,8 @@ export const ResetPasswordForm = () => {
       });
     },
 
-    onError: (err) => {
-      // TODO: Gestion des erreurs
-      toaster.toast({
-        title: "Échec de la réinitialisation du mot de passe",
-        description: "Une erreur s'est produite. Veuillez réessayer plus tard.",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error);
     },
   });
 

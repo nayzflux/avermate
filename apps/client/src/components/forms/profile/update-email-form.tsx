@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
 import { env } from "@/lib/env";
+import { handleError } from "@/utils/error-utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
@@ -48,13 +49,8 @@ export const UpdateEmailForm = ({
       });
     },
 
-    onError: (err) => {
-      // TODO: Error handling
-      toaster.toast({
-        title: "❌ Erreur",
-        description: "Une erreur est survenue. Réessayez plus tard.",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error);
     },
   });
 

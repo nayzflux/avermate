@@ -33,6 +33,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/components/ui/use-media-query";
+import { handleError } from "@/utils/error-utils";
 
 const addSubjectSchema = z.object({
   name: z.string().min(1).max(64),
@@ -102,12 +103,8 @@ export const AddSubjectForm = ({
       close();
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
     },
-    onError: () => {
-      toaster.toast({
-        title: "Erreur",
-        description: "Une erreur s'est produite. Réessayez plus tard.",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error);
     },
   });
 

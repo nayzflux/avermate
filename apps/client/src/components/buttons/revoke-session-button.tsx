@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
+import { handleError } from "@/utils/error-utils";
 
 export default function RevokeSessionButton({
   sessionId,
@@ -56,11 +57,7 @@ export default function RevokeSessionButton({
       }
     },
     onError: (error) => {
-      // Envoyer une notification toast
-      toaster.toast({
-        title: `Erreur`,
-        description: `Une erreur s'est produite. Veuillez réessayer plus tard. ${error.message}`,
-      });
+      handleError(error);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["sessions-list"] });

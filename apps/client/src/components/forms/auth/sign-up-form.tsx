@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { cn } from "@/lib/utils";
+import { handleError } from "@/utils/error-utils";
 import { getPasswordStrength } from "@/utils/password";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -83,13 +84,8 @@ export const SignUpForm = () => {
       }
     },
 
-    onError: (err) => {
-      // TODO: Gestion des erreurs
-      toaster.toast({
-        title: "Échec de la création de compte",
-        description: "Une erreur s'est produite. Veuillez réessayer plus tard.",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error);
     },
   });
 

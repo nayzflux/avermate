@@ -20,6 +20,7 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
+import { handleError } from "@/utils/error-utils";
 
 export default function DeleteSubjectDialog({
   subject,
@@ -59,12 +60,8 @@ export default function DeleteSubjectDialog({
         router.back();
       }
     },
-    onError: (err) => {
-      toaster.toast({
-        title: `Erreur`,
-        description: `Une erreur est survenue lors de la suppression de la note. Réessayez plus tard.`,
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error);
     },
   });
 

@@ -37,6 +37,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "dayjs/locale/fr";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/components/ui/use-media-query";
+import { handleError } from "@/utils/error-utils";
 
 dayjs.locale("fr");
 
@@ -142,13 +143,8 @@ export const UpdateGradeForm = ({
       queryClient.invalidateQueries({ queryKey: ["grade", grade.id] });
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
     },
-    onError: () => {
-      toaster.toast({
-        title: "Erreur",
-        description:
-          "Impossible de mettre à jour la note. Réessayez plus tard.",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error);
     },
   });
 

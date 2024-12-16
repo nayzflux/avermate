@@ -14,6 +14,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Loader2Icon, CheckIcon } from "lucide-react";
+import { handleError } from "@/utils/error-utils";
 
 export const PresetList = ({
   close,
@@ -56,12 +57,8 @@ export const PresetList = ({
       // Reset loading state
       setLoadingPresetId(null);
     },
-    onError: (err) => {
-      toaster.toast({
-        title: "Erreur lors de l'application du préset",
-        description: "Une erreur est survenue. Veuillez réessayer plus tard.",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error);
 
       // Reset loading state
       setLoadingPresetId(null);

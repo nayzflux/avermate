@@ -35,6 +35,7 @@ import { CheckIcon } from "@heroicons/react/24/outline";
 import React, { useState, useEffect, useRef } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/components/ui/use-media-query";
+import { handleError } from "@/utils/error-utils";
 
 const updateSubjectSchema = z.object({
   name: z.string().min(1).max(64),
@@ -119,13 +120,8 @@ export const UpdateSubjectForm = ({
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
       queryClient.invalidateQueries({ queryKey: ["subject", subject.id] });
     },
-    onError: () => {
-      toaster.toast({
-        title: "Erreur",
-        description:
-          "Impossible de mettre à jour la matière. Réessayez plus tard.",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error);
     },
   });
 

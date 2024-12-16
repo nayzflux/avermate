@@ -41,6 +41,7 @@ import { apiClient } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { Subject } from "@/types/subject";
 import { useMediaQuery } from "../ui/use-media-query";
+import { handleError } from "@/utils/error-utils";
 
 dayjs.locale("fr");
 
@@ -144,12 +145,8 @@ export const AddGradeForm = ({
       queryClient.invalidateQueries({ queryKey: ["grades"] });
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
     },
-    onError: () => {
-      toaster.toast({
-        title: "Échec de l'ajout de la note",
-        description: "Une erreur est survenue. Veuillez réessayer plus tard.",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error);
     },
   });
 

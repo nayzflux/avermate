@@ -26,6 +26,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Calendar } from "../ui/calendar";
 import { useMediaQuery } from "../ui/use-media-query";
+import { handleError } from "@/utils/error-utils";
 
 const updatePeriodSchema = z.object({
   name: z.string().min(1).max(64),
@@ -89,12 +90,8 @@ export const UpdatePeriodForm = ({
 
       close();
     },
-    onError: () => {
-      toaster.toast({
-        title: "Erreur",
-        description: "Impossible de modifier la période. Veuillez réessayer.",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error);
     },
   });
 
