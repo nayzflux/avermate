@@ -36,7 +36,7 @@ export default function DataCards({
     startDate.setMonth(startDate.getMonth() - 3);
 
     // Calculate the average grades over time
-    const averages = averageOverTime(subjects, undefined, startDate, endDate);
+    const averages = averageOverTime(subjects, undefined, period);
 
     console.timeEnd("Calculating averages overtime");
 

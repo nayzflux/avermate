@@ -56,7 +56,7 @@ export const MockAverageChart = () => {
   }
 
   // Calculate the average grades over time
-  const averages = averageOverTime(subjects, undefined, startDate, endDate);
+  const averages = averageOverTime(subjects, undefined, period);
 
   const chartData = dates.map((date, index) => ({
     date: date.toISOString(),

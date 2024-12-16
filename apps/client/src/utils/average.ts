@@ -140,32 +140,51 @@ function getAllNonDisplaySubjects(
 export function averageOverTime(
   subjects: Subject[],
   subjectId: string | undefined,
-  startDate: Date,
-  endDate: Date
+  period: Period
 ): (number | null)[] {
-  const normalizedStartDate = startOfDay(startDate);
-  const normalizedEndDate = startOfDay(endDate);
-  const gradeDates = getGradeDates(subjects, subjectId).filter(
-    (date) => date >= normalizedStartDate && date <= normalizedEndDate
-  );
+  const { startAt, endAt } = findPeriodBounds(period, subjects);
+  const normalizedStartDate = startOfDay(startAt);
+  const normalizedEndDate = startOfDay(endAt);
+  const isFullYear = period.id === "full-year";
+
   const dates = createDateRange(normalizedStartDate, normalizedEndDate, 1);
 
   return dates.map((date, index) => {
+    const subjectsWithGrades = subjects.map((subject) => ({
+      ...subject,
+      grades: subject.grades
+        .filter((grade) => isFullYear || grade.periodId === period.id)
+        .map((grade) => {
+          const gradeDate = new Date(grade.passedAt);
+          let adjustedDate = gradeDate;
+
+          if (gradeDate < normalizedStartDate) {
+            adjustedDate = normalizedStartDate;
+          } else if (gradeDate > normalizedEndDate) {
+            adjustedDate = normalizedEndDate;
+          }
+
+          return {
+            ...grade,
+            passedAt: adjustedDate.toISOString(),
+          };
+        })
+        .filter((grade) => new Date(grade.passedAt) <= date),
+    }));
+
     if (
-      gradeDates.some((gradeDate) => gradeDate.getTime() === date.getTime()) ||
+      subjectsWithGrades.some(
+        (subject) => subject.grades.length > 0 && subject.grades.some((g) => new Date(g.passedAt).getTime() === date.getTime())
+      ) ||
       index === dates.length - 1
     ) {
-      const subjectsWithGrades = subjects.map((subject) => ({
-        ...subject,
-        grades: subject.grades.filter(
-          (grade) => new Date(grade.passedAt) <= date
-        ),
-      }));
       return average(subjectId, subjectsWithGrades);
     }
+
     return null;
   });
 }
+
 
 // Logic validated ✅
 // Compute the average for each subject and return an array of objects with subject ID and its average
@@ -737,15 +756,16 @@ export function getTrend(
 export function getSubjectTrend(
   subjects: Subject[],
   subjectId: string,
-  startDate: Date,
-  endDate: Date
+  period: Period
 ): number | null {
-  const averages = averageOverTime(subjects, subjectId, startDate, endDate);
+  const averages = averageOverTime(subjects, subjectId, period);
 
   if (averages.every((avg) => avg === null)) {
     return null;
   }
 
+  const startDate = new Date(period.startAt);
+  const endDate = new Date(period.endAt);
   const dates = createDateRange(startDate, endDate, 1);
 
   const data = averages.map((avg, index) => ({
@@ -761,8 +781,7 @@ export function getSubjectTrend(
 // Find the subject with the best (most positive) trend
 export function getBestTrendSubject(
   subjects: Subject[],
-  startDate: Date,
-  endDate: Date,
+  period: Period,
   isMainSubject: boolean = false
 ): { bestSubject: Subject; bestTrend: number } | null {
   let bestSubject: Subject | null = null;
@@ -774,12 +793,13 @@ export function getBestTrendSubject(
   }
 
   for (const subject of filteredSubjects) {
-    const averages = averageOverTime(subjects, subject.id, startDate, endDate);
+    const averages = averageOverTime(subjects, subject.id, period);
 
     if (averages.every((avg) => avg === null)) {
       continue; // Skip subjects with no averages
     }
-
+    const startDate = new Date(period.startAt);
+    const endDate = new Date(period.endAt);
     const dates = createDateRange(startDate, endDate, 1);
 
     const data = averages.map((avg, index) => ({
@@ -805,8 +825,7 @@ export function getBestTrendSubject(
 // Find the subject with the worst (most negative) trend
 export function getWorstTrendSubject(
   subjects: Subject[],
-  startDate: Date,
-  endDate: Date,
+  period: Period,
   isMainSubject: boolean = false
 ): { worstSubject: Subject; worstTrend: number } | null {
   let worstSubject: Subject | null = null;
@@ -818,12 +837,14 @@ export function getWorstTrendSubject(
   }
 
   for (const subject of filteredSubjects) {
-    const averages = averageOverTime(subjects, subject.id, startDate, endDate);
+    const averages = averageOverTime(subjects, subject.id, period);
 
     if (averages.every((avg) => avg === null)) {
       continue; // Skip subjects with no averages
     }
 
+    const startDate = new Date(period.startAt);
+    const endDate = new Date(period.endAt);
     const dates = createDateRange(startDate, endDate, 1);
 
     const data = averages.map((avg, index) => ({
