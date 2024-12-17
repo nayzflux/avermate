@@ -149,41 +149,68 @@ export function averageOverTime(
 
   const dates = createDateRange(normalizedStartDate, normalizedEndDate, 1);
 
+  // Get relevant grades for the specific subject and its children (if subjectId is provided)
+  const relevantGrades = subjects
+    .filter(
+      (subject) =>
+        !subjectId || // Include all subjects if no subjectId is provided
+        subject.id === subjectId ||
+        getChildren(subjects, subjectId).includes(subject.id)
+    )
+    .flatMap((subject) =>
+      subject.grades.filter((grade) => isFullYear || grade.periodId === period.id)
+    );
+
+  // Extract grade dates only for the relevant subject or its children
+  const gradeDates = relevantGrades.map((grade) => {
+    const gradeDate = new Date(grade.passedAt);
+    if (gradeDate < normalizedStartDate) return normalizedStartDate;
+    if (gradeDate > normalizedEndDate) return normalizedEndDate;
+    return gradeDate;
+  });
+
+  // Ensure unique dates for relevant grades
+  const uniqueGradeDates = Array.from(
+    new Set(gradeDates.map((date) => date.getTime()))
+  ).map((time) => new Date(time));
+
   return dates.map((date, index) => {
-    const subjectsWithGrades = subjects.map((subject) => ({
-      ...subject,
-      grades: subject.grades
-        .filter((grade) => isFullYear || grade.periodId === period.id)
-        .map((grade) => {
-          const gradeDate = new Date(grade.passedAt);
-          let adjustedDate = gradeDate;
+    const isRelevantDate =
+      uniqueGradeDates.some(
+        (gradeDate) => gradeDate.getTime() === date.getTime()
+      ) || index === dates.length - 1;
 
-          if (gradeDate < normalizedStartDate) {
-            adjustedDate = normalizedStartDate;
-          } else if (gradeDate > normalizedEndDate) {
-            adjustedDate = normalizedEndDate;
-          }
+    if (isRelevantDate) {
+      const subjectsWithAdjustedGrades = subjects.map((subject) => ({
+        ...subject,
+        grades: subject.grades
+          .filter((grade) => isFullYear || grade.periodId === period.id)
+          .map((grade) => {
+            const gradeDate = new Date(grade.passedAt);
+            let adjustedDate = gradeDate;
 
-          return {
-            ...grade,
-            passedAt: adjustedDate.toISOString(),
-          };
-        })
-        .filter((grade) => new Date(grade.passedAt) <= date),
-    }));
+            if (gradeDate < normalizedStartDate) {
+              adjustedDate = normalizedStartDate;
+            } else if (gradeDate > normalizedEndDate) {
+              adjustedDate = normalizedEndDate;
+            }
 
-    if (
-      subjectsWithGrades.some(
-        (subject) => subject.grades.length > 0 && subject.grades.some((g) => new Date(g.passedAt).getTime() === date.getTime())
-      ) ||
-      index === dates.length - 1
-    ) {
-      return average(subjectId, subjectsWithGrades);
+            return {
+              ...grade,
+              passedAt: adjustedDate.toISOString(),
+            };
+          })
+          .filter((grade) => new Date(grade.passedAt) <= date),
+      }));
+
+      return average(subjectId, subjectsWithAdjustedGrades);
     }
 
     return null;
   });
 }
+
+
 
 
 // Logic validated ✅
