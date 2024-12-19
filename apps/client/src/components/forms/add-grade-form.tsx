@@ -3,6 +3,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/fr";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 import { z } from "zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -65,8 +69,8 @@ const determinePeriodId = (
   const formattedDate = dayjs(date);
   const matchedPeriod = periods.find(
     (period) =>
-      formattedDate.isAfter(dayjs(period.startAt)) &&
-      formattedDate.isBefore(dayjs(period.endAt))
+      formattedDate.isSameOrAfter(dayjs(period.startAt)) &&
+      formattedDate.isSameOrBefore(dayjs(period.endAt))
   );
   return matchedPeriod ? matchedPeriod.id : "full-year";
 };

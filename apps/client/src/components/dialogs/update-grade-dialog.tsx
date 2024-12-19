@@ -17,7 +17,7 @@ import { useState } from "react";
 import { UpdateGradeForm } from "../forms/update-grade-form";
 import { Button } from "../ui/button";
 
-export default function UpdateGradeCredenza({ gradeId }: { gradeId: string }) {
+export default function UpdateGradeDialog({ gradeId }: { gradeId: string }) {
   const [open, setOpen] = useState(false);
 
   const {

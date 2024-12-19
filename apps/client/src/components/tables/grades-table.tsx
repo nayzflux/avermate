@@ -200,8 +200,8 @@ function renderSubjects(
               </Link>
 
               {/* Mobile-only average display (hidden on md+) */}
-              <div className="md:hidden mt-1 text-sm text-gray-600">
-                Moyenne: <span className="font-semibold">{subjAverage}</span>
+              <div className="md:hidden mt-1 text-sm text-muted-foreground">
+                Moyenne: <span className="font-bold text-foreground">{subjAverage}</span>
               </div>
             </TableCell>
 

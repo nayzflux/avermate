@@ -159,6 +159,14 @@ export const PeriodsSection = () => {
             </div>
           </div>
         ))}
+        <div className="flex justify-start">
+          <AddPeriodDialog>
+            <Button>
+              <PlusCircleIcon className="size-4 mr-2" />
+              Ajouter une période
+            </Button>
+          </AddPeriodDialog>
+        </div>
       </div>
     </ProfileSection>
   );

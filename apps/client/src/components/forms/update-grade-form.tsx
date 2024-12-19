@@ -35,6 +35,10 @@ import {
 } from "@/components/ui/command";
 import React, { useEffect, useState, useRef } from "react";
 import "dayjs/locale/fr";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { handleError } from "@/utils/error-utils";
@@ -63,8 +67,8 @@ const determinePeriodId = (
   const formattedDate = dayjs(date);
   const matchedPeriod = periods.find(
     (period) =>
-      formattedDate.isAfter(dayjs(period.startAt)) &&
-      formattedDate.isBefore(dayjs(period.endAt))
+      formattedDate.isSameOrAfter(dayjs(period.startAt)) &&
+      formattedDate.isSameOrBefore(dayjs(period.endAt))
   );
   return matchedPeriod ? matchedPeriod.id : "full-year";
 };
