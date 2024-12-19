@@ -215,3 +215,28 @@ export const verifications = sqliteTable("verifications", {
   createdAt: integer({ mode: "timestamp" }).notNull(),
   updatedAt: integer({ mode: "timestamp" }).notNull(),
 });
+
+// Custom averages are the averages that the user can create, they are identified by an id, a name and and a list of ids of the subjects that are part of this average
+// optionally, the user can specify a custom coefficient for each subject, if not specified, the coefficient is the one of the subject and whether or not the average should include it's children or only the subject itself
+// finally, the user can specify if a custom average is a main average, meaning that it will be displayed on the main page of the app
+// a custom average is not taken into account in the global average of the user it is only used to display the average of a specific set of subjects
+// because of this, we need to store something like a json object in the database to store the list of subjects that are part of the average and their respective coefficients and whether or not the average should include the children of the subject
+
+export const customAverages = sqliteTable("custom_averages", {
+  id: text()
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => generateId("ca")),
+
+  name: text().notNull(),
+
+  subjects: text().notNull(),
+
+  userId: text()
+    .notNull()
+    .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
+
+  isMainAverage: integer({ mode: "boolean" }).default(false).notNull(),
+
+  createdAt: integer({ mode: "timestamp" }).notNull(),
+});
