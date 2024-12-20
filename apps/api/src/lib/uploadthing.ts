@@ -24,9 +24,12 @@ export const uploadRouter = {
     },
   })
     .middleware(async (c) => {
+      console.log(c)
       const session = await auth.api.getSession({
-        headers: c.req.headers,
+        r
       });
+
+      console.log(session);
 
       if (!session) {
         throw new UploadThingError("Unauthorized");

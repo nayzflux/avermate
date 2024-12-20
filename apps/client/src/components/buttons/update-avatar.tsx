@@ -38,6 +38,12 @@ const UpdateAvatar = () => {
 
         console.log(err);
       }}
+      onUploadBegin={() => {
+        toast.toast({
+          title: "🔄 Upload de l'avatar en cours...",
+          description: "Merci de patienter quelques instants.",
+        });
+      }}
     />
   );
 };
