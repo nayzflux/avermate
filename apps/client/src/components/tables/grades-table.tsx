@@ -10,11 +10,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { apiClient } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
+import { Average } from "@/types/average";
 import { average } from "@/utils/average";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -32,7 +32,7 @@ export default function GradesTable({
   subjects: Subject[];
   periodId: string;
 }) {
-  const pathname = usePathname(); // Get current path
+  const pathname = usePathname();
 
   const {
     data: period,
@@ -50,13 +50,27 @@ export default function GradesTable({
     },
   });
 
+  // Fetch all custom averages
+  const {
+    data: customAverages,
+    isError: isCustomAveragesError,
+    isPending: isCustomAveragesPending,
+  } = useQuery({
+    queryKey: ["customAverages"],
+    queryFn: async () => {
+      const res = await apiClient.get("averages");
+      const data = await res.json<{ customAverages: Average[] }>();
+      return data.customAverages;
+    },
+  });
+
   // Loading State
-  if (isPeriodPending) {
+  if (isPeriodPending || isCustomAveragesPending) {
     return <LoadingTable />;
   }
 
   // Error State
-  if (isPeriodError) {
+  if (isPeriodError || isCustomAveragesError) {
     return <div>{errorStateCard()}</div>;
   }
 
@@ -66,16 +80,13 @@ export default function GradesTable({
   }
 
   const periodName = periodId !== "full-year" ? period?.name : "Année complète";
+  const overallAverageVal = average(undefined, subjects);
   const overallAverage =
-    average(undefined, subjects) !== null
-      ? average(undefined, subjects)?.toFixed(2)
-      : "—";
+    overallAverageVal !== null ? overallAverageVal.toFixed(2) : "—";
 
   return (
     <Table>
       <TableCaption>{periodName}</TableCaption>
-
-      {/* Desktop Table Header */}
       <TableHeader className="hidden md:table-header-group">
         <TableRow>
           <TableHead className="w-[50px] md:w-[200px]">Matières</TableHead>
@@ -87,11 +98,11 @@ export default function GradesTable({
       </TableHeader>
 
       <TableBody>
-        {renderSubjects(subjects, periodId, null, pathname)}
+        {renderSubjects(subjects, periodId, null, pathname, customAverages)}
       </TableBody>
 
       <TableFooter>
-        {/* Desktop Footer */}
+        {/* Main Average */}
         <TableRow className="hidden md:table-row">
           <TableCell className="font-semibold" colSpan={2}>
             Moyenne générale
@@ -100,12 +111,43 @@ export default function GradesTable({
             {overallAverage}
           </TableCell>
         </TableRow>
-        {/* Mobile Footer */}
         <TableRow className="md:hidden">
           <TableCell className="font-semibold text-center" colSpan={3}>
             Moyenne générale: {overallAverage}
           </TableCell>
         </TableRow>
+
+        {/* Custom Averages */}
+        {customAverages && customAverages.length > 0 && (
+          <>
+            {customAverages.map((ca) => {
+              const customAvgVal = average(undefined, subjects, ca);
+              const customAvg =
+                customAvgVal !== null ? customAvgVal.toFixed(2) : "—";
+
+              return (
+                <React.Fragment key={ca.id}>
+                  <TableRow className="hidden md:table-row">
+                    <TableCell className="font-semibold" colSpan={2}>
+                      {ca.name}
+                    </TableCell>
+                    <TableCell className="text-right font-semibold">
+                      {customAvg}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow className="md:hidden">
+                    <TableCell
+                      className="font-semibold text-center"
+                      colSpan={3}
+                    >
+                      {ca.name}: {customAvg}
+                    </TableCell>
+                  </TableRow>
+                </React.Fragment>
+              );
+            })}
+          </>
+        )}
       </TableFooter>
     </Table>
   );
@@ -162,17 +204,17 @@ function getIndentationLinesStyle(depth: number): React.CSSProperties {
 function renderSubjects(
   subjects: Subject[],
   periodId: string,
-  parentId: string | null = null,
-  pathname: string
+  parentId: string | null,
+  pathname: string,
+  customAverages?: Average[]
 ) {
   return subjects
     .filter((subject) => subject.parentId === parentId)
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((subject) => {
+      const subjAverageVal = average(subject.id, subjects, undefined);
       const subjAverage =
-        average(subject.id, subjects) !== null
-          ? average(subject.id, subjects)?.toFixed(2)
-          : "—";
+        subjAverageVal !== null ? subjAverageVal.toFixed(2) : "—";
 
       return (
         <React.Fragment key={subject.id}>
@@ -199,18 +241,17 @@ function renderSubjects(
                     : "")}
               </Link>
 
-              {/* Mobile-only average display (hidden on md+) */}
+              {/* Mobile-only average display */}
               <div className="md:hidden mt-1 text-sm text-muted-foreground">
-                Moyenne: <span className="font-bold text-foreground">{subjAverage}</span>
+                Moyenne:{" "}
+                <span className="font-bold text-foreground">{subjAverage}</span>
               </div>
             </TableCell>
 
-            {/* Desktop-only average column (hidden on mobile) */}
             <TableCell className="text-center font-semibold hidden md:table-cell">
               {subjAverage}
             </TableCell>
 
-            {/* Desktop-only notes column (hidden on mobile) */}
             <TableCell className="hidden md:table-cell">
               <div className="flex gap-4 flex-wrap">
                 {subject.grades.map((grade) => (
@@ -227,7 +268,6 @@ function renderSubjects(
             </TableCell>
           </TableRow>
 
-          {/* Mobile-only second row for notes */}
           {!subject.isDisplaySubject && subject.grades.length !== 0 && (
             <TableRow className="border-b md:hidden">
               <TableCell
@@ -251,7 +291,13 @@ function renderSubjects(
             </TableRow>
           )}
 
-          {renderSubjects(subjects, periodId, subject.id, pathname)}
+          {renderSubjects(
+            subjects,
+            periodId,
+            subject.id,
+            pathname,
+            customAverages
+          )}
         </React.Fragment>
       );
     });
