@@ -2,6 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
   Form,
   FormControl,
   FormDescription,
@@ -11,37 +20,29 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useMediaQuery } from "@/components/ui/use-media-query";
+import { usePeriods } from "@/hooks/use-periods";
+import { useSubjects } from "@/hooks/use-subjects";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { Grade } from "@/types/grade";
-import { Subject } from "@/types/subject";
+import { handleError } from "@/utils/error-utils";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { Loader2Icon, Check, ChevronsUpDown } from "lucide-react";
+import "dayjs/locale/fr";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import { Check, ChevronsUpDown, Loader2Icon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Calendar } from "../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import React, { useEffect, useState, useRef } from "react";
-import "dayjs/locale/fr";
-import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
-import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
-import { useMediaQuery } from "@/components/ui/use-media-query";
-import { handleError } from "@/utils/error-utils";
 
 dayjs.locale("fr");
 
@@ -99,30 +100,9 @@ export const UpdateGradeForm = ({
   // Store initial date so we only apply date->period logic after date changes
   const [initialDate] = useState(grade.passedAt);
 
-  const { data: subjects } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{ subjects: Subject[] }>();
-      return data.subjects;
-    },
-  });
+  const { data: subjects } = useSubjects();
 
-  const { data: periods } = useQuery({
-    queryKey: ["periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("periods");
-      const data = await res.json<{
-        periods: {
-          id: string;
-          name: string;
-          startAt: string;
-          endAt: string;
-        }[];
-      }>();
-      return data.periods;
-    },
-  });
+  const { data: periods } = usePeriods();
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["update-grade"],

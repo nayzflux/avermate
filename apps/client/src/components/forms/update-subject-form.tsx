@@ -1,41 +1,41 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { useMediaQuery } from "@/components/ui/use-media-query";
+import { useSubjects } from "@/hooks/use-subjects";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api";
 import { Subject } from "@/types/subject";
+import { handleError } from "@/utils/error-utils";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Badge } from "../ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
   CommandList,
-  CommandInput,
 } from "../ui/command";
-import { CheckIcon } from "@heroicons/react/24/outline";
-import React, { useState, useEffect, useRef } from "react";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
-import { useMediaQuery } from "@/components/ui/use-media-query";
-import { handleError } from "@/utils/error-utils";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 const updateSubjectSchema = z.object({
   name: z.string().min(1).max(64),
@@ -74,16 +74,7 @@ export const UpdateSubjectForm = ({
     }
   }, [openParent, isDesktop]);
 
-  const { data: subjects } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{
-        subjects: Subject[];
-      }>();
-      return data.subjects;
-    },
-  });
+  const { data: subjects } = useSubjects();
 
   const filteredSubjects = subjects?.filter((s) => s.id !== subject.id);
 

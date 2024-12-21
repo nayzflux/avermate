@@ -9,10 +9,8 @@ import {
   CredenzaTitle,
   CredenzaTrigger,
 } from "@/components/ui/credenza";
-import { apiClient } from "@/lib/api";
-import { Grade } from "@/types/grade";
+import { useGrade } from "@/hooks/use-grade";
 import { PencilIcon } from "@heroicons/react/24/outline";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { UpdateGradeForm } from "../forms/update-grade-form";
 import { Button } from "../ui/button";
@@ -20,20 +18,7 @@ import { Button } from "../ui/button";
 export default function UpdateGradeDialog({ gradeId }: { gradeId: string }) {
   const [open, setOpen] = useState(false);
 
-  const {
-    data: grade,
-    isPending,
-    isError,
-  } = useQuery({
-    queryKey: ["grade", gradeId],
-    queryFn: async () => {
-      const res = await apiClient.get(`grades/${gradeId}`);
-      const data = await res.json<{
-        grade: Grade;
-      }>();
-      return data.grade;
-    },
-  });
+  const { data: grade, isPending, isError } = useGrade(gradeId);
 
   return (
     <Credenza open={open} onOpenChange={setOpen}>

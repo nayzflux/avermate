@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { z } from "zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import "dayjs/locale/fr";
 import {
   Check,
   ChevronsUpDown,
@@ -12,10 +11,20 @@ import {
   PlusCircle,
   Trash2,
 } from "lucide-react";
-import dayjs from "dayjs";
-import "dayjs/locale/fr";
+import { useEffect, useRef, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import {
   Form,
@@ -24,7 +33,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -32,24 +40,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandInput,
-  CommandList,
-} from "@/components/ui/command";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 
+import { useMediaQuery } from "@/components/ui/use-media-query";
+import { useSubjects } from "@/hooks/use-subjects";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api";
-import { cn } from "@/lib/utils";
-import { Subject } from "@/types/subject";
-import { handleError } from "@/utils/error-utils";
-import { useMediaQuery } from "@/components/ui/use-media-query";
 import { Average } from "@/types/average";
+import { handleError } from "@/utils/error-utils";
 
 dayjs.locale("fr");
 
@@ -74,7 +72,6 @@ const updateCustomAverageSchema = z.object({
 
 type UpdateCustomAverageSchema = z.infer<typeof updateCustomAverageSchema>;
 
-
 export const UpdateCustomAverageForm = ({
   close,
   customAverage,
@@ -88,14 +85,7 @@ export const UpdateCustomAverageForm = ({
 
   const [openSubjectIndex, setOpenSubjectIndex] = useState<number | null>(null);
 
-  const { data: subjects } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{ subjects: Subject[] }>();
-      return data.subjects;
-    },
-  });
+  const { data: subjects } = useSubjects();
 
   const { mutate, isPending: isSubmitting } = useMutation({
     mutationKey: ["update-custom-average"],

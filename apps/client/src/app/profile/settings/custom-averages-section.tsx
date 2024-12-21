@@ -1,20 +1,10 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
-import ProfileSection from "../profile-section";
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import AddAverageDialog from "@/components/dialogs/add-average-dialog";
 import DeleteAverageDialog from "@/components/dialogs/delete-average-dialog";
 import UpdateAverageDialog from "@/components/dialogs/update-average-dialog";
-import { Skeleton } from "@/components/ui/skeleton";
+import errorStateCard from "@/components/skeleton/error-card";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -22,11 +12,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import errorStateCard from "@/components/skeleton/error-card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useSubjects } from "@/hooks/use-subjects";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { BookOpenIcon, PlusCircleIcon } from "lucide-react";
-import AddAverageDialog from "@/components/dialogs/add-average-dialog";
-import { GetCustomAveragesResponse } from "@/types/get-custom-averages-response";
-import { Subject } from "@/types/subject";
+import ProfileSection from "../profile-section";
 
 export const CustomAveragesSection = () => {
   //Fetch period data
@@ -34,27 +31,13 @@ export const CustomAveragesSection = () => {
     data: averages,
     isError: isAveragesError,
     isPending: isAveragesPending,
-  } = useQuery({
-    queryKey: ["customAverages"],
-    queryFn: async () => {
-      const res = await apiClient.get("averages");
-      const data = await res.json<GetCustomAveragesResponse>();
-      return data.customAverages;
-    },
-  });
+  } = useSubjects();
 
   const {
     data: subjects,
     isError: isSubjectsError,
     isPending: isSubjectsPending,
-  } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{ subjects: Subject[] }>();
-      return data.subjects;
-    },
-  });
+  } = useSubjects();
 
   if (isAveragesPending || isSubjectsPending) {
     return (

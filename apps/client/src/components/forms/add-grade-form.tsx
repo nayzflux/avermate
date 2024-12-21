@@ -1,20 +1,29 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import { CalendarIcon } from "@heroicons/react/24/outline";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import "dayjs/locale/fr";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import { Check, ChevronsUpDown, Loader2Icon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { z } from "zod";
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
-import { z } from "zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useWatch } from "react-hook-form";
-import { Check, ChevronsUpDown, Loader2Icon } from "lucide-react";
-import { CalendarIcon } from "@heroicons/react/24/outline";
 
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import {
   Form,
@@ -31,21 +40,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { Calendar } from "@/components/ui/calendar";
+import { usePeriods } from "@/hooks/use-periods";
+import { useSubjects } from "@/hooks/use-subjects";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { Subject } from "@/types/subject";
-import { useMediaQuery } from "../ui/use-media-query";
 import { handleError } from "@/utils/error-utils";
+import { useMediaQuery } from "../ui/use-media-query";
 
 dayjs.locale("fr");
 
@@ -94,25 +95,9 @@ export const AddGradeForm = ({
   const [isManualPeriod, setIsManualPeriod] = useState(false);
 
   // Queries
-  const { data: subjects } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{ subjects: Subject[] }>();
-      return data.subjects;
-    },
-  });
+  const { data: subjects } = useSubjects();
 
-  const { data: periods } = useQuery({
-    queryKey: ["periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("periods");
-      const data = await res.json<{
-        periods: { id: string; name: string; startAt: string; endAt: string }[];
-      }>();
-      return data.periods;
-    },
-  });
+  const { data: periods } = usePeriods();
 
   // Mutation to create a grade
   const { mutate, isPending } = useMutation({

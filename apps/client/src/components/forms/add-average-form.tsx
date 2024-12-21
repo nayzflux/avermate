@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { z } from "zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import "dayjs/locale/fr";
 import {
   Check,
   ChevronsUpDown,
@@ -12,26 +11,12 @@ import {
   PlusCircle,
   Trash2,
 } from "lucide-react";
-import dayjs from "dayjs";
-import "dayjs/locale/fr";
+import { useEffect, useRef, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  FormDescription,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Command,
   CommandEmpty,
@@ -40,15 +25,28 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 
+import { useMediaQuery } from "@/components/ui/use-media-query";
+import { useSubjects } from "@/hooks/use-subjects";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api";
-import { cn } from "@/lib/utils";
-import { Subject } from "@/types/subject";
 import { handleError } from "@/utils/error-utils";
-import { useMediaQuery } from "@/components/ui/use-media-query";
 
 dayjs.locale("fr");
 
@@ -81,14 +79,7 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
 
   const [openSubjectIndex, setOpenSubjectIndex] = useState<number | null>(null);
 
-  const { data: subjects } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{ subjects: Subject[] }>();
-      return data.subjects;
-    },
-  });
+  const { data: subjects } = useSubjects();
 
   const { mutate, isPending: isSubmitting } = useMutation({
     mutationKey: ["create-custom-average"],

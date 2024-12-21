@@ -1,21 +1,10 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
-import ProfileSection from "../profile-section";
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api";
-import { Period } from "@/types/period";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import DeletePeriodDialog from "@/components/dialogs/delete-period-dialog";
 import UpdatePeriodDialog from "@/components/dialogs/update-period-dialog";
-import { Skeleton } from "@/components/ui/skeleton";
+import errorStateCard from "@/components/skeleton/error-card";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -23,9 +12,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import errorStateCard from "@/components/skeleton/error-card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+import { usePeriods } from "@/hooks/use-periods";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { BookOpenIcon, PlusCircleIcon } from "lucide-react";
-import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
+import ProfileSection from "../profile-section";
 
 export const PeriodsSection = () => {
   //Fetch period data
@@ -33,14 +31,7 @@ export const PeriodsSection = () => {
     data: period,
     isError: isPeriodError,
     isPending: isPeriodPending,
-  } = useQuery({
-    queryKey: ["periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("periods");
-      const data = await res.json<{ periods: Period[] }>();
-      return data.periods;
-    },
-  });
+  } = usePeriods();
 
   if (isPeriodPending) {
     return (

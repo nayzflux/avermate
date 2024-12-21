@@ -1,35 +1,28 @@
-import { apiClient } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
-import { GetPeriodsResponse } from "@/types/get-periods-response";
-import { Label } from "@/components/ui/label";
+import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
+import DeletePeriodDialog from "@/components/dialogs/delete-period-dialog";
+import UpdatePeriodDialog from "@/components/dialogs/update-period-dialog";
+import errorStateCard from "@/components/skeleton/error-card";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import DeletePeriodDialog from "@/components/dialogs/delete-period-dialog";
-import UpdatePeriodDialog from "@/components/dialogs/update-period-dialog";
-import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import errorStateCard from "@/components/skeleton/error-card";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePeriods } from "@/hooks/use-periods";
+import {
+  EllipsisVerticalIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/24/outline";
 
 export default function Step1() {
   const {
     data: periods,
     isError: periodsIsError,
     isPending: periodsIsPending,
-  } = useQuery({
-    queryKey: ["periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("periods");
-      const data = await res.json<GetPeriodsResponse>();
-      return data.periods;
-    },
-  });
+  } = usePeriods();
 
   if (periodsIsPending) {
     return (

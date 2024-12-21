@@ -1,24 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api";
-import { GetSubjectsResponse } from "@/types/get-subjects-response";
+import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
+import DeleteSubjectDialog from "@/components/dialogs/delete-subject-dialog";
+import ListPresetsDialog from "@/components/dialogs/list-presets-dialog";
+import UpdateSubjectDialog from "@/components/dialogs/update-subject-dialog";
+import errorStateCard from "@/components/skeleton/error-card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import {
-  PlusCircleIcon,
-  EllipsisVerticalIcon,
-} from "@heroicons/react/24/outline";
-import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
-import UpdateSubjectDialog from "@/components/dialogs/update-subject-dialog";
-import DeleteSubjectDialog from "@/components/dialogs/delete-subject-dialog";
-import { Subject } from "@/types/subject";
-import { Badge } from "@/components/ui/badge";
-import errorStateCard from "@/components/skeleton/error-card";
-import ListPresetsDialog from "@/components/dialogs/list-presets-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -28,22 +21,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useSubjects } from "@/hooks/use-subjects";
+import { Subject } from "@/types/subject";
+import {
+  EllipsisVerticalIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/24/outline";
 import React from "react";
 
 export default function Step2() {
-  const {
-    data: subjects,
-    isError,
-    isLoading,
-  } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<GetSubjectsResponse>();
-      return data.subjects;
-    },
-  });
+  const { data: subjects, isError, isLoading } = useSubjects();
 
   if (isLoading) {
     return (

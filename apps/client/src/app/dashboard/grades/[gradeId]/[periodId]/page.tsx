@@ -2,10 +2,10 @@
 
 import errorStateCard from "@/components/skeleton/error-card";
 import gradeLoader from "@/components/skeleton/grade-loader";
+import { useCustomAverages } from "@/hooks/use-custom-averages";
+import { useGrade } from "@/hooks/use-grade";
 import { apiClient } from "@/lib/api";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
-import { Grade } from "@/types/grade";
-import { Average } from "@/types/average";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -55,31 +55,13 @@ export default function GradePage() {
     },
   });
 
-  const {
-    data: grade,
-    isPending,
-    isError,
-  } = useQuery({
-    queryKey: ["grades", gradeId],
-    queryFn: async () => {
-      const res = await apiClient.get(`grades/${gradeId}`);
-      const data = await res.json<{ grade: Grade }>();
-      return data.grade;
-    },
-  });
+  const { data: grade, isPending, isError } = useGrade(gradeId);
 
   const {
     data: customAverages,
     isError: isCustomAveragesError,
     isPending: isCustomAveragesPending,
-  } = useQuery({
-    queryKey: ["customAverages"],
-    queryFn: async () => {
-      const res = await apiClient.get("averages");
-      const data = await res.json<{ customAverages: Average[] }>();
-      return data.customAverages;
-    },
-  });
+  } = useCustomAverages();
 
   if (isError || organizedSubjectsIsError || isCustomAveragesError) {
     return <div>{errorStateCard()}</div>;

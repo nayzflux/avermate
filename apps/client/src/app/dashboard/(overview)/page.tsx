@@ -14,19 +14,19 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCustomAverages } from "@/hooks/use-custom-averages";
+import { usePeriods } from "@/hooks/use-periods";
+import { useRecentGrades } from "@/hooks/use-recent-grades";
+import { useSubjects } from "@/hooks/use-subjects";
 import { apiClient } from "@/lib/api";
 import { authClient } from "@/lib/auth";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
-import { GetPeriodsResponse } from "@/types/get-periods-response";
-import { GetSubjectsResponse } from "@/types/get-subjects-response";
-import { Grade } from "@/types/grade";
+import { fullYearPeriod } from "@/utils/average";
 import { useQuery } from "@tanstack/react-query";
 import { Session, User } from "better-auth/types";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
-import { useRouter } from "next/navigation";
-import { fullYearPeriod } from "@/utils/average";
-import { Average } from "@/types/average";
 /**
  * Vue d'ensemble des notes
  */
@@ -45,32 +45,14 @@ export default function OverviewPage() {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
 
   // Fetch subjects lists with grades from API
-  const {
-    data: subjects,
-    isError,
-    isPending,
-  } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<GetSubjectsResponse>();
-      return data.subjects;
-    },
-  });
+  const { data: subjects, isError, isPending } = useSubjects();
 
   // Fetch periods from API
   const {
     data: periods,
     isError: periodsIsError,
     isPending: periodsIsPending,
-  } = useQuery({
-    queryKey: ["periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("periods");
-      const data = await res.json<GetPeriodsResponse>();
-      return data.periods;
-    },
-  });
+  } = usePeriods();
 
   // fetch subjects but organized by period
   const {
@@ -90,20 +72,7 @@ export default function OverviewPage() {
     data: recentGrades,
     isError: isErrorRecentGrades,
     isPending: isPendingRecentGrades,
-  } = useQuery({
-    queryKey: ["recent-grades", "grades"],
-    queryFn: async () => {
-      const res = await apiClient.get(
-        `grades?from=${new Date(
-          Date.now() - 1000 * 60 * 60 * 24 * 14
-        )}&limit=100`
-      );
-
-      const data = await res.json<{ grades: Grade[] }>();
-
-      return data.grades;
-    },
-  });
+  } = useRecentGrades();
 
   const {
     data: accounts,
@@ -121,14 +90,7 @@ export default function OverviewPage() {
     data: customAverages,
     isError: isCustomAveragesError,
     isPending: isCustomAveragesPending,
-  } = useQuery({
-    queryKey: ["customAverages"],
-    queryFn: async () => {
-      const res = await apiClient.get("averages");
-      const data = await res.json<{ customAverages: Average[] }>();
-      return data.customAverages;
-    },
-  });
+  } = useCustomAverages();
 
   useEffect(() => {
     if (!periods) return;

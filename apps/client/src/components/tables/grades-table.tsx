@@ -10,11 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useCustomAverages } from "@/hooks/use-custom-averages";
 import { apiClient } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { Average } from "@/types/average";
 import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
-import { Average } from "@/types/average";
 import { average } from "@/utils/average";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -55,14 +56,7 @@ export default function GradesTable({
     data: customAverages,
     isError: isCustomAveragesError,
     isPending: isCustomAveragesPending,
-  } = useQuery({
-    queryKey: ["customAverages"],
-    queryFn: async () => {
-      const res = await apiClient.get("averages");
-      const data = await res.json<{ customAverages: Average[] }>();
-      return data.customAverages;
-    },
-  });
+  } = useCustomAverages();
 
   // Loading State
   if (isPeriodPending || isCustomAveragesPending) {
