@@ -11,8 +11,5 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ],
-  "dependencies": {
-    "@limitable/ratelimit": "^0.0.4"
-  }
+  ]
 }
