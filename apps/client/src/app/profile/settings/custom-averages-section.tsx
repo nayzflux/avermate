@@ -21,17 +21,33 @@ import {
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSubjects } from "@/hooks/use-subjects";
+import { apiClient } from "@/lib/api";
+import { GetCustomAveragesResponse } from "@/types/get-custom-averages-response";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import { useQuery } from "@tanstack/react-query";
 import { BookOpenIcon, PlusCircleIcon } from "lucide-react";
 import ProfileSection from "../profile-section";
 
 export const CustomAveragesSection = () => {
   //Fetch period data
+  // const {
+  //   data: averages,
+  //   isError: isAveragesError,
+  //   isPending: isAveragesPending,
+  // } = useSubjects();
+
   const {
     data: averages,
     isError: isAveragesError,
     isPending: isAveragesPending,
-  } = useSubjects();
+  } = useQuery({
+    queryKey: ["customAverages"],
+    queryFn: async () => {
+      const res = await apiClient.get("averages");
+      const data = await res.json<GetCustomAveragesResponse>();
+      return data.customAverages;
+    },
+  });
 
   const {
     data: subjects,
