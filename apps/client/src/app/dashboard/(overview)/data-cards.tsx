@@ -20,6 +20,7 @@ import {
   PlusIcon,
 } from "@heroicons/react/24/outline";
 import { useMemo } from "react";
+import { cn } from "@/lib/utils";
 
 export default function DataCards({
   period,
@@ -122,8 +123,22 @@ export default function DataCards({
     return null;
   }
 
+  function get4xlColsClass(colCount: number) {
+    switch (colCount) {
+      case 5:
+        return "4xl:grid-cols-5";
+      case 6:
+        return "4xl:grid-cols-6";
+      default:
+        return "4xl:grid-cols-5";
+    }
+  }
+
+  const columns = 5 + (mainCustomAverages?.length ?? 0) >= 6 ? 6 : 5;
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 4xl:grid-cols-6 gap-2 md:gap-4 pb-4">
+    <div
+      className={cn(`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 pb-4`, get4xlColsClass(columns))}
+    >
       <DataCard
         title="Moyenne générale"
         icon={AcademicCapIcon}
