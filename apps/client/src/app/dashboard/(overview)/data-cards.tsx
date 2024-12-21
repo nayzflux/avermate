@@ -117,8 +117,7 @@ export default function DataCards({
     bestGrade === null &&
     bestSubjectAverage === null &&
     worstGrade === null &&
-    worstSubjectAverage === null &&
-    (!mainCustomAverages || mainCustomAverages.length === 0)
+    worstSubjectAverage === null
   ) {
     return null;
   }
