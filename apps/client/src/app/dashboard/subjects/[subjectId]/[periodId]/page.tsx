@@ -6,6 +6,7 @@ import { apiClient } from "@/lib/api";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
 import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
+import { Average } from "@/types/average";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -104,12 +105,26 @@ export default function SubjectPage() {
     },
   });
 
+  const {
+    data: customAverages,
+    isError: isCustomAveragesError,
+    isPending: isCustomAveragesPending,
+  } = useQuery({
+    queryKey: ["customAverages"],
+    queryFn: async () => {
+      const res = await apiClient.get("averages");
+      const data = await res.json<{ customAverages: Average[] }>();
+      return data.customAverages;
+    },
+  });
+
   if (
     isPeriodError ||
     organizedSubjectsIsError ||
     organizedSubjectIsError ||
     isSubjectError ||
-    isSubjectsError
+    isSubjectsError ||
+    isCustomAveragesError
   ) {
     return <div>{errorStateCard()}</div>;
   }
@@ -119,7 +134,8 @@ export default function SubjectPage() {
     organizedSubjectIsPending ||
     isPeriodPending ||
     isSubjectPending ||
-    isSubjectsPending
+    isSubjectsPending ||
+    isCustomAveragesPending
   ) {
     return <div>{subjectLoader()}</div>;
   }
@@ -147,6 +163,7 @@ export default function SubjectPage() {
       }
       subject={organizedSubject}
       period={periods}
+      customAverages={customAverages}
     />
   );
 }

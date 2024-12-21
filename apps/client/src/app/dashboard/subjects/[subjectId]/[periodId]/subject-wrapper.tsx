@@ -10,12 +10,15 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
+import { Average } from "@/types/average";
 import {
   average,
   getBestGradeInSubject,
   getParents,
   getWorstGradeInSubject,
   subjectImpact,
+  isSubjectIncludedInCustomAverage,
+  buildCustomConfig,
 } from "@/utils/average";
 import { formatGradeValue } from "@/utils/format";
 import {
@@ -33,11 +36,13 @@ function SubjectWrapper({
   subjects,
   subject,
   period,
+  customAverages,
   onBack,
 }: {
   subjects: Subject[];
   subject: Subject;
   period: Period;
+  customAverages: Average[];
   onBack: () => void;
 }) {
   const parentSubjects = () => {
@@ -212,6 +217,28 @@ function SubjectWrapper({
             }
           />
         </DataCard>
+
+        {/* Render a card for each custom average if this subject is included */}
+        {customAverages.map((ca) => {
+          // Build the config map for this custom average
+          const configMap = buildCustomConfig(ca);
+
+          if (!isSubjectIncludedInCustomAverage(subject, subjects, configMap)) {
+            return null;
+          }
+
+          const impact = subjectImpact(subject.id, undefined, subjects, ca);
+          return (
+            <DataCard
+              key={ca.id}
+              title={`Impact sur ${ca.name}`}
+              description={`Impact de ${subject.name} sur la moyenne personnalisée ${ca.name}`}
+              icon={ArrowUpCircleIcon}
+            >
+              <DifferenceBadge diff={impact?.difference || 0} />
+            </DataCard>
+          );
+        })}
 
         {parentSubjects().map((parent) => (
           <DataCard

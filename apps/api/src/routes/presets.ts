@@ -159,7 +159,7 @@ const presets: Preset[] = [
     customAverages: [
       {
         name: "Moyenne des Écrits",
-        isMainAverage: false,
+        isMainAverage: true,
         subjects: [
           {
             name: "Mathématiques - Écrit",
@@ -339,7 +339,7 @@ const presets: Preset[] = [
     customAverages: [
       {
         name: "Moyenne des Écrits",
-        isMainAverage: false,
+        isMainAverage: true,
         subjects: [
           {
             name: "Mathématiques - Écrit",
@@ -511,7 +511,7 @@ const presets: Preset[] = [
     customAverages: [
       {
         name: "Moyenne des Écrits",
-        isMainAverage: false,
+        isMainAverage: true,
         subjects: [
           {
             name: "Mathématiques - Écrit",
@@ -679,7 +679,7 @@ const presets: Preset[] = [
     customAverages: [
       {
         name: "Moyenne des Écrits",
-        isMainAverage: false,
+        isMainAverage: true,
         subjects: [
           {
             name: "Mathématiques - Écrit",

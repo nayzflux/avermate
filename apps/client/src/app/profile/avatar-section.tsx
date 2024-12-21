@@ -43,7 +43,7 @@ export default function AvatarSection() {
   }
 
   return (
-    <ProfileSection title="Avatar" description="Change your avatar">
+    <ProfileSection title="Avatar" description="Changez votre avatar">
       <div className="flex mt-2">
         <Avatar
           className="size-32 lg:size-64"
