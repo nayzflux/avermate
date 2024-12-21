@@ -7,7 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Grade } from "@/types/grade";
 import { Subject } from "@/types/subject";
-import { getParents, gradeImpact } from "@/utils/average";
+import { Average } from "@/types/average";
+import {
+  getParents,
+  gradeImpact,
+  isGradeIncludedInCustomAverage,
+} from "@/utils/average";
 import { formatDate } from "@/utils/format";
 import {
   AcademicCapIcon,
@@ -23,11 +28,13 @@ export default function GradeWrapper({
   subjects,
   grade,
   periodId,
+  customAverages,
   onBack,
 }: {
   subjects: Subject[];
   grade: Grade;
   periodId: string;
+  customAverages: Average[];
   onBack: () => void; // Receive the onBack prop from the parent
 }) {
   const gradeParents = () => {
@@ -101,6 +108,31 @@ export default function GradeWrapper({
             }
           />
         </DataCard>
+
+        {/* For each custom average, display a card if the grade is included */}
+        {customAverages.map((ca) => {
+          // Check if this grade is part of the custom average
+          if (!isGradeIncludedInCustomAverage(grade, subjects, ca)) {
+            return null; // skip if not included
+          }
+
+          // If included, compute the impact of this single grade on that custom average
+          const withGrade = ca
+            ? gradeImpact(grade.id, undefined, subjects, ca)
+            : null;
+          // withGrade might be { difference, percentageChange } or null
+
+          return (
+            <DataCard
+              key={ca.id}
+              title={`Impact sur ${ca.name}`}
+              description={`Visualisez l'impact de cette note sur le custom average: ${ca.name}`}
+              icon={ArrowUpCircleIcon}
+            >
+              <DifferenceBadge diff={withGrade?.difference || 0} />
+            </DataCard>
+          );
+        })}
 
         {gradeParents().map((parent: Subject) => (
           <DataCard

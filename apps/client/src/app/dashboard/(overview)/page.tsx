@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
 import { useRouter } from "next/navigation";
 import { fullYearPeriod } from "@/utils/average";
+import { Average } from "@/types/average";
 /**
  * Vue d'ensemble des notes
  */
@@ -116,6 +117,19 @@ export default function OverviewPage() {
     },
   });
 
+  const {
+    data: customAverages,
+    isError: isCustomAveragesError,
+    isPending: isCustomAveragesPending,
+  } = useQuery({
+    queryKey: ["customAverages"],
+    queryFn: async () => {
+      const res = await apiClient.get("averages");
+      const data = await res.json<{ customAverages: Average[] }>();
+      return data.customAverages;
+    },
+  });
+
   useEffect(() => {
     if (!periods) return;
 
@@ -151,7 +165,8 @@ export default function OverviewPage() {
     periodsIsError ||
     organizedSubjectsIsError ||
     isErrorRecentGrades ||
-    isErrorAccount
+    isErrorAccount ||
+    isCustomAveragesError
   ) {
     return (
       <div>
@@ -167,6 +182,7 @@ export default function OverviewPage() {
     organizedSubjectsIsPending ||
     isPendingRecentGrades ||
     isPendingAccount ||
+    isCustomAveragesPending ||
     selectedTab === null
     // || true
   ) {
@@ -284,6 +300,7 @@ export default function OverviewPage() {
                       organizedSubjects?.find((p) => p.period.id === period.id)
                         ?.subjects || []
                     }
+                    customAverages={customAverages}
                   />
 
                   <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
@@ -312,6 +329,7 @@ export default function OverviewPage() {
             <DataCards
               subjects={subjects || []}
               period={fullYearPeriod(subjects)}
+              customAverages={customAverages}
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
