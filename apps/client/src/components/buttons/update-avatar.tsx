@@ -34,16 +34,16 @@ const UpdateAvatar = () => {
             return (
               <span className="flex items-center">
                 <Loader2Icon className="animate-spin mr-2 size-4" />
-                Modifier l'avatar
+                Modifier l&apos;avatar
               </span>
             );
           }
           return ready ? (
-            <span className="text-black">Modifier l'avatar</span>
+            <span className="text-black">Modifier l&apos;avatar</span>
           ) : (
             <span className="flex items-center text-black">
               <Loader2Icon className="animate-spin mr-2 size-4" />
-              Modifier l'avatar
+              Modifier l&apos;avatar
             </span>
           );
         },
