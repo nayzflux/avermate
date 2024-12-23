@@ -83,12 +83,12 @@ export default function SubjectAverageChart({
       return {
         id: child.id,
         name: child.name,
-        average: averageOverTime(subjects, child.id, startDate, endDate),
+        average: averageOverTime(subjects, child.id, period),
         color: predefinedColors[index % predefinedColors.length], // Assign color from the list
       };
     });
 
-    const averages = averageOverTime(subjects, subjectId, startDate, endDate);
+    const averages = averageOverTime(subjects, subjectId, period);
 
     const chartData = dates.map((date, index) => ({
       date: date.toISOString(),

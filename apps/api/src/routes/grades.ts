@@ -36,7 +36,9 @@ const createGradeSchema = z.object({
     .min(0)
     .max(1000 * 10)
     .transform((f) => Math.round(f * 100)),
-  passedAt: z.coerce.date().max(new Date()).optional().default(new Date()),
+  passedAt: z.coerce.date().refine((date) => date <= new Date(), {
+      message: "Date cannot be in the future",
+    }).optional().default(new Date()),
   subjectId: z.string().min(1).max(64),
   periodId: z.string().min(1).max(64).nullable(),
 });

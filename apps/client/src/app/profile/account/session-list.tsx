@@ -19,7 +19,7 @@ import ProfileSection from "../profile-section";
 import errorStateCard from "@/components/skeleton/error-card";
 import "dayjs/locale/fr";
 
-dayjs.locale('fr')
+dayjs.locale("fr");
 
 dayjs.extend(relativeTime);
 
@@ -94,9 +94,7 @@ export default function SessionList() {
   }
 
   if (isError) {
-    return <div>
-      {errorStateCard()}
-    </div>;
+    return <div>{errorStateCard()}</div>;
   }
 
   return (

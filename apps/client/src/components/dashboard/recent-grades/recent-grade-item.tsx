@@ -8,10 +8,10 @@ import { usePathname } from "next/navigation";
 export default function RecentGradeItem({ grade }: { grade: Grade }) {
   const pathname = usePathname();
 
-const handleClick = () => {
+  const handleClick = () => {
     const currentPath = pathname + window.location.search || "/dashboard";
-  localStorage.setItem("backFromGradeOrSubject", currentPath);
-};
+    localStorage.setItem("backFromGradeOrSubject", currentPath);
+  };
   return (
     <Link
       href={`/dashboard/grades/${grade.id}/${grade.periodId}`}

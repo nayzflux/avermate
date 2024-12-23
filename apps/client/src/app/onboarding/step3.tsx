@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
+import { useSubjects } from "@/hooks/use-subjects";
 // export default function Step3() {
 //   const {
 //     data: subjects,
@@ -109,14 +110,7 @@ export default function Step3() {
     data: subjects,
     isError,
     isLoading,
-  } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<GetSubjectsResponse>();
-      return data.subjects;
-    },
-  });
+  } = useSubjects();
 
   if (isLoading) {
     return (

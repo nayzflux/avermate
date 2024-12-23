@@ -14,18 +14,19 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCustomAverages } from "@/hooks/use-custom-averages";
+import { usePeriods } from "@/hooks/use-periods";
+import { useRecentGrades } from "@/hooks/use-recent-grades";
+import { useSubjects } from "@/hooks/use-subjects";
 import { apiClient } from "@/lib/api";
 import { authClient } from "@/lib/auth";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
-import { GetPeriodsResponse } from "@/types/get-periods-response";
-import { GetSubjectsResponse } from "@/types/get-subjects-response";
-import { Grade } from "@/types/grade";
+import { fullYearPeriod } from "@/utils/average";
 import { useQuery } from "@tanstack/react-query";
 import { Session, User } from "better-auth/types";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
-import { useRouter } from "next/navigation";
-import { fullYearPeriod } from "@/utils/average";
 /**
  * Vue d'ensemble des notes
  */
@@ -44,32 +45,14 @@ export default function OverviewPage() {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
 
   // Fetch subjects lists with grades from API
-  const {
-    data: subjects,
-    isError,
-    isPending,
-  } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<GetSubjectsResponse>();
-      return data.subjects;
-    },
-  });
+  const { data: subjects, isError, isPending } = useSubjects();
 
   // Fetch periods from API
   const {
     data: periods,
     isError: periodsIsError,
     isPending: periodsIsPending,
-  } = useQuery({
-    queryKey: ["periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("periods");
-      const data = await res.json<GetPeriodsResponse>();
-      return data.periods;
-    },
-  });
+  } = usePeriods();
 
   // fetch subjects but organized by period
   const {
@@ -89,20 +72,7 @@ export default function OverviewPage() {
     data: recentGrades,
     isError: isErrorRecentGrades,
     isPending: isPendingRecentGrades,
-  } = useQuery({
-    queryKey: ["recent-grades", "grades"],
-    queryFn: async () => {
-      const res = await apiClient.get(
-        `grades?from=${new Date(
-          Date.now() - 1000 * 60 * 60 * 24 * 14
-        )}&limit=100`
-      );
-
-      const data = await res.json<{ grades: Grade[] }>();
-
-      return data.grades;
-    },
-  });
+  } = useRecentGrades();
 
   const {
     data: accounts,
@@ -116,10 +86,16 @@ export default function OverviewPage() {
     },
   });
 
+  const {
+    data: customAverages,
+    isError: isCustomAveragesError,
+    isPending: isCustomAveragesPending,
+  } = useCustomAverages();
+
   useEffect(() => {
     if (!periods) return;
 
-    const savedTab = sessionStorage.getItem("selectedTab");
+    const savedTab = localStorage.getItem("selectedTab");
 
     if (savedTab) {
       setSelectedTab(savedTab);
@@ -134,24 +110,25 @@ export default function OverviewPage() {
     }
   }, [periods]);
 
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      sessionStorage.removeItem("selectedTab");
-    };
+  // useEffect(() => {
+  //   const handleBeforeUnload = () => {
+  //     localStorage.removeItem("selectedTab");
+  //   };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
 
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, []);
   // Error State
   if (
     isError ||
     periodsIsError ||
     organizedSubjectsIsError ||
     isErrorRecentGrades ||
-    isErrorAccount
+    isErrorAccount ||
+    isCustomAveragesError
   ) {
     return (
       <div>
@@ -167,6 +144,7 @@ export default function OverviewPage() {
     organizedSubjectsIsPending ||
     isPendingRecentGrades ||
     isPendingAccount ||
+    isCustomAveragesPending ||
     selectedTab === null
     // || true
   ) {
@@ -220,7 +198,7 @@ export default function OverviewPage() {
         value={selectedTab}
         onValueChange={(value) => {
           setSelectedTab(value);
-          sessionStorage.setItem("selectedTab", value);
+          localStorage.setItem("selectedTab", value);
         }}
       >
         <div className="flex flex-col gap-2 md:gap-4">
@@ -249,7 +227,7 @@ export default function OverviewPage() {
               value={selectedTab}
               onValueChange={(value) => {
                 setSelectedTab(value);
-                sessionStorage.setItem("selectedTab", value);
+                localStorage.setItem("selectedTab", value);
               }}
             >
               <SelectTrigger>
@@ -284,6 +262,7 @@ export default function OverviewPage() {
                       organizedSubjects?.find((p) => p.period.id === period.id)
                         ?.subjects || []
                     }
+                    customAverages={customAverages}
                   />
 
                   <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
@@ -312,6 +291,7 @@ export default function OverviewPage() {
             <DataCards
               subjects={subjects || []}
               period={fullYearPeriod(subjects)}
+              customAverages={customAverages}
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">

@@ -2,15 +2,17 @@
 
 import errorStateCard from "@/components/skeleton/error-card";
 import subjectLoader from "@/components/skeleton/subject-loader";
+import { useCustomAverages } from "@/hooks/use-custom-averages";
+import { usePeriods } from "@/hooks/use-periods";
+import { useSubjects } from "@/hooks/use-subjects";
 import { apiClient } from "@/lib/api";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
-import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
+import { fullYearPeriod } from "@/utils/average";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import SubjectWrapper from "./subject-wrapper";
-import { fullYearPeriod } from "@/utils/average";
 
 export default function SubjectPage() {
   const { periodId, subjectId } = useParams() as {
@@ -69,14 +71,7 @@ export default function SubjectPage() {
     data: period,
     isError: isPeriodError,
     isPending: isPeriodPending,
-  } = useQuery({
-    queryKey: ["periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("periods");
-      const data = await res.json<{ periods: Period[] }>();
-      return data.periods;
-    },
-  });
+  } = usePeriods();
 
   const {
     data: subject,
@@ -95,21 +90,21 @@ export default function SubjectPage() {
     data: subjects,
     isError: isSubjectsError,
     isPending: isSubjectsPending,
-  } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{ subjects: Subject[] }>();
-      return data.subjects;
-    },
-  });
+  } = useSubjects();
+
+  const {
+    data: customAverages,
+    isError: isCustomAveragesError,
+    isPending: isCustomAveragesPending,
+  } = useCustomAverages();
 
   if (
     isPeriodError ||
     organizedSubjectsIsError ||
     organizedSubjectIsError ||
     isSubjectError ||
-    isSubjectsError
+    isSubjectsError ||
+    isCustomAveragesError
   ) {
     return <div>{errorStateCard()}</div>;
   }
@@ -119,7 +114,8 @@ export default function SubjectPage() {
     organizedSubjectIsPending ||
     isPeriodPending ||
     isSubjectPending ||
-    isSubjectsPending
+    isSubjectsPending ||
+    isCustomAveragesPending
   ) {
     return <div>{subjectLoader()}</div>;
   }
@@ -147,6 +143,7 @@ export default function SubjectPage() {
       }
       subject={organizedSubject}
       period={periods}
+      customAverages={customAverages}
     />
   );
 }

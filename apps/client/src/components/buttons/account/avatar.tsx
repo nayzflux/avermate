@@ -17,7 +17,9 @@ export default function Avatar({
     <>
       {!loaded && (
         <>
-          {size === 256 && <Skeleton className="rounded-full size-32 lg:size-64" />}
+          {size === 256 && (
+            <Skeleton className="rounded-full size-32 lg:size-64" />
+          )}
           {size === 32 && <Skeleton className="rounded-full size-8" />}
         </>
       )}

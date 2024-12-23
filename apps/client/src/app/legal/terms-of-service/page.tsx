@@ -5,7 +5,6 @@ import Logo from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 const Tos = () => {
   const router = useRouter();

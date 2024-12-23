@@ -42,7 +42,6 @@ export default function GlobalAverageChart({
   subjects: Subject[];
   period: Period;
 }) {
-
   // State to manage the active index for the data series
   const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(
     null
@@ -68,7 +67,7 @@ export default function GlobalAverageChart({
   }
 
   // Calculate the average grades over time
-  const averages = averageOverTime(subjects, undefined, startDate, endDate);
+  const averages = averageOverTime(subjects, undefined, period);
 
   const chartData = dates.map((date, index) => ({
     date: date.toISOString(),

@@ -9,6 +9,7 @@ import periodsRoutes from "@/routes/periods";
 import presetsRoutes from "@/routes/presets";
 import subjectsRoutes from "@/routes/subjects";
 import usersRoutes from "@/routes/users";
+import averagesRoute from "@/routes/averages";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
@@ -54,6 +55,8 @@ app.route("/users", usersRoutes);
 app.route("/presets", presetsRoutes);
 
 app.route("/landing", landingRoutes);
+
+app.route("/averages", averagesRoute);
 
 app.all("/uploadthing", (ctx) => uploadHandlers(ctx.req.raw));
 

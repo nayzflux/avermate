@@ -56,7 +56,10 @@ export default function EmailSection() {
   }
 
   return (
-    <ProfileSection title="Votre Email" description="Modifiez votre adresse email.">
+    <ProfileSection
+      title="Votre Email"
+      description="Modifiez votre adresse email."
+    >
       <UpdateEmailForm defaultEmail={session?.user?.email} />
     </ProfileSection>
   );

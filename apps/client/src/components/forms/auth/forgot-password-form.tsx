@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
 import { env } from "@/lib/env";
+import { handleError } from "@/utils/error-utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
@@ -47,12 +48,8 @@ export const ForgotPasswordForm = () => {
       });
     },
 
-    onError: (err) => {
-      toaster.toast({
-        title: "Échec de l'envoi de l'email de réinitialisation du mot de passe",
-        description: "Une erreur est survenue. Veuillez réessayer plus tard.",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error, toaster);
     },
   });
 

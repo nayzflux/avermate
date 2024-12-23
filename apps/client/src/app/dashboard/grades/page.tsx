@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { usePeriods } from "@/hooks/use-periods";
+import { useSubjects } from "@/hooks/use-subjects";
 import { apiClient } from "@/lib/api";
 import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
@@ -32,16 +34,7 @@ export default function GradesPage() {
     data: periods,
     isError: periodsIsError,
     isPending: periodsIsPending,
-  } = useQuery({
-    queryKey: ["periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("periods");
-      const data = await res.json<{
-        periods: Period[];
-      }>();
-      return data.periods;
-    },
-  });
+  } = usePeriods();
 
   // fetch subjects but organized by period
   const {
@@ -63,21 +56,12 @@ export default function GradesPage() {
     data: subjects,
     isError: subjectsIsError,
     isPending: subjectsIsPending,
-  } = useQuery({
-    queryKey: ["subjects"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects");
-      const data = await res.json<{
-        subjects: Subject[];
-      }>();
-      return data.subjects;
-    },
-  });
+  } = useSubjects();
 
   useEffect(() => {
     if (!periods) return;
 
-    const savedTab = sessionStorage.getItem("selectedTab");
+    const savedTab = localStorage.getItem("selectedTab");
 
     if (savedTab) {
       setSelectedTab(savedTab);
@@ -92,17 +76,17 @@ export default function GradesPage() {
     }
   }, [periods]);
 
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      sessionStorage.removeItem("selectedTab");
-    };
+  // useEffect(() => {
+  //   const handleBeforeUnload = () => {
+  //     localStorage.removeItem("selectedTab");
+  //   };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
 
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, []);
 
   // Error State
   if (periodsIsError || organizedSubjectsIsError || subjectsIsError) {
@@ -159,7 +143,7 @@ export default function GradesPage() {
         value={selectedTab}
         onValueChange={(value) => {
           setSelectedTab(value);
-          sessionStorage.setItem("selectedTab", value);
+          localStorage.setItem("selectedTab", value);
         }}
       >
         <div className="hidden md:flex gap-4">
@@ -191,7 +175,7 @@ export default function GradesPage() {
             value={selectedTab}
             onValueChange={(value) => {
               setSelectedTab(value);
-              sessionStorage.setItem("selectedTab", value);
+              localStorage.setItem("selectedTab", value);
             }}
           >
             <SelectTrigger>

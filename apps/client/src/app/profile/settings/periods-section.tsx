@@ -1,38 +1,38 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
-import ProfileSection from "../profile-section";
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api";
-import { Period } from "@/types/period";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import DeletePeriodDialog from "@/components/dialogs/delete-period-dialog";
 import UpdatePeriodDialog from "@/components/dialogs/update-period-dialog";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import errorStateCard from "@/components/skeleton/error-card";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+import { usePeriods } from "@/hooks/use-periods";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { BookOpenIcon, PlusCircleIcon } from "lucide-react";
-import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
-
+import ProfileSection from "../profile-section";
 
 export const PeriodsSection = () => {
+  //Fetch period data
+  const {
+    data: period,
+    isError: isPeriodError,
+    isPending: isPeriodPending,
+  } = usePeriods();
 
-    //Fetch period data
-    const {
-        data: period,
-        isError: isPeriodError,
-        isPending: isPeriodPending,
-    } = useQuery({
-        queryKey: ["periods"],
-        queryFn: async () => {
-            const res = await apiClient.get("periods");
-            const data = await res.json<{ periods: Period[] }>();
-            return data.periods;
-        },
-    });
-  
   if (isPeriodPending) {
     return (
       <Card className={"p-6 w-full"}>
@@ -150,6 +150,14 @@ export const PeriodsSection = () => {
             </div>
           </div>
         ))}
+        <div className="flex justify-start">
+          <AddPeriodDialog>
+            <Button>
+              <PlusCircleIcon className="size-4 mr-2" />
+              Ajouter une période
+            </Button>
+          </AddPeriodDialog>
+        </div>
       </div>
     </ProfileSection>
   );

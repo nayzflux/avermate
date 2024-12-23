@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
 import { env } from "@/lib/env";
+import { handleError } from "@/utils/error-utils";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
 
@@ -24,12 +25,8 @@ const ResendVerificationLink = ({ email }: { email: string }) => {
         description: `Un nouveau lien de vérification a été renvoyé à l'adresse ${email}.`,
       });
     },
-    onError: () => {
-      toaster.toast({
-        title: "❌ Erreur",
-        description: "Une erreur s'est produite. Veuillez réessayer.",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error, toaster);
     },
   });
 

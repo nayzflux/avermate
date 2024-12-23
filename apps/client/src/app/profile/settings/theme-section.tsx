@@ -24,25 +24,25 @@ export const ThemeSection = () => {
       description="Personnalisez le thème qui sera utilisé."
     >
       <div className="flex flex-col gap-4">
-      <Label>Thème</Label>
+        <Label>Thème</Label>
 
-      <Select
-        onValueChange={handleThemeChange}
-        defaultValue={theme.theme}
-        value={theme.theme}
-      >
-        <SelectTrigger className="capitalize">
-        <SelectValue placeholder="Sélectionnez un thème" />
-        </SelectTrigger>
+        <Select
+          onValueChange={handleThemeChange}
+          defaultValue={theme.theme}
+          value={theme.theme}
+        >
+          <SelectTrigger className="capitalize">
+            <SelectValue placeholder="Sélectionnez un thème" />
+          </SelectTrigger>
 
-        <SelectContent>
-        <SelectItem value="system">Système</SelectItem>
+          <SelectContent>
+            <SelectItem value="system">Système</SelectItem>
 
-        <SelectItem value="light">Clair</SelectItem>
+            <SelectItem value="light">Clair</SelectItem>
 
-        <SelectItem value="dark">Sombre</SelectItem>
-        </SelectContent>
-      </Select>
+            <SelectItem value="dark">Sombre</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </ProfileSection>
   );

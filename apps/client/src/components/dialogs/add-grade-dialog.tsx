@@ -3,7 +3,6 @@
 import {
   Credenza,
   CredenzaBody,
-  CredenzaClose,
   CredenzaContent,
   CredenzaDescription,
   CredenzaHeader,
@@ -17,8 +16,8 @@ export default function AddGradeDialog({
   children,
   parentId,
 }: {
-    children: React.ReactNode;
-    parentId?: string;
+  children: React.ReactNode;
+  parentId?: string;
 }) {
   const [open, setOpen] = useState(false);
 

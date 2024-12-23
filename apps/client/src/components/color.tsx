@@ -24,7 +24,9 @@ export function ThemeColorMetaTag() {
       metaTag.setAttribute("content", "#09090b");
     } else {
       // Fallback to OS preference if theme is neither "light" nor "dark"
-      const osPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const osPrefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
       metaTag.setAttribute("content", osPrefersDark ? "#09090b" : "#ffffff");
     }
   }, [theme]);

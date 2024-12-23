@@ -10,7 +10,7 @@ gra - grade
 per - period
 */
 
-type IdPrefix = "u" | "acc" | "ses" | "ver" | "sub" | "gra" | "per";
+type IdPrefix = "u" | "acc" | "ses" | "ver" | "sub" | "gra" | "per" | "ca";
 
 const ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyz";
 

@@ -40,7 +40,7 @@ export const MockAverageChart = () => {
     userId: "",
     createdAt: "",
   };
-  
+
   // Calculate the start and end dates
   const endDate = new Date(period.endAt);
   const startDate = new Date(period.startAt);
@@ -56,7 +56,7 @@ export const MockAverageChart = () => {
   }
 
   // Calculate the average grades over time
-  const averages = averageOverTime(subjects, undefined, startDate, endDate);
+  const averages = averageOverTime(subjects, undefined, period);
 
   const chartData = dates.map((date, index) => ({
     date: date.toISOString(),

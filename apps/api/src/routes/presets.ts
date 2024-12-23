@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { subjects } from "@/db/schema";
+import { customAverages, subjects } from "@/db/schema";
 import { type Session, type User } from "@/lib/auth";
 import { limitable } from "@/lib/limitable";
 import { generateId } from "@/lib/nanoid";
@@ -155,6 +155,26 @@ const presets: Preset[] = [
           },
         ],
       },
+    ],
+    customAverages: [
+      {
+        name: "Moyenne des Écrits",
+        isMainAverage: true,
+        subjects: [
+          {
+            name: "Mathématiques - Écrit",
+            customCoefficient: 1,
+          },
+          {
+            name: "Physique-Chimie - Écrit",
+            customCoefficient: 1,
+          },
+          {
+            name: "SI - Écrit",
+            customCoefficient: 1,
+          },
+        ],
+      }
     ],
   },
   /**
@@ -316,6 +336,30 @@ const presets: Preset[] = [
         ],
       },
     ],
+    customAverages: [
+      {
+        name: "Moyenne des Écrits",
+        isMainAverage: true,
+        subjects: [
+          {
+            name: "Mathématiques - Écrit",
+            customCoefficient: 1,
+          },
+          {
+            name: "Physique - Écrit",
+            customCoefficient: 1,
+          },
+          {
+            name: "Chimie - Écrit",
+            customCoefficient: 1,
+          },
+          {
+            name: "SI - Écrit",
+            customCoefficient: 1,
+          },
+        ],
+      }
+    ],
   },
   /**
    * Prépa CPE SPE PSI
@@ -463,6 +507,26 @@ const presets: Preset[] = [
           },
         ],
       },
+    ],
+    customAverages: [
+      {
+        name: "Moyenne des Écrits",
+        isMainAverage: true,
+        subjects: [
+          {
+            name: "Mathématiques - Écrit",
+            customCoefficient: 1,
+          },
+          {
+            name: "Physique-Chimie - Écrit",
+            customCoefficient: 1,
+          },
+          {
+            name: "SI - Écrit",
+            customCoefficient: 1,
+          },
+        ],
+      }
     ],
   },
   /**
@@ -612,6 +676,26 @@ const presets: Preset[] = [
         ],
       },
     ],
+    customAverages: [
+      {
+        name: "Moyenne des Écrits",
+        isMainAverage: true,
+        subjects: [
+          {
+            name: "Mathématiques - Écrit",
+            customCoefficient: 1,
+          },
+          {
+            name: "Physique - Écrit",
+            customCoefficient: 1,
+          },
+          {
+            name: "Chimie - Écrit",
+            customCoefficient: 1,
+          },
+        ],
+      }
+    ],
   },
 ];
 
@@ -620,6 +704,7 @@ type Preset = {
   name: string;
   description: string;
   subjects: PresetSubject[];
+  customAverages?: CustomAveragePreset[]; 
 };
 
 type PresetSubject = {
@@ -629,6 +714,26 @@ type PresetSubject = {
   coefficient?: number;
   subjects?: PresetSubject[];
 };
+
+type CustomAveragePreset = {
+  name: string;
+  isMainAverage?: boolean;
+  subjects: {
+    name: string; // Must match exactly a subject name from the preset
+    customCoefficient?: number;
+    includeChildren?: boolean;
+  }[];
+};
+
+type InsertedCustomAverage = {
+  id: string;
+  name: string;
+  subjects: string;
+  userId: string;
+  isMainAverage: boolean;
+  createdAt: Date;
+};
+
 
 /**
  * Get all presets
@@ -664,7 +769,6 @@ router.post(
 
     if (!session) throw new HTTPException(401);
 
-    // If email isnt verified
     if (!session.user.emailVerified) {
       return c.json(
         {
@@ -676,7 +780,6 @@ router.post(
     }
 
     const info = getConnInfo(c);
-
     const forwardedFor = c.req.header("x-forwarded-for");
     const identifier =
       session?.user?.id || forwardedFor || info?.remote?.address || "anon";
@@ -686,7 +789,6 @@ router.post(
       "preset"
     );
 
-    // Set rate limit headers
     c.header("RateLimit-Limit", limit.toString());
     c.header("RateLimit-Remaining", remaining.toString());
     c.header("RateLimit-Reset", resetIn.toString());
@@ -700,9 +802,8 @@ router.post(
         429
       );
 
-    // Thx chat GPT
     const flattenSubjects = (
-      subjects: PresetSubject[],
+      subjectsArr: PresetSubject[],
       parentId: string | null = null,
       depth: number = 0
     ): {
@@ -716,7 +817,7 @@ router.post(
       createdAt: Date;
       userId: string;
     }[] => {
-      return subjects.flatMap((subject) => {
+      return subjectsArr.flatMap((subject) => {
         const id = generateId("sub");
 
         const flatSubject = {
@@ -731,26 +832,70 @@ router.post(
           userId: session.user.id,
         };
 
-        if (subject.subjects) {
+        if (subject.subjects && subject.subjects.length > 0) {
           return [
             flatSubject,
             ...flattenSubjects(subject.subjects, id, depth + 1),
           ];
         }
-        return flatSubject;
+        return [flatSubject];
       });
     };
 
     const presetSubjects = flattenSubjects(preset.subjects);
 
-    // Insert in database
+    // Insert subjects into the database
     const insertedSubjects = await db
       .insert(subjects)
       .values(presetSubjects)
       .returning()
       .all();
 
-    return c.json({ subjects: insertedSubjects }, 201);
+    // If the preset has custom averages, insert them
+    let insertedCustomAverages: InsertedCustomAverage[] = [];
+    if (preset.customAverages && preset.customAverages.length > 0) {
+      const customAveragesToInsert = [];
+
+      for (const customAvg of preset.customAverages) {
+        const avgSubjects = [];
+        for (const subj of customAvg.subjects) {
+          const foundSubj = insertedSubjects.find((s) => s.name === subj.name);
+          if (!foundSubj) {
+            throw new HTTPException(
+              400
+            );
+          }
+          avgSubjects.push({
+            id: foundSubj.id,
+            customCoefficient: subj.customCoefficient ?? null,
+            includeChildren: subj.includeChildren ?? true,
+          });
+        }
+
+        customAveragesToInsert.push({
+          id: generateId("ca"),
+          name: customAvg.name,
+          subjects: JSON.stringify(avgSubjects),
+          userId: session.user.id,
+          isMainAverage: customAvg.isMainAverage ?? false,
+          createdAt: new Date(),
+        });
+      }
+
+      insertedCustomAverages = await db
+        .insert(customAverages)
+        .values(customAveragesToInsert)
+        .returning()
+        .all();
+    }
+
+    return c.json(
+      {
+        subjects: insertedSubjects,
+        customAverages: insertedCustomAverages,
+      },
+      201
+    );
   }
 );
 

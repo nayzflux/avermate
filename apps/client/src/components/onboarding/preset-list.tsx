@@ -1,20 +1,20 @@
 "use client";
 
+import { useState } from "react"; // Import useState
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { GetPresetResponse, Preset } from "@/types/get-preset-response";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Preset } from "@/types/get-preset-response";
 import {
   Card,
   CardContent,
   CardDescription,
   CardTitle,
-  CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Loader2Icon } from "lucide-react";
-import { CheckIcon } from "lucide-react";
+import { Loader2Icon, CheckIcon } from "lucide-react";
+import { handleError } from "@/utils/error-utils";
 
 export const PresetList = ({
   close,
@@ -26,10 +26,11 @@ export const PresetList = ({
   const toaster = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch the list of presets
+  // State to track which preset is loading
+  const [loadingPresetId, setLoadingPresetId] = useState<string | null>(null);
 
   // Define the mutation to apply a preset
-  const { mutate, isPending } = useMutation<
+  const mutation = useMutation<
     any, // Replace 'any' with your expected response type
     Error,
     { presetId: string }
@@ -52,19 +53,22 @@ export const PresetList = ({
       queryClient.invalidateQueries({
         queryKey: ["subjects"],
       });
+
+      // Reset loading state
+      setLoadingPresetId(null);
     },
-    onError: (err) => {
-      toaster.toast({
-        title: "Erreur lors de l'application du préset",
-        description: "Une erreur est survenue. Veuillez réessayer plus tard.",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error, toaster);
+
+      // Reset loading state
+      setLoadingPresetId(null);
     },
   });
 
   // Handle the button click to apply a preset
   const handleClick = (preset: Preset) => {
-    mutate({ presetId: preset.id });
+    setLoadingPresetId(preset.id);
+    mutation.mutate({ presetId: preset.id });
   };
 
   return (
@@ -76,12 +80,17 @@ export const PresetList = ({
             <CardDescription>{preset.description}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={() => handleClick(preset)} disabled={isPending}>
-              {isPending && (
+            <Button
+              onClick={() => handleClick(preset)}
+              disabled={loadingPresetId !== null}
+            >
+              {loadingPresetId === preset.id && (
                 <Loader2Icon className="animate-spin mr-2 size-4" />
               )}
               Sélectionner
-              <CheckIcon className="ml-1 size-4" />
+              {loadingPresetId === preset.id && (
+                <CheckIcon className="ml-1 size-4" />
+              )}
             </Button>
           </CardContent>
         </Card>

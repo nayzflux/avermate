@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
 import { env } from "@/lib/env";
+import { handleError } from "@/utils/error-utils";
 import { BetterFetchError } from "@better-fetch/fetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -91,12 +92,7 @@ export const SignInForm = () => {
         }
       }
 
-      // Generic error
-      toaster.toast({
-        title: "❌ Erreur",
-        description: "Une erreur est survenue. Réessayez plus tard.",
-        variant: "destructive",
-      });
+      handleError(err, toaster);
     },
   });
 

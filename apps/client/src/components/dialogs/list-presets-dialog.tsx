@@ -3,7 +3,6 @@
 import {
   Credenza,
   CredenzaBody,
-  CredenzaClose,
   CredenzaContent,
   CredenzaDescription,
   CredenzaHeader,
@@ -18,24 +17,24 @@ import { Preset } from "@/types/get-preset-response";
 import { GetPresetResponse } from "@/types/get-preset-response";
 
 export default function ListPresetsDialog({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
 
-    const {
-      data: presets,
-      isError,
-      isLoading,
-    } = useQuery<Preset[], Error>({
-      queryKey: ["presets"],
-      queryFn: async () => {
-        const res = await apiClient.get("presets");
-        const data = await res.json<GetPresetResponse>();
-        return data.presets;
-      },
-    });
+  const {
+    data: presets,
+    isError,
+    isLoading,
+  } = useQuery<Preset[], Error>({
+    queryKey: ["presets"],
+    queryFn: async () => {
+      const res = await apiClient.get("presets");
+      const data = await res.json<GetPresetResponse>();
+      return data.presets;
+    },
+  });
 
   return (
     <Credenza open={open} onOpenChange={setOpen}>

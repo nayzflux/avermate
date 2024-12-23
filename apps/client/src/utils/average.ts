@@ -1,43 +1,111 @@
 import { Subject } from "@/types/subject";
 import { Period } from "@/types/period";
 import { startOfDay } from "date-fns";
-
-/**
- * TODO: Verify the consistency of the returned grades/averages values (e.g. null, 0, and more importantly, if we return the values *100 or not) (WE ARE DEALING WITH GRADES/COEFS AND OUTOF VALUES multiplied by 100 because we don't want to deal with floating numbers in the database but because this is a frontend function, we need to divide by 100 to get the real value)
- **/
+import { Average } from "@/types/average";
+import { Grade } from "@/types/grade";
 
 export function average(
   subjectId: string | undefined,
-  subjects: Subject[]
+  subjects: Subject[],
+  customAverage?: Average
 ): number | null {
-  // If subjectId is undefined, calculate the general average
+  if (customAverage) {
+    return calculateCustomAverage(subjectId, subjects, customAverage);
+  }
+
   if (!subjectId) {
-    // Get root subjects (without parent)
+    // General average without custom average
     const rootSubjects = subjects.filter((s) => s.parentId === null);
     return calculateAverageForSubjects(rootSubjects, subjects);
   }
 
-  // Find the subject with the given ID
   const subject = subjects.find((s) => s.id === subjectId);
   if (!subject) return null;
 
   return calculateAverageForSubject(subject, subjects);
 }
 
+function calculateCustomAverage(
+  subjectId: string | undefined,
+  subjects: Subject[],
+  customAverage: Average
+): number | null {
+  // Build customConfig from customAverage.subjects
+  const customConfig = new Map<string, { customCoefficient: number | null; includeChildren: boolean }>();
+  for (const s of customAverage.subjects) {
+    customConfig.set(s.id, {
+      customCoefficient: s.customCoefficient ?? null,
+      includeChildren: s.includeChildren ?? true,
+    });
+  }
+
+  // Filter subjects to only those included
+  const includedSubjects = subjects.filter((subj) =>
+    isSubjectIncludedInCustomAverage(subj, subjects, customConfig)
+  );
+  if (includedSubjects.length === 0) {
+    return null;
+  }
+
+  // If no subjectId, average across all included subjects
+  if (!subjectId) {
+    return calculateAverageForSubjects(includedSubjects, includedSubjects, customConfig, true);
+  }
+
+  // If a specific subjectId is given, average that subject only if it is included
+  const targetSubject = includedSubjects.find((s) => s.id === subjectId);
+  if (!targetSubject) {
+    return null;
+  }
+
+  return calculateAverageForSubject(targetSubject, includedSubjects, customConfig, true);
+}
+
+
+export function isSubjectIncludedInCustomAverage(
+  subject: Subject,
+  allSubjects: Subject[],
+  customConfig: Map<string, { customCoefficient: number | null; includeChildren: boolean }>
+): boolean {
+  // 1) If explicitly included
+  if (customConfig.has(subject.id)) {
+    return true;
+  }
+
+  // 2) Check ancestors
+  let current = subject;
+  while (current.parentId) {
+    if (customConfig.has(current.parentId)) {
+      const parentCfg = customConfig.get(current.parentId);
+      if (parentCfg && parentCfg.includeChildren) {
+        return true;
+      }
+    }
+    const parent = allSubjects.find((s) => s.id === current.parentId);
+    if (!parent) break;
+    current = parent;
+  }
+
+  return false;
+}
+
+
+
 function calculateAverageForSubject(
   subject: Subject,
-  subjects: Subject[]
+  subjects: Subject[],
+  customConfig?: Map<string, { customCoefficient: number | null; includeChildren: boolean }>,
+  isCustom = false
 ): number | null {
   let totalWeightedPercentages = 0;
   let totalCoefficients = 0;
 
-  // Calculate direct grades of the subject
+  // Calculate direct grades
   if (subject.grades && subject.grades.length > 0) {
     for (const grade of subject.grades) {
       const gradeValue = grade.value / 100;
       const outOf = grade.outOf / 100;
       const gradeCoefficient = (grade.coefficient ?? 100) / 100;
-
       if (outOf === 0) continue;
 
       const percentage = gradeValue / outOf;
@@ -46,88 +114,100 @@ function calculateAverageForSubject(
     }
   }
 
-  // Get the current subject (if non-display) and all non-display descendants
-  const allNonDisplaySubjects = getAllNonDisplaySubjects(subject, subjects);
+  // Get children subjects
+  let descendants: Subject[];
+  if (isCustom && customConfig) {
+    // For custom averages, consider all included descendants (display or not) if allowed
+    descendants = getAllIncludedDescendants(subject, subjects, customConfig);
+    // We already have subject itself calculated above, so we remove it from descendants to avoid double counting
+    descendants = descendants.filter((s) => s.id !== subject.id);
+  } else {
+    // Original logic for global average
+    const allNonDisplaySubjects = getAllNonDisplaySubjects(subject, subjects);
+    descendants = allNonDisplaySubjects.filter((s) => s.id !== subject.id);
+  }
 
-  // Filter out the subject itself because we’ve already handled its grades above
-  // (If you prefer, you could omit the subject itself from getAllNonDisplaySubjects 
-  //  and handle that logic separately)
-  const descendantsOnly = allNonDisplaySubjects.filter((s) => s.id !== subject.id);
-
-  for (const child of descendantsOnly) {
-    const childAverage = calculateAverageForSubject(child, subjects);
+  for (const child of descendants) {
+    const childAverage = calculateAverageForSubject(child, subjects, customConfig, isCustom);
     if (childAverage !== null) {
       const childPercentage = childAverage / 20;
-      const childCoefficient = (child.coefficient ?? 100) / 100;
+      let childCoefficient = (child.coefficient ?? 100) / 100;
+
+      if (customConfig && customConfig.has(child.id)) {
+        const cc = customConfig.get(child.id)!;
+        if (cc.customCoefficient !== null) {
+          childCoefficient = cc.customCoefficient;
+        }
+      }
 
       totalWeightedPercentages += childPercentage * childCoefficient;
       totalCoefficients += childCoefficient;
     }
   }
 
-  // If no coefficients were added at all (no grades + no children with grades)
-  if (totalCoefficients === 0) {
-    return null;
-  }
+  if (totalCoefficients === 0) return null;
 
   const averagePercentage = totalWeightedPercentages / totalCoefficients;
   return averagePercentage * 20;
 }
 
-
-
 function calculateAverageForSubjects(
   subjects: Subject[],
-  allSubjects: Subject[]
+  allSubjects: Subject[],
+  customConfig?: Map<string, { customCoefficient: number | null; includeChildren: boolean }>,
+  isCustom = false
 ): number | null {
   let totalWeightedPercentages = 0;
   let totalCoefficients = 0;
 
   for (const subject of subjects) {
-    const allNonDisplaySubjects = getAllNonDisplaySubjects(subject, allSubjects);
+    let consideredSubjects: Subject[];
+    if (isCustom && customConfig) {
+      // In custom scenario, consider included descendants for each subject
+      consideredSubjects = getAllIncludedDescendants(subject, allSubjects, customConfig);
+    } else {
+      consideredSubjects = getAllNonDisplaySubjects(subject, allSubjects);
+    }
 
-    for (const nonDisplaySubject of allNonDisplaySubjects) {
-      const subjectAverage = calculateAverageForSubject(nonDisplaySubject, allSubjects);
+    // Ensure we don't double count the parent subject in this scenario
+    // The parent subject is included in getAllNonDisplaySubjects if not display
+    // or in custom scenario, all included descendants include the subject itself as well
+    // but that's expected behavior since we want to average that subject's grades too.
+    for (const nonDisplaySubject of consideredSubjects) {
+      const subjectAverage = calculateAverageForSubject(nonDisplaySubject, allSubjects, customConfig, isCustom);
       if (subjectAverage !== null) {
         const subjectPercentage = subjectAverage / 20;
-        const subjectCoefficient = (nonDisplaySubject.coefficient ?? 100) / 100;
-
+        let subjectCoefficient = (nonDisplaySubject.coefficient ?? 100) / 100;
+        if (customConfig && customConfig.has(nonDisplaySubject.id)) {
+          const cc = customConfig.get(nonDisplaySubject.id)!;
+          if (cc.customCoefficient !== null) {
+            subjectCoefficient = cc.customCoefficient;
+          }
+        }
         totalWeightedPercentages += subjectPercentage * subjectCoefficient;
         totalCoefficients += subjectCoefficient;
       }
     }
   }
 
-  if (totalCoefficients === 0) {
-    return null;
-  }
+  if (totalCoefficients === 0) return null;
 
   const averagePercentage = totalWeightedPercentages / totalCoefficients;
   return averagePercentage * 20;
 }
 
-
-
-function getAllNonDisplaySubjects(
-  subject: Subject,
-  subjects: Subject[]
-): Subject[] {
+function getAllNonDisplaySubjects(subject: Subject, subjects: Subject[]): Subject[] {
   const children = subjects.filter((s) => s.parentId === subject.id);
-
   let nonDisplayList: Subject[] = [];
 
-  // If the subject itself is not a display subject, include it
   if (!subject.isDisplaySubject) {
     nonDisplayList.push(subject);
   }
 
-  // Now process the children
   for (const child of children) {
     if (child.isDisplaySubject) {
-      // Recursively get non-display subjects from display subject children
       nonDisplayList = nonDisplayList.concat(getAllNonDisplaySubjects(child, subjects));
     } else {
-      // Non-display child subjects are included directly
       nonDisplayList.push(child);
     }
   }
@@ -135,37 +215,158 @@ function getAllNonDisplaySubjects(
   return nonDisplayList;
 }
 
+/**
+ * For custom averages, we want to include any subject that is included directly or through a parent with includeChildren=true.
+ * This function returns the given subject and all its descendants that are included.
+ */
+function getAllIncludedDescendants(
+  subject: Subject,
+  allSubjects: Subject[],
+  customConfig: Map<string, { customCoefficient: number | null; includeChildren: boolean }>
+): Subject[] {
+  const included: Subject[] = [];
+
+  // If current subject is included, add it
+  if (isSubjectIncludedInCustomAverage(subject, allSubjects, customConfig)) {
+    included.push(subject);
+  }
+
+  // Check children
+  const children = allSubjects.filter((s) => s.parentId === subject.id);
+  for (const child of children) {
+    // If child is included (directly or through parent's `includeChildren`), gather it plus its descendants
+    if (isSubjectIncludedInCustomAverage(child, allSubjects, customConfig)) {
+      included.push(...getAllIncludedDescendants(child, allSubjects, customConfig));
+    }
+  }
+
+  return included;
+}
+
+
+/**
+ * Determines if a particular grade belongs to a custom average. 
+ * We check if the grade's subject is included or has a parent included with `includeChildren`.
+ * 
+ * If the subject isn't included, returns false. Otherwise true.
+ */
+export function isGradeIncludedInCustomAverage(
+  grade: Grade,
+  allSubjects: Subject[],
+  customAvg: Average
+): boolean {
+  // 1. Build the custom config map
+  const configMap = new Map<string, { customCoefficient: number | null; includeChildren: boolean }>();
+  for (const s of customAvg.subjects) {
+    configMap.set(s.id, {
+      customCoefficient: s.customCoefficient ?? null,
+      includeChildren: s.includeChildren ?? true,
+    });
+  }
+
+  // 2. The subject to which this grade belongs
+  const subject = allSubjects.find((subj) => subj.id === grade.subjectId);
+  if (!subject) {
+    return false;
+  }
+
+  // 3. If subject is directly included, done
+  if (configMap.has(subject.id)) {
+    return true;
+  }
+
+  // 4. Otherwise, check if any ancestor is included with includeChildren = true
+  let current = subject;
+  while (current.parentId) {
+    if (configMap.has(current.parentId)) {
+      const parentCfg = configMap.get(current.parentId);
+      if (parentCfg && parentCfg.includeChildren) {
+        return true;
+      }
+    }
+    current = allSubjects.find((s) => s.id === current.parentId) || current;
+    if (!current) break;
+  }
+
+  return false;
+}
 
 
 export function averageOverTime(
   subjects: Subject[],
   subjectId: string | undefined,
-  startDate: Date,
-  endDate: Date
+  period: Period
 ): (number | null)[] {
-  const normalizedStartDate = startOfDay(startDate);
-  const normalizedEndDate = startOfDay(endDate);
-  const gradeDates = getGradeDates(subjects, subjectId).filter(
-    (date) => date >= normalizedStartDate && date <= normalizedEndDate
-  );
+  const { startAt, endAt } = findPeriodBounds(period, subjects);
+  const normalizedStartDate = startOfDay(startAt);
+  const normalizedEndDate = startOfDay(endAt);
+  const isFullYear = period.id === "full-year";
+
   const dates = createDateRange(normalizedStartDate, normalizedEndDate, 1);
 
+  // Get relevant grades for the specific subject and its children (if subjectId is provided)
+  const relevantGrades = subjects
+    .filter(
+      (subject) =>
+        !subjectId || // Include all subjects if no subjectId is provided
+        subject.id === subjectId ||
+        getChildren(subjects, subjectId).includes(subject.id)
+    )
+    .flatMap((subject) =>
+      subject.grades.filter((grade) => isFullYear || grade.periodId === period.id)
+    );
+
+  // Extract grade dates only for the relevant subject or its children
+  const gradeDates = relevantGrades.map((grade) => {
+    const gradeDate = new Date(grade.passedAt);
+    if (gradeDate < normalizedStartDate) return normalizedStartDate;
+    if (gradeDate > normalizedEndDate) return normalizedEndDate;
+    return gradeDate;
+  });
+
+  // Ensure unique dates for relevant grades
+  const uniqueGradeDates = Array.from(
+    new Set(gradeDates.map((date) => date.getTime()))
+  ).map((time) => new Date(time));
+
   return dates.map((date, index) => {
-    if (
-      gradeDates.some((gradeDate) => gradeDate.getTime() === date.getTime()) ||
-      index === dates.length - 1
-    ) {
-      const subjectsWithGrades = subjects.map((subject) => ({
+    const isRelevantDate =
+      uniqueGradeDates.some(
+        (gradeDate) => gradeDate.getTime() === date.getTime()
+      ) || index === dates.length - 1;
+
+    if (isRelevantDate) {
+      const subjectsWithAdjustedGrades = subjects.map((subject) => ({
         ...subject,
-        grades: subject.grades.filter(
-          (grade) => new Date(grade.passedAt) <= date
-        ),
+        grades: subject.grades
+          .filter((grade) => isFullYear || grade.periodId === period.id)
+          .map((grade) => {
+            const gradeDate = new Date(grade.passedAt);
+            let adjustedDate = gradeDate;
+
+            if (gradeDate < normalizedStartDate) {
+              adjustedDate = normalizedStartDate;
+            } else if (gradeDate > normalizedEndDate) {
+              adjustedDate = normalizedEndDate;
+            }
+
+            return {
+              ...grade,
+              passedAt: adjustedDate.toISOString(),
+            };
+          })
+          .filter((grade) => new Date(grade.passedAt) <= date),
       }));
-      return average(subjectId, subjectsWithGrades);
+
+      return average(subjectId, subjectsWithAdjustedGrades);
     }
+
     return null;
   });
 }
+
+
+
 
 // Logic validated ✅
 // Compute the average for each subject and return an array of objects with subject ID and its average
@@ -576,49 +777,60 @@ function deepCloneSubjects(subjects: Subject[]): Subject[] {
 export function gradeImpact(
   gradeId: string,
   subjectId: string | undefined,
-  subjects: Subject[]
+  subjects: Subject[],
+  customAverage?: Average
 ): { difference: number; percentageChange: number | null } | null {
-  // Deep clone the subjects array to prevent mutations
+  // clone
   const subjectsCopy = deepCloneSubjects(subjects);
 
-  // Find the subject and index of the grade
+  // find the subject containing this grade
   let gradeSubject: Subject | null = null;
   let gradeIndex = -1;
 
-  for (const subject of subjectsCopy) {
-    const index = subject.grades.findIndex((grade) => grade.id === gradeId);
-    if (index !== -1) {
-      gradeSubject = subject;
-      gradeIndex = index;
+  for (const subj of subjectsCopy) {
+    const idx = subj.grades.findIndex((g) => g.id === gradeId);
+    if (idx !== -1) {
+      gradeSubject = subj;
+      gradeIndex = idx;
       break;
     }
   }
 
   if (!gradeSubject || gradeIndex === -1) {
-    // Grade not found
-    return null;
+    return null; // Not found
   }
 
-  // Compute the average with the grade included
-  const averageWithGrade = average(subjectId, subjectsCopy);
+  // Average WITH the grade
+  const avgWithGrade = average(subjectId, subjectsCopy, customAverage);
 
-  // Remove the grade from the grades array
+  // remove the grade
   gradeSubject.grades.splice(gradeIndex, 1);
 
-  // Compute the average without the grade
-  const averageWithoutGrade = average(subjectId, subjectsCopy);
+  // Average WITHOUT the grade
+  const avgWithoutGrade = average(subjectId, subjectsCopy, customAverage);
 
-  // Compute the impact
-  if (averageWithGrade !== null && averageWithoutGrade !== null) {
-    const difference = averageWithGrade - averageWithoutGrade;
+  if (avgWithGrade !== null && avgWithoutGrade !== null) {
+    const difference = avgWithGrade - avgWithoutGrade;
     let percentageChange: number | null = null;
-    if (averageWithoutGrade !== 0) {
-      percentageChange = (difference / averageWithoutGrade) * 100;
+    if (avgWithoutGrade !== 0) {
+      percentageChange = (difference / avgWithoutGrade) * 100;
     }
     return { difference, percentageChange };
-  } else {
-    return null;
   }
+  return null;
+}
+
+export function buildCustomConfig(
+  customAverage: Average
+): Map<string, { customCoefficient: number | null; includeChildren: boolean }> {
+  const cfg = new Map<string, { customCoefficient: number | null; includeChildren: boolean }>();
+  for (const s of customAverage.subjects) {
+    cfg.set(s.id, {
+      customCoefficient: s.customCoefficient ?? null,
+      includeChildren: s.includeChildren ?? true,
+    });
+  }
+  return cfg;
 }
 
 // Logic validated ✅
@@ -627,39 +839,33 @@ export function gradeImpact(
 export function subjectImpact(
   impactingSubjectId: string,
   impactedSubjectId: string | undefined,
-  subjects: Subject[]
+  subjects: Subject[],
+  customAverage?: Average
 ): { difference: number; percentageChange: number | null } | null {
-  // Deep clone the subjects array to prevent mutations
+  // Deep clone to avoid mutating real data
   const subjectsCopy = deepCloneSubjects(subjects);
 
-  // Identify the subjects to exclude (impacting subject and its children)
-  const subjectsToExclude = [
-    impactingSubjectId,
-    ...getChildren(subjectsCopy, impactingSubjectId),
-  ];
+  // Identify the subjects to exclude (impacting subject plus its children)
+  const impactingIds = [impactingSubjectId, ...getChildren(subjectsCopy, impactingSubjectId)];
 
-  // Compute the average with the impacting subject included
-  const averageWithImpact = average(impactedSubjectId, subjectsCopy);
+  // Average WITH the subject
+  const avgWithSubject = average(impactedSubjectId, subjectsCopy, customAverage);
 
-  // Remove the impacting subject and its children from the subjects array
-  const subjectsWithoutImpacting = subjectsCopy.filter(
-    (subject) => !subjectsToExclude.includes(subject.id)
-  );
+  // Remove impacting subject from the array
+  const subjectsWithoutImpacting = subjectsCopy.filter((s) => !impactingIds.includes(s.id));
 
-  // Compute the average without the impacting subject
-  const averageWithoutImpact = average(impactedSubjectId, subjectsWithoutImpacting);
+  // Average WITHOUT the subject
+  const avgWithoutSubject = average(impactedSubjectId, subjectsWithoutImpacting, customAverage);
 
-  // Compute the impact
-  if (averageWithImpact !== null && averageWithoutImpact !== null) {
-    const difference = averageWithImpact - averageWithoutImpact;
+  if (avgWithSubject !== null && avgWithoutSubject !== null) {
+    const difference = avgWithSubject - avgWithoutSubject;
     let percentageChange: number | null = null;
-    if (averageWithoutImpact !== 0) {
-      percentageChange = (difference / averageWithoutImpact) * 100;
+    if (avgWithoutSubject !== 0) {
+      percentageChange = (difference / avgWithoutSubject) * 100;
     }
     return { difference, percentageChange };
-  } else {
-    return null;
   }
+  return null;
 }
 
 // Logic validated ✅
@@ -737,15 +943,16 @@ export function getTrend(
 export function getSubjectTrend(
   subjects: Subject[],
   subjectId: string,
-  startDate: Date,
-  endDate: Date
+  period: Period
 ): number | null {
-  const averages = averageOverTime(subjects, subjectId, startDate, endDate);
+  const averages = averageOverTime(subjects, subjectId, period);
 
   if (averages.every((avg) => avg === null)) {
     return null;
   }
 
+  const startDate = new Date(period.startAt);
+  const endDate = new Date(period.endAt);
   const dates = createDateRange(startDate, endDate, 1);
 
   const data = averages.map((avg, index) => ({
@@ -761,8 +968,7 @@ export function getSubjectTrend(
 // Find the subject with the best (most positive) trend
 export function getBestTrendSubject(
   subjects: Subject[],
-  startDate: Date,
-  endDate: Date,
+  period: Period,
   isMainSubject: boolean = false
 ): { bestSubject: Subject; bestTrend: number } | null {
   let bestSubject: Subject | null = null;
@@ -774,12 +980,13 @@ export function getBestTrendSubject(
   }
 
   for (const subject of filteredSubjects) {
-    const averages = averageOverTime(subjects, subject.id, startDate, endDate);
+    const averages = averageOverTime(subjects, subject.id, period);
 
     if (averages.every((avg) => avg === null)) {
       continue; // Skip subjects with no averages
     }
-
+    const startDate = new Date(period.startAt);
+    const endDate = new Date(period.endAt);
     const dates = createDateRange(startDate, endDate, 1);
 
     const data = averages.map((avg, index) => ({
@@ -805,8 +1012,7 @@ export function getBestTrendSubject(
 // Find the subject with the worst (most negative) trend
 export function getWorstTrendSubject(
   subjects: Subject[],
-  startDate: Date,
-  endDate: Date,
+  period: Period,
   isMainSubject: boolean = false
 ): { worstSubject: Subject; worstTrend: number } | null {
   let worstSubject: Subject | null = null;
@@ -818,12 +1024,14 @@ export function getWorstTrendSubject(
   }
 
   for (const subject of filteredSubjects) {
-    const averages = averageOverTime(subjects, subject.id, startDate, endDate);
+    const averages = averageOverTime(subjects, subject.id, period);
 
     if (averages.every((avg) => avg === null)) {
       continue; // Skip subjects with no averages
     }
 
+    const startDate = new Date(period.startAt);
+    const endDate = new Date(period.endAt);
     const dates = createDateRange(startDate, endDate, 1);
 
     const data = averages.map((avg, index) => ({

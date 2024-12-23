@@ -20,6 +20,7 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
+import { handleError } from "@/utils/error-utils";
 
 export default function DeletePeriodDialog({ period }: { period: Period }) {
   const [open, setOpen] = useState(false);
@@ -48,13 +49,8 @@ export default function DeletePeriodDialog({ period }: { period: Period }) {
 
       setOpen(false);
     },
-      onError: (err) => {
-        // console.log("the error was: ", err);
-      toaster.toast({
-        title: `Erreur`,
-        description: `Une erreur est survenue lors de la suppression de la période. Réessayez plus tard.`,
-        variant: "destructive",
-      });
+    onError: (error) => {
+      handleError(error, toaster);
     },
   });
 

@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { Subject } from "@/types/subject";
+import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
+import { PlusCircleIcon } from "lucide-react";
 
 export default function SubjectMoreButton({ subject }: { subject: Subject }) {
   return (
@@ -25,6 +27,19 @@ export default function SubjectMoreButton({ subject }: { subject: Subject }) {
         {/* Update grade */}
         <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
           <UpdateSubjectDialog subjectId={subject.id} />
+        </DropdownMenuItem>
+
+        {/* Add grade */}
+        <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
+          <AddGradeDialog parentId={subject.id}>
+            <Button
+              className="w-full flex justify-start md:hidden"
+              variant="ghost"
+            >
+              <PlusCircleIcon className="size-4 mr-2" />
+              Ajouter une note
+            </Button>
+          </AddGradeDialog>
         </DropdownMenuItem>
 
         {/* Delete grade */}
