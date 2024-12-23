@@ -62,12 +62,12 @@ export const uploadRouter = {
       }
 
       // Update avata url
-      await db
-        .update(users)
-        .set({ avatarUrl: data.file.url })
-        .where(eq(users.id, data.metadata.userId));
+      // await db
+      //   .update(users)
+      //   .set({ avatarUrl: data.file.url })
+      //   .where(eq(users.id, data.metadata.userId));
 
-      console.log(`Avatar updated ${data.file.key} by ${data.metadata.userId}`);
+      // console.log(`Avatar updated ${data.file.key} by ${data.metadata.userId}`);
 
       return {
         message: "Avatar uploaded",

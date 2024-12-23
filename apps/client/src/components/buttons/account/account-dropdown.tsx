@@ -93,6 +93,7 @@ export default function AccountDropdown() {
                   ? data?.user?.image
                   : `https://avatar.vercel.sh/${data?.user?.id}?size=32`
               }
+              className="rounded-full size-8"
             />
           )}
         </div>
@@ -107,6 +108,7 @@ export default function AccountDropdown() {
                 ? data?.user?.image
                 : `https://avatar.vercel.sh/${data?.user?.id}?size=32`
             }
+            className="rounded-full size-8"
           />
           <div className="flex flex-col">
             <h1>{data?.user?.name}</h1>

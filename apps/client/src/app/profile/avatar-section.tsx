@@ -34,8 +34,11 @@ export default function AvatarSection() {
           </CardHeader>
 
           <CardContent className="p-0">
-            <div className="flex mt-2">
-              <Skeleton className="size-32 lg:size-64 rounded-full" />
+            <div className="flex flex-col md:flex-row items-center gap-6 mt-4">
+              {/* Avatar Skeleton */}
+              <Skeleton className="size-32 rounded-full" />
+              {/* Upload Button Skeleton */}
+              <Skeleton className="w-full md:w-48 h-10 rounded-md" />
             </div>
           </CardContent>
         </div>
@@ -44,19 +47,22 @@ export default function AvatarSection() {
   }
 
   return (
-    <ProfileSection title="Avatar" description="Changez votre avatar" className="flex flex-col gap-4">
-      <div className="flex mt-2">
+    <ProfileSection
+      title="Avatar"
+      description="Changez votre avatar"
+      className="flex flex-col gap-4"
+    >
+      <div className="flex flex-col md:flex-row items-center  gap-6 align">
+        <div className="min-w-[128px] flex justify-center">
         <Avatar
-          className="size-32 lg:size-64"
-          size={256}
+          className="size-32"
+          size={128}
           src={
             session?.user?.image ||
             `https://avatar.vercel.sh/${session?.user?.id}?size=256`
           }
         />
-      </div>
-
-      <div className="flex justify-end">
+        </div>
         <UpdateAvatar />
       </div>
     </ProfileSection>

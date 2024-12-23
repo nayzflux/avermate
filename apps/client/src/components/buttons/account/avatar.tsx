@@ -21,6 +21,7 @@ export default function Avatar({
             <Skeleton className="rounded-full size-32 lg:size-64" />
           )}
           {size === 32 && <Skeleton className="rounded-full size-8" />}
+          {size === 128 && <Skeleton className="rounded-full size-32" />}
         </>
       )}
       <img
@@ -28,7 +29,11 @@ export default function Avatar({
         alt="User avatar"
         width={size}
         height={size}
-        className={cn("rounded-full", className, loaded ? "block" : "hidden")}
+        className={cn(
+          "rounded-full !object-cover",
+          className,
+          loaded ? "block" : "hidden"
+        )}
         onLoad={() => setLoaded(true)}
         onError={() => setLoaded(true)}
       />
