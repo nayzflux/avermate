@@ -24,12 +24,13 @@ export const uploadRouter = {
     },
   })
     .middleware(async (c) => {
-      console.log(c)
+      //console.log(c)
+      const headers = c.req.headers;
       const session = await auth.api.getSession({
-        r
+        headers
       });
 
-      console.log(session);
+      //console.log(session);
 
       if (!session) {
         throw new UploadThingError("Unauthorized");
@@ -61,12 +62,12 @@ export const uploadRouter = {
       }
 
       // Update avata url
-      await db
-        .update(users)
-        .set({ avatarUrl: data.file.url })
-        .where(eq(users.id, data.metadata.userId));
+      // await db
+      //   .update(users)
+      //   .set({ avatarUrl: data.file.url })
+      //   .where(eq(users.id, data.metadata.userId));
 
-      console.log(`Avatar updated ${data.file.key} by ${data.metadata.userId}`);
+      // console.log(`Avatar updated ${data.file.key} by ${data.metadata.userId}`);
 
       return {
         message: "Avatar uploaded",
@@ -79,6 +80,7 @@ export const uploadHandlers = createRouteHandler({
   router: uploadRouter,
   config: {
     callbackUrl: env.BETTER_AUTH_URL + "/api/uploadthing",
+    isDev: env.NODE_ENV === "development",
   },
 });
 
