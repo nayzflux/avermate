@@ -4,6 +4,7 @@ import { UploadButton as OriginalUploadButton } from "@/components/buttons/uploa
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth";
+import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const UpdateAvatar = () => {
@@ -17,10 +18,10 @@ const UpdateAvatar = () => {
       appearance={{
         button({ ready, isUploading }) {
           return buttonVariants({
-            variant: isUploading ? "secondary" : ready ? "default" : "outline",
+            variant: "default",
             size: "default",
             className: `w-full ${
-              isUploading ? "opacity-50 pointer-events-none" : ""
+              isUploading || !ready ? "opacity-50 pointer-events-none" : ""
             }`,
           });
         },
@@ -30,12 +31,20 @@ const UpdateAvatar = () => {
       content={{
         button({ ready, isUploading }) {
           if (isUploading) {
-            return <span>Chargement...</span>;
+            return (
+              <span className="flex items-center">
+                <Loader2Icon className="animate-spin mr-2 size-4" />
+                Modifier l'avatar
+              </span>
+            );
           }
           return ready ? (
             <span className="text-black">Modifier l'avatar</span>
           ) : (
-            <span>Chargement...</span>
+            <span className="flex items-center text-black">
+              <Loader2Icon className="animate-spin mr-2 size-4" />
+              Modifier l'avatar
+            </span>
           );
         },
         allowedContent() {
