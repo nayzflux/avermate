@@ -1,6 +1,7 @@
 "use client";
 
 import Avatar from "@/components/buttons/account/avatar";
+import UpdateAvatar from "@/components/buttons/update-avatar";
 import {
   Card,
   CardContent,
@@ -43,7 +44,7 @@ export default function AvatarSection() {
   }
 
   return (
-    <ProfileSection title="Avatar" description="Changez votre avatar">
+    <ProfileSection title="Avatar" description="Changez votre avatar" className="flex flex-col gap-4">
       <div className="flex mt-2">
         <Avatar
           className="size-32 lg:size-64"
@@ -53,6 +54,10 @@ export default function AvatarSection() {
             `https://avatar.vercel.sh/${session?.user?.id}?size=256`
           }
         />
+      </div>
+
+      <div className="flex justify-end">
+        <UpdateAvatar />
       </div>
     </ProfileSection>
   );

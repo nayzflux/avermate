@@ -13,6 +13,7 @@ import averagesRoute from "@/routes/averages";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import { uploadHandlers } from "./lib/uploadthing";
 
 const app = new Hono<{
   Variables: {
@@ -56,6 +57,8 @@ app.route("/presets", presetsRoutes);
 app.route("/landing", landingRoutes);
 
 app.route("/averages", averagesRoute);
+
+app.all("/uploadthing", (ctx) => uploadHandlers(ctx.req.raw));
 
 export default {
   fetch: app.fetch,
