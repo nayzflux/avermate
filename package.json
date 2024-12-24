@@ -11,5 +11,8 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "uploadthing": "https://pkg.pr.new/pingdotgg/uploadthing@1099"
+  }
 }
