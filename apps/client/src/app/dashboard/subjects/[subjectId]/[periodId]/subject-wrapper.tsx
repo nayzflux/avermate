@@ -31,6 +31,7 @@ import {
   VariableIcon,
 } from "@heroicons/react/24/outline";
 import SubjectAverageChart from "./subject-average-chart";
+import { cn } from "@/lib/utils";
 
 function SubjectWrapper({
   subjects,
@@ -53,13 +54,6 @@ function SubjectWrapper({
     const parentIds = getParents(subjects, subject.id);
     return subjects.filter((subj) => parentIds.includes(subj.id));
   };
-
-  // const hasGrades =
-  //   period.id === "full-year"
-  //     ? subjects.some((subj) => subj.grades.length > 0)
-  //     : subjects.some((subj) =>
-  //         subj.grades.some((grade) => grade.periodId === period.id)
-  //       );
 
   const hasGrades = (subjectId: string): boolean => {
     const currentSubject = subjects.find((subj) => subj.id === subjectId);
@@ -87,6 +81,21 @@ function SubjectWrapper({
 
   // Determine if there are grades in the selected subject or its sub-subjects
   const isGradePresent = hasGrades(subject.id);
+
+    function get4xlColsClass(cardCount: number) {
+      switch (cardCount) {
+        case 5:
+          return "4xl:grid-cols-5";
+        case 6:
+          return "4xl:grid-cols-6";
+        case 7:
+          return "4xl:grid-cols-4";
+        case 8:
+          return "4xl:grid-cols-4";
+        default:
+          return "4xl:grid-cols-5";
+      }
+    }
 
   if (!isGradePresent) {
     return (
@@ -180,7 +189,22 @@ function SubjectWrapper({
       <Separator />
 
       {/* Main Data Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div
+        className={cn(
+          `grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4`,
+          get4xlColsClass(
+            5 +
+              customAverages.filter((ca) =>
+                isSubjectIncludedInCustomAverage(
+                  subject,
+                  subjects,
+                  buildCustomConfig(ca)
+                )
+              ).length +
+              parentSubjects().length
+          )
+        )}
+      >
         {/* Subject Average */}
         <DataCard
           title="Moyenne"

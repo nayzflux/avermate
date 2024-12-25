@@ -35,6 +35,7 @@ function OnboardingContent() {
   }, [searchParams]);
 
   const [currentStep, setCurrentStep] = useState(getStepIndexFromParams());
+  const [isAnimating, setIsAnimating] = useState(false); // Track animation state
 
   const { data: session } = authClient.useSession() as unknown as {
     data: { session: Session; user: User };
@@ -57,16 +58,19 @@ function OnboardingContent() {
   }, [searchParams, getStepIndexFromParams]);
 
   const handleNext = () => {
-    setCurrentStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
+    if (!isAnimating) {
+      setCurrentStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
+    }
   };
 
   const handleBack = () => {
-    setCurrentStep((prevStep) => Math.max(prevStep - 1, 0));
+    if (!isAnimating) {
+      setCurrentStep((prevStep) => Math.max(prevStep - 1, 0));
+    }
   };
 
   const CurrentStepComponent = steps[currentStep].component;
 
-  // create a new function to handle the onboarding completion
   const handleOnboardingCompletion = () => {
     localStorage.setItem("isOnboardingCompleted", "true");
     router.push("/dashboard");
@@ -94,7 +98,6 @@ function OnboardingContent() {
               </>
             )}
           </h1>
-
           <p className="text-muted-foreground text-sm">
             Configurons quelques choses avant de commencer
           </p>
@@ -154,6 +157,8 @@ function OnboardingContent() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -100 }}
             transition={{ duration: 0.3 }}
+            onAnimationStart={() => setIsAnimating(true)} // Set animation state
+            onAnimationComplete={() => setIsAnimating(false)} // Reset animation state
           >
             <CurrentStepComponent />
           </motion.div>

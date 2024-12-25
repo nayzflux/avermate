@@ -31,7 +31,7 @@ export default function dashboardLoader() {
 
   return (
     <main className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
-      <div className="flex flex-wrap items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between min-h-9">
         <h1 className="text-3xl font-bold">
           <Skeleton className="w-[150px] md:w-[180px] h-6" />
         </h1>
@@ -45,7 +45,7 @@ export default function dashboardLoader() {
       {/* Statistiques */}
       <Tabs>
         <div className="flex flex-col gap-4">
-          <ScrollArea>
+          <ScrollArea className="h-9">
             <div className="flex w-full">
               <Skeleton className="flex md:hidden h-9 w-full" />
 
@@ -65,7 +65,7 @@ export default function dashboardLoader() {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-5 gap-2 md:gap-4 pb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-5 gap-2 md:gap-4 md:mt-2 ">
             {Array.from({ length: 5 }).map((_, index) => (
               <Card key={index} className="p-6 rounded-lg">
                 <div className="flex flex-col gap-2">
@@ -75,11 +75,11 @@ export default function dashboardLoader() {
                   </div>
 
                   <div className="flex flex-col gap-0.5">
-                    <Skeleton className="h-[30.5px] md:h-[36px]" />
+                    <Skeleton className="h-[30.5px] md:h-[39.5px]" />
 
-                    <div className="text-xs text-muted-foreground font-light pt-2">
-                      <Skeleton className="h-4 mb-1" />
-                      <Skeleton className="w-20 h-4" />
+                    <div className="text-xs text-muted-foreground font-light ">
+                      <Skeleton className="h-4" />
+                      <Skeleton className="w-20 h-4 hidden" />
                     </div>
                   </div>
                 </div>
@@ -90,18 +90,18 @@ export default function dashboardLoader() {
           <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
             {/* Evolution de la moyenne générale */}
             <Card className="lg:col-span-5">
-              <CardHeader className="pl-6 pt-4 pb-1">
+              <CardHeader>
                 <CardTitle>
                   <Skeleton className="w-36 h-6" />
                 </CardTitle>
               </CardHeader>
 
               <CardContent>
-                <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
+                <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row ">
                   {/* Area Chart Section */}
                   <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%] lg:w-[60%]">
                     <CardDescription className="pb-8 w-full">
-                      <Skeleton className="w-full h-6" />
+                      <Skeleton className="w-full h-4" />
                     </CardDescription>
                     <ChartContainer
                       config={chartConfig}
@@ -151,7 +151,7 @@ export default function dashboardLoader() {
                   {/* Radar Chart Section */}
                   <div className="flex flex-col items-center lg:space-y-2 lg:w-[40%] m-auto lg:pt-0 pt-8 w-[100%]">
                     <CardDescription>
-                      <Skeleton className="w-44 h-6" />
+                      <Skeleton className="w-44 h-4" />
                     </CardDescription>
                     <ChartContainer
                       config={chartConfig}
@@ -187,13 +187,13 @@ export default function dashboardLoader() {
 
             {/* Dernières notes */}
             <Card className="lg:col-span-2">
-              <CardHeader className="pl-8">
-                <CardTitle className="text-l">
+              <CardHeader>
+                <CardTitle>
                   <Skeleton className=" h-6" />
                 </CardTitle>
 
                 <CardDescription>
-                  <Skeleton className="w-20 h-6 " />
+                  <Skeleton className="w-20 h-4" />
                 </CardDescription>
               </CardHeader>
 

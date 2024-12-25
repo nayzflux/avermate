@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 
 export const GetStartedButton = () => {
   return (
-    <>
+    <div className="h-12 display:flex justify:center items:center">
       <Button size="default" asChild className="hidden sm:inline-flex">
         <Link href="/auth/sign-up">
           <ArrowRightIcon className="size-4 mr-2" />
@@ -19,6 +19,6 @@ export const GetStartedButton = () => {
           Commencer maintenant
         </Link>
       </Button>
-    </>
+    </div>
   );
 };

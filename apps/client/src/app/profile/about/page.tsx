@@ -55,7 +55,7 @@ export default async function AboutPage() {
     }
   );
   const tags = await tagsRes.json();
-  const version = tags && tags.length > 0 ? tags[0].name : "Beta v1.0.0";
+  const version = tags && tags.length > 0 ? tags[0].name : "v1.1.0";
 
   const githubLink = `https://github.com/${owner}/${repoName}`;
   const stars = repo?.stargazers_count ?? 0;

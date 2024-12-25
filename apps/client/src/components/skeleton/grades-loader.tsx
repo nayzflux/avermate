@@ -72,7 +72,7 @@ export default function gradesLoader() {
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
         {/* Desktop layout (unchanged) */}
-        <Table className="w-full table-auto hidden md:table">
+        <Table className="w-full table-auto hidden md:table mt-2">
           <TableCaption>
             <div className="flex w-full justify-center">
               <Skeleton className="w-64 h-[14px]" />
@@ -94,7 +94,7 @@ export default function gradesLoader() {
           </TableHeader>
 
           <TableBody>
-            {Array.from({ length: 10 }, (_, i) => (
+            {Array.from({ length: 20 }, (_, i) => (
               <TableRow key={i}>
                 <TableCell>
                   <Skeleton className="w-full h-[20px]" />
@@ -119,7 +119,7 @@ export default function gradesLoader() {
           </TableCaption>
           {/* No header on mobile */}
           <TableBody>
-            {Array.from({ length: 5 }, (_, i) => i).map((item) => (
+            {Array.from({ length: 20 }, (_, i) => i).map((item) => (
               <React.Fragment key={item}>
                 {/* Subject + average row on mobile */}
                 <TableRow className="border-b">
@@ -132,15 +132,15 @@ export default function gradesLoader() {
                 </TableRow>
 
                 {/* Notes row on mobile */}
-                <TableRow className="border-b">
-                  <TableCell className="w-full">
-                    <div className="flex gap-2 flex-wrap pt-1 pb-2">
-                      <Skeleton className="w-10 h-[20px]" />
-                      <Skeleton className="w-10 h-[20px]" />
-                      <Skeleton className="w-10 h-[20px]" />
-                    </div>
-                  </TableCell>
-                </TableRow>
+                  <TableRow className="border-b">
+                    <TableCell className="w-full">
+                      <div className="flex gap-2 flex-wrap pt-1 pb-2">
+                        <Skeleton className="w-10 h-[20px]" />
+                        <Skeleton className="w-10 h-[20px]" />
+                        <Skeleton className="w-10 h-[20px]" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
               </React.Fragment>
             ))}
           </TableBody>

@@ -67,7 +67,12 @@ export default function GradePage() {
     return <div>{errorStateCard()}</div>;
   }
 
-  if (isPending || organizedSubjectsIsPending || isCustomAveragesPending) {
+  if (
+    isPending ||
+    organizedSubjectsIsPending ||
+    isCustomAveragesPending
+    // || true
+  ) {
     return <div>{gradeLoader()}</div>;
   }
 

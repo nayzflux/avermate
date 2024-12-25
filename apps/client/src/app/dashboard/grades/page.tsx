@@ -76,18 +76,6 @@ export default function GradesPage() {
     }
   }, [periods]);
 
-  // useEffect(() => {
-  //   const handleBeforeUnload = () => {
-  //     localStorage.removeItem("selectedTab");
-  //   };
-
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-  //   };
-  // }, []);
-
   // Error State
   if (periodsIsError || organizedSubjectsIsError || subjectsIsError) {
     return <div>{errorStateCard()}</div>;
@@ -106,8 +94,8 @@ export default function GradesPage() {
 
   return (
     <main className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
-      <div className="flex gap-2 md:gap-16 justify-between items-center">
-        <h1 className="text-xl md:text-3xl font-semibold">Vos notes</h1>
+      <div className="flex gap-2 md:gap-16 justify-between items-center min-h-9">
+        <h1 className="text-xl md:text-3xl font-bold">Vos notes</h1>
 
         <div className=" gap-4 hidden lg:flex">
           <AddGradeDialog>

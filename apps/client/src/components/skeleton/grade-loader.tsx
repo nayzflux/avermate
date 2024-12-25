@@ -9,7 +9,7 @@ import { Skeleton } from "../ui/skeleton";
 
 export default function gradeLoader() {
   return (
-    <div className="flex flex-col gap-8 m-auto max-w-[2000px]">
+    <div className="flex flex-col gap-4 md:gap-8 m-auto max-w-[2000px]">
       <div>
         <Button className="text-blue-600" variant="link" disabled>
           <ArrowLeftIcon className="size-4 mr-2" />
@@ -27,8 +27,8 @@ export default function gradeLoader() {
 
       <Separator />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3  gap-4">
-        {Array.from({ length: 9 }).map((_, index) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 4xl:grid-cols-5">
+        {Array.from({ length: 10 }).map((_, index) => (
           <Card key={index} className="p-6 rounded-lg">
             <div className="flex flex-col gap-2">
               <div className="flex gap-2 justify-between">
@@ -37,11 +37,11 @@ export default function gradeLoader() {
               </div>
 
               <div className="flex flex-col gap-0.5">
-                <Skeleton className="h-10" />
+                <Skeleton className="h-[30.5px] md:h-[39.5px]" />
 
-                <div className="text-xs text-muted-foreground font-light pt-2">
-                  <Skeleton className="h-4 mb-1" />
-                  <Skeleton className="w-20 h-4" />
+                <div className="text-xs text-muted-foreground font-light ">
+                  <Skeleton className="h-4" />
+                  <Skeleton className="w-20 h-4 hidden" />
                 </div>
               </div>
             </div>

@@ -67,14 +67,6 @@ export default function WelcomeScreen() {
 
   return (
     <div className="text-center space-y-8">
-      {/* Optional fancy icons */}
-      {/* 
-      <div className="relative inline-block">
-        <Rocket className="w-24 h-24 mx-auto text-primary" />
-        <Sparkles className="w-8 h-8 text-yellow-400 absolute top-0 right-0 animate-pulse" />
-      </div> 
-      */}
-
       <h2 className="text-4xl font-bold text-primary">
         Bienvenue sur Avermate,&nbsp;
         <span className="items-center">

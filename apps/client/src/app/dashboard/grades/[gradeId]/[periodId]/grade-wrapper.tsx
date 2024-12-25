@@ -23,6 +23,7 @@ import {
   VariableIcon,
 } from "@heroicons/react/24/outline";
 import { DifferenceBadge } from "../difference-badge";
+import { cn } from "@/lib/utils";
 
 export default function GradeWrapper({
   subjects,
@@ -46,6 +47,31 @@ export default function GradeWrapper({
     return subjects.filter((subject) => gradeParentsId.includes(subject.id));
   };
 
+  function get4xlColsClass(cardCount: number) {
+    switch (cardCount) {
+      case 7:
+        return "4xl:grid-cols-4";
+      case 8:
+        return "4xl:grid-cols-4";
+      case 9:
+        return "4xl:grid-cols-5";
+      case 10:
+        return "4xl:grid-cols-5";
+      case 11:
+        return "4xl:grid-cols-4";
+      case 12:
+        return "4xl:grid-cols-4";
+      case 13:
+        return "4xl:grid-cols-5";
+      case 14:
+        return "4xl:grid-cols-5";
+      case 15:
+        return "4xl:grid-cols-5";
+      default:
+        return "4xl:grid-cols-5";
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
       <div>
@@ -66,7 +92,18 @@ export default function GradeWrapper({
 
       <Separator />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-4">
+      <div
+        className={cn(
+          `grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4`,
+          get4xlColsClass(
+            gradeParents().length +
+              customAverages.filter((ca) =>
+                isGradeIncludedInCustomAverage(grade, subjects, ca)
+              ).length +
+              7
+          )
+        )}
+      >
         <DataCard
           title="Note obtenue"
           description={`Votre note obtenue lors de cette évaluation sur ${

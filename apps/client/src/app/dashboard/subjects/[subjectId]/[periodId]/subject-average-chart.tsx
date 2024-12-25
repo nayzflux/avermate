@@ -43,16 +43,6 @@ export default function SubjectAverageChart({
     []
   );
 
-  // State to manage the active index for the data series
-  // const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(
-  //   null
-  // );
-
-  // // Callback to update active tooltip index
-  // const handleActiveTooltipIndexChange = (index: number | null) => {
-  //   setActiveTooltipIndex(index);
-  // };
-
   const { childrenAverage, chartData, chartConfig } = (() => {
     const childrensId = getChildren(subjects, subjectId);
 

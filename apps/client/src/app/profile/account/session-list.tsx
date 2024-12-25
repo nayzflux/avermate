@@ -53,30 +53,31 @@ export default function SessionList() {
 
   if (isPending) {
     return (
-      <Card className={"p-6 w-full"}>
+      <Card className="p-6 w-full">
         <div className="flex flex-col gap-6">
           <CardHeader className="p-0">
             <CardTitle>
               <Skeleton className="w-36 h-6" />
             </CardTitle>
             <CardDescription>
-              <Skeleton className="w-20 h-4" />
+              <Skeleton className="w-32 h-5" />
             </CardDescription>
           </CardHeader>
 
           <CardContent className="p-0">
-            <div className="flex flex-col gap-4">
-              {Array.from({ length: 2 }).map((_, index) => (
+            <div className="flex flex-col gap-6">
+              {Array.from({ length: 5 }).map((_, index) => (
                 <div
                   key={index}
-                  className="flex flex-col gap-2 border-t text-sm px-2 pt-4 w-full"
+                  className="flex flex-col gap-2 border-t pt-4 w-full"
                 >
-                  <div className="flex gap-2 w-full">
-                    <Skeleton className="md:w-32 w-full h-6" />
+                  <div className="flex justify-between items-center">
+                    <Skeleton className="w-32 h-6" />
+                    <Skeleton className="w-20 h-4" />
                   </div>
 
-                  <div className="flex gap-1 text-muted-foreground">
-                    <Skeleton className="md:w-32 w-full h-4" />
+                  <div className="flex gap-2">
+                    <Skeleton className="w-full md:w-64 h-4" />
                   </div>
 
                   <div className="flex justify-end">

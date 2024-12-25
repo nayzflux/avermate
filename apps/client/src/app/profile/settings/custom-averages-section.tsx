@@ -70,7 +70,7 @@ export const CustomAveragesSection = () => {
 
           <CardContent className="p-0">
             <div className="flex flex-col gap-4">
-              {Array.from({ length: 3 }).map((_, index) => (
+              {Array.from({ length: 1 }).map((_, index) => (
                 <div
                   key={index}
                   className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2
@@ -91,6 +91,14 @@ export const CustomAveragesSection = () => {
                   </div>
                 </div>
               ))}
+              <div className="flex justify-start">
+                <AddAverageDialog>
+                  <Button disabled>
+                    <PlusCircleIcon className="size-4 mr-2" />
+                    Ajouter une moyenne personnalisée
+                  </Button>
+                </AddAverageDialog>
+              </div>
             </div>
           </CardContent>
         </div>

@@ -116,6 +116,7 @@ export default function SubjectPage() {
     isSubjectPending ||
     isSubjectsPending ||
     isCustomAveragesPending
+    // || true
   ) {
     return <div>{subjectLoader()}</div>;
   }

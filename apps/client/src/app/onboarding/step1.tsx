@@ -27,7 +27,7 @@ export default function Step1() {
   if (periodsIsPending) {
     return (
       <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold text-primary">Vos Périodes</h2>
+        <h2 className="text-2xl font-bold text-primary">Périodes</h2>
         {Array.from({ length: 3 }).map((_, index) => (
           <div
             key={index}
@@ -88,7 +88,7 @@ export default function Step1() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold text-primary">Vos Périodes</h2>
+      <h2 className="text-2xl font-bold text-primary">Périodes</h2>
       {periods?.map((period) => (
         <div
           key={period.id}
