@@ -17,7 +17,7 @@ export const Headline = () => {
           objectifs.
         </h2>
 
-        <div className="flex flex-col md:flex-row gap-2 md:gap-8">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-8 items-center">
           {/* Call to action */}
           <GetStarted />
 

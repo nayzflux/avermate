@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 
 export const GetStartedButton = () => {
   return (
-    <div className="h-12 display:flex justify:center items:center">
+    <div className="h-12 flex items-center justify-center">
       <Button size="default" asChild className="hidden sm:inline-flex">
         <Link href="/auth/sign-up">
           <ArrowRightIcon className="size-4 mr-2" />
