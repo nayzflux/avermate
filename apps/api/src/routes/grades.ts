@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { grades, subjects } from "@/db/schema";
+import { grades, subjects, periods } from "@/db/schema";
 import { type Session, type User } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
 import { and, desc, eq, gte, lte } from "drizzle-orm";
@@ -68,6 +68,17 @@ app.post("/", zValidator("json", createGradeSchema), async (c) => {
 
   if (!subject) throw new HTTPException(404);
   if (subject.userId !== session.user.id) throw new HTTPException(403);
+
+
+    // Check if the period exists and belongs to the user
+  if (periodId) {
+    const period = await db.query.periods.findFirst({
+      where: eq(periods.id, periodId),
+    });
+
+    if (!period) throw new HTTPException(404);
+    if (period.userId !== session.user.id) throw new HTTPException(403);
+  }
 
   // TODO: Error Handling
   const grade = await db
@@ -226,6 +237,26 @@ app.patch(
 
     const { gradeId } = c.req.valid("param");
     const data = c.req.valid("json");
+
+    // Check if the subject exists and belongs to the user
+    if (data.subjectId) {
+      const subject = await db.query.subjects.findFirst({
+        where: eq(subjects.id, data.subjectId),
+      });
+
+      if (!subject) throw new HTTPException(404);
+      if (subject.userId !== session.user.id) throw new HTTPException(403);
+    }
+
+    // Check if the period exists and belongs to the user
+    if (data.periodId) {
+      const period = await db.query.periods.findFirst({
+        where: eq(periods.id, data.periodId),
+      });
+
+      if (!period) throw new HTTPException(404);
+      if (period.userId !== session.user.id) throw new HTTPException(403);
+    }
 
     const grade = await db
       .update(grades)
