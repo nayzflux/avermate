@@ -19,9 +19,8 @@
 - [ ] Display a streak score (core implementation + refer to Figma for ideas).
 
 ### User Settings & Personalization
-- [ ] Allow users to change profile picture;
 - [ ] Add alternative design options, and ED link management in settings.
-- [ ] Customize what is shown on the overview pag
+- [ ] Customize what is shown on the overview page
 
 ### User Experience
 - [ ] Add smooth transitions and animations across the app.
@@ -34,4 +33,6 @@
 - [ ] Automatically detect CPE and sync grades with ED (apply default settings).
 - [ ] Add ED-specific features (e.g., display comments and unique data).
 - [ ] Fetch database from ED (plan the fetching strategy).
+
+- [ ] Localize
 
