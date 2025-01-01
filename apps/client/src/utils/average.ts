@@ -1096,8 +1096,13 @@ export function getGradeDates(subjects: Subject[], subjectId?: string): Date[] {
 export function findPeriodBounds(period: Period, subjects: Subject[]): { startAt: Date; endAt: Date } {
   // if the period id is full-year or null, then the bounds are the start of the first date of the first period and the end of the last date of the last period if the end date is inferior to the current date otherwise the end date is the current date for the full year we must check if all grades are included in the bounds, if not we must extend the bounds to include all grades. If there is no period, we return the 1st of september of the current year and the current date and make sure to include all grades in the bounds
   if (period.id === "full-year" || period.id === null) {
-    const startDate = new Date(new Date().getFullYear(), 8, 1); // 1st of september of the current year
-    const endDate = new Date();
+    const now = new Date();
+    let academicYear = now.getFullYear();
+    if (now.getMonth() < 8) {
+      academicYear--;
+    }
+    const startDate = new Date(academicYear, 8, 1);
+    const endDate = now;
     const allGradeDates = getGradeDates(subjects);
     const firstGradeDate = allGradeDates.reduce((acc, date) => (date < acc ? date : acc), endDate);
     const lastGradeDate = allGradeDates.reduce((acc, date) => (date > acc ? date : acc), startDate);
