@@ -33,6 +33,5 @@
 - [ ] Automatically detect CPE and sync grades with ED (apply default settings).
 - [ ] Add ED-specific features (e.g., display comments and unique data).
 - [ ] Fetch database from ED (plan the fetching strategy).
-
 - [ ] Localize
-
+- [ ] Cumulative periods
