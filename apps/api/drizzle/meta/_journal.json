@@ -15,6 +15,13 @@
       "when": 1734733093703,
       "tag": "0001_mixed_alice",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1735773380967,
+      "tag": "0002_rainy_mentallo",
+      "breakpoints": true
     }
   ]
 }

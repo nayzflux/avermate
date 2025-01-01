@@ -27,6 +27,7 @@ import { z } from "zod";
 import { Calendar } from "../ui/calendar";
 import { useMediaQuery } from "../ui/use-media-query";
 import { handleError } from "@/utils/error-utils";
+import { Switch } from "@/components/ui/switch"; // <-- Import Switch
 
 const updatePeriodSchema = z.object({
   name: z.string().min(1).max(64),
@@ -49,6 +50,8 @@ const updatePeriodSchema = z.object({
         path: ["to"],
       }
     ),
+  // NEW FIELD
+  isCumulative: z.boolean().optional(),
 });
 
 type UpdatePeriodSchema = z.infer<typeof updatePeriodSchema>;
@@ -67,17 +70,21 @@ export const UpdatePeriodForm = ({
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["update-Period"],
-    mutationFn: async ({ name, dateRange }: UpdatePeriodSchema) => {
+    mutationFn: async ({
+      name,
+      dateRange,
+      isCumulative,
+    }: UpdatePeriodSchema) => {
       const res = await apiClient.patch(`periods/${period.id}`, {
         json: {
           name,
           startAt: dateRange.from,
           endAt: dateRange.to,
+          isCumulative, // <-- update the field
         },
       });
 
-      const data = await res.json();
-      return data;
+      return res.json();
     },
     onSuccess: () => {
       toaster.toast({
@@ -87,11 +94,18 @@ export const UpdatePeriodForm = ({
 
       queryClient.invalidateQueries({ queryKey: ["periods"] });
       queryClient.invalidateQueries({ queryKey: ["period", period.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["subjects", "organized-by-periods"],
+      });
 
       close();
     },
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(
+        error,
+        toaster,
+        "Erreur lors de la mise à jour de la période."
+      );
     },
   });
 
@@ -103,6 +117,7 @@ export const UpdatePeriodForm = ({
         from: new Date(period.startAt),
         to: new Date(period.endAt),
       },
+      isCumulative: period.isCumulative || false,
     },
   });
 
@@ -114,6 +129,7 @@ export const UpdatePeriodForm = ({
     const normalizedStartAt = startOfDay(startAt);
     const normalizedEndAt = startOfDay(endAt);
 
+    // Overlap check
     const overlappingPeriod = periods.find((p) => {
       if (p.id === period.id) return false; // Skip current period
       const normalizedPeriodStartAt = startOfDay(p.startAt);
@@ -170,6 +186,7 @@ export const UpdatePeriodForm = ({
             )}
           />
 
+          {/* Date Range Field */}
           <FormField
             control={form.control}
             name="dateRange"
@@ -221,6 +238,26 @@ export const UpdatePeriodForm = ({
                     </Popover>
                   </div>
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* isCumulative Switch Field */}
+          <FormField
+            control={form.control}
+            name="isCumulative"
+            render={({ field }) => (
+              <FormItem className="mx-1">
+                <div className="flex flex-row gap-4 items-center">
+                  <FormLabel>Période cumulative ?</FormLabel>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </div>
                 <FormMessage />
               </FormItem>
             )}

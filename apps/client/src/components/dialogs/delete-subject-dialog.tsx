@@ -50,7 +50,7 @@ export default function DeleteSubjectDialog({
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
 
       toaster.toast({
-        title: `Note supprimée`,
+        title: `Matière supprimée`,
         description: `${subject.name} a été supprimée avec succès.`,
       });
 
@@ -61,7 +61,7 @@ export default function DeleteSubjectDialog({
       }
     },
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, "Erreur lors de la suppression de la matière.");
     },
   });
 

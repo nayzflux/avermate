@@ -108,7 +108,7 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
       queryClient.invalidateQueries({ queryKey: ["customAverages"] });
     },
     onError: (error: any) => {
-      handleError(error, toaster);
+      handleError(error, toaster, "Erreur lors de la création de la moyenne personnalisée.");
     },
   });
 

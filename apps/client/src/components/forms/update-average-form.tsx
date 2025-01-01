@@ -116,7 +116,7 @@ export const UpdateCustomAverageForm = ({
       });
     },
     onError: (error: any) => {
-      handleError(error, toaster);
+      handleError(error, toaster, "Erreur lors de la mise à jour de la moyenne personnalisée.");
     },
   });
 

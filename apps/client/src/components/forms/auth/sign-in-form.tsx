@@ -92,7 +92,7 @@ export const SignInForm = () => {
         }
       }
 
-      handleError(err, toaster);
+      handleError(err, toaster, "Erreur lors de la connexion.");
     },
   });
 

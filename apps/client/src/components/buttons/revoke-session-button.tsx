@@ -57,7 +57,7 @@ export default function RevokeSessionButton({
       }
     },
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, "Erreur lors de la révocation de la session.");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["sessions-list"] });

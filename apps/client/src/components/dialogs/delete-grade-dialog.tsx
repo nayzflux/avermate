@@ -53,7 +53,7 @@ export default function DeleteGradeDialog({ grade }: { grade: Grade }) {
       router.back();
     },
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, "Erreur lors de la suppression de la note.");
     },
   });
 

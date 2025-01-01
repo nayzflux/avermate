@@ -12,7 +12,8 @@ const errorMessages: Record<number, string> = {
 
 export function handleError(
   error: unknown,
-  toaster: ReturnType<typeof import("@/hooks/use-toast").useToast>
+  toaster: ReturnType<typeof import("@/hooks/use-toast").useToast>,
+  message?: string
 ) {
   if (error instanceof HTTPError) {
     const status = error.response.status;
@@ -20,13 +21,13 @@ export function handleError(
       errorMessages[status] || "Une erreur inconnue s'est produite.";
 
     toaster.toast({
-      title: "Erreur",
+      title: message || "Erreur",
       description: `${message} (${status})`,
       variant: "destructive",
     });
   } else {
     toaster.toast({
-      title: "Erreur",
+      title: message || "Erreur",
       description: `Une erreur inattendue s'est produite. Veuillez réessayer plus tard. (${error})`,
       variant: "destructive",
     });

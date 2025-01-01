@@ -112,7 +112,7 @@ export const UpdateSubjectForm = ({
       queryClient.invalidateQueries({ queryKey: ["subject", subject.id] });
     },
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, "Erreur lors de la modification de la matière.");
     },
   });
 

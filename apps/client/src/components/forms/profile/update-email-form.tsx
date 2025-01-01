@@ -50,7 +50,7 @@ export const UpdateEmailForm = ({
     },
 
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, "Erreur lors de la mise à jour de l'email.");
     },
   });
 

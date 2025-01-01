@@ -50,7 +50,7 @@ const { mutate, isPending } = useMutation({
     setOpen(false);
   },
   onError: (error) => {
-    handleError(error, toaster);
+    handleError(error, toaster, "Erreur lors de la suppression de la moyenne personnalisée.");
   },
 });
 

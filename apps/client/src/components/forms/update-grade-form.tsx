@@ -128,7 +128,7 @@ export const UpdateGradeForm = ({
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
     },
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, "Erreur lors de la modification de la note.");
     },
   });
 

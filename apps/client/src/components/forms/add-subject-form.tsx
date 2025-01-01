@@ -98,7 +98,7 @@ export const AddSubjectForm = ({
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
     },
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, "Erreur lors de l'ajout de la matière.");
     },
   });
 

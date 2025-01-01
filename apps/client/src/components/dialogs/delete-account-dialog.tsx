@@ -57,7 +57,7 @@ export default function DeleteAccountDialog() {
       localStorage.clear();
     },
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, "Erreur lors de la suppression du compte.");
     },
   });
 

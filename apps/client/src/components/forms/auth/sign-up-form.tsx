@@ -85,7 +85,7 @@ export const SignUpForm = () => {
     },
 
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, "Erreur lors de l'inscription.");
     },
   });
 

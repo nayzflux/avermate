@@ -49,7 +49,7 @@ export const ForgotPasswordForm = () => {
     },
 
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, "Erreur lors de l'envoi de l'email de réinitialisation du mot de passe.");
     },
   });
 

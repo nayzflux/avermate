@@ -27,6 +27,8 @@ import { z } from "zod";
 import { Calendar } from "../ui/calendar";
 import { useMediaQuery } from "../ui/use-media-query";
 import { handleError } from "@/utils/error-utils";
+import { Switch } from "@/components/ui/switch"; // <-- Import your Switch
+// ^ Adjust import path to wherever your Switch component lives
 
 const addPeriodSchema = z.object({
   name: z.string().min(1).max(64),
@@ -49,6 +51,8 @@ const addPeriodSchema = z.object({
         path: ["to"],
       }
     ),
+  // NEW FIELD
+  isCumulative: z.boolean().optional(),
 });
 
 type AddPeriodSchema = z.infer<typeof addPeriodSchema>;
@@ -65,50 +69,36 @@ export const AddPeriodForm = ({
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["create-Period"],
-    mutationFn: async ({ name, dateRange }: AddPeriodSchema) => {
+    mutationFn: async ({ name, dateRange, isCumulative }: AddPeriodSchema) => {
       const res = await apiClient.post("periods", {
         json: {
           name,
           startAt: dateRange.from,
           endAt: dateRange.to,
+          isCumulative, // <-- send this to your backend
         },
       });
-
-      // if (!res.ok) {
-      //   throw new Error("Failed to create period");
-      // }
 
       const data = await res.json();
       return data;
     },
-    onSuccess: (data) => {
-      // Send toast notification
+    onSuccess: () => {
       toaster.toast({
         description:
           "Vous pouvez maintenant organiser vos activités dans cette période.",
       });
 
-      queryClient.invalidateQueries({
-        queryKey: ["periods"],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["subjects"],
-      });
-
+      queryClient.invalidateQueries({ queryKey: ["periods"] });
+      queryClient.invalidateQueries({ queryKey: ["subjects"] });
       queryClient.invalidateQueries({
         queryKey: ["subjects", "organized-by-periods"],
       });
-
-      queryClient.invalidateQueries({
-        queryKey: ["periods"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["periods"] });
 
       close();
     },
-
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, "Erreur lors de la création de la période.");
     },
   });
 
@@ -122,6 +112,7 @@ export const AddPeriodForm = ({
         from: undefined,
         to: undefined,
       },
+      isCumulative: false, // default if you wish
     },
   });
 
@@ -131,6 +122,7 @@ export const AddPeriodForm = ({
     const normalizedStartAt = startOfDay(startAt);
     const normalizedEndAt = startOfDay(endAt);
 
+    // Check overlap
     const overlappingPeriod = periods.find((period) => {
       const normalizedPeriodStartAt = startOfDay(period.startAt);
       const normalizedPeriodEndAt = startOfDay(period.endAt);
@@ -186,6 +178,7 @@ export const AddPeriodForm = ({
             )}
           />
 
+          {/* Date Range Field */}
           <FormField
             control={form.control}
             name="dateRange"
@@ -229,12 +222,32 @@ export const AddPeriodForm = ({
                             from: startOfDay(period.startAt),
                             to: startOfDay(period.endAt),
                           }))}
-                          defaultMonth={field.value.from || new Date()}
+                          defaultMonth={field.value?.from || new Date()}
                         />
                       </PopoverContent>
                     </Popover>
                   </div>
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* isCumulative Switch Field */}
+          <FormField
+            control={form.control}
+            name="isCumulative"
+            render={({ field }) => (
+              <FormItem className="mx-1">
+                <div className="flex flex-row gap-4 items-center">
+                  <FormLabel>Période cumulative ?</FormLabel>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </div>
                 <FormMessage />
               </FormItem>
             )}

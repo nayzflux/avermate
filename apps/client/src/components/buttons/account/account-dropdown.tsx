@@ -25,6 +25,8 @@ import { LuGithub } from "react-icons/lu";
 import SignOutButton from "../sign-out-button";
 import ThemeSwitchButton from "../theme-switch-button";
 import Avatar from "./avatar";
+import { MessageSquareIcon } from "lucide-react";
+import FeedbackDialog from "@/components/dialogs/feedback-dialog";
 
 export default function AccountDropdown() {
   const toaster = useToast();
@@ -153,6 +155,15 @@ export default function AccountDropdown() {
             Support
           </Link>
         </DropdownMenuItem>
+        <FeedbackDialog>
+          <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
+            <span>
+              <MessageSquareIcon className="size-4 mr-2" />
+              Une remarque ?
+            </span>
+          </DropdownMenuItem>
+        </FeedbackDialog>
+
         <DropdownMenuSeparator />
 
         <SignOutButton />
