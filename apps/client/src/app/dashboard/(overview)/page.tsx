@@ -154,7 +154,7 @@ export default function OverviewPage() {
 
   //todo implement a custom field
   if (
-    new Date(session?.user?.createdAt).getTime() > Date.now() - 1000 * 60 &&
+    new Date(session?.user?.createdAt).getTime() > Date.now() - 1000 * 60 * 10 &&
     (!subjects || subjects.length === 0) &&
     (linkedProviders.has("google") || linkedProviders.has("microsoft")) &&
     localStorage.getItem("isOnboardingCompleted") !== "true"

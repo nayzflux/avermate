@@ -1539,6 +1539,7 @@ export function fullYearPeriod(subjects: Subject[]): Period {
     endAt: bounds.endAt.toISOString(),
     createdAt: new Date().toISOString(),
     userId: "",
+    isCumulative: false,
   };
 }
 
