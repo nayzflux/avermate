@@ -73,13 +73,6 @@ export default function SubjectAverageChart({
     [key: string]: number | null;
   }>({});
 
-  interface ChartDataEntry {
-    date: string;
-    average: number | null;
-    // Index signature to allow child subject keys, etc.
-    [key: string]: string | number | null;
-  }
-
   // Callback to update active tooltip indices
   const handleActiveTooltipIndicesChange = React.useCallback(
     (indices: { [key: string]: number | null }) => {
@@ -131,7 +124,7 @@ export default function SubjectAverageChart({
     const mainAverages = averageOverTime(subjects, subjectId, period, periods);
 
     // 7) Combine into chart data
-    const chartData: ChartDataEntry[] = dates.map((date, index) => ({
+    const chartData = dates.map((date, index) => ({
       date: date.toISOString(),
       average: mainAverages[index],
       ...Object.fromEntries(
@@ -158,32 +151,6 @@ export default function SubjectAverageChart({
 
     return { childrenAverage, chartData, chartConfig };
   })();
-
-  // [PATCH] Check if we have any data at all (empty state).
-  // If all values (for main average + children) are null, let's consider it empty
-  const hasAnyData = chartData.some((entry) => {
-    // Check the main average
-    if (entry.average !== null && entry.average !== undefined) return true;
-    // Check each child’s average
-    for (const key of Object.keys(entry)) {
-      if (key === "date" || key === "average") continue;
-      if (entry[key] !== null && entry[key] !== undefined) {
-        return true;
-      }
-    }
-    return false;
-  });
-
-  if (!hasAnyData) {
-    // [PATCH] Render some "empty" or "no data" state if you prefer
-    return (
-      <Card className="p-4 flex items-center justify-center">
-        <p className="text-sm text-muted-foreground">
-          Aucune note à afficher pour cette période.
-        </p>
-      </Card>
-    );
-  }
 
   // Custom dot component
   const CustomDot = (props: any) => {

@@ -19,6 +19,7 @@ import {
   subjectImpact,
   isSubjectIncludedInCustomAverage,
   buildCustomConfig,
+  fullYearPeriod as buildFullYearPeriod,
 } from "@/utils/average";
 import { formatGradeValue } from "@/utils/format";
 import {
@@ -32,6 +33,38 @@ import {
 } from "@heroicons/react/24/outline";
 import SubjectAverageChart from "./subject-average-chart";
 import { cn } from "@/lib/utils";
+import errorStateCard from "@/components/skeleton/error-card";
+
+/**
+ * Helper to get relevant period IDs if the period is cumulative.
+ * If "full-year", we ignore period IDs, so this just returns an empty array
+ * (and we'll handle full-year logic in the calling code).
+ */
+function getRelevantPeriodIds(period: Period, periods: Period[]): string[] {
+  if (period.id === "full-year") {
+    // We'll treat "full-year" as “all grades,” so no filtering by ID
+    return [];
+  }
+
+  // Sort all periods by start date
+  const sorted = [...periods].sort(
+    (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+  );
+  const currentIndex = sorted.findIndex((p) => p.id === period.id);
+
+  // If not found, fallback to just this period
+  if (currentIndex === -1) {
+    return [period.id];
+  }
+
+  if (period.isCumulative) {
+    // Gather IDs from the first period up to the current one
+    return sorted.slice(0, currentIndex + 1).map((p) => p.id);
+  }
+
+  // Non-cumulative => just the current period ID
+  return [period.id];
+}
 
 function SubjectWrapper({
   subjects,
@@ -48,6 +81,9 @@ function SubjectWrapper({
   onBack: () => void;
   periods: Period[];
 }) {
+  /**
+   * Returns an array of parent subjects for the given `subject`.
+   */
   const parentSubjects = () => {
     if (!subject || !subjects) {
       return [];
@@ -57,33 +93,48 @@ function SubjectWrapper({
     return subjects.filter((subj) => parentIds.includes(subj.id));
   };
 
-  const hasGrades = (subjectId: string): boolean => {
-    const currentSubject = subjects.find((subj) => subj.id === subjectId);
-
-    if (!currentSubject) {
+  /**
+   * Determine if there's at least one grade in this subject (or any of its children)
+   * that falls into the relevant period(s).
+   */
+  const hasGrades = (subjId: string): boolean => {
+    const currentSubj = subjects.find((s) => s.id === subjId);
+    if (!currentSubj) {
       return false;
     }
 
-    // Check grades in the current subject
-    const currentHasGrades =
-      period.id === "full-year"
-        ? currentSubject.grades.length > 0
-        : currentSubject.grades.some((grade) => grade.periodId === period.id);
+    // If it's "full-year", we consider *all* grades
+    if (period.id === "full-year") {
+      if (currentSubj.grades.length > 0) {
+        return true;
+      }
+    } else {
+      // If period is cumulative => gather all prior IDs
+      const relevantIds = getRelevantPeriodIds(period, periods);
 
-    if (currentHasGrades) {
-      return true;
+      // Check if at least one grade is in that set of IDs
+      const currentHasGrades = currentSubj.grades.some((g) =>
+        relevantIds.includes(g.periodId ?? "")
+      );
+      if (currentHasGrades) {
+        return true;
+      }
     }
 
-    // Recursively check grades in sub-subjects
-    const childSubjects = subjects.filter(
-      (subj) => subj.parentId === currentSubject.id
-    );
-    return childSubjects.some((child) => hasGrades(child.id));
+    // Check recursively in children
+    const children = subjects.filter((s) => s.parentId === currentSubj.id);
+    return children.some((child) => hasGrades(child.id));
   };
 
-  // Determine if there are grades in the selected subject or its sub-subjects
+  // If no subject or no periods, fallback
+  if (!subject || !period) {
+    return <div>{errorStateCard()}</div>;
+  }
+
+  // Evaluate whether we have relevant grades
   const isGradePresent = hasGrades(subject.id);
 
+  // A small helper to dynamically size columns on extra-wide screens
   function get4xlColsClass(cardCount: number) {
     switch (cardCount) {
       case 5:
@@ -99,28 +150,28 @@ function SubjectWrapper({
     }
   }
 
+  // If there's no grade found for the subject (and any children),
+  // we show the "empty state" with the BookOpen icon
   if (!isGradePresent) {
     return (
       <div className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
+        {/* Back Button */}
         <div>
-          <Button
-            className="text-blue-600"
-            variant="link"
-            onClick={onBack} // Use the onBack function instead of router.back()
-          >
+          <Button className="text-blue-600" variant="link" onClick={onBack}>
             <ArrowLeftIcon className="size-4 mr-2" />
             Retour
           </Button>
         </div>
 
-        <div>
-          <div className="flex justify-between items-center">
-            <p className="text-2xl font-semibold">{subject?.name}</p>
-            {subject && <SubjectMoreButton subject={subject} />}
-          </div>
+        {/* Subject Title & More Button */}
+        <div className="flex justify-between items-center">
+          <p className="text-2xl font-semibold">{subject?.name}</p>
+          {subject && <SubjectMoreButton subject={subject} />}
         </div>
 
         <Separator />
+
+        {/* Coefficient card (optional) */}
         <DataCard
           title="Coefficient"
           description={`Coefficient de ${subject?.name}`}
@@ -130,6 +181,8 @@ function SubjectWrapper({
             {formatGradeValue(subject?.coefficient || 0)}
           </p>
         </DataCard>
+
+        {/* Empty state */}
         <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
           <BookOpenIcon className="w-12 h-12" />
           <div className="flex flex-col items-center gap-1">
@@ -160,8 +213,10 @@ function SubjectWrapper({
     );
   }
 
+  // Otherwise, we *do* have some relevant grades => render the main UI
   return (
     <div className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
+      {/* Back Button */}
       <div>
         <Button className="text-blue-600" variant="link" onClick={onBack}>
           <ArrowLeftIcon className="size-4 mr-2" />
@@ -169,23 +224,23 @@ function SubjectWrapper({
         </Button>
       </div>
 
-      <div>
-        <div className="flex justify-between items-center">
-          <p className="text-2xl font-semibold">{subject?.name}</p>
-          {subject && (
-            <div className="flex gap-4">
-              {!subject.isDisplaySubject ? (
-                <AddGradeDialog parentId={subject.id}>
-                  <Button className="hidden md:flex">
-                    <PlusCircleIcon className="size-4 mr-2" />
-                    Ajouter une note
-                  </Button>
-                </AddGradeDialog>
-              ) : null}
-              <SubjectMoreButton subject={subject} />
-            </div>
-          )}
-        </div>
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <p className="text-2xl font-semibold">{subject?.name}</p>
+        {subject && (
+          <div className="flex gap-4">
+            {/* If it's not a "category/parent" subject, show AddGradeDialog */}
+            {!subject.isDisplaySubject ? (
+              <AddGradeDialog parentId={subject.id}>
+                <Button className="hidden md:flex">
+                  <PlusCircleIcon className="size-4 mr-2" />
+                  Ajouter une note
+                </Button>
+              </AddGradeDialog>
+            ) : null}
+            <SubjectMoreButton subject={subject} />
+          </div>
+        )}
       </div>
 
       <Separator />
@@ -218,6 +273,7 @@ function SubjectWrapper({
             outOf={2000}
           />
         </DataCard>
+
         {/* Coefficient */}
         <DataCard
           title="Coefficient"
@@ -228,7 +284,8 @@ function SubjectWrapper({
             {formatGradeValue(subject?.coefficient || 0)}
           </p>
         </DataCard>
-        {/* Subject Impact */}
+
+        {/* Subject Impact on overall average */}
         <DataCard
           title="Impact sur la moyenne générale"
           description={`Impact de ${subject?.name} sur la moyenne générale`}
@@ -244,11 +301,9 @@ function SubjectWrapper({
           />
         </DataCard>
 
-        {/* Render a card for each custom average if this subject is included */}
+        {/* Custom Averages if subject is included */}
         {customAverages.map((ca) => {
-          // Build the config map for this custom average
           const configMap = buildCustomConfig(ca);
-
           if (!isSubjectIncludedInCustomAverage(subject, subjects, configMap)) {
             return null;
           }
@@ -266,6 +321,7 @@ function SubjectWrapper({
           );
         })}
 
+        {/* Parent Subjects (impact on them) */}
         {parentSubjects().map((parent) => (
           <DataCard
             key={parent.id}
@@ -283,6 +339,8 @@ function SubjectWrapper({
             />
           </DataCard>
         ))}
+
+        {/* Best Grade */}
         <DataCard
           title="Meilleure note"
           description={`Votre plus belle performance en ${(() => {
@@ -301,7 +359,7 @@ function SubjectWrapper({
           </p>
         </DataCard>
 
-        {/* Worst grade */}
+        {/* Worst Grade */}
         <DataCard
           title="Pire note"
           description={`Votre moins bonne performance en ${(() => {
