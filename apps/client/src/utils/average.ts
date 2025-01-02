@@ -812,75 +812,162 @@ export function getSubjectTrend(
  *
  * The resulting array provides a time series of average scores, which can be used for trend analysis or visualizations.
  */
+/**
+ * Retrieves the average scores of subjects over a specified time period.
+ *
+ * @param subjects - An array of all subjects.
+ * @param subjectId - The ID of the subject to calculate the average for. If undefined, calculates for all subjects.
+ * @param period - The single period to consider (may have isCumulative).
+ * @param periods - All periods (needed to figure out "previous" ones if cumulative).
+ * @returns An array of averages corresponding to each date in the period.
+ *
+ * @details
+ * This function computes the average scores of subjects within a specified time frame. It considers grades that fall within
+ * the relevant period IDs and calculates averages incrementally over time. For a cumulative period, it includes the
+ * current period plus all prior periods in chronological order, from their earliest grade to this period's end.
+ *
+ * Calculation Steps:
+ * 1. Determine which period IDs to include:
+ *    - If "full-year", include *all* grades, ignoring period IDs.
+ *    - Else if isCumulative, gather all period IDs from the first user period up to the current one.
+ *    - Otherwise, just the current period ID.
+ * 2. Determine the start date:
+ *    - If "full-year", use period's `startAt` (or your existing `findPeriodBounds` logic).
+ *    - If isCumulative, use the earliest `startAt` among included periods.
+ *    - Otherwise, just use the current period's `startAt`.
+ * 3. Set the end date to the current period's `endAt` (unless "full-year").
+ * 4. Generate the daily date range between [start, end].
+ * 5. Filter subjects and grades to keep only:
+ *    - The selected subjects (subjectId + children, or all if none given).
+ *    - The relevant period IDs (or all if "full-year").
+ *    - Then clamp each grade date and gather "event" dates.
+ * 6. For each date in the range, compute or return `null` if there is no event (but always compute on the last date).
+ * 7. Return the array of incremental averages.
+ */
+
 export function averageOverTime(
   subjects: Subject[],
   subjectId: string | undefined,
-  period: Period
+  period: Period,
+  periods: Period[]
 ): (number | null)[] {
-  const { startAt, endAt } = findPeriodBounds(period, subjects);
-  const normalizedStartDate = startOfDay(startAt);
-  const normalizedEndDate = startOfDay(endAt);
   const isFullYear = period.id === "full-year";
+  const isCumulative = !!period.isCumulative;
 
+  // Sort all periods by start date
+  const sortedPeriods = [...periods].sort(
+    (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+  );
+
+  // Find the index of our current period
+  const currentIndex = sortedPeriods.findIndex((p) => p.id === period.id);
+
+  // Build a list of relevant period IDs
+  let relevantPeriodIds: string[] = [];
+  if (isFullYear) {
+    // "full-year" => We'll ignore period IDs below
+  } else if (isCumulative && currentIndex !== -1) {
+    // Gather all period IDs from the first up to currentIndex
+    relevantPeriodIds = sortedPeriods.slice(0, currentIndex + 1).map((p) => p.id);
+  } else {
+    // Non-cumulative => just the current one
+    relevantPeriodIds = [period.id];
+  }
+
+  // Determine the earliest start date for cumulative
+  // or just the current period's start date if not cumulative
+  let earliestStart = new Date(period.startAt);
+  if (isCumulative && currentIndex !== -1) {
+    earliestStart = new Date(sortedPeriods[0].startAt);
+  }
+
+  // Now we have the final start/end to pass to findPeriodBounds, or we do manual clamping
+  // If you have logic in findPeriodBounds, you can adapt. We'll do a simplified approach:
+
+  // Force the start/end from the earliest relevant or from the period itself
+  const normalizedStartDate = startOfDay(
+    isFullYear ? new Date(period.startAt) : earliestStart
+  );
+  const normalizedEndDate = startOfDay(new Date(period.endAt));
+
+  // Create the day-by-day date range
   const dates = createDateRange(normalizedStartDate, normalizedEndDate, 1);
 
-  const relevantGrades = subjects
-    .filter(
-      (subject) =>
-        !subjectId ||
-        subject.id === subjectId ||
-        getChildren(subjects, subjectId).includes(subject.id)
-    )
-    .flatMap((subject) =>
-      subject.grades.filter((grade) => isFullYear || grade.periodId === period.id)
-    );
+  // 1) Filter the subjects to only the target subject & its descendants (if subjectId provided)
+  const filteredSubjects = subjects.filter(
+    (subj) =>
+      !subjectId ||
+      subj.id === subjectId ||
+      getChildren(subjects, subjectId).includes(subj.id)
+  );
 
-  const gradeDates = relevantGrades.map((grade) => {
-    const gradeDate = new Date(grade.passedAt);
-    if (gradeDate < normalizedStartDate) return normalizedStartDate;
-    if (gradeDate > normalizedEndDate) return normalizedEndDate;
-    return gradeDate;
+  // 2) Flatten out all their grades but keep only the relevant ones
+  //    - If "full-year", no periodId filtering
+  //    - Otherwise, keep grade.periodId in relevantPeriodIds
+  const relevantGrades = filteredSubjects.flatMap((subj) =>
+    subj.grades.filter((grade) => {
+      if (isFullYear) return true; // Keep all
+      return relevantPeriodIds.includes(grade.periodId ?? "");
+    })
+  );
+
+  // 3) "Clamp" each grade date to [start, end] to build event dates
+  const clampedGradeDates = relevantGrades.map((g) => {
+    const gDate = new Date(g.passedAt);
+    if (gDate < normalizedStartDate) return normalizedStartDate;
+    if (gDate > normalizedEndDate) return normalizedEndDate;
+    return gDate;
   });
 
+  // 4) Identify unique event dates
   const uniqueGradeDates = Array.from(
-    new Set(gradeDates.map((date) => date.getTime()))
+    new Set(clampedGradeDates.map((d) => d.getTime()))
   ).map((time) => new Date(time));
 
+  // 5) For each date in [start, end], either compute an average or return null
   return dates.map((date, index) => {
+    // We do want a final data point on the last day, so check index == dates.length - 1
     const isRelevantDate =
-      uniqueGradeDates.some(
-        (gradeDate) => gradeDate.getTime() === date.getTime()
-      ) || index === dates.length - 1;
+      uniqueGradeDates.some((gd) => gd.getTime() === date.getTime()) ||
+      index === dates.length - 1;
 
-    if (isRelevantDate) {
-      const subjectsWithAdjustedGrades = subjects.map((subject) => ({
-        ...subject,
-        grades: subject.grades
-          .filter((grade) => isFullYear || grade.periodId === period.id)
-          .map((grade) => {
-            const gradeDate = new Date(grade.passedAt);
-            let adjustedDate = gradeDate;
-
-            if (gradeDate < normalizedStartDate) {
-              adjustedDate = normalizedStartDate;
-            } else if (gradeDate > normalizedEndDate) {
-              adjustedDate = normalizedEndDate;
-            }
-
-            return {
-              ...grade,
-              passedAt: adjustedDate.toISOString(),
-            };
-          })
-          .filter((grade) => new Date(grade.passedAt) <= date),
-      }));
-
-      return average(subjectId, subjectsWithAdjustedGrades);
+    if (!isRelevantDate) {
+      return null;
     }
 
-    return null;
+    // Now we build a version of each subject that only includes grades up to `date`
+    const subjectsWithAdjustedGrades = filteredSubjects.map((subj) => {
+      // Keep only relevant grades
+      const subjRelevantGrades = subj.grades.filter((grade) => {
+        if (isFullYear) return true;
+        return relevantPeriodIds.includes(grade.periodId ?? "");
+      });
+
+      // Clamp each grade date & keep only those <= current date
+      const clamped = subjRelevantGrades
+        .map((grade) => {
+          const originalDate = new Date(grade.passedAt);
+          let adjustedDate = originalDate;
+          if (originalDate < normalizedStartDate) {
+            adjustedDate = normalizedStartDate;
+          } else if (originalDate > normalizedEndDate) {
+            adjustedDate = normalizedEndDate;
+          }
+          return {
+            ...grade,
+            passedAt: adjustedDate.toISOString(),
+          };
+        })
+        .filter((clampedGrade) => new Date(clampedGrade.passedAt) <= date);
+
+      return { ...subj, grades: clamped };
+    });
+
+    // Compute the average (use your existing `average(subjectId, subjectsWithAdjustedGrades)`)
+    return average(subjectId, subjectsWithAdjustedGrades);
   });
 }
+
 
 /**
  * Retrieves the average scores for each subject.

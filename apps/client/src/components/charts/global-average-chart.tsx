@@ -33,14 +33,44 @@ import AddGradeDialog from "../dialogs/add-grade-dialog";
 import { SubjectEmptyState } from "../empty-states/subject-empty-state";
 import { Button } from "../ui/button";
 
+function getCumulativeStartDate(
+  periods: Period[],
+  currentPeriod: Period
+): Date {
+  if (currentPeriod.id === "full-year") {
+    // full-year => keep your existing logic or just use currentPeriod.startAt
+    return new Date(currentPeriod.startAt);
+  }
+
+  // Sort by start date
+  const sorted = [...periods].sort(
+    (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+  );
+  const currentIndex = sorted.findIndex((p) => p.id === currentPeriod.id);
+
+  if (currentIndex === -1) {
+    // fallback
+    return new Date(currentPeriod.startAt);
+  }
+
+  if (currentPeriod.isCumulative) {
+    // earliest is from the first period
+    return new Date(sorted[0].startAt);
+  }
+
+  return new Date(currentPeriod.startAt);
+}
+
 export const description = "A simple area chart";
 
 export default function GlobalAverageChart({
   subjects,
   period,
+  periods,
 }: {
   subjects: Subject[];
   period: Period;
+  periods: Period[];
 }) {
   // State to manage the active index for the data series
   const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(
@@ -54,7 +84,7 @@ export default function GlobalAverageChart({
 
   // Calculate the start and end dates
   const endDate = new Date(period.endAt);
-  const startDate = new Date(period.startAt);
+  const startDate = getCumulativeStartDate(periods, period);
 
   // Generate an array of dates
   const dates = [];
@@ -67,7 +97,7 @@ export default function GlobalAverageChart({
   }
 
   // Calculate the average grades over time
-  const averages = averageOverTime(subjects, undefined, period);
+  const averages = averageOverTime(subjects, undefined, period, periods);
 
   const chartData = dates.map((date, index) => ({
     date: date.toISOString(),

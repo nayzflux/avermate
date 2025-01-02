@@ -252,6 +252,7 @@ export default function OverviewPage() {
                         ?.subjects || []
                     }
                     customAverages={customAverages}
+                    periods={periods}
                   />
 
                   <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
@@ -267,6 +268,7 @@ export default function OverviewPage() {
                           (p) => p.period.id === period.id
                         )?.period || fullYearPeriod(subjects)
                       }
+                      periods={periods}
                     />
 
                     {/* Dernières notes */}
@@ -281,12 +283,14 @@ export default function OverviewPage() {
               subjects={subjects || []}
               period={fullYearPeriod(subjects)}
               customAverages={customAverages}
+              periods={periods}
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
               <GlobalAverageChart
                 subjects={subjects || []}
                 period={fullYearPeriod(subjects)}
+                periods={periods}
               />
 
               {subjects.length > 0 && (

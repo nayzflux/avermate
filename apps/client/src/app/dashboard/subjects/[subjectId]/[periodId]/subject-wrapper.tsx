@@ -39,12 +39,14 @@ function SubjectWrapper({
   period,
   customAverages,
   onBack,
+  periods,
 }: {
   subjects: Subject[];
   subject: Subject;
   period: Period;
   customAverages: Average[];
   onBack: () => void;
+  periods: Period[];
 }) {
   const parentSubjects = () => {
     if (!subject || !subjects) {
@@ -82,20 +84,20 @@ function SubjectWrapper({
   // Determine if there are grades in the selected subject or its sub-subjects
   const isGradePresent = hasGrades(subject.id);
 
-    function get4xlColsClass(cardCount: number) {
-      switch (cardCount) {
-        case 5:
-          return "4xl:grid-cols-5";
-        case 6:
-          return "4xl:grid-cols-6";
-        case 7:
-          return "4xl:grid-cols-4";
-        case 8:
-          return "4xl:grid-cols-4";
-        default:
-          return "4xl:grid-cols-5";
-      }
+  function get4xlColsClass(cardCount: number) {
+    switch (cardCount) {
+      case 5:
+        return "4xl:grid-cols-5";
+      case 6:
+        return "4xl:grid-cols-6";
+      case 7:
+        return "4xl:grid-cols-4";
+      case 8:
+        return "4xl:grid-cols-4";
+      default:
+        return "4xl:grid-cols-5";
     }
+  }
 
   if (!isGradePresent) {
     return (
@@ -331,6 +333,7 @@ function SubjectWrapper({
           subjectId={subject.id}
           period={period}
           subjects={subjects}
+          periods={periods}
         />
       </div>
     </div>

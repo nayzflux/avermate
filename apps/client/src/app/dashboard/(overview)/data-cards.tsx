@@ -26,10 +26,12 @@ export default function DataCards({
   period,
   subjects,
   customAverages,
+  periods,
 }: {
   period: Period;
   subjects: Subject[];
-  customAverages?: Average[];
+    customAverages?: Average[];
+    periods: Period[];
 }) {
   const averages = useMemo(() => {
     console.time("Calculating averages overtime");
@@ -40,7 +42,7 @@ export default function DataCards({
     startDate.setMonth(startDate.getMonth() - 3);
 
     // Calculate the average grades over time
-    const averages = averageOverTime(subjects, undefined, period);
+    const averages = averageOverTime(subjects, undefined, period, periods);
 
     console.timeEnd("Calculating averages overtime");
 

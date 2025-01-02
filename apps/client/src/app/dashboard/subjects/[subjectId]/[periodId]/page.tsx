@@ -145,6 +145,7 @@ export default function SubjectPage() {
       subject={organizedSubject}
       period={periods}
       customAverages={customAverages}
+      periods={sortedPeriods}
     />
   );
 }
