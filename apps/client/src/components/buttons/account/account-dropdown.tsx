@@ -83,7 +83,7 @@ export default function AccountDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger disabled={isPending}>
+      <DropdownMenuTrigger>
         <div className="p-2">
           {isPending ? (
             <Skeleton className="size-8 rounded-full" />
