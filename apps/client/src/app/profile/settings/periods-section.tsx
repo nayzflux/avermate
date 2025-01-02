@@ -41,9 +41,9 @@ export const PeriodsSection = () => {
             <CardTitle>
               <Skeleton className="w-36 h-6" />
             </CardTitle>
-            <CardDescription>
+            <div>
               <Skeleton className="w-20 h-4" />
-            </CardDescription>
+            </div>
           </CardHeader>
 
           <CardContent className="p-0">

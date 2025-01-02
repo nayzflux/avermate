@@ -248,13 +248,17 @@ export default function SubjectAverageChart({
               stroke={child.color}
               connectNulls={true}
               activeDot={false}
-              dot={(props) => (
-                <CustomDot
-                  {...props}
-                  dataKey={child.id}
-                  activeTooltipIndex={activeTooltipIndices[child.id]}
-                />
-              )}
+              dot={(props) => {
+                const { key, ...rest } = props;
+                return (
+                  <CustomDot
+                    key={key}
+                    {...rest}
+                    dataKey={child.id}
+                    activeTooltipIndex={activeTooltipIndices[child.id]}
+                  />
+                );
+              }}
             />
           ))}
 
@@ -267,13 +271,16 @@ export default function SubjectAverageChart({
             strokeWidth={3}
             connectNulls={true}
             activeDot={false}
-            dot={(props) => (
-              <CustomDot
-                {...props}
-                dataKey="average"
-                activeTooltipIndex={activeTooltipIndices["average"]}
-              />
-            )}
+            dot={(props) => {
+              const { key, ...restProps } = props;
+              return (
+                <CustomDot
+                  key={key}
+                  {...restProps}
+                  activeTooltipIndex={activeTooltipIndices["average"]}
+                />
+              );
+            }}
           />
         </LineChart>
       </ChartContainer>

@@ -313,12 +313,16 @@ export default function GlobalAverageChart({
                   stroke="#2662d9"
                   connectNulls={true}
                   activeDot={false}
-                  dot={(props) => (
-                    <CustomDot
-                      {...props}
-                      activeTooltipIndex={activeTooltipIndex}
-                    />
-                  )}
+                  dot={(props) => {
+                    const { key, ...rest } = props;
+                    return (
+                      <CustomDot
+                        key={key}
+                        {...rest}
+                        activeTooltipIndex={activeTooltipIndex}
+                      />
+                    );
+                  }}
                 />
               </AreaChart>
             </ChartContainer>
