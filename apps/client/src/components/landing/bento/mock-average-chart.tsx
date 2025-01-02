@@ -16,7 +16,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Separator } from "@/components/ui/separator";
-import { subjects } from "@/data/mock";
+import { useLocalizedSubjects } from "@/data/mock";
 import { average, averageOverTime } from "@/utils/average";
 import { BookOpenIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import {
@@ -30,11 +30,14 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useTranslations } from "next-intl";
 
 export const MockAverageChart = () => {
+  const t = useTranslations("Landing.Product.Mocks.Charts");
+
   const period = {
     id: "full-year",
-    name: "Toute l&apos;année",
+    name: t("fullYear"),
     startAt: new Date(new Date().getFullYear(), 8, 1).toISOString(),
     endAt: new Date(new Date().getFullYear() + 1, 5, 30).toISOString(),
     userId: "",
@@ -57,27 +60,30 @@ export const MockAverageChart = () => {
   }
 
   // Calculate the average grades over time
-  const averages = averageOverTime(subjects, undefined, period, []);
+  const averages = averageOverTime(
+    useLocalizedSubjects(),
+    undefined,
+    period,
+    []
+  );
 
   const chartData = dates.map((date, index) => ({
     date: date.toISOString(),
     average: averages[index],
   }));
 
-  //console.log(chartData);
-
   const chartConfig = {
     average: {
-      label: "Moyenne",
+      label: t("average"),
       color: "#2662d9",
     },
   };
 
   // Calculate average grades per subject for radar chart, only if it is a main subject
-  const subjectAverages = subjects
+  const subjectAverages = useLocalizedSubjects()
     .filter((subject) => subject.isMainSubject)
     .map((subject) => {
-      const averageGrade = average(subject.id, subjects);
+      const averageGrade = average(subject.id, useLocalizedSubjects());
       const validAverage = averageGrade ?? 0;
       return {
         subject: subject.name,
@@ -170,32 +176,26 @@ export const MockAverageChart = () => {
     return null;
   };
 
-  // console.log(subjects);
-  // console.log(chartData);
-  // console.log(radarData);
-
-  // handle if there is no subjects
-  if (subjects.length === 0) {
+  // handle if there are no subjects
+  if (useLocalizedSubjects().length === 0) {
     return <SubjectEmptyState />;
   }
 
-  //if all the average are null
+  // if all the averages are null
   if (chartData.every((data) => data.average === null)) {
     return (
       <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
         <BookOpenIcon className="w-12 h-12" />
         <div className="flex flex-col items-center gap-1">
           <h2 className="text-xl font-semibold text-center">
-            Aucune note pour l&apos;instant
+            {t("noGradesYet")}
           </h2>
-          <p className="text-center">
-            Ajouter une nouvelle note pour commencer à suivre vos moyennes.
-          </p>
+          <p className="text-center">{t("addGradeToStartTracking")}</p>
         </div>
         <AddGradeDialog>
           <Button variant="outline">
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une note
+            {t("addGrade")}
           </Button>
         </AddGradeDialog>
       </Card>
@@ -205,7 +205,7 @@ export const MockAverageChart = () => {
   return (
     <Card className="lg:col-span-5">
       <CardHeader>
-        <CardTitle>Moyenne Générale</CardTitle>
+        <CardTitle>{t("overallAverage")}</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -213,8 +213,7 @@ export const MockAverageChart = () => {
           {/* Area Chart Section */}
           <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%] lg:w-[60%]">
             <CardDescription className="pb-8">
-              Visualiser l&apos;évolution de votre moyenne générale sur ce
-              trimestre
+              {t("visualizeOverallAverage")}
             </CardDescription>
             <ChartContainer config={chartConfig} className="h-[302px] w-[100%]">
               <AreaChart data={chartData} margin={{ left: -30 }}>
@@ -286,9 +285,7 @@ export const MockAverageChart = () => {
 
           {/* Radar Chart Section */}
           <div className="flex flex-col items-center lg:space-y-2 lg:w-[40%] m-auto lg:pt-0 pt-8 w-[100%]">
-            <CardDescription>
-              Visualiser votre moyenne par matière
-            </CardDescription>
+            <CardDescription>{t("visualizeAverageBySubject")}</CardDescription>
             <ChartContainer
               config={chartConfig}
               className="h-[332px] w-[100%] m-auto !aspect-auto"

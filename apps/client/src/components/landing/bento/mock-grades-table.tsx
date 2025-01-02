@@ -9,15 +9,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { subjects } from "@/data/mock";
+import { useLocalizedSubjects } from "@/data/mock";
 import { cn } from "@/lib/utils";
 import { Subject } from "@/types/subject";
 import { average } from "@/utils/average";
 import Link from "next/link";
 import React from "react";
+import { useTranslations } from "next-intl";
 
 const MockGradesTable = () => {
-  const periodName = "Année complète";
+  const t = useTranslations("Landing.Product.Mocks.Grades");
+  const periodName = t("fullYear");
   const overallAverage = "12.34";
 
   return (
@@ -27,21 +29,25 @@ const MockGradesTable = () => {
       {/* Desktop Table Header */}
       <TableHeader className="hidden md:table-header-group">
         <TableRow>
-          <TableHead className="w-[50px] md:w-[200px]">Matières</TableHead>
-          <TableHead className="w-[50px] md:w-[100px] text-center">
-            Moyennes
+          <TableHead className="w-[50px] md:w-[200px]">
+            {t("subjects")}
           </TableHead>
-          <TableHead>Notes</TableHead>
+          <TableHead className="w-[50px] md:w-[100px] text-center">
+            {t("averages")}
+          </TableHead>
+          <TableHead>{t("grades")}</TableHead>
         </TableRow>
       </TableHeader>
 
-      <TableBody>{renderSubjects(subjects, "full-year", null)}</TableBody>
+      <TableBody>
+        {renderSubjects(useLocalizedSubjects(), "full-year", null)}
+      </TableBody>
 
       <TableFooter>
         {/* Desktop Footer */}
         <TableRow className="hidden md:table-row">
           <TableCell className="font-semibold" colSpan={2}>
-            Moyenne générale
+            {t("overallAverage")}
           </TableCell>
           <TableCell className="text-right font-semibold">
             {overallAverage}
@@ -50,7 +56,7 @@ const MockGradesTable = () => {
         {/* Mobile Footer */}
         <TableRow className="md:hidden">
           <TableCell className="font-semibold text-center" colSpan={3}>
-            Moyenne générale: {overallAverage}
+            {t("overallAverage")}: {overallAverage}
           </TableCell>
         </TableRow>
       </TableFooter>
@@ -111,6 +117,7 @@ function renderSubjects(
   periodId: string,
   parentId: string | null = null
 ) {
+  const t = useTranslations("Landing.Product.Mocks.Grades");
   return subjects
     .filter((subject) => subject.parentId === parentId)
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -142,7 +149,8 @@ function renderSubjects(
 
               {/* Mobile-only average display (hidden on md+) */}
               <div className="md:hidden mt-1 text-sm text-gray-600">
-                Moyenne: <span className="font-semibold">{subjAverage}</span>
+                {t("average")}:{" "}
+                <span className="font-semibold">{subjAverage}</span>
               </div>
             </TableCell>
 

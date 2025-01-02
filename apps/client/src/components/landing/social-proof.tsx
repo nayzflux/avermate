@@ -6,6 +6,7 @@ import { apiClient } from "@/lib/api";
 import { GetSocialResponse } from "@/types/get-social-response";
 import { Skeleton } from "../ui/skeleton";
 import NumberTicker from "../ui/number-ticker";
+import { useTranslations } from "next-intl";
 
 export const SocialProof = () => {
   const { data, isError, isPending } = useQuery({
@@ -17,6 +18,8 @@ export const SocialProof = () => {
     },
   });
 
+  const t = useTranslations("Landing.SocialProof");
+
   if (isError) {
     return (
       <LandingSection className="!px-0 !py-0">
@@ -24,21 +27,21 @@ export const SocialProof = () => {
           <div className="flex flex-col items-center px-1">
             <p className="font-extrabold text-lg md:text-2xl">0</p>
             <p className="text-center text-sm md:text-base text-muted-foreground">
-              Utilisateurs inscrits
+              {t("users")}
             </p>
           </div>
 
           <div className="flex flex-col items-center px-2">
             <p className="font-extrabold text-lg md:text-2xl">0</p>
             <p className="text-center text-sm md:text-base text-muted-foreground">
-              Notes entrées
+              {t("grades")}
             </p>
           </div>
 
           <div className="flex flex-col items-center px-1">
             <p className="font-extrabold text-lg md:text-2xl">0</p>
             <p className="text-center text-sm md:text-base text-muted-foreground">
-              Matières crées
+              {t("subjects")}
             </p>
           </div>
         </div>
@@ -53,21 +56,21 @@ export const SocialProof = () => {
           <div className="flex flex-col items-center px-1">
               <Skeleton className="w-12 h-7 md:h-8" />
             <p className="text-center text-sm md:text-base text-muted-foreground">
-              Utilisateurs inscrits
+              {t("users")}
             </p>
           </div>
 
           <div className="flex flex-col items-center px-2">
               <Skeleton className="w-12 h-7 md:h-8" />
             <p className="text-center text-sm md:text-base text-muted-foreground">
-              Notes entrées
+              {t("grades")}
             </p>
           </div>
 
           <div className="flex flex-col items-center px-1">
               <Skeleton className="w-12 h-7 md:h-8" />
             <p className="text-center text-sm md:text-base text-muted-foreground">
-              Matières crées
+              {t("subjects")}
             </p>
           </div>
         </div>
@@ -83,7 +86,7 @@ export const SocialProof = () => {
             <NumberTicker value={data?.userCount || 0} decimalPlaces={0} />
           </p>
           <p className="text-center text-sm md:text-base text-muted-foreground">
-            Utilisateurs inscrits
+            {t("users")}
           </p>
         </div>
 
@@ -92,7 +95,7 @@ export const SocialProof = () => {
             <NumberTicker value={data?.gradeCount || 0} decimalPlaces={0} />
           </p>
           <p className="text-center text-sm md:text-base text-muted-foreground">
-            Notes entrées
+            {t("grades")}
           </p>
         </div>
 
@@ -101,7 +104,7 @@ export const SocialProof = () => {
             <NumberTicker value={data?.subjectCount || 0} decimalPlaces={0} />
           </p>
           <p className="text-center text-sm md:text-base text-muted-foreground">
-            Matières crées
+            {t("subjects")}
           </p>
         </div>
       </div>

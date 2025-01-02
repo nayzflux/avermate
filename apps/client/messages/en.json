@@ -1,0 +1,112 @@
+{
+    "Landing": {
+        "Headline": {
+            "title": "Take control of your grades",
+            "subtitle": "Get an instant and accurate overview of your grades and averages. Track your progress in real time to achieve your goals.",
+            "discoverFeatures": "Discover features",
+            "getStarted": "Get started",
+            "goToDashboard": "Go to dashboard"
+        },
+        "SocialProof": {
+            "users": "Registered users",
+            "grades": "Grades entered",
+            "subjects": "Subjects created"
+        },
+        "Benefits": {
+            "easyToSetup": "Easy to set up",
+            "fastAndSecure": "Fast and secure",
+            "flexibleAndCustomizable": "Flexible and customizable",
+            "goodUserExperience": "Good user experience",
+            "hardToSetup": "Hard to set up",
+            "badUserExperience": "Bad user experience",
+            "lackOfFeatures": "Lack of features",
+            "stayFocused": "Stay focused on what really matters",
+            "simplifyResults": "Let us simplify your results",
+            "withoutAvermate": "Without Avermate",
+            "withAvermate": "With Avermate"
+        },
+        "Product": {
+            "heading": "Track your progress at a glance",
+            "subHeading": "Discover our features",
+            "Features": {
+                "preciseOverview": "Precise and Clear Overview",
+                "preciseOverviewDescription": "Analyze your results with advanced statistics and precise averages. Identify your strengths and areas for improvement at a glance.",
+                "flexibleSubjects": "Flexible Subjects and Coefficients",
+                "flexibleSubjectsDescription": "Customize your tracking: create your subjects, adjust coefficients, and follow averages tailored to your path.",
+                "realTimeProgress": "Real-Time Progress",
+                "realTimeProgressDescription": "Track your results in real-time with detailed charts. Visualize your progress and adjust your efforts.",
+                "discover": "Discover",
+                "learnMore": "Learn More",
+                "use": "Use"
+            },
+            "Mocks": {
+                "Data": {
+                    "scientificModule": "Scientific Module",
+                    "mathematics": "Mathematics",
+                    "physicsChemistry": "Physics-Chemistry",
+                    "computerScience": "Computer Science",
+                    "french": "French",
+                    "english": "English",
+                    "lv2": "Second Foreign Language",
+                    "mathWritten": "Mathematics - Written",
+                    "mathOral": "Mathematics - Oral",
+                    "physicsChemistryWritten": "Physics-Chemistry - Written",
+                    "physicsChemistryOral": "Physics-Chemistry - Oral",
+                    "physicsChemistryLab": "Physics-Chemistry - Lab",
+                    "frenchWritten": "French - Written",
+                    "frenchOral": "French - Oral",
+                    "englishWritten": "English - Written",
+                    "englishOral": "English - Oral"
+                },
+                "Insights": {
+                    "obtainedGrade": "Obtained Grade",
+                    "obtainedGradeDescription": "Your grade obtained in this evaluation out of 20",
+                    "impactOnOverallAverage": "Impact on Overall Average",
+                    "impactOnOverallAverageDescription": "See the impact of this evaluation on your overall average",
+                    "impactOnMathAverage": "Impact on Math Average",
+                    "impactOnMathAverageDescription": "See the impact of this evaluation on your Math average",
+                    "coefficient": "Coefficient",
+                    "coefficientDescription": "The coefficient of this evaluation",
+                    "subject": "Subject",
+                    "subjectDescription": "The subject of this evaluation",
+                    "mathWritten": "Mathematics - Written",
+                    "examDate": "Exam Date",
+                    "examDateDescription": "The date of this evaluation",
+                    "examDateValue": "Dec 04, 2024"
+                },
+                "Grades": {
+                    "fullYear": "Full Year",
+                    "subjects": "Subjects",
+                    "averages": "Averages",
+                    "grades": "Grades",
+                    "overallAverage": "Overall Average",
+                    "average": "Average"
+                },
+                "Charts": {
+                    "fullYear": "Full Year",
+                    "average": "Average",
+                    "noGradesYet": "No grades yet",
+                    "addGradeToStartTracking": "Add a new grade to start tracking your averages.",
+                    "addGrade": "Add Grade",
+                    "overallAverage": "Overall Average",
+                    "visualizeOverallAverage": "Visualize the evolution of your overall average over this term",
+                    "visualizeAverageBySubject": "Visualize your average by subject"
+                }
+            }
+        },
+        "CTA": {
+            "startToday": "Start today",
+            "transformEfforts": "Transform your efforts into success"
+        },
+        "FAQ": {
+            "question1": "How are my data stored?",
+            "answer1": "Your data is securely stored in our database.",
+            "question2": "Who else can see my grades?",
+            "answer2": "You are the only one who has access to your grades.",
+            "question3": "Why use Avermate instead of Excel?",
+            "answer3": "Unlike Excel, everything is ready: track your averages automatically, visualize your progress with clear charts, and manage your subjects and coefficients easily. No need to create formulas or complicated tables, we take care of everything to simplify your life!",
+            "question4": "How much does Avermate cost?",
+            "answer4": "Our service is completely free. Enjoy all our features at no cost!"
+        }
+    }
+}

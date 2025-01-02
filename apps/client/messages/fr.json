@@ -1,0 +1,112 @@
+{
+    "Landing": {
+        "Headline": {
+            "title": "Prenez le contrôle de vos notes",
+            "subtitle": "Obtenez un aperçu instantané et précis de vos notes et de vos moyennes. Suivez votre progression en temps réel pour atteindre vos objectifs.",
+            "discoverFeatures": "Découvrir les fonctionnalités",
+            "getStarted": "Commencer maintenant",
+            "goToDashboard": "Aller au tableau de bord"
+        },
+        "SocialProof": {
+            "users": "Utilisateurs inscrits",
+            "grades": "Notes entrées",
+            "subjects": "Matières créées"
+        },
+        "Benefits": {
+            "easyToSetup": "Facile à mettre en place",
+            "fastAndSecure": "Rapide et sécurisé",
+            "flexibleAndCustomizable": "Flexible et personnalisable",
+            "goodUserExperience": "Bonne expérience utilisateur",
+            "hardToSetup": "Difficile à mettre en place",
+            "badUserExperience": "Mauvaise expérience utilisateur",
+            "lackOfFeatures": "Manque de fonctionnalités",
+            "stayFocused": "Restez concentré sur ce qui compte vraiment",
+            "simplifyResults": "Laissez-nous simplifier vos résultats",
+            "withoutAvermate": "Sans Avermate",
+            "withAvermate": "Avec Avermate"
+        },
+        "Product": {
+            "heading": "Suivez votre progression en un coup d'oeil",
+            "subHeading": "Découvrez nos fonctionnalitées",
+            "Features": {
+                "preciseOverview": "Aperçu précis et clair",
+                "preciseOverviewDescription": "Analysez vos résultats avec des statistiques avancées, des moyennes précises. Identifiez vos points forts et vos axes d'améliorations en un coup d'oeil.",
+                "flexibleSubjects": "Matières et coefficients flexibles",
+                "flexibleSubjectsDescription": "Personnalisez votre suivi : créez vos matières, ajustez les coefficients et suivez des moyennes adaptées à votre parcours.",
+                "realTimeProgress": "Évolution en temps réel",
+                "realTimeProgressDescription": "Suivez l'évolution de vos résultats en temps réel grâce à des graphiques détaillés. Visualisez vos progrès et ajustez vos efforts.",
+                "discover": "Découvrir",
+                "learnMore": "En savoir plus",
+                "use": "Utilisez"
+            },
+            "Mocks": {
+                "Data": {
+                    "scientificModule": "Module Scientifique",
+                    "mathematics": "Mathématiques",
+                    "physicsChemistry": "Physique-Chimie",
+                    "computerScience": "Informatique",
+                    "french": "Français",
+                    "english": "Anglais",
+                    "lv2": "LV2",
+                    "mathWritten": "Mathématiques - Écrits",
+                    "mathOral": "Mathématiques - Oraux",
+                    "physicsChemistryWritten": "Physique-Chimie - Écrits",
+                    "physicsChemistryOral": "Physique-Chimie - Oraux",
+                    "physicsChemistryLab": "Physique-Chimie - TP",
+                    "frenchWritten": "Français - Écrits",
+                    "frenchOral": "Français - Oraux",
+                    "englishWritten": "Anglais - Écrits",
+                    "englishOral": "Anglais - Oraux"
+                },
+                "Insights": {
+                    "obtainedGrade": "Note obtenue",
+                    "obtainedGradeDescription": "Votre note obtenue lors de cette évaluation sur 20",
+                    "impactOnOverallAverage": "Impact sur la moyenne générale",
+                    "impactOnOverallAverageDescription": "Visualisez l'impact de cette évaluation sur votre moyenne générale",
+                    "impactOnMathAverage": "Impact sur Mathématiques",
+                    "impactOnMathAverageDescription": "Visualisez l'impact de cette évaluation sur votre moyenne de la matière Mathématiques",
+                    "coefficient": "Coefficient",
+                    "coefficientDescription": "Le coefficient de cette évaluation",
+                    "subject": "Matières",
+                    "subjectDescription": "La matière de cette évaluation",
+                    "mathWritten": "Mathématiques - Ecrit",
+                    "examDate": "Date de passage",
+                    "examDateDescription": "La date de passage de cette évaluation",
+                    "examDateValue": "04 déc. 2024"
+                },
+                "Grades": {
+                    "fullYear": "Année complète",
+                    "subjects": "Matières",
+                    "averages": "Moyennes",
+                    "grades": "Notes",
+                    "overallAverage": "Moyenne générale",
+                    "average": "Moyenne"
+                },
+                "Charts": {
+                    "fullYear": "Toute l'année",
+                    "average": "Moyenne",
+                    "noGradesYet": "Aucune note pour l'instant",
+                    "addGradeToStartTracking": "Ajouter une nouvelle note pour commencer à suivre vos moyennes.",
+                    "addGrade": "Ajouter une note",
+                    "overallAverage": "Moyenne Générale",
+                    "visualizeOverallAverage": "Visualiser l'évolution de votre moyenne générale sur ce trimestre",
+                    "visualizeAverageBySubject": "Visualiser votre moyenne par matière"
+                }
+            }
+        },
+        "CTA": {
+            "startToday": "Commencez dès aujourd'hui",
+            "transformEfforts": "Transformez vos efforts en succès"
+        },
+        "FAQ": {
+            "question1": "Comment mes données sont elles stockées ?",
+            "answer1": "Vos données sont stockées de façon sécurisée dans notre base de données.",
+            "question2": "Qui d'autres peut voir mes notes ?",
+            "answer2": "Vous êtes le seul à avoir accès à vos notes.",
+            "question3": "Pourquoi utiliser Avermate plutôt qu'Excel ?",
+            "answer3": "Contrairement à Excel, tout est déjà prêt : suivez vos moyennes automatiquement, visualisez vos progrès avec des graphiques clairs et gérez vos matières et coefficients facilement. Plus besoin de créer des formules ou des tableaux compliqués, on s'occupe de tout pour vous simplifier la vie !",
+            "question4": "Combien coûte Avermate ?",
+            "answer4": "Notre service est entièrement gratuit. Profitez de toutes nos fonctionnalités sans aucun frais !"
+        }
+    }
+}
