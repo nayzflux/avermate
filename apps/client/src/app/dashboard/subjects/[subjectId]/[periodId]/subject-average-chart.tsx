@@ -73,6 +73,13 @@ export default function SubjectAverageChart({
     [key: string]: number | null;
   }>({});
 
+  interface ChartDataEntry {
+    date: string;
+    average: number | null;
+    // Index signature to allow child subject keys, etc.
+    [key: string]: string | number | null;
+  }
+
   // Callback to update active tooltip indices
   const handleActiveTooltipIndicesChange = React.useCallback(
     (indices: { [key: string]: number | null }) => {
@@ -124,7 +131,7 @@ export default function SubjectAverageChart({
     const mainAverages = averageOverTime(subjects, subjectId, period, periods);
 
     // 7) Combine into chart data
-    const chartData = dates.map((date, index) => ({
+    const chartData: ChartDataEntry[] = dates.map((date, index) => ({
       date: date.toISOString(),
       average: mainAverages[index],
       ...Object.fromEntries(
