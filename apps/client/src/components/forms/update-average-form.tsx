@@ -25,7 +25,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -48,6 +48,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api";
 import { Average } from "@/types/average";
 import { handleError } from "@/utils/error-utils";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 dayjs.locale("fr");
 
@@ -263,6 +264,9 @@ export const UpdateCustomAverageForm = ({
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
+                      <VisuallyHidden>
+                        <DrawerTitle>Choisir une matière</DrawerTitle>
+                      </VisuallyHidden>
                       <div className="mt-4 border-t p-4">
                         <Command>
                           <CommandInput

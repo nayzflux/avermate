@@ -9,7 +9,12 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -41,6 +46,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Calendar } from "../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
@@ -455,54 +461,59 @@ export const UpdateGradeForm = ({
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
-                      <Command>
-                        <CommandInput
-                          ref={periodInputRef}
-                          placeholder="Choisir une période"
-                          className="h-9"
-                          onValueChange={setPeriodInputValue}
-                          value={periodInputValue}
-                        />
-                        <CommandList>
-                          <CommandEmpty>Aucune période trouvée</CommandEmpty>
-                          <CommandGroup>
-                            {periods?.map((period) => (
+                      <VisuallyHidden>
+                        <DrawerTitle>Choisir une matière</DrawerTitle>
+                      </VisuallyHidden>
+                      <div className="mt-4 border-t p-4">
+                        <Command>
+                          <CommandInput
+                            ref={periodInputRef}
+                            placeholder="Choisir une période"
+                            className="h-9"
+                            onValueChange={setPeriodInputValue}
+                            value={periodInputValue}
+                          />
+                          <CommandList>
+                            <CommandEmpty>Aucune période trouvée</CommandEmpty>
+                            <CommandGroup>
+                              {periods?.map((period) => (
+                                <CommandItem
+                                  key={period.id}
+                                  value={period.name}
+                                  onSelect={() => {
+                                    form.setValue("periodId", period.id, {
+                                      shouldValidate: true,
+                                    });
+                                    setIsManualPeriod(true);
+                                    setOpenPeriod(false);
+                                  }}
+                                >
+                                  <span>{period.name}</span>
+                                  {form.getValues("periodId") === period.id && (
+                                    <Check className="ml-auto h-4 w-4" />
+                                  )}
+                                </CommandItem>
+                              ))}
                               <CommandItem
-                                key={period.id}
-                                value={period.name}
+                                key="full-year"
+                                value="Année complète"
                                 onSelect={() => {
-                                  form.setValue("periodId", period.id, {
+                                  form.setValue("periodId", "full-year", {
                                     shouldValidate: true,
                                   });
                                   setIsManualPeriod(true);
                                   setOpenPeriod(false);
                                 }}
                               >
-                                <span>{period.name}</span>
-                                {form.getValues("periodId") === period.id && (
+                                <span>Année complète</span>
+                                {form.getValues("periodId") === "full-year" && (
                                   <Check className="ml-auto h-4 w-4" />
                                 )}
                               </CommandItem>
-                            ))}
-                            <CommandItem
-                              key="full-year"
-                              value="Année complète"
-                              onSelect={() => {
-                                form.setValue("periodId", "full-year", {
-                                  shouldValidate: true,
-                                });
-                                setIsManualPeriod(true);
-                                setOpenPeriod(false);
-                              }}
-                            >
-                              <span>Année complète</span>
-                              {form.getValues("periodId") === "full-year" && (
-                                <Check className="ml-auto h-4 w-4" />
-                              )}
-                            </CommandItem>
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </div>
                     </DrawerContent>
                   </Drawer>
                 )}
@@ -601,43 +612,49 @@ export const UpdateGradeForm = ({
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
-                      <Command>
-                        <CommandInput
-                          ref={subjectInputRef}
-                          placeholder="Choisir une matière"
-                          className="h-9"
-                          value={subjectInputValue}
-                          onValueChange={setSubjectInputValue}
-                        />
-                        <CommandList>
-                          <CommandEmpty>Aucune matière trouvée</CommandEmpty>
-                          <CommandGroup>
-                            {subjects
-                              ?.filter(
-                                (subject) => subject.isDisplaySubject === false
-                              )
-                              .sort((a, b) => a.name.localeCompare(b.name))
-                              .map((subject) => (
-                                <CommandItem
-                                  key={subject.id}
-                                  value={subject.name}
-                                  onSelect={() => {
-                                    form.setValue("subjectId", subject.id, {
-                                      shouldValidate: true,
-                                    });
-                                    setOpenSubject(false);
-                                  }}
-                                >
-                                  <span>{subject.name}</span>
-                                  {form.getValues("subjectId") ===
-                                    subject.id && (
-                                    <Check className="ml-auto h-4 w-4" />
-                                  )}
-                                </CommandItem>
-                              ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
+                      <VisuallyHidden>
+                        <DrawerTitle>Choisir une matière</DrawerTitle>
+                      </VisuallyHidden>
+                      <div className="mt-4 border-t p-4">
+                        <Command>
+                          <CommandInput
+                            ref={subjectInputRef}
+                            placeholder="Choisir une matière"
+                            className="h-9"
+                            value={subjectInputValue}
+                            onValueChange={setSubjectInputValue}
+                          />
+                          <CommandList>
+                            <CommandEmpty>Aucune matière trouvée</CommandEmpty>
+                            <CommandGroup>
+                              {subjects
+                                ?.filter(
+                                  (subject) =>
+                                    subject.isDisplaySubject === false
+                                )
+                                .sort((a, b) => a.name.localeCompare(b.name))
+                                .map((subject) => (
+                                  <CommandItem
+                                    key={subject.id}
+                                    value={subject.name}
+                                    onSelect={() => {
+                                      form.setValue("subjectId", subject.id, {
+                                        shouldValidate: true,
+                                      });
+                                      setOpenSubject(false);
+                                    }}
+                                  >
+                                    <span>{subject.name}</span>
+                                    {form.getValues("subjectId") ===
+                                      subject.id && (
+                                      <Check className="ml-auto h-4 w-4" />
+                                    )}
+                                  </CommandItem>
+                                ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </div>
                     </DrawerContent>
                   </Drawer>
                 )}

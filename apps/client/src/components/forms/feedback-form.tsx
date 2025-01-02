@@ -31,7 +31,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { apiClient } from "@/lib/api";
@@ -41,6 +41,7 @@ import { Session, User } from "better-auth/types";
 import { Badge } from "@/components/ui/badge";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { handleError } from "@/utils/error-utils";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 // Feedback schema validation
 const feedbackSchema = z.object({
@@ -226,6 +227,9 @@ export const FeedbackForm = ({ close }: { close: () => void }) => {
                     </FormControl>
                   </DrawerTrigger>
                   <DrawerContent>
+                    <VisuallyHidden>
+                      <DrawerTitle>Sélectionner un type de remarque</DrawerTitle>
+                    </VisuallyHidden>
                     <div className="mt-4 border-t p-4">
                       <Command>
                         <CommandInput
