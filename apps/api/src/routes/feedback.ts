@@ -1,8 +1,9 @@
+import { env } from "@/lib/env";
 import { zValidator } from "@hono/zod-validator";
+import { Client, GatewayIntentBits, TextChannel } from "discord.js";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { Client, GatewayIntentBits, TextChannel } from "discord.js";
 
 const app = new Hono();
 
@@ -10,7 +11,9 @@ const app = new Hono();
 const feedbackSchema = z.object({
   type: z.enum(["Général", "Bug", "Suggestion"]),
   subject: z.string().min(1, "Un titre est requis"),
-  content: z.string().min(10, "La remarque doit contenir au moins 10 caractères"),
+  content: z
+    .string()
+    .min(10, "La remarque doit contenir au moins 10 caractères"),
   email: z.string().email("Adresse email invalide").optional(),
   image: z
     .string()
@@ -26,25 +29,20 @@ const feedbackSchema = z.object({
     ),
 });
 
-// Discord bot setup using environment variables
-const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
-const DISCORD_CHANNEL_ID = process.env.DISCORD_CHANNEL_ID;
-
-if (!DISCORD_TOKEN || !DISCORD_CHANNEL_ID) {
-  throw new Error("DISCORD_TOKEN or DISCORD_CHANNEL_ID is not set in environment variables");
-}
-
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
-
-client.once("ready", () => {
-  if (client.user) {
-    console.log(`Discord bot logged in as ${client.user.tag}`);
-  } else {
-    console.error("Discord bot user is null");
-  }
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
 
-client.login(DISCORD_TOKEN);
+// Je pense pas que c'est nécessaire
+// client.once("ready", () => {
+//   if (client.user) {
+//     console.log(`Discord bot logged in as ${client.user.tag}`);
+//   } else {
+//     console.error("Discord bot user is null");
+//   }
+// });
+
+client.login(env.DISCORD_TOKEN);
 
 app.post("/", zValidator("json", feedbackSchema), async (c) => {
   const { type, subject, content, email, image } = c.req.valid("json");
@@ -58,8 +56,13 @@ app.post("/", zValidator("json", feedbackSchema), async (c) => {
           email
             ? { name: "Email", value: email }
             : { name: "Email", value: "Anonymous" },
-            ],
-            color: type === "Bug" ? 0xff0000 : type === "Suggestion" ? 0x00ff00 : 0x0000ff, // Red for bugs, green for suggestions, blue for general
+        ],
+        color:
+          type === "Bug"
+            ? 0xff0000
+            : type === "Suggestion"
+            ? 0x00ff00
+            : 0x0000ff, // Red for bugs, green for suggestions, blue for general
         image: image
           ? {
               url: `attachment://feedback-image-${Date.now()}.png`, // Referencing the uploaded image
@@ -79,7 +82,7 @@ app.post("/", zValidator("json", feedbackSchema), async (c) => {
   }
 
   try {
-    const channel = await client.channels.fetch(DISCORD_CHANNEL_ID);
+    const channel = await client.channels.fetch(env.DISCORD_CHANNEL_ID);
     if (!channel || !channel.isTextBased()) {
       throw new Error("Discord channel not found or is not text-based");
     }
