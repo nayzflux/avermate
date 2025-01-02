@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -36,6 +36,7 @@ import {
   CommandList,
 } from "../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 const updateSubjectSchema = z.object({
   name: z.string().min(1).max(64),
@@ -340,6 +341,9 @@ export const UpdateSubjectForm = ({
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
+                      <VisuallyHidden>
+                        <DrawerTitle>Choisir une matière</DrawerTitle>
+                      </VisuallyHidden>
                       <div className="mt-4 border-t p-4">
                         <Command>
                           <CommandInput

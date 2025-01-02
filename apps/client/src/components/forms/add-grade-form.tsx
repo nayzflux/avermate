@@ -24,7 +24,12 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -47,6 +52,7 @@ import { apiClient } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { handleError } from "@/utils/error-utils";
 import { useMediaQuery } from "../ui/use-media-query";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 dayjs.locale("fr");
 
@@ -437,6 +443,9 @@ export const AddGradeForm = ({
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
+                      <VisuallyHidden>
+                        <DrawerTitle>Choisir une période</DrawerTitle>
+                      </VisuallyHidden>
                       <div className="mt-4 border-t p-4">
                         <Command>
                           <CommandInput
@@ -590,6 +599,9 @@ export const AddGradeForm = ({
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
+                      <VisuallyHidden>
+                        <DrawerTitle>Choisir une matière</DrawerTitle>
+                      </VisuallyHidden>
                       <div className="mt-4 border-t p-4">
                         <Command>
                           <CommandInput

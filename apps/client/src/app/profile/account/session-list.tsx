@@ -59,9 +59,9 @@ export default function SessionList() {
             <CardTitle>
               <Skeleton className="w-36 h-6" />
             </CardTitle>
-            <CardDescription>
+            <div>
               <Skeleton className="w-32 h-5" />
-            </CardDescription>
+            </div>
           </CardHeader>
 
           <CardContent className="p-0">

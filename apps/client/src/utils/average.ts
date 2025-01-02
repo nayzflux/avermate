@@ -761,9 +761,10 @@ export function createDateRange(
 export function getSubjectTrend(
   subjects: Subject[],
   subjectId: string,
-  period: Period
+  period: Period,
+  periods: Period[]
 ): number | null {
-  const averages = averageOverTime(subjects, subjectId, period);
+  const averages = averageOverTime(subjects, subjectId, period, periods);
 
   if (averages.every((avg) => avg === null)) {
     return null;

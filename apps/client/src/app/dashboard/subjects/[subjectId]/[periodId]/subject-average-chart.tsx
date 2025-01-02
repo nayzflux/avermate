@@ -152,32 +152,6 @@ export default function SubjectAverageChart({
     return { childrenAverage, chartData, chartConfig };
   })();
 
-  // [PATCH] Check if we have any data at all (empty state).
-  // If all values (for main average + children) are null, let's consider it empty
-  const hasAnyData = chartData.some((entry) => {
-    // Check the main average
-    if (entry.average !== null && entry.average !== undefined) return true;
-    // Check each child’s average
-    for (const key of Object.keys(entry)) {
-      if (key === "date" || key === "average") continue;
-      if (entry[key] !== null && entry[key] !== undefined) {
-        return true;
-      }
-    }
-    return false;
-  });
-
-  if (!hasAnyData) {
-    // [PATCH] Render some "empty" or "no data" state if you prefer
-    return (
-      <Card className="p-4 flex items-center justify-center">
-        <p className="text-sm text-muted-foreground">
-          Aucune note à afficher pour cette période.
-        </p>
-      </Card>
-    );
-  }
-
   // Custom dot component
   const CustomDot = (props: any) => {
     const { cx, cy, index, stroke, activeTooltipIndex } = props;
@@ -241,13 +215,17 @@ export default function SubjectAverageChart({
               stroke={child.color}
               connectNulls={true}
               activeDot={false}
-              dot={(props) => (
-                <CustomDot
-                  {...props}
-                  dataKey={child.id}
-                  activeTooltipIndex={activeTooltipIndices[child.id]}
-                />
-              )}
+              dot={(props) => {
+                const { key, ...rest } = props;
+                return (
+                  <CustomDot
+                    key={key}
+                    {...rest}
+                    dataKey={child.id}
+                    activeTooltipIndex={activeTooltipIndices[child.id]}
+                  />
+                );
+              }}
             />
           ))}
 
@@ -260,13 +238,16 @@ export default function SubjectAverageChart({
             strokeWidth={3}
             connectNulls={true}
             activeDot={false}
-            dot={(props) => (
-              <CustomDot
-                {...props}
-                dataKey="average"
-                activeTooltipIndex={activeTooltipIndices["average"]}
-              />
-            )}
+            dot={(props) => {
+              const { key, ...restProps } = props;
+              return (
+                <CustomDot
+                  key={key}
+                  {...restProps}
+                  activeTooltipIndex={activeTooltipIndices["average"]}
+                />
+              );
+            }}
           />
         </LineChart>
       </ChartContainer>

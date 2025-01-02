@@ -39,6 +39,7 @@ export const MockAverageChart = () => {
     endAt: new Date(new Date().getFullYear() + 1, 5, 30).toISOString(),
     userId: "",
     createdAt: "",
+    isCumulative: true,
   };
 
   // Calculate the start and end dates
@@ -56,7 +57,7 @@ export const MockAverageChart = () => {
   }
 
   // Calculate the average grades over time
-  const averages = averageOverTime(subjects, undefined, period);
+  const averages = averageOverTime(subjects, undefined, period, []);
 
   const chartData = dates.map((date, index) => ({
     date: date.toISOString(),
@@ -269,7 +270,10 @@ export const MockAverageChart = () => {
                   stroke="#2662d9"
                   connectNulls={true}
                   activeDot={false}
-                  dot={(props) => <CustomDot {...props} />}
+                  dot={(props) => {
+                    const { key, ...rest } = props;
+                    return <CustomDot key={key} {...rest} />;
+                  }}
                 />
               </AreaChart>
             </ChartContainer>

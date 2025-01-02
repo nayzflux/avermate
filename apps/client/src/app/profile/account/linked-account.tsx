@@ -83,18 +83,16 @@ export default function LinkedAccount() {
             <CardTitle>
               <Skeleton className="w-36 h-6" />
             </CardTitle>
-            <CardDescription>
-              <Skeleton className="w-20 h-4" />
-            </CardDescription>
+            <div>
+                <Skeleton className="w-20 h-4" />
+            </div>
           </CardHeader>
 
           <CardContent className="p-0">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2 border-t text-sm px-2 pt-4">
                 <div className="flex gap-2">
-                  <p className="font-semibold">
-                    <Skeleton className="w-20 h-6" />
-                  </p>
+                  <Skeleton className="w-20 h-6" />
                 </div>
                 <div className="flex justify-end"></div>
               </div>

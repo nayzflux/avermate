@@ -31,10 +31,11 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { handleError } from "@/utils/error-utils";
 import { useSubjects } from "@/hooks/use-subjects";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 const addSubjectSchema = z.object({
   name: z.string().min(1).max(64),
@@ -301,39 +302,44 @@ export const AddSubjectForm = ({
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
-                      <Command>
-                        <CommandInput
-                          ref={parentInputRef}
-                          placeholder="Choisir une matière"
-                          className="h-9"
-                        />
-                        <CommandList>
-                          <CommandEmpty>Aucune matière trouvée</CommandEmpty>
-                          <CommandGroup>
-                            {subjects
-                              ?.slice()
-                              .sort((a, b) => a.name.localeCompare(b.name))
-                              .map((subject) => (
-                                <CommandItem
-                                  key={subject.id}
-                                  value={subject.name}
-                                  onSelect={() => {
-                                    form.setValue("parentId", subject.id, {
-                                      shouldValidate: true,
-                                    });
-                                    setOpenParent(false);
-                                  }}
-                                >
-                                  <span>{subject.name}</span>
-                                  {form.getValues("parentId") ===
-                                    subject.id && (
-                                    <CheckIcon className="w-4 h-4 ml-auto" />
-                                  )}
-                                </CommandItem>
-                              ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
+                      <VisuallyHidden>
+                        <DrawerTitle>Choisir une matière</DrawerTitle>
+                      </VisuallyHidden>
+                      <div className="mt-4 border-t p-4">
+                        <Command>
+                          <CommandInput
+                            ref={parentInputRef}
+                            placeholder="Choisir une matière"
+                            className="h-9"
+                          />
+                          <CommandList>
+                            <CommandEmpty>Aucune matière trouvée</CommandEmpty>
+                            <CommandGroup>
+                              {subjects
+                                ?.slice()
+                                .sort((a, b) => a.name.localeCompare(b.name))
+                                .map((subject) => (
+                                  <CommandItem
+                                    key={subject.id}
+                                    value={subject.name}
+                                    onSelect={() => {
+                                      form.setValue("parentId", subject.id, {
+                                        shouldValidate: true,
+                                      });
+                                      setOpenParent(false);
+                                    }}
+                                  >
+                                    <span>{subject.name}</span>
+                                    {form.getValues("parentId") ===
+                                      subject.id && (
+                                      <CheckIcon className="w-4 h-4 ml-auto" />
+                                    )}
+                                  </CommandItem>
+                                ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </div>
                     </DrawerContent>
                   </Drawer>
                 )}
