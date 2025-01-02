@@ -19,6 +19,7 @@
     "discord.js": "^14.16.3",
     "drizzle-orm": "^0.36.4",
     "hono": "^4.6.13",
+    "ky": "^1.7.4",
     "nanoid": "^5.0.9",
     "resend": "^4.0.1",
     "uploadthing": "^7.4.1",
