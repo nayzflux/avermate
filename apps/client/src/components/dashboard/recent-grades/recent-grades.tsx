@@ -9,12 +9,15 @@ import {
 } from "@/components/ui/card";
 import { Grade } from "@/types/grade";
 import RecentGradesList from "./recent-grades-list";
+import { useTranslations } from "next-intl";
 
 export default function RecentGradesCard({
   recentGrades,
 }: {
   recentGrades: Grade[];
 }) {
+  const t = useTranslations("Dashboard.Cards.RecentGradesCard");
+
   const recentCount = recentGrades.filter(
     (grade) =>
       new Date(grade.createdAt) > new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
@@ -23,10 +26,8 @@ export default function RecentGradesCard({
   return (
     <Card className="lg:col-span-2 flex flex-col overflow-hidden min-w-0">
       <CardHeader>
-        <CardTitle className="text-l">Notes récentes</CardTitle>
-        <CardDescription>
-          Vous avez reçu {recentCount} nouvelles notes cette semaine !
-        </CardDescription>
+        <CardTitle className="text-l">{t("title")}</CardTitle>
+        <CardDescription>{t("description", { recentCount })}</CardDescription>
       </CardHeader>
 
       <CardContent className="h-full overflow-hidden min-w-0">

@@ -24,6 +24,8 @@ const createPeriodSchema = z.object({
   name: z.string().min(1).max(64),
   startAt: z.coerce.date().optional().default(new Date()),
   endAt: z.coerce.date().optional().default(new Date()),
+  // NEW FIELD
+  isCumulative: z.boolean().default(false),
 });
 
 app.post("/", zValidator("json", createPeriodSchema), async (c) => {
@@ -39,7 +41,7 @@ app.post("/", zValidator("json", createPeriodSchema), async (c) => {
     );
   }
 
-  const { name, startAt, endAt } = c.req.valid("json");
+  const { name, startAt, endAt, isCumulative } = c.req.valid("json");
 
   if (startAt > endAt) {
     throw new HTTPException(400);
@@ -49,10 +51,11 @@ app.post("/", zValidator("json", createPeriodSchema), async (c) => {
     .insert(periods)
     .values({
       name,
-      startAt: new Date(startAt.getTime()), // Correction ici
-      endAt: new Date(endAt.getTime()), // Correction ici
+      startAt: new Date(startAt.getTime()),
+      endAt: new Date(endAt.getTime()),
       userId: session.user.id,
-      createdAt: new Date(), // Ajout d'un timestamp pour la création
+      createdAt: new Date(),
+      isCumulative
     })
     .returning()
     .get();
@@ -126,6 +129,8 @@ const updatePeriodSchema = z.object({
   name: z.string().min(1).max(64).optional(),
   startAt: z.coerce.date().optional(),
   endAt: z.coerce.date().optional(),
+  // NEW FIELD
+  isCumulative: z.boolean().optional(),
 });
 
 app.patch(
@@ -149,7 +154,7 @@ app.patch(
     }
 
     const { periodId } = c.req.valid("param");
-    const { name, startAt, endAt } = c.req.valid("json");
+    const { name, startAt, endAt, isCumulative } = c.req.valid("json");
 
     const period = await db
       .update(periods)
@@ -157,6 +162,7 @@ app.patch(
         name,
         startAt: startAt ? new Date(startAt.getTime()) : undefined,
         endAt: endAt ? new Date(endAt.getTime()) : undefined,
+        isCumulative
       })
       .where(and(eq(periods.id, periodId), eq(periods.userId, session.user.id)))
       .returning()
@@ -199,7 +205,7 @@ app.delete("/:periodId", zValidator("param", deletePeriodSchema), async (c) => {
 
   if (!period) throw new HTTPException(404);
 
-  return c.json({ period }); // Wrap the deleted period in an object
+  return c.json({ period });
 });
 
 export default app;

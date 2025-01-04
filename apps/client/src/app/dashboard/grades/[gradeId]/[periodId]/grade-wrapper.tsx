@@ -3,6 +3,7 @@
 import GradeMoreButton from "@/components/buttons/dashboard/grade/grade-more-button";
 import DataCard from "@/components/dashboard/data-card";
 import GradeValue from "@/components/dashboard/grade-value";
+import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Grade } from "@/types/grade";
@@ -24,6 +25,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { DifferenceBadge } from "../difference-badge";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 export default function GradeWrapper({
   subjects,
@@ -38,6 +40,8 @@ export default function GradeWrapper({
   customAverages: Average[];
   onBack: () => void; // Receive the onBack prop from the parent
 }) {
+  const t = useTranslations("Dashboard.Pages.GradeWrapper"); // Initialize t
+
   const gradeParents = () => {
     if (!grade || !subjects) {
       return [];
@@ -81,7 +85,7 @@ export default function GradeWrapper({
           onClick={onBack} // Use onBack instead of router.back()
         >
           <ArrowLeftIcon className="size-4 mr-2" />
-          Retour
+          {t("back")}
         </Button>
       </div>
 
@@ -105,26 +109,26 @@ export default function GradeWrapper({
         )}
       >
         <DataCard
-          title="Note obtenue"
-          description={`Votre note obtenue lors de cette évaluation sur ${
-            grade.outOf / 100
-          }`}
+          title={t("scoreObtainedTitle")}
+          description={t("scoreObtainedDescription", {
+            outOf: grade.outOf / 100,
+          })}
           icon={SparklesIcon}
         >
           <GradeValue value={grade.value} outOf={grade.outOf} />
         </DataCard>
 
         <DataCard
-          title="Matière"
-          description="La matière de cette évaluation"
+          title={t("subjectTitle")}
+          description={t("subjectDescription")}
           icon={AcademicCapIcon}
         >
           <p className="texl-xl md:text-3xl font-bold">{grade.subject.name}</p>
         </DataCard>
 
         <DataCard
-          title="Coefficient"
-          description="Le coefficient de cette évaluation"
+          title={t("coefficientTitle")}
+          description={t("coefficientDescription")}
           icon={VariableIcon}
         >
           <p className="texl-xl md:text-3xl font-bold">
@@ -133,8 +137,8 @@ export default function GradeWrapper({
         </DataCard>
 
         <DataCard
-          title="Impact sur la moyenne générale"
-          description="Visualisez l'impact de cette évaluation sur votre moyenne générale"
+          title={t("impactOverallAverageTitle")}
+          description={t("impactOverallAverageDescription")}
           icon={ArrowUpCircleIcon}
         >
           <DifferenceBadge
@@ -162,8 +166,10 @@ export default function GradeWrapper({
           return (
             <DataCard
               key={ca.id}
-              title={`Impact sur ${ca.name}`}
-              description={`Visualisez l'impact de cette note sur le custom average: ${ca.name}`}
+              title={t("impactCustomAverageTitle", { name: ca.name })}
+              description={t("impactCustomAverageDescription", {
+                name: ca.name,
+              })}
               icon={ArrowUpCircleIcon}
             >
               <DifferenceBadge diff={withGrade?.difference || 0} />
@@ -174,8 +180,10 @@ export default function GradeWrapper({
         {gradeParents().map((parent: Subject) => (
           <DataCard
             key={parent.id}
-            title={`Impact sur ${parent.name}`}
-            description={`Visualisez l'impact de cette évaluation sur votre moyenne de la matière ${parent.name}`}
+            title={t("impactParentAverageTitle", { name: parent.name })}
+            description={t("impactParentAverageDescription", {
+              parentName: parent.name,
+            })}
             icon={ArrowUpCircleIcon}
           >
             <DifferenceBadge
@@ -189,8 +197,10 @@ export default function GradeWrapper({
         ))}
 
         <DataCard
-          title={`Impact sur ${grade.subject.name}`}
-          description={`Visualisez l'impact de cette évaluation sur votre moyenne de la matière ${grade.subject.name}`}
+          title={t("impactSubjectAverageTitle", { name: grade.subject.name })}
+          description={t("impactSubjectAverageDescription", {
+            name: grade.subject.name,
+          })}
           icon={ArrowUpCircleIcon}
         >
           <DifferenceBadge
@@ -204,8 +214,8 @@ export default function GradeWrapper({
         </DataCard>
 
         <DataCard
-          title="Date de passage"
-          description="La date de passage de cette évaluation"
+          title={t("passDateTitle")}
+          description={t("passDateDescription")}
           icon={CalendarIcon}
         >
           <p className="texl-xl md:text-3xl font-bold">
@@ -214,8 +224,8 @@ export default function GradeWrapper({
         </DataCard>
 
         <DataCard
-          title="Date d'ajout"
-          description="La date d'ajout de cette évaluation"
+          title={t("addedDateTitle")}
+          description={t("addedDateDescription")}
           icon={CalendarIcon}
         >
           <p className="texl-xl md:text-3xl font-bold">

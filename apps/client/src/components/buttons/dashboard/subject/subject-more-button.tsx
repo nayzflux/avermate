@@ -13,8 +13,11 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { Subject } from "@/types/subject";
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import { PlusCircleIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function SubjectMoreButton({ subject }: { subject: Subject }) {
+  const t = useTranslations("Dashboard.Buttons.SubjectMoreButton");
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -37,7 +40,7 @@ export default function SubjectMoreButton({ subject }: { subject: Subject }) {
               variant="ghost"
             >
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une note
+              {t("addGrade")}
             </Button>
           </AddGradeDialog>
         </DropdownMenuItem>

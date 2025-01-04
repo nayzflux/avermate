@@ -5,9 +5,12 @@ import Logo from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const Tos = () => {
   const router = useRouter();
+  const t = useTranslations("Legal.Tos");
+
   return (
     <div className="container mx-auto py-10">
       <div className="pb-8">
@@ -16,349 +19,222 @@ const Tos = () => {
       <div className="pb-6">
         <Button onClick={() => router.back()}>
           <ArrowLeftIcon />
-          Retour
+          {t("backButton")}
         </Button>
       </div>
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-        Terms and Conditions
+        {t("title")}
       </h1>
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Last updated: December 07, 2024
-      </p>
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Please read these terms and conditions carefully before using Our
-        Service.
-      </p>
+      <p className="leading-7 [&:not(:first-child)]:mt-6">{t("lastUpdated")}</p>
+      <p className="leading-7 [&:not(:first-child)]:mt-6">{t("intro.p1")}</p>
 
       <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        Interpretation and Definitions
+        {t("interpretationDefinitions.title")}
       </h2>
       <h3 className="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">
-        Interpretation
+        {t("interpretationDefinitions.interpretationTitle")}
       </h3>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        The words of which the initial letter is capitalized have meanings
-        defined under the following conditions. The following definitions shall
-        have the same meaning regardless of whether they appear in singular or
-        in plural.
+        {t("interpretationDefinitions.interpretationText")}
       </p>
       <h3 className="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">
-        Definitions
+        {t("interpretationDefinitions.definitionsTitle")}
       </h3>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        For the purposes of these Terms and Conditions:
+        {t("interpretationDefinitions.definitionsIntro")}
       </p>
       <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
         <li>
           <p>
-            <strong>Application</strong> means the software program provided by
-            the Company downloaded by You on any electronic device, named
-            Avermate.
+            {t.rich("interpretationDefinitions.list.application", {
+              b: (chunks) => <b>{chunks}</b>,
+            })}
           </p>
         </li>
         <li>
           <p>
-            <strong>Application Store</strong> means the digital distribution
-            service operated and developed by Apple Inc. (Apple App Store) or
-            Google Inc. (Google Play Store) in which the Application has been
-            downloaded.
+            {t.rich("interpretationDefinitions.list.applicationStore", {
+              b: (chunks) => <b>{chunks}</b>,
+            })}
           </p>
         </li>
         <li>
           <p>
-            <strong>Affiliate</strong> means an entity that controls, is
-            controlled by, or is under common control with a party, where
-            &quot;control&quot; means ownership of 50% or more of the shares,
-            equity interest, or other securities entitled to vote for election
-            of directors or other managing authority.
+            {t.rich("interpretationDefinitions.list.affiliate", {
+              b: (chunks) => <b>{chunks}</b>,
+            })}
           </p>
         </li>
         <li>
           <p>
-            <strong>Country</strong> refers to: France
+            {t.rich("interpretationDefinitions.list.country", {
+              b: (chunks) => <b>{chunks}</b>,
+            })}
           </p>
         </li>
         <li>
           <p>
-            <strong>Company</strong> (referred to as either &quot;the
-            Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in
-            this Agreement) refers to Avermate.
+            {t.rich("interpretationDefinitions.list.company", {
+              b: (chunks) => <b>{chunks}</b>,
+            })}
           </p>
         </li>
         <li>
           <p>
-            <strong>Device</strong> means any device that can access the Service
-            such as a computer, a cellphone, or a digital tablet.
+            {t.rich("interpretationDefinitions.list.device", {
+              b: (chunks) => <b>{chunks}</b>,
+            })}
           </p>
         </li>
         <li>
           <p>
-            <strong>Service</strong> refers to the Application.
+            {t.rich("interpretationDefinitions.list.service", {
+              b: (chunks) => <b>{chunks}</b>,
+            })}
           </p>
         </li>
         <li>
           <p>
-            <strong>Terms and Conditions</strong> (also referred as
-            &quot;Terms&quot;) mean these Terms and Conditions that form the
-            entire agreement between You and the Company regarding the use of
-            the Service.
+            {t.rich("interpretationDefinitions.list.termsAndConditions", {
+              b: (chunks) => <b>{chunks}</b>,
+            })}
           </p>
         </li>
         <li>
           <p>
-            <strong>Third-party Social Media Service</strong> means any services
-            or content (including data, information, products, or services)
-            provided by a third-party that may be displayed, included, or made
-            available by the Service.
+            {t.rich("interpretationDefinitions.list.thirdPartySocial", {
+              b: (chunks) => <b>{chunks}</b>,
+            })}
           </p>
         </li>
         <li>
           <p>
-            <strong>You</strong> means the individual accessing or using the
-            Service, or the company, or other legal entity on behalf of which
-            such individual is accessing or using the Service, as applicable.
+            {t.rich("interpretationDefinitions.list.you", {
+              b: (chunks) => <b>{chunks}</b>,
+            })}
           </p>
         </li>
       </ul>
 
       <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        Acknowledgment
+        {t("acknowledgment.title")}
       </h2>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        These are the Terms and Conditions governing the use of this Service and
-        the agreement that operates between You and the Company. These Terms and
-        Conditions set out the rights and obligations of all users regarding the
-        use of the Service.
+        {t("acknowledgment.p1")}
       </p>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Your access to and use of the Service is conditioned on Your acceptance
-        of and compliance with these Terms and Conditions. These Terms and
-        Conditions apply to all visitors, users, and others who access or use
-        the Service.
+        {t("acknowledgment.p2")}
       </p>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        By accessing or using the Service You agree to be bound by these Terms
-        and Conditions. If You disagree with any part of these Terms and
-        Conditions then You may not access the Service.
+        {t("acknowledgment.p3")}
       </p>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        You represent that You are over the age of 18. The Company does not
-        permit those under 18 to use the Service.
+        {t("acknowledgment.p4")}
       </p>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Your access to and use of the Service is also conditioned on Your
-        acceptance of and compliance with the Privacy Policy of the Company. Our
-        Privacy Policy describes Our policies and procedures on the collection,
-        use, and disclosure of Your personal information when You use the
-        Application or the Website and tells You about Your privacy rights and
-        how the law protects You. Please read Our Privacy Policy carefully
-        before using Our Service.
+        {t("acknowledgment.p5")}
       </p>
 
       <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        Links to Other Websites
+        {t("links.title")}
+      </h2>
+      <p className="leading-7 [&:not(:first-child)]:mt-6">{t("links.p1")}</p>
+      <p className="leading-7 [&:not(:first-child)]:mt-6">{t("links.p2")}</p>
+      <p className="leading-7 [&:not(:first-child)]:mt-6">{t("links.p3")}</p>
+
+      <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+        {t("termination.title")}
       </h2>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Our Service may contain links to third-party websites or services that
-        are not owned or controlled by the Company.
+        {t("termination.p1")}
       </p>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        The Company has no control over, and assumes no responsibility for, the
-        content, privacy policies, or practices of any third-party websites or
-        services. You further acknowledge and agree that the Company shall not
-        be responsible or liable, directly or indirectly, for any damage or loss
-        caused or alleged to be caused by or in connection with the use of or
-        reliance on any such content, goods, or services available on or through
-        any such websites or services.
-      </p>
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
-        We strongly advise You to read the terms and conditions and privacy
-        policies of any third-party websites or services that You visit.
+        {t("termination.p2")}
       </p>
 
       <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        Termination
+        {t("limitationOfLiability.title")}
       </h2>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        We may terminate or suspend Your access immediately, without prior
-        notice or liability, for any reason whatsoever, including without
-        limitation if You breach these Terms and Conditions.
+        {t("limitationOfLiability.p1")}
       </p>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Upon termination, Your right to use the Service will cease immediately.
+        {t("limitationOfLiability.p2")}
+      </p>
+      <p className="leading-7 [&:not(:first-child)]:mt-6">
+        {t("limitationOfLiability.p3")}
       </p>
 
       <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        Limitation of Liability
+        {t("asIs.title")}
+      </h2>
+      <p className="leading-7 [&:not(:first-child)]:mt-6">{t("asIs.p1")}</p>
+      <p className="leading-7 [&:not(:first-child)]:mt-6">{t("asIs.p2")}</p>
+      <p className="leading-7 [&:not(:first-child)]:mt-6">{t("asIs.p3")}</p>
+
+      <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+        {t("governingLaw.title")}
       </h2>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Notwithstanding any damages that You might incur, the entire liability
-        of the Company and any of its suppliers under any provision of these
-        Terms and Your exclusive remedy for all of the foregoing shall be
-        limited to the amount actually paid by You through the Service or 100
-        USD if You haven&apos;t purchased anything through the Service.
-      </p>
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
-        To the maximum extent permitted by applicable law, in no event shall the
-        Company or its suppliers be liable for any special, incidental,
-        indirect, or consequential damages whatsoever (including, but not
-        limited to, damages for loss of profits, loss of data or other
-        information, for business interruption, for personal injury, loss of
-        privacy arising out of or in any way related to the use of or inability
-        to use the Service, third-party software and/or third-party hardware
-        used with the Service, or otherwise in connection with any provision of
-        these Terms), even if the Company or any supplier has been advised of
-        the possibility of such damages and even if the remedy fails of its
-        essential purpose.
-      </p>
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Some states do not allow the exclusion of implied warranties or
-        limitation of liability for incidental or consequential damages, which
-        means that some of the above limitations may not apply. In these states,
-        each party&apos;s liability will be limited to the greatest extent
-        permitted by law.
+        {t("governingLaw.p1")}
       </p>
 
       <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; Disclaimer
+        {t("disputesResolution.title")}
       </h2>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        The Service is provided to You &quot;AS IS&quot; and &quot;AS
-        AVAILABLE&quot; and with all faults and defects without warranty of any
-        kind. To the maximum extent permitted under applicable law, the Company,
-        on its own behalf and on behalf of its Affiliates and its and their
-        respective licensors and service providers, expressly disclaims all
-        warranties, whether express, implied, statutory, or otherwise, with
-        respect to the Service, including all implied warranties of
-        merchantability, fitness for a particular purpose, title, and
-        non-infringement, and warranties that may arise out of course of
-        dealing, course of performance, usage, or trade practice. Without
-        limitation to the foregoing, the Company provides no warranty or
-        undertaking, and makes no representation of any kind that the Service
-        will meet Your requirements, achieve any intended results, be compatible
-        or work with any other software, applications, systems or services,
-        operate without interruption, meet any performance or reliability
-        standards, or be error free or that any errors or defects can or will be
-        corrected.
-      </p>
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Without limiting the foregoing, neither the Company nor any of the
-        company&apos;s provider makes any representation or warranty of any
-        kind, express or implied: (i) as to the operation or availability of the
-        Service, or the information, content, and materials or products included
-        thereon; (ii) that the Service will be uninterrupted or error-free;
-        (iii) as to the accuracy, reliability, or currency of any information or
-        content provided through the Service; or (iv) that the Service, its
-        servers, the content, or e-mails sent from or on behalf of the Company
-        are free of viruses, scripts, trojan horses, worms, malware, timebombs
-        or other harmful components.
-      </p>
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Some jurisdictions do not allow the exclusion of certain types of
-        warranties or limitations on applicable statutory rights of a consumer,
-        so some or all of the above exclusions and limitations may not apply to
-        You. But in such a case the exclusions and limitations set forth in this
-        section shall be applied to the greatest extent enforceable under
-        applicable law.
+        {t("disputesResolution.p1")}
       </p>
 
       <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        Governing Law
+        {t("euUsers.title")}
+      </h2>
+      <p className="leading-7 [&:not(:first-child)]:mt-6">{t("euUsers.p1")}</p>
+
+      <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+        {t("usCompliance.title")}
       </h2>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        The laws of the Country, excluding its conflicts of law rules, shall
-        govern these Terms and Your use of the Service. Your use of the
-        Application may also be subject to other local, state, national, or
-        international laws.
+        {t("usCompliance.p1")}
       </p>
 
       <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        Disputes Resolution
-      </h2>
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
-        If You have any concern or dispute about the Service, You agree to first
-        try to resolve the dispute informally by contacting the Company.
-      </p>
-
-      <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        For European Union (EU) Users
-      </h2>
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
-        If You are a European Union consumer, you will benefit from any
-        mandatory provisions of the law of the country in which You are
-        resident.
-      </p>
-
-      <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        United States Legal Compliance
-      </h2>
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
-        You represent and warrant that (i) You are not located in a country that
-        is subject to the United States government embargo, or that has been
-        designated by the United States government as a &quot;terrorist
-        supporting&quot; country, and (ii) You are not listed on any United
-        States government list of prohibited or restricted parties.
-      </p>
-
-      <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        Severability and Waiver
+        {t("severability.title")}
       </h2>
       <h3 className="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">
-        Severability
+        {t("severability.subTitle1")}
       </h3>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        If any provision of these Terms is held to be unenforceable or invalid,
-        such provision will be changed and interpreted to accomplish the
-        objectives of such provision to the greatest extent possible under
-        applicable law and the remaining provisions will continue in full force
-        and effect.
+        {t("severability.p1")}
       </p>
       <h3 className="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">
-        Waiver
+        {t("severability.subTitle2")}
       </h3>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        Except as provided herein, the failure to exercise a right or to require
-        performance of an obligation under these Terms shall not affect a
-        party&apos;s ability to exercise such right or require such performance
-        at any time thereafter nor shall the waiver of a breach constitute a
-        waiver of any subsequent breach.
+        {t("severability.p2")}
       </p>
 
       <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        Translation Interpretation
+        {t("translation.title")}
       </h2>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        These Terms and Conditions may have been translated if We have made them
-        available to You on Our Service. You agree that the original English
-        text shall prevail in the case of a dispute.
+        {t("translation.p1")}
       </p>
 
       <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        Changes to These Terms and Conditions
+        {t("changes.title")}
       </h2>
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
-        We reserve the right, at Our sole discretion, to modify or replace these
-        Terms at any time. If a revision is material We will make reasonable
-        efforts to provide at least 30 days&apos; notice prior to any new terms
-        taking effect. What constitutes a material change will be determined at
-        Our sole discretion.
-      </p>
-      <p className="leading-7 [&:not(:first-child)]:mt-6">
-        By continuing to access or use Our Service after those revisions become
-        effective, You agree to be bound by the revised terms. If You do not
-        agree to the new terms, in whole or in part, please stop using the
-        website and the Service.
-      </p>
+      <p className="leading-7 [&:not(:first-child)]:mt-6">{t("changes.p1")}</p>
+      <p className="leading-7 [&:not(:first-child)]:mt-6">{t("changes.p2")}</p>
 
       <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        Contact Us
+        {t("contactUs.title")}
       </h2>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        If You have any questions about these Terms and Conditions, You can
-        contact us:
+        {t("contactUs.text")}
       </p>
       <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
-        <li>By email: noreply@avermate.fr</li>
+        <li>{t("contactUs.email")}</li>
       </ul>
     </div>
   );

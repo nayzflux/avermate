@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/credenza";
 import { useState } from "react";
 import { AddSubjectForm } from "../forms/add-subject-form";
+import { useTranslations } from "next-intl";
 
 export default function AddSubjectCredenza({
   children,
@@ -19,6 +20,7 @@ export default function AddSubjectCredenza({
   children: React.ReactNode;
   parentId?: string;
 }) {
+  const t = useTranslations("Dashboard.Dialogs.AddSubject");
   const [open, setOpen] = useState(false);
 
   return (
@@ -29,10 +31,8 @@ export default function AddSubjectCredenza({
 
       <CredenzaContent>
         <CredenzaHeader>
-          <CredenzaTitle>Ajouter une matière</CredenzaTitle>
-          <CredenzaDescription>
-            Créer une nouvelle matière avant d&apos;ajouter des notes.
-          </CredenzaDescription>
+          <CredenzaTitle>{t("title")}</CredenzaTitle>
+          <CredenzaDescription>{t("description")}</CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
           <AddSubjectForm close={() => setOpen(false)} parentId={parentId} />

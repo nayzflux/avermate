@@ -2,7 +2,7 @@ import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
 import DeleteSubjectDialog from "@/components/dialogs/delete-subject-dialog";
 import ListPresetsDialog from "@/components/dialogs/list-presets-dialog";
 import UpdateSubjectDialog from "@/components/dialogs/update-subject-dialog";
-import errorStateCard from "@/components/skeleton/error-card";
+import ErrorStateCard from "@/components/skeleton/error-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,15 +27,16 @@ import {
   EllipsisVerticalIcon,
   PlusCircleIcon,
 } from "@heroicons/react/24/outline";
-import React from "react";
+import { useTranslations } from "next-intl";
 
 export default function Step2() {
+  const t = useTranslations("Onboarding.Step2");
   const { data: subjects, isError, isLoading } = useSubjects();
 
   if (isLoading) {
     return (
       <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold text-primary">Matières</h2>
+        <h2 className="text-2xl font-bold text-primary">{t("title")}</h2>
         <div className="flex flex-col gap-4">
           {Array.from({ length: 20 }).map((_, index) => (
             <div
@@ -60,13 +61,13 @@ export default function Step2() {
           <AddSubjectDialog>
             <Button variant="outline" disabled>
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une matière
+              {t("addSubject")}
             </Button>
           </AddSubjectDialog>
           <ListPresetsDialog>
             <Button disabled>
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter des matières prédéfinies
+              {t("addPresetSubjects")}
             </Button>
           </ListPresetsDialog>
         </div>
@@ -75,26 +76,29 @@ export default function Step2() {
   }
 
   if (isError) {
-    return errorStateCard();
+    return ErrorStateCard();
   }
 
   if (!subjects || subjects.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center space-y-8">
-        <h2 className="text-2xl font-bold text-primary">Matières</h2>
+        <h2 className="text-2xl font-bold text-primary">{t("title")}</h2>
         <p className="text-muted-foreground text-center">
           <ul>
             <li>
-              Les matières principales (ex. <b>Mathématiques</b>) apparaissent
-              sur la page d&apos;accueil.
+              {t.rich("mainSubjectsDescription", {
+                b: (chunks) => <b>{chunks}</b>,
+              })}
             </li>
             <li>
-              Les catégories (ex. <b>&quot;Langues&quot;</b>) regroupent des
-              matières sans moyenne propre.
+              {t.rich("categoriesDescription", {
+                b: (chunks) => <b>{chunks}</b>,
+              })}
             </li>
             <li>
-              Les sous-matières (ex. <b>&quot;Écrit&quot;</b>,{" "}
-              <b>&quot;Oral&quot;</b>) organisent les notes.
+              {t.rich("subSubjectsDescription", {
+                b: (chunks) => <b>{chunks}</b>,
+              })}
             </li>
           </ul>
         </p>
@@ -102,13 +106,13 @@ export default function Step2() {
           <AddSubjectDialog>
             <Button variant="outline">
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une matière
+              {t("addSubject")}
             </Button>
           </AddSubjectDialog>
           <ListPresetsDialog>
             <Button>
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter des matières prédéfinies
+              {t("addPresetSubjects")}
             </Button>
           </ListPresetsDialog>
         </div>
@@ -141,7 +145,7 @@ export default function Step2() {
               {subject.isMainSubject && (
                 <>
                   <span className="hidden md:block text-xs text-blue-500">
-                    Matière Principale
+                    {t("mainSubject")}
                   </span>
                   <Badge className="bg-blue-500 block md:hidden py-0 px-0 w-2 h-2 min-w-2" />
                 </>
@@ -149,7 +153,7 @@ export default function Step2() {
               {subject.isDisplaySubject && (
                 <>
                   <span className="hidden md:block text-xs text-green-500">
-                    Catégorie
+                    {t("category")}
                   </span>
                   <Badge className="bg-green-500 block md:hidden py-0 px-0 w-2 h-2 min-w-2" />
                 </>
@@ -187,13 +191,13 @@ export default function Step2() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold text-primary">Matières</h2>
+      <h2 className="text-2xl font-bold text-primary">{t("title")}</h2>
       <div>{renderSubjects(subjects ?? [])}</div>
       <div className="flex flex-col items-center justify-center space-y-4">
         <AddSubjectDialog>
           <Button variant="outline">
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une nouvelle matière
+            {t("addNewSubject")}
           </Button>
         </AddSubjectDialog>
       </div>

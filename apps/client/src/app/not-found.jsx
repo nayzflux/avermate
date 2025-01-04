@@ -7,8 +7,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function NotFound() {
+  const t = useTranslations("ErrorPages.NotFound");
+
   return (
     <div className="h-screen w-full flex items-center justify-center bg-background">
       <div className="absolute top-4 left-6">
@@ -22,15 +25,14 @@ export default function NotFound() {
           <CardTitle className="text-4xl font-bold text-center">404</CardTitle>
         </CardHeader>
         <CardContent className="text-center">
-          <p className="text-xl mb-4">Oups! Page non trouvée</p>
+          <p className="text-xl mb-4">{t("title")}</p>
           <p className="text-muted-foreground">
-            La page que vous recherchez a peut-être été supprimée, son nom a été
-            changé ou elle est temporairement indisponible.
+            {t("description")}
           </p>
         </CardContent>
         <CardFooter className="flex justify-center">
           <Button asChild>
-            <Link href="/">Retour à l&apos;accueil</Link>
+            <Link href="/">{t("backToHome")}</Link>
           </Button>
         </CardFooter>
       </Card>

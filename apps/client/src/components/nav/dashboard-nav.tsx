@@ -3,20 +3,22 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const routes = [
-  {
-    label: "Vue d'ensemble",
-    path: "/dashboard",
-  },
-  {
-    label: "Notes",
-    path: "/dashboard/grades",
-  },
-];
+import { useTranslations } from "next-intl";
 
 export default function DashboardNav() {
+  const t = useTranslations("Dashboard.Nav");
   const path = usePathname();
+
+  const routes = [
+    {
+      label: t("overview"),
+      path: "/dashboard",
+    },
+    {
+      label: t("grades"),
+      path: "/dashboard/grades",
+    },
+  ];
 
   return (
     <nav className="sticky px-4 sm:px-16 lg:px-32 2xl:px-64 3xl:px-96 pt-4">

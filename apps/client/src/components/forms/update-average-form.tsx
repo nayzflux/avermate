@@ -25,7 +25,12 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -48,29 +53,10 @@ import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api";
 import { Average } from "@/types/average";
 import { handleError } from "@/utils/error-utils";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useTranslations } from "next-intl";
 
 dayjs.locale("fr");
-
-const updateCustomAverageSchema = z.object({
-  name: z.string().min(1, "Le nom est requis").max(64, "Le nom est trop long"),
-  subjects: z
-    .array(
-      z.object({
-        id: z.string().min(1, "L'ID de la matière est requis"),
-        customCoefficient: z
-          .number()
-          .min(1, "Le coefficient doit être au moins 1")
-          .max(1000, "Le coefficient ne peut pas dépasser 1000")
-          .nullable()
-          .optional(),
-        includeChildren: z.boolean().optional(),
-      })
-    )
-    .min(1, "Au moins une matière doit être sélectionnée"),
-  isMainAverage: z.boolean().optional().default(false),
-});
-
-type UpdateCustomAverageSchema = z.infer<typeof updateCustomAverageSchema>;
 
 export const UpdateCustomAverageForm = ({
   close,
@@ -79,6 +65,8 @@ export const UpdateCustomAverageForm = ({
   close: () => void;
   customAverage: Average;
 }) => {
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Dashboard.Forms.UpdateAverage");
   const toaster = useToast();
   const queryClient = useQueryClient();
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -86,6 +74,28 @@ export const UpdateCustomAverageForm = ({
   const [openSubjectIndex, setOpenSubjectIndex] = useState<number | null>(null);
 
   const { data: subjects } = useSubjects();
+
+  // Feedback schema validation
+  const updateCustomAverageSchema = z.object({
+    name: z.string().min(1, t("nameRequired")).max(64, t("nameTooLong")),
+    subjects: z
+      .array(
+        z.object({
+          id: z.string().min(1, t("subjectIdRequired")),
+          customCoefficient: z
+            .number()
+            .min(1, t("customCoefficientMin"))
+            .max(1000, t("customCoefficientMax"))
+            .nullable()
+            .optional(),
+          includeChildren: z.boolean().optional(),
+        })
+      )
+      .min(1, t("subjectsMin")),
+    isMainAverage: z.boolean().optional().default(false),
+  });
+
+  type UpdateCustomAverageSchema = z.infer<typeof updateCustomAverageSchema>;
 
   const { mutate, isPending: isSubmitting } = useMutation({
     mutationKey: ["update-custom-average"],
@@ -97,17 +107,12 @@ export const UpdateCustomAverageForm = ({
           isMainAverage: values.isMainAverage,
         },
       });
-      if (!res.ok) {
-        throw new Error(
-          "Erreur lors de la mise à jour de la moyenne personnalisée."
-        );
-      }
       return res.json();
     },
     onSuccess: () => {
       toaster.toast({
-        title: "Moyenne personnalisée mise à jour avec succès !",
-        description: "Votre moyenne personnalisée a été mise à jour.",
+        title: t("successTitle"),
+        description: t("successDescription"),
       });
       close();
       queryClient.invalidateQueries({ queryKey: ["customAverages"] });
@@ -116,7 +121,7 @@ export const UpdateCustomAverageForm = ({
       });
     },
     onError: (error: any) => {
-      handleError(error, toaster);
+      handleError(error, toaster, errorTranslations, t("updateError"));
     },
   });
 
@@ -155,8 +160,8 @@ export const UpdateCustomAverageForm = ({
     const filteredSubjects = values.subjects.filter((s) => s.id !== "");
     if (filteredSubjects.length === 0) {
       toaster.toast({
-        title: "Erreur",
-        description: "Veuillez sélectionner au moins une matière.",
+        title: t("errorTitle"),
+        description: t("selectAtLeastOneSubject"),
         variant: "destructive",
       });
       return;
@@ -181,7 +186,7 @@ export const UpdateCustomAverageForm = ({
           name={`subjects.${index}.id`}
           render={({ field }) => (
             <FormItem className="flex flex-col gap-2">
-              <FormLabel>Matière</FormLabel>
+              <FormLabel>{t("subject")}</FormLabel>
               {isDesktop ? (
                 <Popover
                   modal
@@ -201,7 +206,7 @@ export const UpdateCustomAverageForm = ({
                         className="justify-between w-full"
                         disabled={isSubmitting}
                       >
-                        {selectedSubjectName || "Choisir une matière"}
+                        {selectedSubjectName || t("chooseSubject")}
                         <ChevronsUpDown className="opacity-50" />
                       </Button>
                     </PopoverTrigger>
@@ -209,11 +214,11 @@ export const UpdateCustomAverageForm = ({
                   <PopoverContent className="p-0">
                     <Command>
                       <CommandInput
-                        placeholder="Rechercher une matière..."
+                        placeholder={t("searchSubject")}
                         className="h-9"
                       />
                       <CommandList>
-                        <CommandEmpty>Aucune matière trouvée.</CommandEmpty>
+                        <CommandEmpty>{t("noSubjectFound")}</CommandEmpty>
                         <CommandGroup>
                           {subjects
                             ?.slice()
@@ -257,22 +262,25 @@ export const UpdateCustomAverageForm = ({
                           onClick={() => setOpenSubjectIndex(index)}
                           disabled={isSubmitting}
                         >
-                          {selectedSubjectName || "Choisir une matière"}
+                          {selectedSubjectName || t("chooseSubject")}
                           <ChevronsUpDown className="opacity-50" />
                         </Button>
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
+                      <VisuallyHidden>
+                        <DrawerTitle>{t("chooseSubject")}</DrawerTitle>
+                      </VisuallyHidden>
                       <div className="mt-4 border-t p-4">
                         <Command>
                           <CommandInput
                             ref={subjectInputRef}
-                            placeholder="Rechercher une matière..."
+                            placeholder={t("searchSubject")}
                             className="h-9"
                             autoFocus
                           />
                           <CommandList>
-                            <CommandEmpty>Aucune matière trouvée.</CommandEmpty>
+                            <CommandEmpty>{t("noSubjectFound")}</CommandEmpty>
                             <CommandGroup>
                               {subjects
                                 ?.slice()
@@ -311,13 +319,13 @@ export const UpdateCustomAverageForm = ({
           render={({ field }) => (
             <FormItem className="flex flex-col gap-2">
               <FormLabel>
-                Coefficient personnalisé{" "}
-                <Badge className="ml-2">Optionnel</Badge>
+                {t("customCoefficient")}{" "}
+                <Badge className="ml-2">{t("optional")}</Badge>
               </FormLabel>
               <FormControl>
                 <Input
                   type="number"
-                  placeholder="1"
+                  placeholder={t("customCoefficientPlaceholder")}
                   min={1}
                   max={1000}
                   value={field.value ?? ""}
@@ -340,7 +348,7 @@ export const UpdateCustomAverageForm = ({
           name={`subjects.${index}.includeChildren`}
           render={({ field }) => (
             <FormItem className="flex flex-row items-center gap-4">
-              <FormLabel>Inclure les sous matières</FormLabel>
+              <FormLabel>{t("includeChildren")}</FormLabel>
               <FormControl>
                 <Switch
                   checked={field.value ?? false}
@@ -364,7 +372,7 @@ export const UpdateCustomAverageForm = ({
             className="mt-2"
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            Retirer cette matière
+            {t("removeSubject")}
           </Button>
         )}
       </div>
@@ -384,9 +392,14 @@ export const UpdateCustomAverageForm = ({
             name="name"
             render={({ field }) => (
               <FormItem className="mx-1">
-                <FormLabel>Nom de la moyenne personnalisée</FormLabel>
+                <FormLabel>{t("averageName")}</FormLabel>
                 <FormControl>
-                  <Input type="text" {...field} disabled={isSubmitting} />
+                  <Input
+                    type="text"
+                    placeholder={t("averageNamePlaceholder")}
+                    {...field}
+                    disabled={isSubmitting}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -399,7 +412,7 @@ export const UpdateCustomAverageForm = ({
             name="isMainAverage"
             render={({ field }) => (
               <FormItem className="mx-1 flex flex-row items-center gap-4">
-                <FormLabel>Afficher sur la page principale</FormLabel>
+                <FormLabel>{t("displayOnMainPage")}</FormLabel>
                 <FormControl>
                   <Switch
                     checked={field.value}
@@ -414,7 +427,7 @@ export const UpdateCustomAverageForm = ({
 
           {/* Subjects */}
           <div className="flex flex-col gap-4 mx-1">
-            <FormLabel>Matières</FormLabel>
+            <FormLabel>{t("subjects")}</FormLabel>
             <div className="flex flex-col gap-4">
               {fields.map((fieldItem, index) =>
                 renderSubjectField(index, fieldItem)
@@ -434,7 +447,7 @@ export const UpdateCustomAverageForm = ({
               className="mt-2 flex items-center gap-2"
             >
               <PlusCircle className="h-4 w-4" />
-              Ajouter une matière
+              {t("addSubject")}
             </Button>
           </div>
 
@@ -443,7 +456,7 @@ export const UpdateCustomAverageForm = ({
             {isSubmitting && (
               <Loader2Icon className="animate-spin mr-2 h-4 w-4" />
             )}
-            Mettre à jour la moyenne personnalisée
+            {t("updateAverage")}
           </Button>
         </form>
       </Form>

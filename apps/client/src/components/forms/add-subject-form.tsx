@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api";
 import { Subject } from "@/types/subject";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckIcon, ChevronsUpDownIcon, Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -31,24 +31,17 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { handleError } from "@/utils/error-utils";
 import { useSubjects } from "@/hooks/use-subjects";
-
-const addSubjectSchema = z.object({
-  name: z.string().min(1).max(64),
-  coefficient: z.coerce.number().min(0).max(1000),
-  parentId: z
-    .string()
-    .max(64)
-    .optional()
-    .transform((val) => (val === "" || val === "none" ? null : val)),
-  isMainSubject: z.boolean().optional(),
-  isDisplaySubject: z.boolean().optional(),
-});
-
-type AddSubjectSchema = z.infer<typeof addSubjectSchema>;
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useTranslations } from "next-intl";
 
 export const AddSubjectForm = ({
   close,
@@ -57,6 +50,25 @@ export const AddSubjectForm = ({
   close: () => void;
   parentId?: string;
 }) => {
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Dashboard.Forms.AddSubject");
+  const addSubjectSchema = z.object({
+    name: z.string().min(1, t("nameRequired")).max(64, t("nameTooLong")),
+    coefficient: z.coerce
+      .number()
+      .min(0, t("coefficientMin"))
+      .max(1000, t("coefficientMax")),
+    parentId: z
+      .string()
+      .max(64, t("parentIdMax"))
+      .optional()
+      .transform((val) => (val === "" || val === "none" ? null : val)),
+    isMainSubject: z.boolean().optional(),
+    isDisplaySubject: z.boolean().optional(),
+  });
+
+  type AddSubjectSchema = z.infer<typeof addSubjectSchema>;
+
   const toaster = useToast();
   const queryClient = useQueryClient();
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -90,15 +102,14 @@ export const AddSubjectForm = ({
     },
     onSuccess: () => {
       toaster.toast({
-        title: `Matière ajoutée avec succès !`,
-        description:
-          "Ajouter des notes à cette matière pour suivre votre progression.",
+        title: t("successTitle"),
+        description: t("successDescription"),
       });
       close();
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
     },
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, errorTranslations, t("errorAddingSubject"));
     },
   });
 
@@ -138,9 +149,13 @@ export const AddSubjectForm = ({
             disabled={isPending}
             render={({ field }) => (
               <FormItem className="mx-1">
-                <FormLabel>Nom</FormLabel>
+                <FormLabel>{t("name")}</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="Mathématiques" {...field} />
+                  <Input
+                    type="text"
+                    placeholder={t("namePlaceholder")}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -152,11 +167,11 @@ export const AddSubjectForm = ({
             name="coefficient"
             render={({ field }) => (
               <FormItem className="col-span-2 mx-1">
-                <FormLabel>Coefficient</FormLabel>
+                <FormLabel>{t("coefficient")}</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
-                    placeholder="2"
+                    placeholder={t("coefficientPlaceholder")}
                     {...field}
                     disabled={isPending || isDisplaySubject}
                     onChange={(e) => field.onChange(e.target.value)}
@@ -165,7 +180,7 @@ export const AddSubjectForm = ({
                 <FormMessage />
                 {isDisplaySubject && (
                   <FormDescription>
-                    Les catégories ne prennent pas en compte le coefficient.
+                    {t("coefficientDescription")}
                   </FormDescription>
                 )}
               </FormItem>
@@ -178,7 +193,7 @@ export const AddSubjectForm = ({
             render={({ field }) => (
               <FormItem className="mx-1">
                 <div className="col-span-2 flex flex-row gap-4 items-center">
-                  <FormLabel>Matière principale</FormLabel>
+                  <FormLabel>{t("isMainSubject")}</FormLabel>
                   <Switch
                     checked={field.value}
                     onCheckedChange={field.onChange}
@@ -186,8 +201,7 @@ export const AddSubjectForm = ({
                 </div>
                 <FormMessage />
                 <FormDescription>
-                  Les matières principales sont affichées en premier dans le
-                  tableau de bord.
+                  {t("isMainSubjectDescription")}
                 </FormDescription>
               </FormItem>
             )}
@@ -199,7 +213,7 @@ export const AddSubjectForm = ({
             render={({ field }) => (
               <FormItem className="mx-1">
                 <div className="col-span-2 flex flex-row gap-4 items-center">
-                  <FormLabel>Catégorie</FormLabel>
+                  <FormLabel>{t("isDisplaySubject")}</FormLabel>
                   <Switch
                     checked={field.value}
                     onCheckedChange={field.onChange}
@@ -207,10 +221,7 @@ export const AddSubjectForm = ({
                 </div>
                 <FormMessage />
                 <FormDescription>
-                  Les catégories ne comptent pas dans la moyenne générale. Elles
-                  regroupent des matières, mais leurs enfants sont calculés
-                  comme au niveau supérieur. Impossible d&apos;y ajouter des
-                  notes.
+                  {t("isDisplaySubjectDescription")}
                 </FormDescription>
               </FormItem>
             )}
@@ -223,7 +234,8 @@ export const AddSubjectForm = ({
             render={({ field }) => (
               <FormItem className="flex flex-col mx-1">
                 <FormLabel>
-                  Sous-matière <Badge className="ml-2">Optionnel</Badge>
+                  {t("parentSubject")}{" "}
+                  <Badge className="ml-2">{t("optional")}</Badge>
                 </FormLabel>
                 {isDesktop ? (
                   <Popover
@@ -242,7 +254,7 @@ export const AddSubjectForm = ({
                         >
                           {field.value
                             ? subjects?.find((s) => s.id === field.value)?.name
-                            : "Choisir une matière parente"}
+                            : t("chooseParentSubject")}
                           <ChevronsUpDownIcon className="opacity-50" />
                         </Button>
                       </PopoverTrigger>
@@ -250,11 +262,13 @@ export const AddSubjectForm = ({
                     <PopoverContent className="p-0 min-w-[var(--radix-popover-trigger-width)]">
                       <Command>
                         <CommandInput
-                          placeholder="Choisir une matière"
+                          placeholder={t("chooseParentSubjectPlaceholder")}
                           className="h-9"
                         />
                         <CommandList>
-                          <CommandEmpty>Aucune matière trouvée</CommandEmpty>
+                          <CommandEmpty>
+                            {t("noParentSubjectFound")}
+                          </CommandEmpty>
                           <CommandGroup>
                             {subjects
                               ?.slice()
@@ -295,60 +309,66 @@ export const AddSubjectForm = ({
                         >
                           {field.value
                             ? subjects?.find((s) => s.id === field.value)?.name
-                            : "Choisir une matière parente"}
+                            : t("chooseParentSubject")}
                           <ChevronsUpDownIcon className="opacity-50" />
                         </Button>
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
-                      <Command>
-                        <CommandInput
-                          ref={parentInputRef}
-                          placeholder="Choisir une matière"
-                          className="h-9"
-                        />
-                        <CommandList>
-                          <CommandEmpty>Aucune matière trouvée</CommandEmpty>
-                          <CommandGroup>
-                            {subjects
-                              ?.slice()
-                              .sort((a, b) => a.name.localeCompare(b.name))
-                              .map((subject) => (
-                                <CommandItem
-                                  key={subject.id}
-                                  value={subject.name}
-                                  onSelect={() => {
-                                    form.setValue("parentId", subject.id, {
-                                      shouldValidate: true,
-                                    });
-                                    setOpenParent(false);
-                                  }}
-                                >
-                                  <span>{subject.name}</span>
-                                  {form.getValues("parentId") ===
-                                    subject.id && (
-                                    <CheckIcon className="w-4 h-4 ml-auto" />
-                                  )}
-                                </CommandItem>
-                              ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
+                      <VisuallyHidden>
+                        <DrawerTitle>{t("chooseParentSubject")}</DrawerTitle>
+                      </VisuallyHidden>
+                      <div className="mt-4 border-t p-4">
+                        <Command>
+                          <CommandInput
+                            ref={parentInputRef}
+                            placeholder={t("chooseParentSubjectPlaceholder")}
+                            className="h-9"
+                          />
+                          <CommandList>
+                            <CommandEmpty>
+                              {t("noParentSubjectFound")}
+                            </CommandEmpty>
+                            <CommandGroup>
+                              {subjects
+                                ?.slice()
+                                .sort((a, b) => a.name.localeCompare(b.name))
+                                .map((subject) => (
+                                  <CommandItem
+                                    key={subject.id}
+                                    value={subject.name}
+                                    onSelect={() => {
+                                      form.setValue("parentId", subject.id, {
+                                        shouldValidate: true,
+                                      });
+                                      setOpenParent(false);
+                                    }}
+                                  >
+                                    <span>{subject.name}</span>
+                                    {form.getValues("parentId") ===
+                                      subject.id && (
+                                      <CheckIcon className="w-4 h-4 ml-auto" />
+                                    )}
+                                  </CommandItem>
+                                ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </div>
                     </DrawerContent>
                   </Drawer>
                 )}
                 <FormMessage />
                 <FormDescription>
-                  Une matière parente regroupe plusieurs sous-matières,
-                  facilitant leur organisation.
+                  {t("parentSubjectDescription")}
                 </FormDescription>
               </FormItem>
             )}
           />
 
           <Button className="w-full" type="submit" disabled={isPending}>
-            {isPending && <Loader2Icon className="animate-spin mr-2 size-4" />}
-            Ajouter une matière
+            {isPending && <Loader2Icon className="animate-spin mr-2 h-4 w-4" />}
+            {t("submit")}
           </Button>
         </form>
       </Form>

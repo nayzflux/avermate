@@ -1,6 +1,6 @@
 "use client";
 
-import errorStateCard from "@/components/skeleton/error-card";
+import ErrorStateCard from "@/components/skeleton/error-card";
 import subjectLoader from "@/components/skeleton/subject-loader";
 import { useCustomAverages } from "@/hooks/use-custom-averages";
 import { usePeriods } from "@/hooks/use-periods";
@@ -13,8 +13,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import SubjectWrapper from "./subject-wrapper";
+import { useTranslations } from "next-intl";
 
 export default function SubjectPage() {
+  const t = useTranslations("Dashboard.Loader.SubjectLoader");
   const { periodId, subjectId } = useParams() as {
     periodId: string;
     subjectId: string;
@@ -106,7 +108,7 @@ export default function SubjectPage() {
     isSubjectsError ||
     isCustomAveragesError
   ) {
-    return <div>{errorStateCard()}</div>;
+    return <div>{ErrorStateCard()}</div>;
   }
 
   if (
@@ -118,7 +120,7 @@ export default function SubjectPage() {
     isCustomAveragesPending
     // || true
   ) {
-    return <div>{subjectLoader()}</div>;
+    return <div>{subjectLoader(t)}</div>;
   }
 
   const sortedPeriods = period
@@ -145,6 +147,7 @@ export default function SubjectPage() {
       subject={organizedSubject}
       period={periods}
       customAverages={customAverages}
+      periods={sortedPeriods}
     />
   );
 }

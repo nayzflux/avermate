@@ -1,5 +1,6 @@
 import { CheckCircle2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useTranslations } from "next-intl";
 
 interface StepperProps {
   steps: { title: string }[];
@@ -8,6 +9,7 @@ interface StepperProps {
 }
 
 export function Stepper({ steps, currentStep, onStepChange }: StepperProps) {
+  const t = useTranslations("Onboarding");
   const progress = (currentStep / (steps.length - 1)) * 100;
 
   return (
@@ -31,7 +33,7 @@ export function Stepper({ steps, currentStep, onStepChange }: StepperProps) {
               )}
             </button>
             <span className="text-xs mt-1 text-muted-foreground">
-              {step.title}
+              {t(step.title)}
             </span>
           </div>
         ))}

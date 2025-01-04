@@ -8,6 +8,7 @@ ver - verification
 sub - subject
 gra - grade
 per - period
+ca - custom average
 */
 
 type IdPrefix = "u" | "acc" | "ses" | "ver" | "sub" | "gra" | "per" | "ca";

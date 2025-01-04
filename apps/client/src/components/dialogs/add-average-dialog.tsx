@@ -11,12 +11,14 @@ import {
 } from "@/components/ui/credenza";
 import { useState } from "react";
 import { AddAverageForm } from "../forms/add-average-form";
+import { useTranslations } from "next-intl";
 
 export default function AddAverageDialog({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = useTranslations("Dashboard.Dialogs.AddAverage");
   const [open, setOpen] = useState(false);
 
   return (
@@ -24,16 +26,13 @@ export default function AddAverageDialog({
       <CredenzaTrigger asChild>{children}</CredenzaTrigger>
       <CredenzaContent>
         <CredenzaHeader>
-          <CredenzaTitle>Ajouter une moyenne personnalisée</CredenzaTitle>
-          <CredenzaDescription>
-            Créez une moyenne personnalisée pour des matières spécifiques.
-          </CredenzaDescription>
+          <CredenzaTitle>{t("title")}</CredenzaTitle>
+          <CredenzaDescription>{t("description")}</CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
           <AddAverageForm close={() => setOpen(false)} />
         </CredenzaBody>
       </CredenzaContent>
     </Credenza>
-    // </div>
   );
 }

@@ -24,7 +24,12 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -47,34 +52,10 @@ import { apiClient } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { handleError } from "@/utils/error-utils";
 import { useMediaQuery } from "../ui/use-media-query";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useTranslations } from "next-intl";
 
 dayjs.locale("fr");
-
-const addGradeSchema = z.object({
-  name: z.string().min(1).max(64),
-  outOf: z.coerce.number().min(0).max(1000),
-  value: z.coerce.number().min(0).max(1000),
-  coefficient: z.coerce.number().min(0).max(1000),
-  passedAt: z.date(),
-  subjectId: z.string().min(1).max(64),
-  periodId: z.string().min(1).max(64).nullable(),
-});
-
-type AddGradeSchema = z.infer<typeof addGradeSchema>;
-
-const determinePeriodId = (
-  date: string | number | Date | dayjs.Dayjs | null | undefined,
-  periods: any[] | undefined
-) => {
-  if (!date || !periods) return "";
-  const formattedDate = dayjs(date);
-  const matchedPeriod = periods.find(
-    (period) =>
-      formattedDate.isSameOrAfter(dayjs(period.startAt)) &&
-      formattedDate.isSameOrBefore(dayjs(period.endAt))
-  );
-  return matchedPeriod ? matchedPeriod.id : "full-year";
-};
 
 export const AddGradeForm = ({
   close,
@@ -83,6 +64,8 @@ export const AddGradeForm = ({
   close: () => void;
   parentId?: string;
 }) => {
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Dashboard.Forms.AddGrade");
   const toaster = useToast();
   const queryClient = useQueryClient();
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -98,6 +81,43 @@ export const AddGradeForm = ({
   const { data: subjects } = useSubjects();
 
   const { data: periods } = usePeriods();
+
+  // Schema
+  const addGradeSchema = z.object({
+    name: z.string().min(1, t("nameRequired")).max(64, t("nameTooLong")),
+    outOf: z.coerce.number().min(0, t("outOfMin")).max(1000, t("outOfMax")),
+    value: z.coerce.number().min(0, t("valueMin")).max(1000, t("valueMax")),
+    coefficient: z.coerce
+      .number()
+      .min(0, t("coefficientMin"))
+      .max(1000, t("coefficientMax")),
+    passedAt: z.date(),
+    subjectId: z
+      .string()
+      .min(1, t("subjectIdRequired"))
+      .max(64, t("subjectIdMax")),
+    periodId: z
+      .string()
+      .min(1, t("periodIdRequired"))
+      .max(64, t("periodIdMax"))
+      .nullable(),
+  });
+
+  type AddGradeSchema = z.infer<typeof addGradeSchema>;
+
+  const determinePeriodId = (
+    date: string | number | Date | dayjs.Dayjs | null | undefined,
+    periods: any[] | undefined
+  ) => {
+    if (!date || !periods) return "";
+    const formattedDate = dayjs(date);
+    const matchedPeriod = periods.find(
+      (period) =>
+        formattedDate.isSameOrAfter(dayjs(period.startAt)) &&
+        formattedDate.isSameOrBefore(dayjs(period.endAt))
+    );
+    return matchedPeriod ? matchedPeriod.id : "full-year";
+  };
 
   // Mutation to create a grade
   const { mutate, isPending } = useMutation({
@@ -127,15 +147,15 @@ export const AddGradeForm = ({
     },
     onSuccess: () => {
       toaster.toast({
-        title: `Note ajoutée avec succès !`,
-        description: "Vous pouvez à présent suivre votre évolution.",
+        title: t("successTitle"),
+        description: t("successDescription"),
       });
       close();
       queryClient.invalidateQueries({ queryKey: ["grades"] });
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
     },
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, errorTranslations, t("errorAddingGrade"));
     },
   });
 
@@ -207,11 +227,11 @@ export const AddGradeForm = ({
             disabled={isPending}
             render={({ field }) => (
               <FormItem className="mx-1">
-                <FormLabel>Nom</FormLabel>
+                <FormLabel>{t("gradeName")}</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="DS: Nombres complexes"
+                    placeholder={t("gradeNamePlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -228,11 +248,11 @@ export const AddGradeForm = ({
               disabled={isPending}
               render={({ field }) => (
                 <FormItem className="mx-1">
-                  <FormLabel>Note</FormLabel>
+                  <FormLabel>{t("gradeValue")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="13.5"
+                      placeholder={t("gradeValuePlaceholder")}
                       {...field}
                       onChange={(e) => field.onChange(e.target.value)}
                     />
@@ -248,11 +268,11 @@ export const AddGradeForm = ({
               disabled={isPending}
               render={({ field }) => (
                 <FormItem className="mx-1">
-                  <FormLabel>Sur</FormLabel>
+                  <FormLabel>{t("gradeOutOf")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="20"
+                      placeholder={t("gradeOutOfPlaceholder")}
                       {...field}
                       onChange={(e) => field.onChange(e.target.value)}
                     />
@@ -268,11 +288,11 @@ export const AddGradeForm = ({
               disabled={isPending}
               render={({ field }) => (
                 <FormItem className="col-span-2 mx-1">
-                  <FormLabel>Coefficient</FormLabel>
+                  <FormLabel>{t("gradeCoefficient")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="2"
+                      placeholder={t("gradeCoefficientPlaceholder")}
                       {...field}
                       onChange={(e) => field.onChange(e.target.value)}
                     />
@@ -289,7 +309,7 @@ export const AddGradeForm = ({
             name="passedAt"
             render={({ field }) => (
               <FormItem className="flex flex-col mx-1">
-                <FormLabel htmlFor="">Passé le</FormLabel>
+                <FormLabel>{t("passedAt")}</FormLabel>
                 <Popover modal>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -300,11 +320,9 @@ export const AddGradeForm = ({
                           !field.value && "text-muted-foreground"
                         )}
                       >
-                        {field.value ? (
-                          dayjs(field.value).format("dddd DD MMM YYYY")
-                        ) : (
-                          <span>Choisir une date</span>
-                        )}
+                        {field.value
+                          ? dayjs(field.value).format("dddd DD MMM YYYY")
+                          : t("chooseDate")}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </FormControl>
@@ -337,7 +355,9 @@ export const AddGradeForm = ({
             name="periodId"
             render={({ field }) => (
               <FormItem className="flex flex-col mx-1">
-                <FormLabel className="pointer-events-none">Période</FormLabel>
+                <FormLabel className="pointer-events-none">
+                  {t("period")}
+                </FormLabel>
 
                 {isDesktop ? (
                   // Desktop: Popover
@@ -358,8 +378,8 @@ export const AddGradeForm = ({
                           {selectedPeriod
                             ? selectedPeriod.name
                             : form.getValues("periodId") === "full-year"
-                            ? "Année complète"
-                            : "Choisir une période"}
+                            ? t("fullYear")
+                            : t("choosePeriod")}
                           <ChevronsUpDown className="opacity-50" />
                         </Button>
                       </PopoverTrigger>
@@ -370,11 +390,11 @@ export const AddGradeForm = ({
                     >
                       <Command>
                         <CommandInput
-                          placeholder="Choisir une période"
+                          placeholder={t("choosePeriod")}
                           className="h-9"
                         />
                         <CommandList>
-                          <CommandEmpty>Aucune période trouvée</CommandEmpty>
+                          <CommandEmpty>{t("noPeriodFound")}</CommandEmpty>
                           <CommandGroup>
                             {periods?.map((period) => (
                               <CommandItem
@@ -396,7 +416,7 @@ export const AddGradeForm = ({
                             ))}
                             <CommandItem
                               key="full-year"
-                              value="Année complète"
+                              value={t("fullYear")}
                               onSelect={() => {
                                 form.setValue("periodId", "full-year", {
                                   shouldValidate: true,
@@ -405,7 +425,7 @@ export const AddGradeForm = ({
                                 setOpenPeriod(false);
                               }}
                             >
-                              <span>Année complète</span>
+                              <span>{t("fullYear")}</span>
                               {form.getValues("periodId") === "full-year" && (
                                 <Check className="ml-auto h-4 w-4" />
                               )}
@@ -430,23 +450,26 @@ export const AddGradeForm = ({
                           {selectedPeriod
                             ? selectedPeriod.name
                             : form.getValues("periodId") === "full-year"
-                            ? "Année complète"
-                            : "Choisir une période"}
+                            ? t("fullYear")
+                            : t("choosePeriod")}
                           <ChevronsUpDown className="opacity-50" />
                         </Button>
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
+                      <VisuallyHidden>
+                        <DrawerTitle>{t("choosePeriod")}</DrawerTitle>
+                      </VisuallyHidden>
                       <div className="mt-4 border-t p-4">
                         <Command>
                           <CommandInput
                             ref={periodInputRef}
                             autoFocus
-                            placeholder="Choisir une période"
+                            placeholder={t("choosePeriod")}
                             className="h-9"
                           />
                           <CommandList>
-                            <CommandEmpty>Aucune période trouvée</CommandEmpty>
+                            <CommandEmpty>{t("noPeriodFound")}</CommandEmpty>
                             <CommandGroup>
                               {periods?.map((period) => (
                                 <CommandItem
@@ -468,7 +491,7 @@ export const AddGradeForm = ({
                               ))}
                               <CommandItem
                                 key="full-year"
-                                value="Année complète"
+                                value={t("fullYear")}
                                 onSelect={() => {
                                   form.setValue("periodId", "full-year", {
                                     shouldValidate: true,
@@ -477,7 +500,7 @@ export const AddGradeForm = ({
                                   setOpenPeriod(false);
                                 }}
                               >
-                                <span>Année complète</span>
+                                <span>{t("fullYear")}</span>
                                 {form.getValues("periodId") === "full-year" && (
                                   <Check className="ml-auto h-4 w-4" />
                                 )}
@@ -490,10 +513,7 @@ export const AddGradeForm = ({
                   </Drawer>
                 )}
                 <FormMessage />
-                <FormDescription>
-                  Une note doit être associée à une période. Celle ci peut être
-                  différente de la date de passage si besoin.
-                </FormDescription>
+                <FormDescription>{t("periodDescription")}</FormDescription>
               </FormItem>
             )}
           />
@@ -504,7 +524,9 @@ export const AddGradeForm = ({
             name="subjectId"
             render={({ field }) => (
               <FormItem className="flex flex-col mx-1">
-                <FormLabel className="pointer-events-none">Matière</FormLabel>
+                <FormLabel className="pointer-events-none">
+                  {t("subject")}
+                </FormLabel>
 
                 {isDesktop ? (
                   // Desktop: Popover
@@ -524,7 +546,7 @@ export const AddGradeForm = ({
                         >
                           {selectedSubject
                             ? selectedSubject.name
-                            : "Choisir une matière"}
+                            : t("chooseSubject")}
                           <ChevronsUpDown className="opacity-50" />
                         </Button>
                       </PopoverTrigger>
@@ -535,11 +557,11 @@ export const AddGradeForm = ({
                     >
                       <Command>
                         <CommandInput
-                          placeholder="Choisir une matière"
+                          placeholder={t("chooseSubject")}
                           className="h-9"
                         />
                         <CommandList>
-                          <CommandEmpty>Aucune matière trouvée</CommandEmpty>
+                          <CommandEmpty>{t("noSubjectFound")}</CommandEmpty>
                           <CommandGroup>
                             {subjects
                               ?.filter(
@@ -584,22 +606,25 @@ export const AddGradeForm = ({
                         >
                           {selectedSubject
                             ? selectedSubject.name
-                            : "Choisir une matière"}
+                            : t("chooseSubject")}
                           <ChevronsUpDown className="opacity-50" />
                         </Button>
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
+                      <VisuallyHidden>
+                        <DrawerTitle>{t("chooseSubject")}</DrawerTitle>
+                      </VisuallyHidden>
                       <div className="mt-4 border-t p-4">
                         <Command>
                           <CommandInput
                             ref={subjectInputRef}
                             autoFocus
-                            placeholder="Choisir une matière"
+                            placeholder={t("chooseSubject")}
                             className="h-9"
                           />
                           <CommandList>
-                            <CommandEmpty>Aucune matière trouvée</CommandEmpty>
+                            <CommandEmpty>{t("noSubjectFound")}</CommandEmpty>
                             <CommandGroup>
                               {subjects
                                 ?.filter(
@@ -640,8 +665,8 @@ export const AddGradeForm = ({
 
           {/* Submit button */}
           <Button className="w-full" type="submit" disabled={isPending}>
-            {isPending && <Loader2Icon className="animate-spin mr-2 size-4" />}
-            Ajouter ma note
+            {isPending && <Loader2Icon className="animate-spin mr-2 h-4 w-4" />}
+            {t("submit")}
           </Button>
         </form>
       </Form>

@@ -4,18 +4,16 @@ import ProfileSection from "../profile-section";
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export const OnboardingSection = () => {
-  //Fetch period data
+  const t = useTranslations("Settings.Settings.Onboarding");
 
   return (
-    <ProfileSection
-      title="Mise en route"
-      description="Accéder à la page de mise en route"
-    >
+    <ProfileSection title={t("title")} description={t("description")}>
       <Link href={"/onboarding"}>
         <Button>
-          Commencer
+          {t("start")}
           <ArrowRightIcon />
         </Button>
       </Link>

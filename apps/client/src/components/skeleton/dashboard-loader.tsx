@@ -100,9 +100,9 @@ export default function dashboardLoader() {
                 <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row ">
                   {/* Area Chart Section */}
                   <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%] lg:w-[60%]">
-                    <CardDescription className="pb-8 w-full">
+                    <div className="pb-8 w-full">
                       <Skeleton className="w-full h-4" />
-                    </CardDescription>
+                    </div>
                     <ChartContainer
                       config={chartConfig}
                       className="h-[302px] w-[100%]"
@@ -150,9 +150,9 @@ export default function dashboardLoader() {
 
                   {/* Radar Chart Section */}
                   <div className="flex flex-col items-center lg:space-y-2 lg:w-[40%] m-auto lg:pt-0 pt-8 w-[100%]">
-                    <CardDescription>
+                    <div>
                       <Skeleton className="w-44 h-4" />
-                    </CardDescription>
+                    </div>
                     <ChartContainer
                       config={chartConfig}
                       className="h-[332px] w-[100%] m-auto !aspect-auto"
@@ -192,9 +192,9 @@ export default function dashboardLoader() {
                   <Skeleton className=" h-6" />
                 </CardTitle>
 
-                <CardDescription>
+                <div>
                   <Skeleton className="w-20 h-4" />
-                </CardDescription>
+                </div>
               </CardHeader>
 
               <CardContent>

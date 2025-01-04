@@ -16,12 +16,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { UpdateSubjectForm } from "../forms/update-subject-form";
 import { Button } from "../ui/button";
+import { useTranslations } from "next-intl";
 
 export default function UpdateSubjectCredenza({
   subjectId,
 }: {
   subjectId: string;
 }) {
+  const t = useTranslations("Dashboard.Dialogs.UpdateSubject");
   const [open, setOpen] = useState(false);
 
   const {
@@ -44,16 +46,14 @@ export default function UpdateSubjectCredenza({
       <CredenzaTrigger asChild>
         <Button variant="ghost" className="w-full flex justify-start">
           <PencilIcon className="size-4 mr-2" />
-          Modifier la matière
+          {t("editSubject")}
         </Button>
       </CredenzaTrigger>
 
       <CredenzaContent>
         <CredenzaHeader>
-          <CredenzaTitle>Modifier la matière</CredenzaTitle>
-          <CredenzaDescription>
-            Modifier les données de la matière.
-          </CredenzaDescription>
+          <CredenzaTitle>{t("title")}</CredenzaTitle>
+          <CredenzaDescription>{t("description")}</CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
           {!isPending && !isError && (

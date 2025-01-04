@@ -10,7 +10,8 @@ import { ChartContainer } from "../ui/chart";
 import { Skeleton } from "../ui/skeleton";
 import { PlusCircleIcon } from "lucide-react";
 
-export default function subjectLoader() {
+export default function subjectLoader(t: any) {
+
   const chartConfig = {};
 
   const chartData = [
@@ -41,7 +42,7 @@ export default function subjectLoader() {
       <div>
         <Button className="text-blue-600" variant="link" disabled>
           <ArrowLeftIcon className="size-4 mr-2" />
-          Retour
+          {t("back")}
         </Button>
       </div>
 
@@ -51,7 +52,7 @@ export default function subjectLoader() {
         <div className="flex gap-2">
           <Button variant="outline" className="hidden md:flex" disabled>
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une note
+            {t("addGrade")}
           </Button>{" "}
           <Button size="icon" variant="outline" disabled>
             <EllipsisVerticalIcon className="size-4" />

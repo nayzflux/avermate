@@ -5,20 +5,23 @@ import RecentGradeItem from "./recent-grade-item";
 import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
+import { useTranslations } from "next-intl";
 
 export default function RecentGradesList({
   recentGrades,
 }: {
   recentGrades: Grade[];
 }) {
+  const t = useTranslations("Dashboard.Cards.RecentGradesCard");
+
   if (recentGrades.length === 0)
     return (
       <div className="flex flex-col items-center justify-center gap-6 h-full">
-        <p className="text-center">Aucune note récente</p>
+        <p className="text-center">{t("noRecentGrades")}</p>
         <AddGradeDialog>
           <Button variant="outline">
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une note
+            {t("addGrade")}
           </Button>
         </AddGradeDialog>
       </div>

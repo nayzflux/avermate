@@ -12,12 +12,14 @@ import {
 import { usePeriods } from "@/hooks/use-periods";
 import { useState } from "react";
 import { AddPeriodForm } from "../forms/add-period-form";
+import { useTranslations } from "next-intl";
 
 export default function AddPeriodCredenza({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = useTranslations("Dashboard.Dialogs.AddPeriod");
   const [open, setOpen] = useState(false);
 
   // Fetch existing periods to prevent overlapping
@@ -31,10 +33,8 @@ export default function AddPeriodCredenza({
 
       <CredenzaContent>
         <CredenzaHeader>
-          <CredenzaTitle>Ajouter une période</CredenzaTitle>
-          <CredenzaDescription>
-            Créer une nouvelle période avant d&apos;ajouter des notes.
-          </CredenzaDescription>
+          <CredenzaTitle>{t("title")}</CredenzaTitle>
+          <CredenzaDescription>{t("description")}</CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
           {!isPending && !isError && (

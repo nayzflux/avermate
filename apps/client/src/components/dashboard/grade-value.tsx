@@ -11,10 +11,7 @@ export default function GradeValue({
   outOf: number;
   size?: "sm" | "xl";
 }) {
-  // const decimals =
-  //   formatGradeValue(value).toString().split(".")[1]?.length || 0;
-  // console.log(decimals);
-  // console.log(formatGradeValue(value));
+  //const decimals = formatGradeValue(value).toString().split(".")[1]?.length || 0;
   return (
     <div className="flex items-center gap-1 whitespace-nowrap">
       <p

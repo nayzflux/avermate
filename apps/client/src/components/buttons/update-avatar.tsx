@@ -18,8 +18,10 @@ import { Slider } from "@/components/ui/slider";
 import getCroppedImg from "@/utils/cropImage"; // Ensure this utility is correctly implemented
 import { Area } from "react-easy-crop";
 import isAnimated from "@frsource/is-animated"; // Import the library
+import { useTranslations } from "next-intl";
 
 const UpdateAvatar = () => {
+  const t = useTranslations("Settings.Profile.Avatar");
   const toast = useToast();
   const router = useRouter();
 
@@ -78,8 +80,8 @@ const UpdateAvatar = () => {
     } catch (error) {
       console.error("Error cropping image:", error);
       toast.toast({
-        title: "❌ Erreur",
-        description: "Une erreur est survenue lors du recadrage de l'image.",
+        title: t("errorTitle"),
+        description: t("cropError"),
       });
       setIsCropping(false);
       setImageSrc(null);
@@ -93,7 +95,7 @@ const UpdateAvatar = () => {
         objectUrlRef.current = null;
       }
     }
-  }, [imageSrc, croppedAreaPixels, toast]);
+  }, [imageSrc, croppedAreaPixels, toast, t]);
 
   // Function to handle cancellation of cropping
   const handleCancelCrop = () => {
@@ -129,8 +131,8 @@ const UpdateAvatar = () => {
 
         if (!file.type.startsWith("image/")) {
           toast.toast({
-            title: "❌ Erreur",
-            description: "Veuillez sélectionner un fichier image valide.",
+            title: t("errorTitle"),
+            description: t("invalidFileType"),
           });
           reject(new Error("Invalid file type."));
           return;
@@ -153,17 +155,16 @@ const UpdateAvatar = () => {
             } catch (error) {
               console.error("Error detecting animation:", error);
               toast.toast({
-                title: "❌ Erreur",
-                description:
-                  "Une erreur est survenue lors de la détection de l'animation de l'image.",
+                title: t("errorTitle"),
+                description: t("animationDetectionError"),
               });
               reject(new Error("Failed to detect image animation."));
             }
           } else {
             // Unable to read the file as ArrayBuffer
             toast.toast({
-              title: "❌ Erreur",
-              description: "Impossible de lire le fichier image.",
+              title: t("errorTitle"),
+              description: t("unableToReadFile"),
             });
             reject(new Error("Unable to read file."));
           }
@@ -171,16 +172,15 @@ const UpdateAvatar = () => {
         reader.onerror = (error) => {
           console.error("FileReader error:", error);
           toast.toast({
-            title: "❌ Erreur",
-            description:
-              "Une erreur est survenue lors de la lecture du fichier.",
+            title: t("errorTitle"),
+            description: t("fileReaderError"),
           });
           reject(new Error("FileReader error."));
         };
         reader.readAsArrayBuffer(file);
       });
     },
-    [toast]
+    [toast, t]
   );
 
   // Helper function to initiate cropping
@@ -229,21 +229,21 @@ const UpdateAvatar = () => {
               return (
                 <span className="flex items-center dark:text-black">
                   <Loader2Icon className="animate-spin mr-2 size-4" />
-                  Modifier l&apos;avatar
+                  {t("uploadingAvatar")}
                 </span>
               );
             }
             return ready ? (
-              <span className="dark:text-black">Modifier l&apos;avatar</span>
+              <span className="dark:text-black">{t("changeAvatar")}</span>
             ) : (
               <span className="flex items-center dark:text-black">
                 <Loader2Icon className="animate-spin mr-2 size-4" />
-                Modifier l&apos;avatar
+                {t("changeAvatar")}
               </span>
             );
           },
           allowedContent() {
-            return "Formats images acceptés. Poids Max: 4MB.";
+            return t("allowedFormats");
           },
         }}
         onBeforeUploadBegin={handleBeforeUpload}
@@ -253,12 +253,12 @@ const UpdateAvatar = () => {
           const uploadedFile = files[0];
           try {
             // Update user profile picture
-            await authClient.updateUser({ image: uploadedFile.url })
+            await authClient.updateUser({ image: uploadedFile.url });
 
             // Show success message
             toast.toast({
-              title: "✅ Avatar modifié avec succès !",
-              description: "Votre avatar a été mis à jour avec succès.",
+              title: t("successTitle"),
+              description: t("successMessage"),
             });
 
             // Refresh the page to update all avatar instances
@@ -268,35 +268,32 @@ const UpdateAvatar = () => {
 
             // Show error message
             toast.toast({
-              title: "❌ Erreur",
-              description:
-                "Une erreur est survenue lors de la mise à jour de l'avatar.",
+              title: t("errorTitle"),
+              description: t("updateError"),
             });
           }
         }}
         onUploadError={(err) => {
           if (err.code === "TOO_LARGE") {
             toast.toast({
-              title: "❌ Erreur",
-              description:
-                "Le fichier que vous avez essayé d'uploader est trop volumineux.",
+              title: t("errorTitle"),
+              description: t("fileTooLarge"),
             });
 
             return;
           }
 
           toast.toast({
-            title: "❌ Erreur",
-            description:
-              "Une erreur est survenue lors de l'upload de votre avatar. Réesayez plus tard.",
+            title: t("errorTitle"),
+            description: t("uploadError"),
           });
 
           console.error(err);
         }}
         onUploadBegin={() => {
           toast.toast({
-            title: "🔄 Upload de l'avatar en cours...",
-            description: "Merci de patienter quelques instants.",
+            title: t("uploadingTitle"),
+            description: t("uploadingMessage"),
           });
         }}
       />
@@ -307,7 +304,7 @@ const UpdateAvatar = () => {
           <DialogContent className="w-[90%] max-w-2xl">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold">
-                Recadrez votre avatar
+                {t("cropAvatar")}
               </DialogTitle>
             </DialogHeader>
             <div className="flex flex-col items-center space-y-4">
@@ -325,7 +322,6 @@ const UpdateAvatar = () => {
                   onCropComplete={(croppedArea, croppedAreaPixels) => {
                     setCroppedAreaPixels(croppedAreaPixels);
                   }}
-                  //borderRadius={50}
                   style={{
                     containerStyle: {
                       borderRadius: "6px",
@@ -348,7 +344,7 @@ const UpdateAvatar = () => {
                 onClick={handleCancelCrop}
                 className="mr-2"
               >
-                Annuler
+                {t("cancel")}
               </Button>
               <Button
                 onClick={handleCropComplete}
@@ -357,7 +353,7 @@ const UpdateAvatar = () => {
                   size: "default",
                 })}
               >
-                Enregistrer
+                {t("save")}
               </Button>
             </div>
           </DialogContent>

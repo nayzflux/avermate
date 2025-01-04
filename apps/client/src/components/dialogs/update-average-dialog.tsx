@@ -16,39 +16,42 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { UpdateCustomAverageForm } from "../forms/update-average-form";
 import { Button } from "../ui/button";
+import { useTranslations } from "next-intl";
 
-export default function UpdateAverageCredenza({ averageId }: { averageId: string }) {
+export default function UpdateAverageCredenza({
+  averageId,
+}: {
+  averageId: string;
+}) {
+  const t = useTranslations("Dashboard.Dialogs.UpdateAverage");
   const [open, setOpen] = useState(false);
 
-const {
-  data: customAverage,
-  isPending,
-  isError,
-} = useQuery({
-  queryKey: ["average", averageId],
-  queryFn: async () => {
-    const res = await apiClient.get(`averages/${averageId}`);
-    const data = await res.json<{ customAverage: Average }>();
-    return data.customAverage;
-  },
-});
-
+  const {
+    data: customAverage,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ["average", averageId],
+    queryFn: async () => {
+      const res = await apiClient.get(`averages/${averageId}`);
+      const data = await res.json<{ customAverage: Average }>();
+      return data.customAverage;
+    },
+  });
 
   return (
     <Credenza open={open} onOpenChange={setOpen}>
       <CredenzaTrigger asChild>
         <Button variant="ghost">
           <PencilIcon className="size-4 mr-2" />
-          Modifier la moyenne
+          {t("editAverage")}
         </Button>
       </CredenzaTrigger>
 
       <CredenzaContent>
         <CredenzaHeader>
-          <CredenzaTitle>Ajouter une moyenne personnalisée</CredenzaTitle>
-          <CredenzaDescription>
-            Créez une moyenne personnalisée pour des matières spécifiques.
-          </CredenzaDescription>
+          <CredenzaTitle>{t("title")}</CredenzaTitle>
+          <CredenzaDescription>{t("description")}</CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
           {!isPending && !isError && (

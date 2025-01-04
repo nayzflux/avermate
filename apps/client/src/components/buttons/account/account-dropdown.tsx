@@ -25,9 +25,13 @@ import { LuGithub } from "react-icons/lu";
 import SignOutButton from "../sign-out-button";
 import ThemeSwitchButton from "../theme-switch-button";
 import Avatar from "./avatar";
+import { MessageSquareIcon } from "lucide-react";
+import FeedbackDialog from "@/components/dialogs/feedback-dialog";
+import { useTranslations } from "next-intl";
 
 export default function AccountDropdown() {
   const toaster = useToast();
+  const t = useTranslations("Header.Dropdown");
 
   const { data, isPending } = authClient.useSession() as unknown as {
     data: { user: User; session: Session };
@@ -47,6 +51,12 @@ export default function AccountDropdown() {
     // Not logged
     if (!data) {
       router.push("/auth/sign-in");
+
+      toaster.toast({
+        title: t("notLoggedInTitle"),
+        description: t("notLoggedInDescription"),
+      });
+
       return;
     }
 
@@ -58,8 +68,10 @@ export default function AccountDropdown() {
       });
 
       toaster.toast({
-        title: "✉️ Email non vérifié",
-        description: `Un lien de vérification a été envoyé à l'adresse ${data.user.email}.`,
+        title: t("emailNotVerifiedTitle"),
+        description: t("emailNotVerifiedDescription", {
+          email: data.user.email,
+        }),
       });
 
       router.push("/auth/verify-email");
@@ -81,7 +93,7 @@ export default function AccountDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger disabled={isPending}>
+      <DropdownMenuTrigger>
         <div className="p-2">
           {isPending ? (
             <Skeleton className="size-8 rounded-full" />
@@ -121,38 +133,47 @@ export default function AccountDropdown() {
         <DropdownMenuItem asChild>
           <Link href={`/profile`} onClick={handleClick}>
             <UserIcon className="size-4 mr-2" />
-            Profile
+            {t("profile")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href={`/profile/account`} onClick={handleClick}>
             <ShieldCheckIcon className="size-4 mr-2" />
-            Compte
+            {t("account")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           {/* Pass current page as 'from' parameter */}
           <Link href={`/profile/settings`} onClick={handleClick}>
             <Cog6ToothIcon className="size-4 mr-2" />
-            Paramètres
+            {t("settings")}
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuLabel>Apparence</DropdownMenuLabel>
+        <DropdownMenuLabel>{t("appearance")}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <ThemeSwitchButton />
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="https://github.com/nayzflux/avermate">
             <LuGithub className="size-4 mr-2" />
-            Github
+            {t("github")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="https://discord.gg/DSCMg3MUzu">
             <LifebuoyIcon className="size-4 mr-2" />
-            Support
+            {t("support")}
           </Link>
         </DropdownMenuItem>
+        <FeedbackDialog>
+          <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
+            <span>
+              <MessageSquareIcon className="size-4 mr-2" />
+              {t("feedback")}
+            </span>
+          </DropdownMenuItem>
+        </FeedbackDialog>
+
         <DropdownMenuSeparator />
 
         <SignOutButton />

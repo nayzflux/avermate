@@ -8,6 +8,8 @@ import ThemeProvider from "@/providers/theme-provider";
 import { Gabarito } from "next/font/google";
 import { ThemeColorMetaTag } from "@/components/color";
 import { Viewport } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 
 const gabarito = Gabarito({
   subsets: ["latin"],
@@ -28,13 +30,16 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // 2) Read the locale and messages (provided by i18n/request.ts)
+  const locale = await getLocale();
+  const messages = await getMessages();
   return (
-    <html lang="en" suppressHydrationWarning className="scroll-smooth">
+    <html lang={locale} suppressHydrationWarning className="scroll-smooth">
       <head>
         <link rel="manifest" href="/manifest.webmanifest" />
         <meta name="theme-color" content="#09090b" />
@@ -43,10 +48,12 @@ export default function RootLayout({
         <QueryProvider>
           <ThemeProvider>
             <ThemeColorMetaTag />
-            <div data-vaul-drawer-wrapper="" className="bg-background">
-              {children}
-            </div>
-            <Toaster />
+            <NextIntlClientProvider locale={locale} messages={messages}>
+              <div data-vaul-drawer-wrapper="" className="bg-background">
+                {children}
+              </div>
+              <Toaster />
+            </NextIntlClientProvider>
           </ThemeProvider>
         </QueryProvider>
       </body>
