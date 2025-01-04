@@ -158,6 +158,7 @@ export const SignInForm = () => {
                     <div className="space-y-2">
                       <div className="relative">
                         <Input
+                          id="password"
                           className="pe-9"
                           placeholder="********"
                           type={isVisible ? "text" : "password"}
