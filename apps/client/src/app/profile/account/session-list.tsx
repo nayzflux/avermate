@@ -19,6 +19,8 @@ import ProfileSection from "../profile-section";
 import ErrorStateCard from "@/components/skeleton/error-card";
 import "dayjs/locale/fr";
 import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 dayjs.locale("fr");
 
@@ -36,6 +38,7 @@ type Session = {
 };
 
 export default function SessionList() {
+  const formatter = useFormatter();
   const t = useTranslations("Settings.Account.SessionList");
   const { data: currentSession } = authClient.useSession() as unknown as {
     data: { session: Session };
@@ -113,7 +116,7 @@ export default function SessionList() {
                 <p className="font-semibold">{session.id.substring(0, 10)}</p>
 
                 <p className="text-muted-foreground">
-                  {dayjs(session.expiresAt).fromNow()}
+                  {useFormatDates(formatter).formatRelative(new Date(session.expiresAt))}
                 </p>
               </div>
 

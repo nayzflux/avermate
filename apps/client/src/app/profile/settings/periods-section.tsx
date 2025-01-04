@@ -25,8 +25,11 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { BookOpenIcon, PlusCircleIcon } from "lucide-react";
 import ProfileSection from "../profile-section";
 import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 export const PeriodsSection = () => {
+  const formatter = useFormatter();
   const t = useTranslations("Settings.Settings.Periods");
 
   // Fetch period data
@@ -123,8 +126,14 @@ export const PeriodsSection = () => {
             <div className="flex flex-col gap-1">
               <Label>{period.name}</Label>
               <span className="text-muted-foreground text-sm">
-                {t("from")} {new Date(period.startAt).toLocaleDateString()}{" "}
-                {t("to")} {new Date(period.endAt).toLocaleDateString()}
+                {t("from")}{" "}
+                {useFormatDates(formatter).formatIntermediate(
+                  new Date(period.startAt)
+                )}{" "}
+                {t("to")}{" "}
+                {useFormatDates(formatter).formatIntermediate(
+                  new Date(period.endAt)
+                )}
               </span>
             </div>
             <div>

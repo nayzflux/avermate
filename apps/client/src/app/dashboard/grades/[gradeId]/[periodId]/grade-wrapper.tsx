@@ -26,6 +26,8 @@ import {
 import { DifferenceBadge } from "../difference-badge";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 export default function GradeWrapper({
   subjects,
@@ -39,7 +41,8 @@ export default function GradeWrapper({
   periodId: string;
   customAverages: Average[];
   onBack: () => void; // Receive the onBack prop from the parent
-}) {
+  }) {
+  const formatter = useFormatter();
   const t = useTranslations("Dashboard.Pages.GradeWrapper"); // Initialize t
 
   const gradeParents = () => {
@@ -219,7 +222,9 @@ export default function GradeWrapper({
           icon={CalendarIcon}
         >
           <p className="texl-xl md:text-3xl font-bold">
-            {formatDate(new Date(grade.passedAt))}
+            {useFormatDates(formatter).formatIntermediate(
+              new Date(grade.passedAt)
+            )}
           </p>
         </DataCard>
 
@@ -229,7 +234,9 @@ export default function GradeWrapper({
           icon={CalendarIcon}
         >
           <p className="texl-xl md:text-3xl font-bold">
-            {formatDate(new Date(grade.createdAt))}
+            {useFormatDates(formatter).formatIntermediate(
+              new Date(grade.createdAt)
+            )}
           </p>
         </DataCard>
       </div>

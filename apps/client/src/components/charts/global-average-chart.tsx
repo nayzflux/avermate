@@ -33,6 +33,8 @@ import AddGradeDialog from "../dialogs/add-grade-dialog";
 import { SubjectEmptyState } from "../empty-states/subject-empty-state";
 import { Button } from "../ui/button";
 import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 function getCumulativeStartDate(
   periods: Period[],
@@ -73,6 +75,7 @@ export default function GlobalAverageChart({
   period: Period;
   periods: Period[];
 }) {
+  const formatter = useFormatter();
   const t = useTranslations("Dashboard.Charts.GlobalAverageChart");
 
   // State to manage the active index for the data series
@@ -259,10 +262,7 @@ export default function GlobalAverageChart({
                   axisLine={false}
                   tickMargin={8}
                   tickFormatter={(value) =>
-                    new Date(value).toLocaleDateString("fr-FR", {
-                      month: "short",
-                      day: "numeric",
-                    })
+                    useFormatDates(formatter).formatShort(new Date(value))
                   }
                 />
                 <YAxis
@@ -288,10 +288,7 @@ export default function GlobalAverageChart({
                     />
                   }
                   labelFormatter={(value) =>
-                    new Date(value).toLocaleDateString("fr-FR", {
-                      month: "short",
-                      day: "numeric",
-                    })
+                    useFormatDates(formatter).formatShort(new Date(value))
                   }
                 />
                 <defs>

@@ -54,6 +54,8 @@ import { handleError } from "@/utils/error-utils";
 import { useMediaQuery } from "../ui/use-media-query";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 dayjs.locale("fr");
 
@@ -64,6 +66,7 @@ export const AddGradeForm = ({
   close: () => void;
   parentId?: string;
 }) => {
+  const formatter = useFormatter();
   const errorTranslations = useTranslations("Errors");
   const t = useTranslations("Dashboard.Forms.AddGrade");
   const toaster = useToast();
@@ -321,7 +324,9 @@ export const AddGradeForm = ({
                         )}
                       >
                         {field.value
-                          ? dayjs(field.value).format("dddd DD MMM YYYY")
+                          ? useFormatDates(formatter).formatLong(
+                              new Date(field.value)
+                            )
                           : t("chooseDate")}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
@@ -339,7 +344,6 @@ export const AddGradeForm = ({
                         date > new Date() || date < new Date("2023-01-02")
                       }
                       autoFocus
-                      weekStartsOn={1}
                       defaultMonth={field.value || new Date()}
                     />
                   </PopoverContent>

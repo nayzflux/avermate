@@ -30,6 +30,8 @@ import { useMediaQuery } from "../ui/use-media-query";
 import { handleError } from "@/utils/error-utils";
 import { Switch } from "@/components/ui/switch";
 import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 export const AddPeriodForm = ({
   close,
@@ -37,7 +39,8 @@ export const AddPeriodForm = ({
 }: {
   close: () => void;
   periods: Period[];
-}) => {
+  }) => {
+  const formatter = useFormatter();
   const errorTranslations = useTranslations("Errors");
   const t = useTranslations("Dashboard.Forms.AddPeriod");
   const addPeriodSchema = z.object({
@@ -196,22 +199,25 @@ export const AddPeriodForm = ({
                         >
                           {field.value?.from ? (
                             field.value.to ? (
-                              `${format(field.value.from, "PPP")} - ${format(
-                                field.value.to,
-                                "PPP"
-                              )}`
+                              `${useFormatDates(formatter).formatIntermediate(
+                                field.value.from
+                              )} - ${useFormatDates(
+                                formatter
+                              ).formatIntermediate(field.value.to)}`
                             ) : (
-                              format(field.value.from, "PPP")
+                              useFormatDates(formatter).formatIntermediate(
+                                field.value.from
+                              )
                             )
                           ) : (
                             <span>{t("selectDateRange")}</span>
                           )}
+
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="center">
                         <Calendar
-                          weekStartsOn={1}
                           excludeDisabled
                           mode="range"
                           selected={field.value}
