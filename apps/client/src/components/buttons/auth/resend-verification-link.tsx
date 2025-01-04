@@ -7,8 +7,11 @@ import { env } from "@/lib/env";
 import { handleError } from "@/utils/error-utils";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const ResendVerificationLink = ({ email }: { email: string }) => {
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Auth.Verify");
   const toaster = useToast();
 
   const { mutate, isPending } = useMutation({
@@ -21,12 +24,12 @@ const ResendVerificationLink = ({ email }: { email: string }) => {
     },
     onSuccess: () => {
       toaster.toast({
-        title: "🔗 Lien renvoyé",
-        description: `Un nouveau lien de vérification a été renvoyé à l'adresse ${email}.`,
+        title: t("linkResent"),
+        description: t("linkResentDescription", { email }),
       });
     },
     onError: (error) => {
-      handleError(error, toaster, "Erreur lors de l'envoi du lien de vérification.");
+      handleError(error, toaster, errorTranslations, t("errorSendingLink"));
     },
   });
 
@@ -37,7 +40,7 @@ const ResendVerificationLink = ({ email }: { email: string }) => {
       onClick={() => mutate()}
     >
       {isPending && <Loader2Icon className="animate-spin" />}
-      Renvoyer un lien de vérification
+      {t("resendVerificationLink")}
     </Button>
   );
 };

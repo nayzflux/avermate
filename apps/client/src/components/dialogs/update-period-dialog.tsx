@@ -16,12 +16,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { UpdatePeriodForm } from "../forms/update-period-form";
 import { Button } from "../ui/button";
+import { useTranslations } from "next-intl";
 
 export default function UpdatePeriodCredenza({
   periodId,
 }: {
   periodId: string;
 }) {
+  const t = useTranslations("Dashboard.Dialogs.UpdatePeriod");
   const [open, setOpen] = useState(false);
 
   const {
@@ -33,7 +35,6 @@ export default function UpdatePeriodCredenza({
     queryFn: async () => {
       const res = await apiClient.get(`periods/${periodId}`);
       const data = await res.json<Period>();
-      // console.log(data);
       return data;
     },
   });
@@ -56,16 +57,14 @@ export default function UpdatePeriodCredenza({
       <CredenzaTrigger asChild>
         <Button variant="ghost">
           <PencilIcon className="size-4 mr-2" />
-          Modifier la période
+          {t("editPeriod")}
         </Button>
       </CredenzaTrigger>
 
       <CredenzaContent>
         <CredenzaHeader>
-          <CredenzaTitle>Modifier la période</CredenzaTitle>
-          <CredenzaDescription>
-            Modifier les données de la période.
-          </CredenzaDescription>
+          <CredenzaTitle>{t("title")}</CredenzaTitle>
+          <CredenzaDescription>{t("description")}</CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
           {!isPending && !isError && !isPeriodsPending && !isPeriodsError && (

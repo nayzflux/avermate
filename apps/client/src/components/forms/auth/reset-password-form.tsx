@@ -21,32 +21,35 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
-
-const resetPasswordSchema = z.object({
-  password: z
-    .string()
-    .min(8)
-    .max(128)
-    .superRefine((password, ctx) => {
-      const strength = getPasswordStrength(password);
-
-      if (strength.strength === "weak") {
-        return ctx.addIssue({
-          code: "custom",
-          message: "Le mot de passe est trop faible.",
-        });
-      }
-    }),
-});
-
-type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
 
 export const ResetPasswordForm = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const router = useRouter();
   const toaster = useToast();
+    const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Auth.Reset");
+
+  const resetPasswordSchema = z.object({
+    password: z
+      .string()
+      .min(8)
+      .max(128)
+      .superRefine((password, ctx) => {
+        const strength = getPasswordStrength(password);
+
+        if (strength.strength === "weak") {
+          return ctx.addIssue({
+            code: "custom",
+            message: t("passwordTooWeak"),
+          });
+        }
+      }),
+  });
+
+  type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["sign-up"],
@@ -58,18 +61,18 @@ export const ResetPasswordForm = () => {
       return data;
     },
     onSuccess: (data) => {
-      // Redirection vers la page de connexion
+      // Redirect to the sign-in page
       router.push("/auth/sign-in");
 
-      // Notification toast
+      // Toast notification
       toaster.toast({
-        title: "Réinitialisation du mot de passe",
-        description: "Votre mot de passe a été réinitialisé avec succès !",
+        title: t("passwordReset"),
+        description: t("passwordResetSuccess"),
       });
     },
 
     onError: (error) => {
-      handleError(error, toaster, "Erreur lors de la réinitialisation du mot de passe.");
+      handleError(error, toaster, errorTranslations, t("errorResettingPassword"));
     },
   });
 
@@ -99,10 +102,10 @@ export const ResetPasswordForm = () => {
             disabled={isPending}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mot de passe</FormLabel>
+                <FormLabel>{t("password")}</FormLabel>
                 <FormControl>
                   <div>
-                    {/* Champ de saisie du mot de passe avec bouton pour afficher/masquer */}
+                    {/* Password input field with toggle visibility button */}
                     <div className="space-y-2">
                       <div className="relative">
                         <Input
@@ -117,9 +120,7 @@ export const ResetPasswordForm = () => {
                           type="button"
                           onClick={toggleVisibility}
                           aria-label={
-                            isVisible
-                              ? "Masquer le mot de passe"
-                              : "Afficher le mot de passe"
+                            isVisible ? t("hidePassword") : t("showPassword")
                           }
                           aria-pressed={isVisible}
                           aria-controls="password"
@@ -137,7 +138,7 @@ export const ResetPasswordForm = () => {
                       </div>
                     </div>
 
-                    {/* Indicateur de force du mot de passe */}
+                    {/* Password strength indicator */}
                     <div
                       className="mb-4 mt-3 h-1 w-full overflow-hidden rounded-full bg-border"
                       role="progressbar"
@@ -146,7 +147,7 @@ export const ResetPasswordForm = () => {
                       }
                       aria-valuemin={0}
                       aria-valuemax={4}
-                      aria-label="Niveau de sécurité du mot de passe"
+                      aria-label={t("passwordStrength")}
                     >
                       <div
                         className={cn(
@@ -176,7 +177,7 @@ export const ResetPasswordForm = () => {
 
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
-            Réinitialiser le mot de passe
+            {t("resetPassword")}
           </Button>
         </form>
       </Form>

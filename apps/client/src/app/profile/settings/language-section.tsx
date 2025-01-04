@@ -12,14 +12,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ProfileSection from "../profile-section";
-
-// Optional: If you want to translate the labels in this component itself
-// import {useTranslations, useLocale} from "next-intl";
+import { useTranslations } from "next-intl";
 
 export const LanguageSection = () => {
-  // If your ProfileSection texts themselves need translation, you could do:
-  // const t = useTranslations('ProfileSection');
-  // But for demonstration, let's just hardcode or localize it as you see fit.
+  const t = useTranslations("Settings.Settings.Language");
 
   const router = useRouter();
   const pathname = usePathname();
@@ -56,22 +52,19 @@ export const LanguageSection = () => {
   };
 
   return (
-    <ProfileSection
-      title="Langue"
-      description="Personnalisez la langue de l'application."
-    >
+    <ProfileSection title={t("title")} description={t("description")}>
       <div className="flex flex-col gap-4">
-        <Label>Langue</Label>
+        <Label>{t("languageLabel")}</Label>
 
         <Select onValueChange={changeLanguage} value={language}>
           <SelectTrigger className="capitalize">
-            <SelectValue placeholder="Sélectionnez une langue" />
+            <SelectValue placeholder={t("selectPlaceholder")} />
           </SelectTrigger>
 
           <SelectContent>
-            <SelectItem value="system">Système</SelectItem>
-            <SelectItem value="en">Anglais</SelectItem>
-            <SelectItem value="fr">Français</SelectItem>
+            <SelectItem value="system">{t("system")}</SelectItem>
+            <SelectItem value="en">{t("english")}</SelectItem>
+            <SelectItem value="fr">{t("french")}</SelectItem>
           </SelectContent>
         </Select>
       </div>

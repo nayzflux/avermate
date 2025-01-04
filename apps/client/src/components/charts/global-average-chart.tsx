@@ -32,6 +32,7 @@ import {
 import AddGradeDialog from "../dialogs/add-grade-dialog";
 import { SubjectEmptyState } from "../empty-states/subject-empty-state";
 import { Button } from "../ui/button";
+import { useTranslations } from "next-intl";
 
 function getCumulativeStartDate(
   periods: Period[],
@@ -72,6 +73,8 @@ export default function GlobalAverageChart({
   period: Period;
   periods: Period[];
 }) {
+  const t = useTranslations("Dashboard.Charts.GlobalAverageChart");
+
   // State to manage the active index for the data series
   const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(
     null
@@ -104,11 +107,9 @@ export default function GlobalAverageChart({
     average: averages[index],
   }));
 
-  //console.log(chartData);
-
   const chartConfig = {
     average: {
-      label: "Moyenne",
+      label: t("average"),
       color: "#2662d9",
     },
   };
@@ -210,32 +211,26 @@ export default function GlobalAverageChart({
     return null;
   };
 
-  // console.log(subjects);
-  // console.log(chartData);
-  // console.log(radarData);
-
-  // handle if there is no subjects
+  // handle if there are no subjects
   if (subjects.length === 0) {
     return <SubjectEmptyState />;
   }
 
-  //if all the average are null
+  // if all the averages are null
   if (chartData.every((data) => data.average === null)) {
     return (
       <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
         <BookOpenIcon className="w-12 h-12" />
         <div className="flex flex-col items-center gap-1">
           <h2 className="text-xl font-semibold text-center">
-            Aucune note pour l&apos;instant
+            {t("noGradesTitle")}
           </h2>
-          <p className="text-center">
-            Ajouter une nouvelle note pour commencer à suivre vos moyennes.
-          </p>
+          <p className="text-center">{t("noGradesDescription")}</p>
         </div>
         <AddGradeDialog>
           <Button variant="outline">
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une note
+            {t("addGrade")}
           </Button>
         </AddGradeDialog>
       </Card>
@@ -245,7 +240,7 @@ export default function GlobalAverageChart({
   return (
     <Card className="lg:col-span-5">
       <CardHeader>
-        <CardTitle>Moyenne Générale</CardTitle>
+        <CardTitle>{t("globalAverageTitle")}</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -253,8 +248,7 @@ export default function GlobalAverageChart({
           {/* Area Chart Section */}
           <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%] lg:w-[60%]">
             <CardDescription className="pb-8">
-              Visualiser l&apos;évolution de votre moyenne générale sur ce
-              trimestre
+              {t("areaChartDescription")}
             </CardDescription>
             <ChartContainer config={chartConfig} className="h-[302px] w-[100%]">
               <AreaChart data={chartData} margin={{ left: -30 }}>
@@ -335,9 +329,7 @@ export default function GlobalAverageChart({
 
           {/* Radar Chart Section */}
           <div className="flex flex-col items-center lg:space-y-2 lg:w-[40%] m-auto lg:pt-0 pt-8 w-[100%]">
-            <CardDescription>
-              Visualiser votre moyenne par matière
-            </CardDescription>
+            <CardDescription>{t("radarChartDescription")}</CardDescription>
             <ChartContainer
               config={chartConfig}
               className="h-[332px] w-[100%] m-auto !aspect-auto"

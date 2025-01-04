@@ -1,7 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -37,21 +42,7 @@ import {
 } from "../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-
-const updateSubjectSchema = z.object({
-  name: z.string().min(1).max(64),
-  coefficient: z.coerce.number().min(0).max(1000),
-  parentId: z
-    .string()
-    .max(64)
-    .optional()
-    .transform((val) => (val === "none" ? null : val))
-    .nullable(),
-  isMainSubject: z.boolean().optional(),
-  isDisplaySubject: z.boolean().optional(),
-});
-
-type UpdateSubjectSchema = z.infer<typeof updateSubjectSchema>;
+import { useTranslations } from "next-intl"; // Import useTranslations
 
 export const UpdateSubjectForm = ({
   close,
@@ -60,6 +51,8 @@ export const UpdateSubjectForm = ({
   close: () => void;
   subject: Subject;
 }) => {
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Dashboard.Forms.UpdateSubject");
   const [openParent, setOpenParent] = useState(false);
   const [parentInputValue, setParentInputValue] = useState("");
   const toaster = useToast();
@@ -78,6 +71,28 @@ export const UpdateSubjectForm = ({
   const { data: subjects } = useSubjects();
 
   const filteredSubjects = subjects?.filter((s) => s.id !== subject.id);
+
+  // Feedback schema validation
+  const updateSubjectSchema = z.object({
+    name: z.string().min(1, t("nameRequired")).max(64, t("nameTooLong")),
+    coefficient: z.coerce
+      .number()
+      .min(0, t("coefficientMin"))
+      .max(1000, t("coefficientMax")),
+    parentId: z
+      .string()
+      .max(64)
+      .optional()
+      .transform((val) => (val === "none" ? null : val))
+      .nullable()
+      .refine((val) => val === null || subjects?.some((s) => s.id === val), {
+        message: t("parentIdInvalid"),
+      }),
+    isMainSubject: z.boolean().optional(),
+    isDisplaySubject: z.boolean().optional(),
+  });
+
+  type UpdateSubjectSchema = z.infer<typeof updateSubjectSchema>;
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["update-subject"],
@@ -103,8 +118,8 @@ export const UpdateSubjectForm = ({
     },
     onSuccess: () => {
       toaster.toast({
-        title: `Matière modifiée avec succès !`,
-        description: "Votre matière a été mise à jour.",
+        title: t("successTitle"),
+        description: t("successDescription"),
       });
 
       close();
@@ -113,7 +128,7 @@ export const UpdateSubjectForm = ({
       queryClient.invalidateQueries({ queryKey: ["subject", subject.id] });
     },
     onError: (error) => {
-      handleError(error, toaster, "Erreur lors de la modification de la matière.");
+      handleError(error, toaster, errorTranslations, t("updateError"));
     },
   });
 
@@ -165,7 +180,7 @@ export const UpdateSubjectForm = ({
             disabled={isPending}
             render={({ field }) => (
               <FormItem className="mx-1">
-                <FormLabel>Nom</FormLabel>
+                <FormLabel>{t("name")}</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder={subject.name} {...field} />
                 </FormControl>
@@ -180,7 +195,7 @@ export const UpdateSubjectForm = ({
             disabled={isPending}
             render={({ field }) => (
               <FormItem className="col-span-2 mx-1">
-                <FormLabel>Coefficient</FormLabel>
+                <FormLabel>{t("coefficient")}</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -193,7 +208,7 @@ export const UpdateSubjectForm = ({
                 <FormMessage />
                 {isDisplaySubject && (
                   <FormDescription>
-                    Les catégories ne prennent pas en compte le coefficient
+                    {t("coefficientDescription")}
                   </FormDescription>
                 )}
               </FormItem>
@@ -206,16 +221,17 @@ export const UpdateSubjectForm = ({
             render={({ field }) => (
               <FormItem className="mx-1">
                 <div className="col-span-2 flex flex-row gap-4 items-center">
-                  <FormLabel>Matière principale</FormLabel>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
+                  <FormLabel>{t("isMainSubject")}</FormLabel>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
                 </div>
                 <FormMessage />
                 <FormDescription>
-                  Les matières principales sont affichées en premier dans le
-                  tableau de bord.
+                  {t("isMainSubjectDescription")}
                 </FormDescription>
               </FormItem>
             )}
@@ -227,18 +243,17 @@ export const UpdateSubjectForm = ({
             render={({ field }) => (
               <FormItem className="mx-1">
                 <div className="col-span-2 flex flex-row gap-4 items-center">
-                  <FormLabel>Catégorie</FormLabel>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
+                  <FormLabel>{t("isDisplaySubject")}</FormLabel>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
                 </div>
                 <FormMessage />
                 <FormDescription>
-                  Les catégories ne comptent pas dans la moyenne générale. Elles
-                  regroupent des matières, mais leurs enfants sont calculés
-                  comme au niveau supérieur. Impossible d&apos;y ajouter des
-                  notes.
+                  {t("isDisplaySubjectDescription")}
                 </FormDescription>
               </FormItem>
             )}
@@ -251,7 +266,8 @@ export const UpdateSubjectForm = ({
             render={({ field }) => (
               <FormItem className="flex flex-col mx-1">
                 <FormLabel>
-                  Sous-matière <Badge className="ml-2">Optionnel</Badge>
+                  {t("parentSubject")}{" "}
+                  <Badge className="ml-2">{t("optional")}</Badge>
                 </FormLabel>
 
                 {isDesktop ? (
@@ -274,7 +290,7 @@ export const UpdateSubjectForm = ({
                             ? filteredSubjects?.find(
                                 (s) => s.id === field.value
                               )?.name
-                            : "Choisir une matière parente"}
+                            : t("chooseParentSubject")}
                           <ChevronUpDownIcon className="opacity-50" />
                         </Button>
                       </PopoverTrigger>
@@ -285,13 +301,13 @@ export const UpdateSubjectForm = ({
                     >
                       <Command>
                         <CommandInput
-                          placeholder="Choisir une matière parente"
+                          placeholder={t("chooseParentSubject")}
                           value={parentInputValue}
                           onValueChange={setParentInputValue}
                           className="h-9"
                         />
                         <CommandList>
-                          <CommandEmpty>Aucune matière trouvée</CommandEmpty>
+                          <CommandEmpty>{t("noSubjectsFound")}</CommandEmpty>
                           <CommandGroup>
                             {filteredSubjects
                               ?.slice()
@@ -335,27 +351,27 @@ export const UpdateSubjectForm = ({
                             ? filteredSubjects?.find(
                                 (s) => s.id === field.value
                               )?.name
-                            : "Choisir une matière parente"}
+                            : t("chooseParentSubject")}
                           <ChevronUpDownIcon className="opacity-50" />
                         </Button>
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
                       <VisuallyHidden>
-                        <DrawerTitle>Choisir une matière</DrawerTitle>
+                        <DrawerTitle>{t("chooseParentSubject")}</DrawerTitle>
                       </VisuallyHidden>
                       <div className="mt-4 border-t p-4">
                         <Command>
                           <CommandInput
                             ref={parentInputRef}
                             autoFocus
-                            placeholder="Choisir une matière parente"
+                            placeholder={t("chooseParentSubject")}
                             value={parentInputValue}
                             onValueChange={setParentInputValue}
                             className="h-9"
                           />
                           <CommandList>
-                            <CommandEmpty>Aucune matière trouvée</CommandEmpty>
+                            <CommandEmpty>{t("noSubjectsFound")}</CommandEmpty>
                             <CommandGroup>
                               {filteredSubjects
                                 ?.slice()
@@ -388,16 +404,15 @@ export const UpdateSubjectForm = ({
 
                 <FormMessage />
                 <FormDescription>
-                  Une matière parente regroupe plusieurs sous-matières,
-                  facilitant leur organisation.
+                  {t("parentSubjectDescription")}
                 </FormDescription>
               </FormItem>
             )}
           />
 
           <Button className="w-full" type="submit" disabled={isPending}>
-            {isPending && <Loader2Icon className="animate-spin mr-2 size-4" />}
-            Modifier la matière
+            {isPending && <Loader2Icon className="animate-spin mr-2 h-4 w-4" />}
+            {t("submit")}
           </Button>
         </form>
       </Form>

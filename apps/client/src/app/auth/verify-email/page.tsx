@@ -7,8 +7,10 @@ import { authClient } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 const VerifyEmailPage = () => {
+  const t = useTranslations("Auth.Verify");
   const router = useRouter();
   const toaster = useToast();
 
@@ -26,8 +28,8 @@ const VerifyEmailPage = () => {
       return data;
     },
     // Poll every 30 seconds
-    staleTime: 30 * 1000,
-    refetchInterval: 15 * 1000,
+    staleTime: 5 * 1000,
+    refetchInterval: 5 * 1000,
     refetchOnWindowFocus: true,
   });
 
@@ -39,8 +41,8 @@ const VerifyEmailPage = () => {
 
       // Send toast notification
       toaster.toast({
-        title: `👋 Ravi de vous revoir ${session.user.name} !`,
-        description: "Nous espérons que vous avez atteint vos objectifs !",
+        title: t("welcomeBack", { name: session.user.name }),
+        description: t("hopeYouAchievedGoals"),
       });
     }
   }, [session]);
@@ -49,13 +51,10 @@ const VerifyEmailPage = () => {
     <div className="flex flex-col gap-8">
       {/* Title */}
       <div className="flex flex-col gap-2">
-        <p className="text-3xl md:text-4xl font-bold">Vérifiez votre email</p>
+        <p className="text-3xl md:text-4xl font-bold">{t("verifyEmail")}</p>
 
         <div className="flex flex-col gap-0.5 text-sm md:text-base text-muted-foreground">
-          <p>
-            Un lien a été envoyé à {session?.user?.email}. Cliquez sur le lien
-            pour vérifier votre email.
-          </p>
+          <p>{t("emailSent", { email: session?.user?.email })}</p>
         </div>
       </div>
 

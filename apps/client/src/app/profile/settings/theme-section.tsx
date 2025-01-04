@@ -11,8 +11,10 @@ import {
 import { useTheme } from "next-themes";
 import ProfileSection from "../profile-section";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export const ThemeSection = () => {
+  const t = useTranslations("Settings.Settings.Theme");
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -23,20 +25,17 @@ export const ThemeSection = () => {
   if (!mounted) {
     // SSR or no hydration yet, avoid rendering mismatched UI
     return (
-      <ProfileSection
-        title="Apparence"
-        description="Personnalisez le thème qui sera utilisé."
-      >
+      <ProfileSection title={t("title")} description={t("description")}>
         <div className="flex flex-col gap-4">
-          <Label>Thème</Label>
+          <Label>{t("themeLabel")}</Label>
           <Select disabled>
             <SelectTrigger>
-              <SelectValue placeholder="Sélectionnez un thème" />
+              <SelectValue placeholder={t("selectPlaceholder")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="system">Système</SelectItem>
-              <SelectItem value="light">Clair</SelectItem>
-              <SelectItem value="dark">Sombre</SelectItem>
+              <SelectItem value="system">{t("system")}</SelectItem>
+              <SelectItem value="light">{t("light")}</SelectItem>
+              <SelectItem value="dark">{t("dark")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -45,24 +44,21 @@ export const ThemeSection = () => {
   }
 
   return (
-    <ProfileSection
-      title="Apparence"
-      description="Personnalisez le thème qui sera utilisé."
-    >
+    <ProfileSection title={t("title")} description={t("description")}>
       <div className="flex flex-col gap-4">
-        <Label>Thème</Label>
+        <Label>{t("themeLabel")}</Label>
 
         <Select onValueChange={setTheme} value={theme} defaultValue={theme}>
           <SelectTrigger className="capitalize">
-            <SelectValue placeholder="Sélectionnez un thème" />
+            <SelectValue placeholder={t("selectPlaceholder")} />
           </SelectTrigger>
 
           <SelectContent>
-            <SelectItem value="system">Système</SelectItem>
+            <SelectItem value="system">{t("system")}</SelectItem>
 
-            <SelectItem value="light">Clair</SelectItem>
+            <SelectItem value="light">{t("light")}</SelectItem>
 
-            <SelectItem value="dark">Sombre</SelectItem>
+            <SelectItem value="dark">{t("dark")}</SelectItem>
           </SelectContent>
         </Select>
       </div>

@@ -11,38 +11,29 @@ import { Subject } from "@/types/subject";
 import { averageOverTime, getChildren } from "@/utils/average";
 import React, { useState } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { useTranslations } from "next-intl";
 
-// [PATCH] A small helper to handle cumulative start dates.
 function getCumulativeStartDate(
   periods: Period[],
   currentPeriod: Period
 ): Date {
-  // If we have a "full-year" special period, you can either:
-  // - Use currentPeriod.startAt
-  // - Or use the earliest real period's start date
-  // We'll just default to currentPeriod.startAt for "full-year".
   if (currentPeriod.id === "full-year") {
     return new Date(currentPeriod.startAt);
   }
 
-  // Sort all periods by start date
   const sorted = [...periods].sort(
     (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
   );
 
-  // Find the current period’s index
   const currentIndex = sorted.findIndex((p) => p.id === currentPeriod.id);
   if (currentIndex === -1) {
-    // Fallback if not found
     return new Date(currentPeriod.startAt);
   }
 
-  // If isCumulative => we start from the earliest period's start date
   if (currentPeriod.isCumulative) {
     return new Date(sorted[0].startAt);
   }
 
-  // Otherwise => just use the current period's start date
   return new Date(currentPeriod.startAt);
 }
 
@@ -69,11 +60,11 @@ export default function SubjectAverageChart({
   subjects: Subject[];
   periods: Period[];
 }) {
+  const t = useTranslations("Dashboard.Charts.SubjectAverageChart");
   const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
     [key: string]: number | null;
   }>({});
 
-  // Callback to update active tooltip indices
   const handleActiveTooltipIndicesChange = React.useCallback(
     (indices: { [key: string]: number | null }) => {
       setActiveTooltipIndices(indices);
@@ -81,16 +72,11 @@ export default function SubjectAverageChart({
     []
   );
 
-  // [PATCH] Build chart data in an IIFE for clarity
   const { childrenAverage, chartData, chartConfig } = (() => {
-    // 1) Find the children of the main subject
     const childrenIds = getChildren(subjects, subjectId);
-
-    // 2) Decide start & end for the chart’s X-axis
     const endDate = new Date(period.endAt);
-    const startDate = getCumulativeStartDate(periods, period); // [PATCH]
+    const startDate = getCumulativeStartDate(periods, period);
 
-    // 3) Generate daily dates from [startDate ... endDate]
     const dates: Date[] = [];
     for (
       let dt = new Date(startDate);
@@ -100,30 +86,24 @@ export default function SubjectAverageChart({
       dates.push(new Date(dt));
     }
 
-    // 4) Possibly filter children by depth
     const mainSubject = subjects.find((s) => s.id === subjectId);
     let childrenObjects = subjects.filter((subj) =>
       childrenIds.includes(subj.id)
     );
 
-    // (Optional) Depth-based filtering
     childrenObjects = childrenObjects.filter(
       (child) => child.depth === (mainSubject?.depth ?? 0) + 1
     );
 
-    // 5) Build each child's average
     const childrenAverage = childrenObjects.map((child, index) => ({
       id: child.id,
       name: child.name,
-      // Pass all four args to averageOverTime, which now handles isCumulative
       average: averageOverTime(subjects, child.id, period, periods),
       color: predefinedColors[index % predefinedColors.length],
     }));
 
-    // 6) Main subject’s average
     const mainAverages = averageOverTime(subjects, subjectId, period, periods);
 
-    // 7) Combine into chart data
     const chartData = dates.map((date, index) => ({
       date: date.toISOString(),
       average: mainAverages[index],
@@ -132,10 +112,9 @@ export default function SubjectAverageChart({
       ),
     }));
 
-    // 8) Build chart config for legend, colors, etc.
     const chartConfig = {
       average: {
-        label: "Moyenne",
+        label: t("average"),
         color: "#2662d9",
       },
       ...Object.fromEntries(
@@ -152,7 +131,6 @@ export default function SubjectAverageChart({
     return { childrenAverage, chartData, chartConfig };
   })();
 
-  // Custom dot component
   const CustomDot = (props: any) => {
     const { cx, cy, index, stroke, activeTooltipIndex } = props;
     if (activeTooltipIndex !== null && index === activeTooltipIndex) {
@@ -205,7 +183,6 @@ export default function SubjectAverageChart({
             }
           />
 
-          {/* Lines for each child */}
           {childrenAverage?.map((child) => (
             <Line
               key={child.id}
@@ -229,7 +206,6 @@ export default function SubjectAverageChart({
             />
           ))}
 
-          {/* Main subject line */}
           <Line
             dataKey="average"
             type="monotone"

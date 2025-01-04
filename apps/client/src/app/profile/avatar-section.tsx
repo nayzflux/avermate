@@ -13,8 +13,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth";
 import { Session, User } from "better-auth/types";
 import ProfileSection from "./profile-section";
+import { useTranslations } from "next-intl";
 
 export default function AvatarSection() {
+  const t = useTranslations("Settings.Profile.Avatar");
   const { data: session, isPending } = authClient.useSession() as unknown as {
     data: { user: User; session: Session };
     isPending: boolean;
@@ -25,12 +27,12 @@ export default function AvatarSection() {
       <Card className={"p-6 w-full"}>
         <div className="flex flex-col gap-6">
           <CardHeader className="p-0">
-            <CardTitle>
+            <div>
               <Skeleton className="md:w-32 w-full h-6" />
-            </CardTitle>
-            <CardDescription>
+            </div>
+            <div>
               <Skeleton className="md:w-64 w-full h-4" />
-            </CardDescription>
+            </div>
           </CardHeader>
 
           <CardContent className="p-0">
@@ -50,8 +52,8 @@ export default function AvatarSection() {
 
   return (
     <ProfileSection
-      title="Avatar"
-      description="Changez votre avatar"
+      title={t("title")}
+      description={t("description")}
       className="flex flex-col gap-4"
     >
       <div className="flex flex-col md:flex-row items-center  gap-6 align">

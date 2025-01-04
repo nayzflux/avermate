@@ -17,20 +17,27 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
-
-const updateEmailSchema = z.object({
-  email: z.string().min(1).max(64),
-});
-
-type UpdateEmailSchema = z.infer<typeof updateEmailSchema>;
 
 export const UpdateEmailForm = ({
   defaultEmail,
 }: {
   defaultEmail?: string;
 }) => {
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Settings.Profile.Email");
   const toaster = useToast();
+
+  const updateEmailSchema = z.object({
+    email: z
+      .string()
+      .min(1, { message: t("emailMinLength") })
+      .max(64, { message: t("emailMaxLength") })
+      .email({ message: t("invalidEmail") }),
+  });
+
+  type UpdateEmailSchema = z.infer<typeof updateEmailSchema>;
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["update-email"],
@@ -44,13 +51,13 @@ export const UpdateEmailForm = ({
     onSuccess: ({ data, newEmail }) => {
       // Send toast notification
       toaster.toast({
-        title: `✉️ Lien de vérification envoyé`,
-        description: `Cliquer sur le lien envoyé à ${newEmail} pour confirmer le changement.`,
+        title: t("successTitle"),
+        description: t("successMessage", { email: newEmail }),
       });
     },
 
     onError: (error) => {
-      handleError(error, toaster, "Erreur lors de la mise à jour de l'email.");
+      handleError(error, toaster, errorTranslations, t("errorMessage"));
     },
   });
 
@@ -91,7 +98,7 @@ export const UpdateEmailForm = ({
           <div className="flex w-full justify-end">
             <Button type="submit" variant="outline" disabled={isPending}>
               {isPending && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
-              Sauvegarder
+              {t("save")}
             </Button>
           </div>
         </form>

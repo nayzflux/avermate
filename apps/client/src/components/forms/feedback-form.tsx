@@ -31,7 +31,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { apiClient } from "@/lib/api";
@@ -42,27 +47,32 @@ import { Badge } from "@/components/ui/badge";
 import { useMediaQuery } from "@/components/ui/use-media-query";
 import { handleError } from "@/utils/error-utils";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-
-// Feedback schema validation
-const feedbackSchema = z.object({
-  type: z.enum(["Général", "Bug", "Suggestion"]),
-  subject: z.string().min(1, "Un titre est requis"),
-  content: z
-    .string()
-    .min(10, "La remarque doit contenir au moins 10 caractères"),
-  image: z.string().optional(), // Base64 image input
-  email: z.string().email("Adresse email invalide"),
-});
-
-type FeedbackSchema = z.infer<typeof feedbackSchema>;
-
-const feedbackTypes = [
-  { id: "Général", name: "Général" },
-  { id: "Bug", name: "Bug" },
-  { id: "Suggestion", name: "Suggestion" },
-];
+import { useTranslations } from "next-intl";
 
 export const FeedbackForm = ({ close }: { close: () => void }) => {
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Dashboard.Forms.Feedback");
+
+  // Feedback schema validation
+  const feedbackSchema = z.object({
+    type: z.enum(["Général", "Bug", "Suggestion"]),
+    subject: z
+      .string()
+      .min(1, t("subjectRequired"))
+      .max(100, t("subjectTooLong")),
+    content: z.string().min(10, t("contentMin")).max(1000, t("contentMax")),
+    image: z.string().optional(), // Base64 image input
+    email: z.string().email(t("invalidEmail")),
+  });
+
+  type FeedbackSchema = z.infer<typeof feedbackSchema>;
+
+  const feedbackTypes = [
+    { id: "Général", name: t("general") },
+    { id: "Bug", name: t("bug") },
+    { id: "Suggestion", name: t("suggestion") },
+  ];
+
   const toaster = useToast();
   const [openType, setOpenType] = useState(false); // For responsive combobox
   const typeInputRef = useRef<HTMLInputElement>(null); // For focus management
@@ -79,14 +89,13 @@ export const FeedbackForm = ({ close }: { close: () => void }) => {
     },
     onSuccess: () => {
       toaster.toast({
-        title: "Remarque envoyée",
-        description:
-          "Merci pour votre retour. Nous allons étudier votre remarque attentivement.",
+        title: t("successTitle"),
+        description: t("successDescription"),
       });
       close();
     },
     onError: (error) => {
-      handleError(error, toaster, "Erreur lors de l'envoi de la remarque");
+      handleError(error, toaster, errorTranslations, t("errorSubmittingFeedback"));
     },
   });
 
@@ -128,7 +137,7 @@ export const FeedbackForm = ({ close }: { close: () => void }) => {
       subject: "",
       content: "",
       image: "",
-      email: data?.user.email,
+      email: data?.user.email || "",
     },
   });
 
@@ -146,7 +155,7 @@ export const FeedbackForm = ({ close }: { close: () => void }) => {
           name="type"
           render={({ field }) => (
             <FormItem className="flex flex-col mx-1">
-              <FormLabel>Type de remarque</FormLabel>
+              <FormLabel>{t("feedbackType")}</FormLabel>
               {isDesktop ? (
                 <Popover modal open={openType} onOpenChange={setOpenType}>
                   <FormControl>
@@ -160,7 +169,7 @@ export const FeedbackForm = ({ close }: { close: () => void }) => {
                           !watchedType && "text-muted-foreground"
                         )}
                       >
-                        {watchedType || "Sélectionner le type de remarque"}
+                        {watchedType || t("selectFeedbackType")}
                         <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
                       </Button>
                     </PopoverTrigger>
@@ -172,11 +181,11 @@ export const FeedbackForm = ({ close }: { close: () => void }) => {
                     <Command>
                       <CommandInput
                         ref={typeInputRef}
-                        placeholder="Rechercher un type"
+                        placeholder={t("searchFeedbackType")}
                         className="h-9"
                       />
                       <CommandList>
-                        <CommandEmpty>Aucun type trouvé</CommandEmpty>
+                        <CommandEmpty>{t("noFeedbackTypeFound")}</CommandEmpty>
                         <CommandGroup>
                           {feedbackTypes.map((type) => (
                             <CommandItem
@@ -221,24 +230,26 @@ export const FeedbackForm = ({ close }: { close: () => void }) => {
                         {watchedType
                           ? feedbackTypes.find((t) => t.id === watchedType)
                               ?.name
-                          : "Sélectionner le type de remarque"}
+                          : t("selectFeedbackType")}
                         <ChevronsUpDown className="opacity-50" />
                       </Button>
                     </FormControl>
                   </DrawerTrigger>
                   <DrawerContent>
                     <VisuallyHidden>
-                      <DrawerTitle>Sélectionner un type de remarque</DrawerTitle>
+                      <DrawerTitle>{t("selectFeedbackType")}</DrawerTitle>
                     </VisuallyHidden>
                     <div className="mt-4 border-t p-4">
                       <Command>
                         <CommandInput
                           ref={typeInputRef}
-                          placeholder="Rechercher un type"
+                          placeholder={t("searchFeedbackType")}
                           className="h-9"
                         />
                         <CommandList>
-                          <CommandEmpty>Aucun type trouvé</CommandEmpty>
+                          <CommandEmpty>
+                            {t("noFeedbackTypeFound")}
+                          </CommandEmpty>
                           <CommandGroup>
                             {feedbackTypes.map((type) => (
                               <CommandItem
@@ -279,9 +290,9 @@ export const FeedbackForm = ({ close }: { close: () => void }) => {
           name="subject"
           render={({ field }) => (
             <FormItem className="mx-1">
-              <FormLabel>Titre</FormLabel>
+              <FormLabel>{t("subject")}</FormLabel>
               <FormControl>
-                <Input placeholder="Titre de votre remarque" {...field} />
+                <Input placeholder={t("subjectPlaceholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -294,12 +305,9 @@ export const FeedbackForm = ({ close }: { close: () => void }) => {
           name="content"
           render={({ field }) => (
             <FormItem className="mx-1">
-              <FormLabel>Contenu</FormLabel>
+              <FormLabel>{t("content")}</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Décrivez votre remarque en détail"
-                  {...field}
-                />
+                <Textarea placeholder={t("contentPlaceholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -312,7 +320,7 @@ export const FeedbackForm = ({ close }: { close: () => void }) => {
           name="image"
           render={({ field }) => (
             <FormItem className="mx-1">
-              <FormLabel>Ajouter une image</FormLabel>
+              <FormLabel>{t("addImage")}</FormLabel>
               <FormControl>
                 <Input
                   type="file"
@@ -321,13 +329,33 @@ export const FeedbackForm = ({ close }: { close: () => void }) => {
                 />
               </FormControl>
               <FormMessage />
+              <FormDescription>{t("imageDescription")}</FormDescription>
             </FormItem>
           )}
         />
 
+        {/* Email Field Disabled Because Not Needed And Easier For Us */}
+        {/* <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem className="mx-1">
+              <FormLabel>{t("email")}</FormLabel>
+              <FormControl>
+                <Input
+                  type="email"
+                  placeholder={t("emailPlaceholder")}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        /> */}
+
         {/* Submit Button */}
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Envoi en cours..." : "Envoyer"}
+          {isPending ? t("submitting") : t("submit")}
         </Button>
       </form>
     </Form>

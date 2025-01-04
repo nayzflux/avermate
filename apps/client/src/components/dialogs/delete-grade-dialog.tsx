@@ -21,8 +21,11 @@ import {
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 import { handleError } from "@/utils/error-utils";
+import { useTranslations } from "next-intl";
 
 export default function DeleteGradeDialog({ grade }: { grade: Grade }) {
+  const t = useTranslations("Dashboard.Dialogs.DeleteGrade");
+  const errorTranslations = useTranslations("Errors");
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
@@ -44,8 +47,8 @@ export default function DeleteGradeDialog({ grade }: { grade: Grade }) {
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
 
       toaster.toast({
-        title: `Note supprimée`,
-        description: `${grade.name} a été supprimée avec succès.`,
+        title: t("successTitle"),
+        description: t("successDescription", { name: grade.name }),
       });
 
       setOpen(false);
@@ -53,7 +56,7 @@ export default function DeleteGradeDialog({ grade }: { grade: Grade }) {
       router.back();
     },
     onError: (error) => {
-      handleError(error, toaster, "Erreur lors de la suppression de la note.");
+      handleError(error, toaster, errorTranslations, t("error"));
     },
   });
 
@@ -69,17 +72,18 @@ export default function DeleteGradeDialog({ grade }: { grade: Grade }) {
           variant="ghost"
         >
           <TrashIcon className="size-4 mr-2" />
-          Supprimer
+          {t("delete")}
         </Button>
       </AlertDialogTrigger>
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Supprimer {grade.name}</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("title", { name: grade.name })}
+          </AlertDialogTitle>
 
           <AlertDialogDescription className="max-w-[300px]">
-            Êtes vous sûr de vouloir supprimer {grade.name} ? Cette action ne
-            peut pas être annulée.
+            {t("description", { name: grade.name })}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -89,7 +93,7 @@ export default function DeleteGradeDialog({ grade }: { grade: Grade }) {
               onClick={() => setOpen(false)}
               disabled={isPending}
             >
-              Annuler
+              {t("cancel")}
             </AlertDialogCancel>
           </Button>
 
@@ -101,7 +105,7 @@ export default function DeleteGradeDialog({ grade }: { grade: Grade }) {
               {isPending && (
                 <Loader2Icon className="size-4 mr-2 animate-spin" />
               )}
-              Supprimer
+              {t("delete")}
             </AlertDialogAction>
           </Button>
         </AlertDialogFooter>

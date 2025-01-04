@@ -34,6 +34,7 @@ import { useTranslations } from "next-intl";
 
 export const MockAverageChart = () => {
   const t = useTranslations("Landing.Product.Mocks.Charts");
+  const localizedSubjects = useLocalizedSubjects();
 
   const period = {
     id: "full-year",
@@ -60,12 +61,7 @@ export const MockAverageChart = () => {
   }
 
   // Calculate the average grades over time
-  const averages = averageOverTime(
-    useLocalizedSubjects(),
-    undefined,
-    period,
-    []
-  );
+  const averages = averageOverTime(localizedSubjects, undefined, period, []);
 
   const chartData = dates.map((date, index) => ({
     date: date.toISOString(),
@@ -80,10 +76,10 @@ export const MockAverageChart = () => {
   };
 
   // Calculate average grades per subject for radar chart, only if it is a main subject
-  const subjectAverages = useLocalizedSubjects()
+  const subjectAverages = localizedSubjects
     .filter((subject) => subject.isMainSubject)
     .map((subject) => {
-      const averageGrade = average(subject.id, useLocalizedSubjects());
+      const averageGrade = average(subject.id, localizedSubjects);
       const validAverage = averageGrade ?? 0;
       return {
         subject: subject.name,
@@ -177,7 +173,7 @@ export const MockAverageChart = () => {
   };
 
   // handle if there are no subjects
-  if (useLocalizedSubjects().length === 0) {
+  if (localizedSubjects.length === 0) {
     return <SubjectEmptyState />;
   }
 

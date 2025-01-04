@@ -22,38 +22,35 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import { useTranslations } from "next-intl";
 
 export default function DeleteAverageDialog({ average }: { average: Average }) {
+  const t = useTranslations("Dashboard.Dialogs.DeleteAverage");
+  const errorTranslations = useTranslations("Errors");
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const router = useRouter();
   const toaster = useToast();
 
-const { mutate, isPending } = useMutation({
-  mutationKey: ["average", "delete", average.id],
-  mutationFn: async () => {
-    const res = await apiClient.delete(`averages/${average.id}`);
-    if (!res.ok) {
-      throw new Error(
-        "Erreur lors de la suppression de la moyenne personnalisée."
-      );
-    }
-    const data = await res.json<{ customAverage: Average }>();
-    return data.customAverage;
-  },
-  onSuccess: (deletedAverage) => {
-    queryClient.invalidateQueries({ queryKey: ["customAverages"] });
-    toaster.toast({
-      title: "Moyenne personnalisée supprimée",
-      description: `${deletedAverage.name} a été supprimée avec succès.`,
-    });
-    setOpen(false);
-  },
-  onError: (error) => {
-    handleError(error, toaster, "Erreur lors de la suppression de la moyenne personnalisée.");
-  },
-});
-
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["average", "delete", average.id],
+    mutationFn: async () => {
+      const res = await apiClient.delete(`averages/${average.id}`);
+      const data = await res.json<{ customAverage: Average }>();
+      return data.customAverage;
+    },
+    onSuccess: (deletedAverage) => {
+      queryClient.invalidateQueries({ queryKey: ["customAverages"] });
+      toaster.toast({
+        title: t("successTitle"),
+        description: t("successDescription", { name: deletedAverage.name }),
+      });
+      setOpen(false);
+    },
+    onError: (error) => {
+      handleError(error, toaster, errorTranslations, t("error"));
+    },
+  });
 
   const handleDelete = () => {
     mutate();
@@ -67,16 +64,17 @@ const { mutate, isPending } = useMutation({
           className="w-full flex justify-start text-red-500 hover:text-red-400"
         >
           <TrashIcon className="size-4 mr-2" />
-          Supprimer
+          {t("delete")}
         </Button>
       </AlertDialogTrigger>
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Supprimer {average.name}</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("title", { name: average.name })}
+          </AlertDialogTitle>
           <AlertDialogDescription className="max-w-[300px]">
-            Êtes vous sûr de vouloir supprimer {average.name} ? Cette action est
-            irréversible.
+            {t("description", { name: average.name })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -85,7 +83,7 @@ const { mutate, isPending } = useMutation({
               onClick={() => setOpen(false)}
               disabled={isPending}
             >
-              Annuler
+              {t("cancel")}
             </AlertDialogCancel>
           </Button>
           <Button variant="destructive" asChild>
@@ -93,7 +91,7 @@ const { mutate, isPending } = useMutation({
               {isPending && (
                 <Loader2Icon className="size-4 mr-2 animate-spin" />
               )}
-              Supprimer
+              {t("delete")}
             </AlertDialogAction>
           </Button>
         </AlertDialogFooter>

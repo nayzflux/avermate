@@ -16,8 +16,9 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ProfileSection from "../profile-section";
-import errorStateCard from "@/components/skeleton/error-card";
+import ErrorStateCard from "@/components/skeleton/error-card";
 import "dayjs/locale/fr";
+import { useTranslations } from "next-intl";
 
 dayjs.locale("fr");
 
@@ -35,12 +36,13 @@ type Session = {
 };
 
 export default function SessionList() {
+  const t = useTranslations("Settings.Account.SessionList");
   const { data: currentSession } = authClient.useSession() as unknown as {
     data: { session: Session };
   };
 
   const {
-    data: sesssions,
+    data: sessions,
     isError,
     isPending,
   } = useQuery({
@@ -82,7 +84,7 @@ export default function SessionList() {
 
                   <div className="flex justify-end">
                     <Button variant="destructive" disabled>
-                      Révoquer
+                      {t("revoke")}
                     </Button>
                   </div>
                 </div>
@@ -95,16 +97,13 @@ export default function SessionList() {
   }
 
   if (isError) {
-    return <div>{errorStateCard()}</div>;
+    return <div>{ErrorStateCard()}</div>;
   }
 
   return (
-    <ProfileSection
-      title="Sessions actives"
-      description="Gérez et surveillez toutes vos sessions actives."
-    >
+    <ProfileSection title={t("title")} description={t("description")}>
       <div className="flex flex-col gap-4">
-        {sesssions?.map((session) => (
+        {sessions?.map((session) => (
           <div
             key={session.id}
             className="flex flex-col gap-2 border-t text-sm px-2 pt-4"
@@ -118,7 +117,6 @@ export default function SessionList() {
                 </p>
               </div>
 
-              {/* Fix spaghetti code */}
               <span
                 className={cn(
                   "items-center px-2 py-1 rounded bg-opacity-30 text-xs",
@@ -130,11 +128,11 @@ export default function SessionList() {
                 )}
               >
                 {currentSession?.session?.id === session.id ? (
-                  <p>Actuelle</p>
+                  <p>{t("current")}</p>
                 ) : session.expiresAt < new Date() ? (
-                  <p>Expirée</p>
+                  <p>{t("expired")}</p>
                 ) : (
-                  <p>Active</p>
+                  <p>{t("active")}</p>
                 )}
               </span>
             </div>

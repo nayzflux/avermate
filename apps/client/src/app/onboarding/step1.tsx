@@ -1,7 +1,7 @@
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import DeletePeriodDialog from "@/components/dialogs/delete-period-dialog";
 import UpdatePeriodDialog from "@/components/dialogs/update-period-dialog";
-import errorStateCard from "@/components/skeleton/error-card";
+import ErrorStateCard from "@/components/skeleton/error-card";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,8 +16,10 @@ import {
   EllipsisVerticalIcon,
   PlusCircleIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
 
 export default function Step1() {
+  const t = useTranslations("Onboarding.Step1");
   const {
     data: periods,
     isError: periodsIsError,
@@ -27,7 +29,7 @@ export default function Step1() {
   if (periodsIsPending) {
     return (
       <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold text-primary">Périodes</h2>
+        <h2 className="text-2xl font-bold text-primary">{t("title")}</h2>
         {Array.from({ length: 3 }).map((_, index) => (
           <div
             key={index}
@@ -53,7 +55,7 @@ export default function Step1() {
           <AddPeriodDialog>
             <Button variant="outline" disabled>
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une nouvelle période
+              {t("addNewPeriod")}
             </Button>
           </AddPeriodDialog>
         </div>
@@ -62,24 +64,23 @@ export default function Step1() {
   }
 
   if (periodsIsError) {
-    return errorStateCard();
+    return ErrorStateCard();
   }
 
   // if the period field is empty, we display a message explaining what periods are and how to create them (we also say that they are optional)
   if (!periods || periods.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center space-y-8">
-        <h2 className="text-2xl font-bold text-primary">Périodes</h2>
+        <h2 className="text-2xl font-bold text-primary">{t("title")}</h2>
         <p className="text-muted-foreground text-center">
-          Les périodes, <b className="text-foreground">facultatives</b>, sont
-          des intervalles de temps (année scolaire, semestre, trimestre, etc.)
-          pour regrouper vos notes. Sans elles, toutes vos notes sont regroupées
-          dans une seule section.
+          {t.rich("periodsDescription", {
+            bold: (chunks) => <b className="text-foreground">{chunks}</b>,
+          })}
         </p>
         <AddPeriodDialog>
           <Button variant="outline">
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une période
+            {t("addPeriod")}
           </Button>
         </AddPeriodDialog>
       </div>
@@ -88,7 +89,7 @@ export default function Step1() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold text-primary">Périodes</h2>
+      <h2 className="text-2xl font-bold text-primary">{t("title")}</h2>
       {periods?.map((period) => (
         <div
           key={period.id}
@@ -98,8 +99,8 @@ export default function Step1() {
           <div className="flex flex-col gap-1">
             <Label>{period.name}</Label>
             <span className="text-muted-foreground text-sm">
-              Du {new Date(period.startAt).toLocaleDateString()} au{" "}
-              {new Date(period.endAt).toLocaleDateString()}
+              {t("from")} {new Date(period.startAt).toLocaleDateString()}{" "}
+              {t("to")} {new Date(period.endAt).toLocaleDateString()}
             </span>
           </div>
           <div>
@@ -129,7 +130,7 @@ export default function Step1() {
         <AddPeriodDialog>
           <Button variant="outline">
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une nouvelle période
+            {t("addNewPeriod")}
           </Button>
         </AddPeriodDialog>
       </div>

@@ -22,35 +22,47 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
-
-const signUpSchema = z.object({
-  firstName: z.string().min(2).max(32),
-  lastName: z.string().min(2).max(32),
-  password: z
-    .string()
-    .min(8)
-    .max(128)
-    .superRefine((password, ctx) => {
-      const strength = getPasswordStrength(password);
-
-      if (strength.strength === "weak") {
-        return ctx.addIssue({
-          code: "custom",
-          message: "Le mot de passe est trop faible.",
-        });
-      }
-    }),
-  email: z.string().email().max(320),
-});
-
-type SignUpSchema = z.infer<typeof signUpSchema>;
 
 export const SignUpForm = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const router = useRouter();
   const toaster = useToast();
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Auth.SignUp");
+
+  const signUpSchema = z.object({
+    firstName: z
+      .string()
+      .min(2, { message: t("firstNameTooShort") })
+      .max(32, { message: t("firstNameTooLong") }),
+    lastName: z
+      .string()
+      .min(2, { message: t("lastNameTooShort") })
+      .max(32, { message: t("lastNameTooLong") }),
+    password: z
+      .string()
+      .min(8, { message: t("passwordTooShort") })
+      .max(128, { message: t("passwordTooLong") })
+      .superRefine((password, ctx) => {
+        const strength = getPasswordStrength(password);
+
+        if (strength.strength === "weak") {
+          return ctx.addIssue({
+            code: "custom",
+            message: t("passwordTooWeak"),
+          });
+        }
+      }),
+    email: z
+      .string()
+      .email({ message: t("invalidEmail") })
+      .max(320, { message: t("emailTooLong") }),
+  });
+
+  type SignUpSchema = z.infer<typeof signUpSchema>;
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["sign-up"],
@@ -74,8 +86,8 @@ export const SignUpForm = () => {
     onSuccess: (data) => {
       if (!data.emailVerified) {
         toaster.toast({
-          title: "✉️ Email non vérifié",
-          description: `Un lien de vérification a été envoyé à l'adresse ${data.email}.`,
+          title: t("emailNotVerified"),
+          description: t("verificationLinkSent", { email: data.email }),
         });
 
         // Redirect to email verify
@@ -85,7 +97,7 @@ export const SignUpForm = () => {
     },
 
     onError: (error) => {
-      handleError(error, toaster, "Erreur lors de l'inscription.");
+      handleError(error, toaster, errorTranslations, t("signUpError"));
     },
   });
 
@@ -120,9 +132,13 @@ export const SignUpForm = () => {
                 disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Prénom</FormLabel>
+                    <FormLabel>{t("firstName")}</FormLabel>
                     <FormControl>
-                      <Input type="text" placeholder="Louis" {...field} />
+                      <Input
+                        type="text"
+                        placeholder={t("firstNamePlaceholder")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -137,9 +153,13 @@ export const SignUpForm = () => {
                 disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nom</FormLabel>
+                    <FormLabel>{t("lastName")}</FormLabel>
                     <FormControl>
-                      <Input type="text" placeholder="Durand" {...field} />
+                      <Input
+                        type="text"
+                        placeholder={t("lastNamePlaceholder")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -154,11 +174,11 @@ export const SignUpForm = () => {
             disabled={isPending}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t("email")}</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="email@exemple.com"
+                    placeholder={t("emailPlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -173,15 +193,15 @@ export const SignUpForm = () => {
             disabled={isPending}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mot de passe</FormLabel>
+                <FormLabel>{t("password")}</FormLabel>
                 <FormControl>
                   <div>
-                    {/* Champ de saisie du mot de passe avec bouton d'affichage/masquage */}
+                    {/* Password input field with toggle visibility button */}
                     <div className="space-y-2">
                       <div className="relative">
                         <Input
                           className="pe-9"
-                          placeholder="********"
+                          placeholder="***********"
                           type={isVisible ? "text" : "password"}
                           {...field}
                         />
@@ -191,9 +211,7 @@ export const SignUpForm = () => {
                           type="button"
                           onClick={toggleVisibility}
                           aria-label={
-                            isVisible
-                              ? "Masquer le mot de passe"
-                              : "Afficher le mot de passe"
+                            isVisible ? t("hidePassword") : t("showPassword")
                           }
                           aria-pressed={isVisible}
                           aria-controls="password"
@@ -211,7 +229,7 @@ export const SignUpForm = () => {
                       </div>
                     </div>
 
-                    {/* Indicateur de force du mot de passe */}
+                    {/* Password strength indicator */}
                     <div
                       className="mb-4 mt-3 h-1 w-full overflow-hidden rounded-full bg-border"
                       role="progressbar"
@@ -220,7 +238,7 @@ export const SignUpForm = () => {
                       }
                       aria-valuemin={0}
                       aria-valuemax={4}
-                      aria-label="Niveau de sécurité du mot de passe"
+                      aria-label={t("passwordStrength")}
                     >
                       <div
                         className={cn(
@@ -250,7 +268,7 @@ export const SignUpForm = () => {
 
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
-            S&apos;inscrire
+            {t("signUp")}
           </Button>
         </form>
       </Form>

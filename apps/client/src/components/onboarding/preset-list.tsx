@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Loader2Icon, CheckIcon } from "lucide-react";
 import { handleError } from "@/utils/error-utils";
+import { useTranslations } from "next-intl";
 
 export const PresetList = ({
   close,
@@ -23,6 +24,8 @@ export const PresetList = ({
   close: () => void;
   presets: Preset[];
 }) => {
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Onboarding.Step2.Presets");
   const toaster = useToast();
   const queryClient = useQueryClient();
 
@@ -43,8 +46,8 @@ export const PresetList = ({
     },
     onSuccess: (data) => {
       toaster.toast({
-        title: `Préset appliqué avec succès !`,
-        description: "Le préset a été appliqué avec succès.",
+        title: t("successTitle"),
+        description: t("successDescription"),
       });
 
       close();
@@ -58,7 +61,7 @@ export const PresetList = ({
       setLoadingPresetId(null);
     },
     onError: (error) => {
-      handleError(error, toaster, "Erreur lors de l'application du préset.");
+      handleError(error, toaster, errorTranslations, t("errorDescription"));
 
       // Reset loading state
       setLoadingPresetId(null);
@@ -87,7 +90,7 @@ export const PresetList = ({
               {loadingPresetId === preset.id && (
                 <Loader2Icon className="animate-spin mr-2 size-4" />
               )}
-              Sélectionner
+              {t("select")}
               {loadingPresetId === preset.id && (
                 <CheckIcon className="ml-1 size-4" />
               )}

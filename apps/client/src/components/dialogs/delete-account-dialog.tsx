@@ -20,8 +20,11 @@ import {
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 import { handleError } from "@/utils/error-utils";
+import { useTranslations } from "next-intl";
 
 export default function DeleteAccountDialog() {
+  const t = useTranslations("Settings.Account.DeleteAccount");
+  const errorTranslations = useTranslations("Errors");
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
@@ -42,8 +45,8 @@ export default function DeleteAccountDialog() {
     },
     onSuccess: () => {
       toaster.toast({
-        title: `Compte supprimée`,
-        description: `Votre compe a été supprimée avec succès.`,
+        title: t("successTitle"),
+        description: t("successMessage"),
       });
 
       setOpen(false);
@@ -57,7 +60,7 @@ export default function DeleteAccountDialog() {
       localStorage.clear();
     },
     onError: (error) => {
-      handleError(error, toaster, "Erreur lors de la suppression du compte.");
+      handleError(error, toaster, errorTranslations, t("errorMessage"));
     },
   });
 
@@ -68,16 +71,15 @@ export default function DeleteAccountDialog() {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Supprimer votre compte</Button>
+        <Button variant="destructive">{t("triggerButton")}</Button>
       </AlertDialogTrigger>
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Supprimer votre compte</AlertDialogTitle>
+          <AlertDialogTitle>{t("titleDialog")}</AlertDialogTitle>
 
           <AlertDialogDescription>
-            Votre compte sera définitivement supprimé de nos serveurs. Cette
-            action est irréversible.
+            {t("descriptionDialog")}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -87,7 +89,7 @@ export default function DeleteAccountDialog() {
               onClick={() => setOpen(false)}
               disabled={isPending}
             >
-              Annuler
+              {t("cancel")}
             </AlertDialogCancel>
           </Button>
 
@@ -99,7 +101,7 @@ export default function DeleteAccountDialog() {
               {isPending && (
                 <Loader2Icon className="size-4 mr-2 animate-spin" />
               )}
-              Supprimer
+              {t("delete")}
             </AlertDialogAction>
           </Button>
         </AlertDialogFooter>

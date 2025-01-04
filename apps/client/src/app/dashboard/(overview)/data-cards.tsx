@@ -21,6 +21,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 export default function DataCards({
   period,
@@ -30,42 +31,27 @@ export default function DataCards({
 }: {
   period: Period;
   subjects: Subject[];
-    customAverages?: Average[];
-    periods: Period[];
+  customAverages?: Average[];
+  periods: Period[];
 }) {
+  const t = useTranslations("Dashboard.Components.DataCards");
+
   const averages = useMemo(() => {
     console.time("Calculating averages overtime");
-
-    // Calculate the start and end dates
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setMonth(startDate.getMonth() - 3);
-
-    // Calculate the average grades over time
     const averages = averageOverTime(subjects, undefined, period, periods);
-
     console.timeEnd("Calculating averages overtime");
-
     return averages;
-  }, [subjects]);
+  }, [subjects, period, periods]);
 
-  // Calculate the growth of the average over time
   const growth = useMemo(() => {
-    if (!averages) return 0;
-    if (averages.length === 0) return 0;
-
+    if (!averages || averages.length === 0) return 0;
     const lastValue = averages[averages.length - 1];
     const firstValue = averages.find((value) => value !== null);
-
-    if (!firstValue) return 0;
-    if (!lastValue || lastValue === 0) return 0;
-
+    if (!firstValue || !lastValue) return 0;
     const growth = ((lastValue - firstValue) / firstValue) * 100;
-
     return growth;
   }, [averages]);
 
-  // Calculate the best and worst subjects and grades
   const {
     bestSubject,
     bestSubjectAverage,
@@ -76,7 +62,6 @@ export default function DataCards({
     bestGrade,
     worstGrade,
   } = useMemo(() => {
-    //calculate the percentage of growth of the average between the first and last date
     const bestSubject = getBestSubject(subjects, true);
     const bestSubjectAverage = bestSubject
       ? average(bestSubject.id, subjects)
@@ -96,9 +81,6 @@ export default function DataCards({
     const bestGrade = getBestGrade(subjects);
     const worstGrade = getWorstGrade(subjects);
 
-    // console.log(subjects);
-    // console.log("average", average(undefined, subjects));
-
     return {
       bestSubject,
       bestSubjectAverage,
@@ -113,7 +95,6 @@ export default function DataCards({
 
   const mainCustomAverages = customAverages?.filter((ca) => ca.isMainAverage);
 
-  // if all datacards are in the empty state, return a global empty state
   if (
     average(undefined, subjects) === null &&
     bestGrade === null &&
@@ -136,19 +117,24 @@ export default function DataCards({
   }
 
   const columns = 5 + (mainCustomAverages?.length ?? 0) >= 6 ? 6 : 5;
+
   return (
     <div
-      className={cn(`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 pb-4`, get4xlColsClass(columns))}
+      className={cn(
+        "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 pb-4",
+        get4xlColsClass(columns)
+      )}
     >
+      {/* 1) Overall Average */}
       <DataCard
-        title="Moyenne générale"
+        title={t("generalAverage")}
         icon={AcademicCapIcon}
         description={
           growth > 0
-            ? `+${growth.toFixed(2)}% depuis le début`
+            ? `+${growth.toFixed(2)}% ${t("sinceStart")}`
             : growth < 0
-            ? `${growth.toFixed(2)}% depuis le début`
-            : "Pas d'évolution depuis le début"
+            ? `${growth.toFixed(2)}% ${t("sinceStart")}`
+            : t("noChangeSinceStart")
         }
       >
         {average(undefined, subjects) !== null ? (
@@ -160,23 +146,18 @@ export default function DataCards({
         ) : null}
       </DataCard>
 
-      {/* Main Custom Averages */}
+      {/* 2) Main Custom Averages */}
       {mainCustomAverages?.map((ca) => {
-        // 1) Compute the custom average
         const customVal = average(undefined, subjects, ca);
         if (customVal === null) {
-          return null; // Skip if no subjects/grades included
+          return null;
         }
-
-        // 2) Compute the global average for comparison
         const globalVal = average(undefined, subjects) ?? null;
         let comparisonType: "higher" | "lower" | "same" = "same";
         let comparisonValue = 0;
 
-        // 3) Determine the difference from global average (assuming 0–20 scale)
         if (globalVal !== null && globalVal !== 0) {
           const diff = ((customVal - globalVal) / globalVal) * 100;
-
           if (diff > 0) {
             comparisonType = "higher";
             comparisonValue = +diff.toFixed(2);
@@ -186,18 +167,17 @@ export default function DataCards({
           }
         }
 
-        // 4) Construct the description text
-        // If comparisonType is "higher" -> e.g. “+5% par rapport à la moyenne générale”
-        // If "lower" -> e.g. “-5% …”
-        // Otherwise -> “Pas de comparaison”
-        let descriptionText = "Pas de comparaison";
+        let descriptionText = t("noComparison");
         if (comparisonType === "higher") {
-          descriptionText = `+${comparisonValue}% par rapport à la moyenne générale`;
+          descriptionText = `+${comparisonValue}% ${t(
+            "comparedToGeneralAverage"
+          )}`;
         } else if (comparisonType === "lower") {
-          descriptionText = `-${comparisonValue}% par rapport à la moyenne générale`;
+          descriptionText = `-${comparisonValue}% ${t(
+            "comparedToGeneralAverage"
+          )}`;
         }
 
-        // 5) Display the DataCard
         return (
           <DataCard
             key={ca.id}
@@ -210,13 +190,18 @@ export default function DataCards({
         );
       })}
 
+      {/* 3) Best Grade */}
       <DataCard
-        title="Meilleure Note"
+        title={t("bestGrade")}
         icon={PlusIcon}
         description={
           bestGrade !== null
-            ? `En ${bestGrade?.subject?.name} ? Impressionant ! (${bestGrade?.name})`
-            : "Pas de meilleure note"
+            ? // Use interpolation tokens for subject & grade name
+              t("bestGradeWithSubject", {
+                subjectName: bestGrade?.subject?.name,
+                gradeName: bestGrade?.name,
+              })
+            : t("noBestGrade")
         }
       >
         {bestGrade && (
@@ -228,16 +213,20 @@ export default function DataCards({
         )}
       </DataCard>
 
+      {/* 4) Best Subject */}
       <DataCard
-        title="Meilleure Matière"
+        title={t("bestSubject")}
         icon={ArrowTrendingUpIcon}
         description={
-          bestSubjectAverage !== null
-            ? `${bestSubject?.name} est ${
-                bestSubjectAverageComparaison?.percentageChange?.toFixed(2) ||
-                "—"
-              }% plus élevé que les autres matières`
-            : "Pas de mailleure matière"
+          bestSubjectAverage !== null &&
+          bestSubjectAverageComparaison?.percentageChange
+            ? // Use interpolation for subject and percentage
+              t("bestSubjectWithComparison", {
+                subjectName: bestSubject?.name,
+                percentage:
+                  bestSubjectAverageComparaison.percentageChange.toFixed(2),
+              })
+            : t("noBestSubject")
         }
       >
         {bestSubjectAverage !== null && (
@@ -245,13 +234,17 @@ export default function DataCards({
         )}
       </DataCard>
 
+      {/* 5) Worst Grade */}
       <DataCard
-        title="Pire note"
+        title={t("worstGrade")}
         icon={MinusIcon}
         description={
           worstGrade !== null
-            ? `En ${worstGrade?.subject?.name} ? Oui, c'est mauvais (${worstGrade?.name})`
-            : "Pas de pire note"
+            ? t("worstGradeWithSubject", {
+                subjectName: worstGrade?.subject?.name,
+                gradeName: worstGrade?.name,
+              })
+            : t("noWorstGrade")
         }
       >
         {worstGrade && (
@@ -262,16 +255,20 @@ export default function DataCards({
           />
         )}
       </DataCard>
+
+      {/* 6) Worst Subject */}
       <DataCard
-        title="Pire matière"
+        title={t("worstSubject")}
         icon={ArrowTrendingDownIcon}
         description={
-          worstSubjectAverage !== null
-            ? `${worstSubject?.name} est ${
-                worstSubjectAverageComparaison?.percentageChange?.toFixed(2) ||
-                "—"
-              }% plus bas que les autres matières`
-            : "Pas de pire matière"
+          worstSubjectAverage !== null &&
+          worstSubjectAverageComparaison?.percentageChange
+            ? t("worstSubjectWithComparison", {
+                subjectName: worstSubject?.name,
+                percentage:
+                  worstSubjectAverageComparaison.percentageChange.toFixed(2),
+              })
+            : t("noWorstSubject")
         }
       >
         {worstSubjectAverage !== null && (

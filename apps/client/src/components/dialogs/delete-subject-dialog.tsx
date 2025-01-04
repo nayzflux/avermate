@@ -21,6 +21,7 @@ import {
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 import { handleError } from "@/utils/error-utils";
+import { useTranslations } from "next-intl";
 
 export default function DeleteSubjectDialog({
   subject,
@@ -29,6 +30,7 @@ export default function DeleteSubjectDialog({
   subject: Subject;
   backOnDelete?: boolean;
 }) {
+  const t = useTranslations("Dashboard.Dialogs.DeleteSubject");
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
@@ -50,8 +52,8 @@ export default function DeleteSubjectDialog({
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
 
       toaster.toast({
-        title: `Matière supprimée`,
-        description: `${subject.name} a été supprimée avec succès.`,
+        title: t("successTitle"),
+        description: t("successDescription", { name: subject.name }),
       });
 
       setOpen(false);
@@ -61,7 +63,7 @@ export default function DeleteSubjectDialog({
       }
     },
     onError: (error) => {
-      handleError(error, toaster, "Erreur lors de la suppression de la matière.");
+      handleError(error, toaster, t("error"));
     },
   });
 
@@ -77,17 +79,18 @@ export default function DeleteSubjectDialog({
           variant="ghost"
         >
           <TrashIcon className="size-4 mr-2" />
-          Supprimer
+          {t("delete")}
         </Button>
       </AlertDialogTrigger>
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Supprimer {subject.name}</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("title", { name: subject.name })}
+          </AlertDialogTitle>
 
           <AlertDialogDescription className="max-w-[300px]">
-            Êtes vous sûr de vouloir supprimer {subject.name} ? Cette action ne
-            peut pas être annulée.
+            {t("description", { name: subject.name })}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -97,7 +100,7 @@ export default function DeleteSubjectDialog({
               onClick={() => setOpen(false)}
               disabled={isPending}
             >
-              Annuler
+              {t("cancel")}
             </AlertDialogCancel>
           </Button>
 
@@ -109,7 +112,7 @@ export default function DeleteSubjectDialog({
               {isPending && (
                 <Loader2Icon className="size-4 mr-2 animate-spin" />
               )}
-              Supprimer
+              {t("delete")}
             </AlertDialogAction>
           </Button>
         </AlertDialogFooter>

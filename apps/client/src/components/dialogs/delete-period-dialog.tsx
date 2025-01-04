@@ -21,8 +21,11 @@ import {
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 import { handleError } from "@/utils/error-utils";
+import { useTranslations } from "next-intl";
 
 export default function DeletePeriodDialog({ period }: { period: Period }) {
+  const t = useTranslations("Dashboard.Dialogs.DeletePeriod");
+  const errorTranslations = useTranslations("Errors");
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
@@ -43,14 +46,14 @@ export default function DeletePeriodDialog({ period }: { period: Period }) {
       queryClient.invalidateQueries({ queryKey: ["period", period.id] });
 
       toaster.toast({
-        title: `Période supprimée`,
-        description: `${period.name} a été supprimée avec succès.`,
+        title: t("successTitle"),
+        description: t("successDescription", { name: period.name }),
       });
 
       setOpen(false);
     },
     onError: (error) => {
-      handleError(error, toaster, "Erreur lors de la suppression de la période.");
+      handleError(error, toaster, errorTranslations, t("error"));
     },
   });
 
@@ -66,17 +69,18 @@ export default function DeletePeriodDialog({ period }: { period: Period }) {
           variant="ghost"
         >
           <TrashIcon className="size-4 mr-2" />
-          Supprimer
+          {t("delete")}
         </Button>
       </AlertDialogTrigger>
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Supprimer {period.name}</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("title", { name: period.name })}
+          </AlertDialogTitle>
 
           <AlertDialogDescription className="max-w-[300px]">
-            Êtes-vous sûr de vouloir supprimer {period.name} ? Cette action ne
-            peut pas être annulée.
+            {t("description", { name: period.name })}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -86,7 +90,7 @@ export default function DeletePeriodDialog({ period }: { period: Period }) {
               onClick={() => setOpen(false)}
               disabled={isPending}
             >
-              Annuler
+              {t("cancel")}
             </AlertDialogCancel>
           </Button>
 
@@ -98,7 +102,7 @@ export default function DeletePeriodDialog({ period }: { period: Period }) {
               {isPending && (
                 <Loader2Icon className="size-4 mr-2 animate-spin" />
               )}
-              Supprimer
+              {t("delete")}
             </AlertDialogAction>
           </Button>
         </AlertDialogFooter>

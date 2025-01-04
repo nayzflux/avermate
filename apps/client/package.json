@@ -39,6 +39,7 @@
     "@t3-oss/env-nextjs": "^0.11.1",
     "@tanstack/react-query": "^5.62.7",
     "@types/canvas-confetti": "^1.6.4",
+    "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.17.13",
     "@uploadthing/react": "https://pkg.pr.new/pingdotgg/uploadthing/@uploadthing/react@1099",
     "better-auth": "^1.0.10",

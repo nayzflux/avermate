@@ -21,6 +21,7 @@ const MockGradesTable = () => {
   const t = useTranslations("Landing.Product.Mocks.Grades");
   const periodName = t("fullYear");
   const overallAverage = "12.34";
+  const localizedSubjects = useLocalizedSubjects();
 
   return (
     <Table>
@@ -40,7 +41,7 @@ const MockGradesTable = () => {
       </TableHeader>
 
       <TableBody>
-        {renderSubjects(useLocalizedSubjects(), "full-year", null)}
+        {renderSubjects(localizedSubjects, "full-year", null, t)}
       </TableBody>
 
       <TableFooter>
@@ -115,9 +116,9 @@ function getIndentationLinesStyle(depth: number): React.CSSProperties {
 function renderSubjects(
   subjects: Subject[],
   periodId: string,
-  parentId: string | null = null
+  parentId: string | null = null,
+  t: any
 ) {
-  const t = useTranslations("Landing.Product.Mocks.Grades");
   return subjects
     .filter((subject) => subject.parentId === parentId)
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -200,7 +201,7 @@ function renderSubjects(
             </TableRow>
           )}
 
-          {renderSubjects(subjects, periodId, subject.id)}
+          {renderSubjects(subjects, periodId, subject.id, t)}
         </React.Fragment>
       );
     });

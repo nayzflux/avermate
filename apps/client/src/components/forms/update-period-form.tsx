@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -27,34 +28,8 @@ import { z } from "zod";
 import { Calendar } from "../ui/calendar";
 import { useMediaQuery } from "../ui/use-media-query";
 import { handleError } from "@/utils/error-utils";
-import { Switch } from "@/components/ui/switch"; // <-- Import Switch
-
-const updatePeriodSchema = z.object({
-  name: z.string().min(1).max(64),
-  dateRange: z
-    .object({
-      from: z.date({
-        required_error: "La date de début est requise",
-      }),
-      to: z.date({
-        required_error: "La date de fin est requise",
-      }),
-    })
-    .refine(
-      (data) =>
-        isBefore(data.from, data.to) ||
-        data.from.getTime() === data.to.getTime(),
-      {
-        message:
-          "La date de début doit être antérieure ou égale à la date de fin",
-        path: ["to"],
-      }
-    ),
-  // NEW FIELD
-  isCumulative: z.boolean().optional(),
-});
-
-type UpdatePeriodSchema = z.infer<typeof updatePeriodSchema>;
+import { Switch } from "@/components/ui/switch";
+import { useTranslations } from "next-intl";
 
 export const UpdatePeriodForm = ({
   close,
@@ -65,8 +40,35 @@ export const UpdatePeriodForm = ({
   period: Period;
   periods: Period[];
 }) => {
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Dashboard.Forms.UpdatePeriod");
   const toaster = useToast();
   const queryClient = useQueryClient();
+
+  const updatePeriodSchema = z.object({
+    name: z.string().min(1, t("nameRequired")).max(64, t("nameTooLong")),
+    dateRange: z
+      .object({
+        from: z.date({
+          required_error: t("fromRequired"),
+        }),
+        to: z.date({
+          required_error: t("toRequired"),
+        }),
+      })
+      .refine(
+        (data) =>
+          isBefore(data.from, data.to) ||
+          data.from.getTime() === data.to.getTime(),
+        {
+          message: t("dateRangeError"),
+          path: ["to"],
+        }
+      ),
+    isCumulative: z.boolean().optional(),
+  });
+
+  type UpdatePeriodSchema = z.infer<typeof updatePeriodSchema>;
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["update-Period"],
@@ -80,7 +82,7 @@ export const UpdatePeriodForm = ({
           name,
           startAt: dateRange.from,
           endAt: dateRange.to,
-          isCumulative, // <-- update the field
+          isCumulative,
         },
       });
 
@@ -88,8 +90,8 @@ export const UpdatePeriodForm = ({
     },
     onSuccess: () => {
       toaster.toast({
-        title: "Période mise à jour",
-        description: "La période a été modifiée avec succès.",
+        title: t("successTitle"),
+        description: t("successDescription"),
       });
 
       queryClient.invalidateQueries({ queryKey: ["periods"] });
@@ -101,11 +103,7 @@ export const UpdatePeriodForm = ({
       close();
     },
     onError: (error) => {
-      handleError(
-        error,
-        toaster,
-        "Erreur lors de la mise à jour de la période."
-      );
+      handleError(error, toaster, errorTranslations, t("updateError"));
     },
   });
 
@@ -151,7 +149,7 @@ export const UpdatePeriodForm = ({
 
     if (overlappingPeriod) {
       toaster.toast({
-        title: "Les périodes se chevauchent",
+        title: t("overlapTitle"),
         variant: "destructive",
       });
       return;
@@ -173,11 +171,11 @@ export const UpdatePeriodForm = ({
             name="name"
             render={({ field }) => (
               <FormItem className="mx-1">
-                <FormLabel>Nom</FormLabel>
+                <FormLabel>{t("name")}</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Nom de la période"
+                    placeholder={t("namePlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -192,7 +190,7 @@ export const UpdatePeriodForm = ({
             name="dateRange"
             render={({ field }) => (
               <FormItem className="mx-1">
-                <FormLabel>Date de la période</FormLabel>
+                <FormLabel>{t("dateRange")}</FormLabel>
                 <FormControl>
                   <div className="flex flex-col gap-2">
                     <Popover modal>
@@ -213,7 +211,7 @@ export const UpdatePeriodForm = ({
                               format(field.value.from, "PPP")
                             )
                           ) : (
-                            <span>Sélectionner une plage de dates</span>
+                            <span>{t("selectDateRange")}</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -250,7 +248,7 @@ export const UpdatePeriodForm = ({
             render={({ field }) => (
               <FormItem className="mx-1">
                 <div className="flex flex-row gap-4 items-center">
-                  <FormLabel>Période cumulative ?</FormLabel>
+                  <FormLabel>{t("isCumulative")}</FormLabel>
                   <FormControl>
                     <Switch
                       checked={field.value}
@@ -258,6 +256,9 @@ export const UpdatePeriodForm = ({
                     />
                   </FormControl>
                 </div>
+                <FormDescription>
+                  {t("isCumulativeDescription")}
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -266,7 +267,7 @@ export const UpdatePeriodForm = ({
           {/* Submit Button */}
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2Icon className="animate-spin mr-2 h-4 w-4" />}
-            Modifier la période
+            {t("submit")}
           </Button>
         </form>
       </Form>
