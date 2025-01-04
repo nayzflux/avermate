@@ -1,33 +1,34 @@
 import { HTTPError } from "ky";
 
-const errorMessages: Record<number, string> = {
-  401: "Vous n'êtes pas autorisé à effectuer cette action. Veuillez réessayer plus tard.",
-  403: "Vous n'êtes pas autorisé à effectuer cette action. Veuillez réessayer plus tard.",
-  404: "La ressource demandée est introuvable. Veuillez réessayer plus tard.",
-  500: "Une erreur s'est produite sur le serveur. Veuillez réessayer plus tard.",
-  429: "Trop de requêtes. Veuillez réessayer plus tard.",
-  503: "Le serveur est indisponible. Veuillez réessayer plus tard.",
-  400: "Une erreur s'est produite. Veuillez réessayer plus tard.",
-};
-
 export function handleError(
   error: unknown,
-  toaster: ReturnType<typeof import("@/hooks/use-toast").useToast>
+  toaster: ReturnType<typeof import("@/hooks/use-toast").useToast>,
+  t: any,
+  message?: string
 ) {
+  const errorMessages: Record<number, string> = {
+    401: t("unauthorized"),
+    403: t("forbidden"),
+    404: t("notFound"),
+    500: t("serverError"),
+    429: t("tooManyRequests"),
+    503: t("serviceUnavailable"),
+    400: t("badRequest"),
+  };
+
   if (error instanceof HTTPError) {
     const status = error.response.status;
-    const message =
-      errorMessages[status] || "Une erreur inconnue s'est produite.";
+    const errorMessage = errorMessages[status] || t("unknownError");
 
     toaster.toast({
-      title: "Erreur",
-      description: `${message} (${status})`,
+      title: message || t("error"),
+      description: `${errorMessage} (${status})`,
       variant: "destructive",
     });
   } else {
     toaster.toast({
-      title: "Erreur",
-      description: `Une erreur inattendue s'est produite. Veuillez réessayer plus tard. (${error})`,
+      title: message || t("error"),
+      description: `${t("unexpectedError")} (${error})`,
       variant: "destructive",
     });
   }

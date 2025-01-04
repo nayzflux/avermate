@@ -15,12 +15,14 @@ import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api";
 import { Preset } from "@/types/get-preset-response";
 import { GetPresetResponse } from "@/types/get-preset-response";
+import { useTranslations } from "next-intl";
 
 export default function ListPresetsDialog({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = useTranslations("Dashboard.Dialogs.ListPresets");
   const [open, setOpen] = useState(false);
 
   const {
@@ -41,10 +43,8 @@ export default function ListPresetsDialog({
       <CredenzaTrigger asChild>{children}</CredenzaTrigger>
       <CredenzaContent>
         <CredenzaHeader>
-          <CredenzaTitle>Sélectionnez un préset</CredenzaTitle>
-          <CredenzaDescription>
-            Choisissez le préset qui vous correspond le mieux.
-          </CredenzaDescription>
+          <CredenzaTitle>{t("title")}</CredenzaTitle>
+          <CredenzaDescription>{t("description")}</CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
           {!isLoading && !isError && presets && (

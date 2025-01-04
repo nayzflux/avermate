@@ -18,10 +18,12 @@ import {
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
+import { useTranslations } from "next-intl";
 
 export default function SignOutButton() {
   const router = useRouter();
   const toaster = useToast();
+  const t = useTranslations("Header.Dropdown");
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["sign-out"],
@@ -35,8 +37,8 @@ export default function SignOutButton() {
       router.push("/");
 
       toaster.toast({
-        title: "Déconnecté",
-        description: "À bientôt 👋!",
+        title: t("signedOut"),
+        description: t("seeYouSoon"),
       });
     },
   });
@@ -54,24 +56,24 @@ export default function SignOutButton() {
           onSelect={(e) => e.preventDefault()}
         >
           <LogOutIcon className="size-4 mr-2" />
-          Se déconnecter
+          {t("signOut")}
         </DropdownMenuItem>
       </AlertDialogTrigger>
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Se déconnecter</AlertDialogTitle>
-          <AlertDialogDescription>
-            Êtes-vous sûr de vouloir vous déconnecter ?
-          </AlertDialogDescription>
+          <AlertDialogTitle>{t("signOut")}</AlertDialogTitle>
+          <AlertDialogDescription>{t("confirmSignOut")}</AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Rester</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>
+            {t("stay")}
+          </AlertDialogCancel>
 
           <Button variant="destructive" asChild>
             <AlertDialogAction disabled={isPending} onClick={handleSignOut}>
-              Se déconnecter
+              {t("signOut")}
             </AlertDialogAction>
           </Button>
         </AlertDialogFooter>

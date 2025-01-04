@@ -11,13 +11,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
 import ProfileSection from "../profile-section";
-import errorStateCard from "@/components/skeleton/error-card";
+import ErrorStateCard from "@/components/skeleton/error-card";
 import { Button } from "@/components/ui/button";
 import { FaGoogle, FaMicrosoft } from "react-icons/fa";
 import { KeyRoundIcon } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { useTranslations } from "next-intl";
 
 type Account = {
   id: string;
@@ -42,6 +43,7 @@ const providers = [
 }[];
 
 export default function LinkedAccount() {
+  const t = useTranslations("Settings.Account.LinkedAccounts");
   const {
     data: accounts,
     isPending,
@@ -83,18 +85,16 @@ export default function LinkedAccount() {
             <CardTitle>
               <Skeleton className="w-36 h-6" />
             </CardTitle>
-            <CardDescription>
+            <div>
               <Skeleton className="w-20 h-4" />
-            </CardDescription>
+            </div>
           </CardHeader>
 
           <CardContent className="p-0">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2 border-t text-sm px-2 pt-4">
                 <div className="flex gap-2">
-                  <p className="font-semibold">
-                    <Skeleton className="w-20 h-6" />
-                  </p>
+                  <Skeleton className="w-20 h-6" />
                 </div>
                 <div className="flex justify-end"></div>
               </div>
@@ -112,13 +112,10 @@ export default function LinkedAccount() {
       </Card>
     );
 
-  if (isError) return <div>{errorStateCard()}</div>;
+  if (isError) return <div>{ErrorStateCard()}</div>;
 
   return (
-    <ProfileSection
-      title="Comptes Liés"
-      description="Liste de tous les comptes liés à votre utilisateur"
-    >
+    <ProfileSection title={t("title")} description={t("description")}>
       <div className="flex flex-col ">
         <Separator />
         <div className="flex flex-col divide-y">
@@ -139,7 +136,7 @@ export default function LinkedAccount() {
         {/* Add Account Section */}
         <div className="mt-4">
           <h3 className="text-lg font-semibold pb-4">
-            Lier avec d&apos;autres services
+            {t("linkWithOtherServices")}
           </h3>
           <div className="flex flex-col gap-2">
             {providers
@@ -153,15 +150,15 @@ export default function LinkedAccount() {
                 >
                   <Icon className="mr-2" />
                   {linkingProvider === id
-                    ? `Lien en cours avec ${label}...`
-                    : `Lier ${label}`}
+                    ? t("linkingWith", { label })
+                    : t("link", { label })}
                 </Button>
               ))}
             {!accounts.some((acc) => acc.provider === "credential") && (
               <Button variant="outline" asChild>
                 <Link href="/auth/forgot-password" className="flex gap-2">
                   <KeyRoundIcon />
-                  Lier avec Mot de Passe
+                  {t("linkWithPassword")}
                 </Link>
               </Button>
             )}

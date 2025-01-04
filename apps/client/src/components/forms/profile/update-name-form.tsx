@@ -16,16 +16,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 
-const updateNameSchema = z.object({
-  name: z.string().min(1).max(64),
-});
-
-type UpdateNameSchema = z.infer<typeof updateNameSchema>;
-
 export const UpdateNameForm = ({ defaultName }: { defaultName: string }) => {
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Settings.Profile.Name");
   const toaster = useToast();
+
+  const updateNameSchema = z.object({
+    name: z
+      .string()
+      .min(1, { message: t("nameMinLength") })
+      .max(64, { message: t("nameMaxLength") }),
+  });
+
+  type UpdateNameSchema = z.infer<typeof updateNameSchema>;
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["update-name"],
@@ -36,15 +42,15 @@ export const UpdateNameForm = ({ defaultName }: { defaultName: string }) => {
       return data;
     },
     onSuccess: () => {
-      // Envoyer une notification toast
+      // Send a notification toast
       toaster.toast({
-        title: `Succès`,
-        description: "Votre nom a été mis à jour avec succès !",
+        title: t("successTitle"),
+        description: t("successMessage"),
       });
     },
 
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, errorTranslations, t("errorMessage"));
     },
   });
 
@@ -85,7 +91,7 @@ export const UpdateNameForm = ({ defaultName }: { defaultName: string }) => {
           <div className="flex w-full justify-end">
             <Button type="submit" variant="outline" disabled={isPending}>
               {isPending && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
-              Sauvegarder
+              {t("save")}
             </Button>
           </div>
         </form>

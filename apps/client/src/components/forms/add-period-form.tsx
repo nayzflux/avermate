@@ -8,6 +8,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -27,31 +28,8 @@ import { z } from "zod";
 import { Calendar } from "../ui/calendar";
 import { useMediaQuery } from "../ui/use-media-query";
 import { handleError } from "@/utils/error-utils";
-
-const addPeriodSchema = z.object({
-  name: z.string().min(1).max(64),
-  dateRange: z
-    .object({
-      from: z.date({
-        required_error: "La date de début est requise",
-      }),
-      to: z.date({
-        required_error: "La date de fin est requise",
-      }),
-    })
-    .refine(
-      (data) =>
-        isBefore(data.from, data.to) ||
-        data.from.getTime() === data.to.getTime(),
-      {
-        message:
-          "La date de début doit être antérieure ou égale à la date de fin",
-        path: ["to"],
-      }
-    ),
-});
-
-type AddPeriodSchema = z.infer<typeof addPeriodSchema>;
+import { Switch } from "@/components/ui/switch";
+import { useTranslations } from "next-intl";
 
 export const AddPeriodForm = ({
   close,
@@ -60,55 +38,66 @@ export const AddPeriodForm = ({
   close: () => void;
   periods: Period[];
 }) => {
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Dashboard.Forms.AddPeriod");
+  const addPeriodSchema = z.object({
+    name: z.string().min(1, t("nameRequired")).max(64, t("nameTooLong")),
+    dateRange: z
+      .object({
+        from: z.date({
+          required_error: t("startDateRequired"),
+        }),
+        to: z.date({
+          required_error: t("endDateRequired"),
+        }),
+      })
+      .refine(
+        (data) =>
+          isBefore(data.from, data.to) ||
+          data.from.getTime() === data.to.getTime(),
+        {
+          message: t("startDateBeforeEndDate"),
+          path: ["to"],
+        }
+      ),
+    isCumulative: z.boolean().optional(),
+  });
+
+  type AddPeriodSchema = z.infer<typeof addPeriodSchema>;
   const toaster = useToast();
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["create-Period"],
-    mutationFn: async ({ name, dateRange }: AddPeriodSchema) => {
+    mutationFn: async ({ name, dateRange, isCumulative }: AddPeriodSchema) => {
       const res = await apiClient.post("periods", {
         json: {
           name,
           startAt: dateRange.from,
           endAt: dateRange.to,
+          isCumulative,
         },
       });
-
-      // if (!res.ok) {
-      //   throw new Error("Failed to create period");
-      // }
 
       const data = await res.json();
       return data;
     },
-    onSuccess: (data) => {
-      // Send toast notification
+    onSuccess: () => {
       toaster.toast({
-        description:
-          "Vous pouvez maintenant organiser vos activités dans cette période.",
+        description: t("successDescription"),
       });
 
-      queryClient.invalidateQueries({
-        queryKey: ["periods"],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["subjects"],
-      });
-
+      queryClient.invalidateQueries({ queryKey: ["periods"] });
+      queryClient.invalidateQueries({ queryKey: ["subjects"] });
       queryClient.invalidateQueries({
         queryKey: ["subjects", "organized-by-periods"],
       });
-
-      queryClient.invalidateQueries({
-        queryKey: ["periods"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["periods"] });
 
       close();
     },
-
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, errorTranslations, t("errorAddingPeriod"));
     },
   });
 
@@ -122,6 +111,7 @@ export const AddPeriodForm = ({
         from: undefined,
         to: undefined,
       },
+      isCumulative: false,
     },
   });
 
@@ -131,6 +121,7 @@ export const AddPeriodForm = ({
     const normalizedStartAt = startOfDay(startAt);
     const normalizedEndAt = startOfDay(endAt);
 
+    // Check overlap
     const overlappingPeriod = periods.find((period) => {
       const normalizedPeriodStartAt = startOfDay(period.startAt);
       const normalizedPeriodEndAt = startOfDay(period.endAt);
@@ -151,7 +142,7 @@ export const AddPeriodForm = ({
 
     if (overlappingPeriod) {
       toaster.toast({
-        title: "Les périodes se chevauchent",
+        title: t("overlappingPeriods"),
         variant: "destructive",
       });
       return;
@@ -173,11 +164,11 @@ export const AddPeriodForm = ({
             name="name"
             render={({ field }) => (
               <FormItem className="mx-1">
-                <FormLabel>Nom</FormLabel>
+                <FormLabel>{t("name")}</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Nom de la période"
+                    placeholder={t("namePlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -186,12 +177,13 @@ export const AddPeriodForm = ({
             )}
           />
 
+          {/* Date Range Field */}
           <FormField
             control={form.control}
             name="dateRange"
             render={({ field }) => (
               <FormItem className="mx-1">
-                <FormLabel>Date de la période</FormLabel>
+                <FormLabel>{t("dateRange")}</FormLabel>
                 <FormControl>
                   <div className="flex flex-col gap-2">
                     <Popover modal>
@@ -212,7 +204,7 @@ export const AddPeriodForm = ({
                               format(field.value.from, "PPP")
                             )
                           ) : (
-                            <span>Sélectionner une plage de dates</span>
+                            <span>{t("selectDateRange")}</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -229,7 +221,7 @@ export const AddPeriodForm = ({
                             from: startOfDay(period.startAt),
                             to: startOfDay(period.endAt),
                           }))}
-                          defaultMonth={field.value.from || new Date()}
+                          defaultMonth={field.value?.from || new Date()}
                         />
                       </PopoverContent>
                     </Popover>
@@ -240,10 +232,33 @@ export const AddPeriodForm = ({
             )}
           />
 
+          {/* isCumulative Switch Field */}
+          <FormField
+            control={form.control}
+            name="isCumulative"
+            render={({ field }) => (
+              <FormItem className="mx-1">
+                <div className="flex flex-row gap-4 items-center">
+                  <FormLabel>{t("isCumulative")}</FormLabel>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </div>
+                <FormDescription>
+                  {t("isCumulativeDescription")}
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           {/* Submit Button */}
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2Icon className="animate-spin mr-2 h-4 w-4" />}
-            Ajouter une période
+            {t("submit")}
           </Button>
         </form>
       </Form>

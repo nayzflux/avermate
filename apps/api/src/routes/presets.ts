@@ -719,7 +719,7 @@ type CustomAveragePreset = {
   name: string;
   isMainAverage?: boolean;
   subjects: {
-    name: string; // Must match exactly a subject name from the preset
+    name: string;
     customCoefficient?: number;
     includeChildren?: boolean;
   }[];

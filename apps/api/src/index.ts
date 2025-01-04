@@ -10,6 +10,7 @@ import presetsRoutes from "@/routes/presets";
 import subjectsRoutes from "@/routes/subjects";
 import usersRoutes from "@/routes/users";
 import averagesRoute from "@/routes/averages";
+import feedbackRoute from "@/routes/feedback";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
@@ -57,6 +58,8 @@ app.route("/presets", presetsRoutes);
 app.route("/landing", landingRoutes);
 
 app.route("/averages", averagesRoute);
+
+app.route("/feedback", feedbackRoute);
 
 app.all("/uploadthing", (ctx) => uploadHandlers(ctx.req.raw));
 

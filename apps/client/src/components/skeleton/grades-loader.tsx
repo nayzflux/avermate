@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "../ui/table";
 
-export default function gradesLoader() {
+export default function gradesLoader(t: any) {
   return (
     <main className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
       <div className="flex gap-2 md:gap-16 justify-between items-center">
@@ -30,16 +30,16 @@ export default function gradesLoader() {
         <div className="hidden lg:flex gap-4">
           <Button disabled={true}>
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une note
+            {t("addGrade")}
           </Button>
 
           <Button variant="outline" disabled={true}>
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une matière
+            {t("addSubject")}
           </Button>
           <Button variant="outline" disabled={true}>
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une période
+            {t("addPeriod")}
           </Button>
         </div>
         <div className="flex lg:hidden">
@@ -132,15 +132,15 @@ export default function gradesLoader() {
                 </TableRow>
 
                 {/* Notes row on mobile */}
-                  <TableRow className="border-b">
-                    <TableCell className="w-full">
-                      <div className="flex gap-2 flex-wrap pt-1 pb-2">
-                        <Skeleton className="w-10 h-[20px]" />
-                        <Skeleton className="w-10 h-[20px]" />
-                        <Skeleton className="w-10 h-[20px]" />
-                      </div>
-                    </TableCell>
-                  </TableRow>
+                <TableRow className="border-b">
+                  <TableCell className="w-full">
+                    <div className="flex gap-2 flex-wrap pt-1 pb-2">
+                      <Skeleton className="w-10 h-[20px]" />
+                      <Skeleton className="w-10 h-[20px]" />
+                      <Skeleton className="w-10 h-[20px]" />
+                    </div>
+                  </TableCell>
+                </TableRow>
               </React.Fragment>
             ))}
           </TableBody>

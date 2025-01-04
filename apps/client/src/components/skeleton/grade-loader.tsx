@@ -6,14 +6,16 @@ import {
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
+import { useTranslations } from "next-intl";
 
-export default function gradeLoader() {
+export default function gradeLoader(t: any) {
+
   return (
     <div className="flex flex-col gap-4 md:gap-8 m-auto max-w-[2000px]">
       <div>
         <Button className="text-blue-600" variant="link" disabled>
           <ArrowLeftIcon className="size-4 mr-2" />
-          Retour
+          {t("back")}
         </Button>
       </div>
 

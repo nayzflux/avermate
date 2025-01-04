@@ -16,7 +16,6 @@ export const ut = new UTApi();
 const f = createUploadthing();
 
 export const uploadRouter = {
-  // Define as many FileRoutes as you like, each with a unique routeSlug
   avatarUploader: f({
     image: {
       maxFileSize: "4MB",
@@ -24,13 +23,10 @@ export const uploadRouter = {
     },
   })
     .middleware(async (c) => {
-      //console.log(c)
       const headers = c.req.headers;
       const session = await auth.api.getSession({
         headers
       });
-
-      //console.log(session);
 
       if (!session) {
         throw new UploadThingError("Unauthorized");
@@ -61,7 +57,7 @@ export const uploadRouter = {
         console.error(err);
       }
 
-      // Update avata url
+      // Update avata url (disabled for now because done on the client)
       // await db
       //   .update(users)
       //   .set({ avatarUrl: data.file.url })

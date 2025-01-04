@@ -13,8 +13,11 @@ import {
   EllipsisVerticalIcon,
   PlusCircleIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
 
 export default function MoreButton() {
+  const t = useTranslations("Dashboard.Buttons.MoreButton");
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -26,13 +29,13 @@ export default function MoreButton() {
         <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
           <AddSubjectDialog>
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une matière
+            {t("addSubject")}
           </AddSubjectDialog>
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
           <AddPeriodDialog>
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une période
+            {t("addPeriod")}
           </AddPeriodDialog>
         </DropdownMenuItem>
       </DropdownMenuContent>

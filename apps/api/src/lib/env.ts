@@ -32,6 +32,9 @@ export const env = createEnv({
     EMAIL_FROM: z.string().email(),
 
     NODE_ENV: z.enum(["development", "production"]),
+
+    DISCORD_TOKEN: z.string(),
+    DISCORD_CHANNEL_ID: z.string(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
