@@ -31,10 +31,14 @@ import {
   YAxis,
 } from "recharts";
 import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 export const MockAverageChart = () => {
+  const formatter = useFormatter();
   const t = useTranslations("Landing.Product.Mocks.Charts");
   const localizedSubjects = useLocalizedSubjects();
+  const formatDates = useFormatDates(formatter);
 
   const period = {
     id: "full-year",
@@ -220,10 +224,7 @@ export const MockAverageChart = () => {
                   axisLine={false}
                   tickMargin={8}
                   tickFormatter={(value) =>
-                    new Date(value).toLocaleDateString("fr-FR", {
-                      month: "short",
-                      day: "numeric",
-                    })
+                    formatDates.formatShort(new Date(value))
                   }
                 />
                 <YAxis
@@ -246,10 +247,7 @@ export const MockAverageChart = () => {
                     />
                   }
                   labelFormatter={(value) =>
-                    new Date(value).toLocaleDateString("fr-FR", {
-                      month: "short",
-                      day: "numeric",
-                    })
+                    formatDates.formatShort(new Date(value))
                   }
                 />
                 <defs>

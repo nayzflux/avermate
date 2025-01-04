@@ -43,6 +43,8 @@ export const UpdatePeriodForm = ({
   periods: Period[];
 }) => {
   const formatter = useFormatter();
+  const formatDates = useFormatDates(formatter);
+
   const errorTranslations = useTranslations("Errors");
   const t = useTranslations("Dashboard.Forms.UpdatePeriod");
   const toaster = useToast();
@@ -206,15 +208,13 @@ export const UpdatePeriodForm = ({
                         >
                           {field.value?.from ? (
                             field.value.to ? (
-                              `${useFormatDates(formatter).formatIntermediate(
+                              `${formatDates.formatIntermediate(
                                 field.value.from
-                              )} - ${useFormatDates(
-                                formatter
-                              ).formatIntermediate(field.value.to)}`
+                              )} - ${formatDates.formatIntermediate(
+                                field.value.to
+                              )}`
                             ) : (
-                              useFormatDates(formatter).formatIntermediate(
-                                field.value.from
-                              )
+                              formatDates.formatIntermediate(field.value.from)
                             )
                           ) : (
                             <span>{t("selectDateRange")}</span>

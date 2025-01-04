@@ -1,3 +1,5 @@
+"use client";
+
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import DeletePeriodDialog from "@/components/dialogs/delete-period-dialog";
 import UpdatePeriodDialog from "@/components/dialogs/update-period-dialog";
@@ -23,6 +25,8 @@ import { useFormatter } from "next-intl";
 export default function Step1() {
   const formatter = useFormatter();
   const t = useTranslations("Onboarding.Step1");
+  const formatDates = useFormatDates(formatter);
+
   const {
     data: periods,
     isError: periodsIsError,
@@ -36,8 +40,7 @@ export default function Step1() {
         {Array.from({ length: 3 }).map((_, index) => (
           <div
             key={index}
-            className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2
-              "
+            className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2"
           >
             <div className="flex flex-col gap-1 w-full">
               <Label>
@@ -67,7 +70,7 @@ export default function Step1() {
   }
 
   if (periodsIsError) {
-    return ErrorStateCard();
+    return <ErrorStateCard />;
   }
 
   // if the period field is empty, we display a message explaining what periods are and how to create them (we also say that they are optional)
@@ -96,20 +99,14 @@ export default function Step1() {
       {periods?.map((period) => (
         <div
           key={period.id}
-          className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2
-              "
+          className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2"
         >
           <div className="flex flex-col gap-1">
             <Label>{period.name}</Label>
             <span className="text-muted-foreground text-sm">
               {t("from")}{" "}
-              {useFormatDates(formatter).formatIntermediate(
-                new Date(period.startAt)
-              )}{" "}
-              {t("to")}{" "}
-              {useFormatDates(formatter).formatIntermediate(
-                new Date(period.endAt)
-              )}
+              {formatDates.formatIntermediate(new Date(period.startAt))}{" "}
+              {t("to")} {formatDates.formatIntermediate(new Date(period.endAt))}
             </span>
           </div>
           <div>
@@ -121,12 +118,12 @@ export default function Step1() {
               </DropdownMenuTrigger>
 
               <DropdownMenuContent className="flex flex-col items-start">
-                {/* Update grade */}
+                {/* Update period */}
                 <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
                   <UpdatePeriodDialog periodId={period.id} />
                 </DropdownMenuItem>
 
-                {/* Delete grade */}
+                {/* Delete period */}
                 <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
                   <DeletePeriodDialog period={period} />
                 </DropdownMenuItem>

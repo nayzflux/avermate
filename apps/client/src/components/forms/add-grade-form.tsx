@@ -67,6 +67,8 @@ export const AddGradeForm = ({
   parentId?: string;
 }) => {
   const formatter = useFormatter();
+  const formatDates = useFormatDates(formatter);
+
   const errorTranslations = useTranslations("Errors");
   const t = useTranslations("Dashboard.Forms.AddGrade");
   const toaster = useToast();
@@ -324,9 +326,7 @@ export const AddGradeForm = ({
                         )}
                       >
                         {field.value
-                          ? useFormatDates(formatter).formatLong(
-                              new Date(field.value)
-                            )
+                          ? formatDates.formatLong(new Date(field.value))
                           : t("chooseDate")}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>

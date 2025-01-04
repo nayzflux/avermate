@@ -39,8 +39,9 @@ export const AddPeriodForm = ({
 }: {
   close: () => void;
   periods: Period[];
-  }) => {
+}) => {
   const formatter = useFormatter();
+  const formatDates = useFormatDates(formatter);
   const errorTranslations = useTranslations("Errors");
   const t = useTranslations("Dashboard.Forms.AddPeriod");
   const addPeriodSchema = z.object({
@@ -199,15 +200,13 @@ export const AddPeriodForm = ({
                         >
                           {field.value?.from ? (
                             field.value.to ? (
-                              `${useFormatDates(formatter).formatIntermediate(
+                              `${formatDates.formatIntermediate(
                                 field.value.from
-                              )} - ${useFormatDates(
-                                formatter
-                              ).formatIntermediate(field.value.to)}`
+                              )} - ${formatDates.formatIntermediate(
+                                field.value.to
+                              )}`
                             ) : (
-                              useFormatDates(formatter).formatIntermediate(
-                                field.value.from
-                              )
+                              formatDates.formatIntermediate(field.value.from)
                             )
                           ) : (
                             <span>{t("selectDateRange")}</span>

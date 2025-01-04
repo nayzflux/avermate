@@ -61,9 +61,11 @@ export default function SubjectAverageChart({
   period: Period;
   subjects: Subject[];
   periods: Period[];
-  }) {
+}) {
   const formatter = useFormatter();
   const t = useTranslations("Dashboard.Charts.SubjectAverageChart");
+  const formatDates = useFormatDates(formatter);
+
   const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
     [key: string]: number | null;
   }>({});
@@ -152,9 +154,7 @@ export default function SubjectAverageChart({
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            tickFormatter={(value) =>
-              useFormatDates(formatter).formatShort(new Date(value))
-            }
+            tickFormatter={(value) => formatDates.formatShort(new Date(value))}
           />
           <YAxis
             tickLine={false}
@@ -175,9 +175,7 @@ export default function SubjectAverageChart({
                 onUpdateActiveTooltipIndices={handleActiveTooltipIndicesChange}
               />
             }
-            labelFormatter={(value) =>
-              useFormatDates(formatter).formatShort(new Date(value))
-            }
+            labelFormatter={(value) => formatDates.formatShort(new Date(value))}
           />
 
           {childrenAverage?.map((child) => (
