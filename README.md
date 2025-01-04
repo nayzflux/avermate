@@ -18,7 +18,6 @@
 ### Core Functionality
 - [ ] Add a dedicated tab for objectives and tips to achieve them.
 - [ ] Customize what is shown on the overview page (including streak score)
-- [ ] Localize (https://next-intl.dev/docs/usage/dates-times)
 - [ ] Add smooth transitions and animations across the app.
 
 ## Integrations (not planned in the near future)
