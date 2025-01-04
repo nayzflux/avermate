@@ -2,13 +2,7 @@
 
 import RevokeSessionButton from "@/components/buttons/revoke-session-button";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -19,9 +13,10 @@ import ProfileSection from "../profile-section";
 import ErrorStateCard from "@/components/skeleton/error-card";
 import "dayjs/locale/fr";
 import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 dayjs.locale("fr");
-
 dayjs.extend(relativeTime);
 
 type Session = {
@@ -36,7 +31,10 @@ type Session = {
 };
 
 export default function SessionList() {
+  const formatter = useFormatter();
   const t = useTranslations("Settings.Account.SessionList");
+  const formatDates = useFormatDates(formatter);
+
   const { data: currentSession } = authClient.useSession() as unknown as {
     data: { session: Session };
   };
@@ -97,7 +95,7 @@ export default function SessionList() {
   }
 
   if (isError) {
-    return <div>{ErrorStateCard()}</div>;
+    return <ErrorStateCard />;
   }
 
   return (
@@ -113,13 +111,13 @@ export default function SessionList() {
                 <p className="font-semibold">{session.id.substring(0, 10)}</p>
 
                 <p className="text-muted-foreground">
-                  {dayjs(session.expiresAt).fromNow()}
+                  {formatDates.formatRelative(new Date(session.expiresAt))}
                 </p>
               </div>
 
               <span
                 className={cn(
-                  "items-center px-2 py-1 rounded bg-opacity-30 text-xs",
+                  "items-center px-2 py-1 rounded bg-opacity-30 text-xs border",
                   session.expiresAt < new Date()
                     ? "bg-red-600 text-red-500 border-red-500"
                     : currentSession?.session?.id === session.id

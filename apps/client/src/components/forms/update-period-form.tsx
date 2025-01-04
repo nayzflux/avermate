@@ -30,6 +30,8 @@ import { useMediaQuery } from "../ui/use-media-query";
 import { handleError } from "@/utils/error-utils";
 import { Switch } from "@/components/ui/switch";
 import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 export const UpdatePeriodForm = ({
   close,
@@ -40,6 +42,9 @@ export const UpdatePeriodForm = ({
   period: Period;
   periods: Period[];
 }) => {
+  const formatter = useFormatter();
+  const formatDates = useFormatDates(formatter);
+
   const errorTranslations = useTranslations("Errors");
   const t = useTranslations("Dashboard.Forms.UpdatePeriod");
   const toaster = useToast();
@@ -203,12 +208,13 @@ export const UpdatePeriodForm = ({
                         >
                           {field.value?.from ? (
                             field.value.to ? (
-                              `${format(field.value.from, "PPP")} - ${format(
-                                field.value.to,
-                                "PPP"
+                              `${formatDates.formatIntermediate(
+                                field.value.from
+                              )} - ${formatDates.formatIntermediate(
+                                field.value.to
                               )}`
                             ) : (
-                              format(field.value.from, "PPP")
+                              formatDates.formatIntermediate(field.value.from)
                             )
                           ) : (
                             <span>{t("selectDateRange")}</span>
@@ -218,7 +224,6 @@ export const UpdatePeriodForm = ({
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="center">
                         <Calendar
-                          weekStartsOn={1}
                           excludeDisabled
                           mode="range"
                           selected={field.value}

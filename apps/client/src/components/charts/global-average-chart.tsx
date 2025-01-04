@@ -17,7 +17,7 @@ import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
 import { average, averageOverTime } from "@/utils/average";
 import { BookOpenIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   Area,
   AreaChart,
@@ -33,6 +33,8 @@ import AddGradeDialog from "../dialogs/add-grade-dialog";
 import { SubjectEmptyState } from "../empty-states/subject-empty-state";
 import { Button } from "../ui/button";
 import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 function getCumulativeStartDate(
   periods: Period[],
@@ -73,24 +75,30 @@ export default function GlobalAverageChart({
   period: Period;
   periods: Period[];
 }) {
+  const formatter = useFormatter();
   const t = useTranslations("Dashboard.Charts.GlobalAverageChart");
 
-  // State to manage the active index for the data series
-  const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(
-    null
-  );
+  const formatDates = useFormatDates(formatter);
 
-  // Callback to update active tooltip index
-  const handleActiveTooltipIndexChange = (index: number | null) => {
-    setActiveTooltipIndex(index);
-  };
+  // Updated state to handle multiple tooltip indices
+  const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
+    [key: string]: number | null;
+  }>({});
+
+  // Updated callback to handle multiple tooltip indices
+  const handleActiveTooltipIndicesChange = useCallback(
+    (indices: { [key: string]: number | null }) => {
+      setActiveTooltipIndices(indices);
+    },
+    []
+  );
 
   // Calculate the start and end dates
   const endDate = new Date(period.endAt);
   const startDate = getCumulativeStartDate(periods, period);
 
   // Generate an array of dates
-  const dates = [];
+  const dates: Date[] = [];
   for (
     let dt = new Date(startDate);
     dt <= endDate;
@@ -194,10 +202,11 @@ export default function GlobalAverageChart({
     );
   };
 
-  // Custom dot component
+  // Updated Custom Dot component to handle multiple tooltip indices
   const CustomDot = (props: any) => {
-    const { cx, cy, index, stroke, activeTooltipIndex } = props;
-    if (activeTooltipIndex !== null && index === activeTooltipIndex) {
+    const { cx, cy, index, stroke, dataKey } = props;
+    const activeIndex = activeTooltipIndices[dataKey];
+    if (activeIndex !== null && index === activeIndex) {
       return (
         <circle
           cx={cx}
@@ -211,12 +220,12 @@ export default function GlobalAverageChart({
     return null;
   };
 
-  // handle if there are no subjects
+  // Handle if there are no subjects
   if (subjects.length === 0) {
     return <SubjectEmptyState />;
   }
 
-  // if all the averages are null
+  // If all the averages are null
   if (chartData.every((data) => data.average === null)) {
     return (
       <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
@@ -259,10 +268,7 @@ export default function GlobalAverageChart({
                   axisLine={false}
                   tickMargin={8}
                   tickFormatter={(value) =>
-                    new Date(value).toLocaleDateString("fr-FR", {
-                      month: "short",
-                      day: "numeric",
-                    })
+                    formatDates.formatShort(new Date(value))
                   }
                 />
                 <YAxis
@@ -282,16 +288,13 @@ export default function GlobalAverageChart({
                       dataKey="average"
                       labelFormatter={(value) => value}
                       valueFormatter={(val) => val.toFixed(2)}
-                      onUpdateActiveTooltipIndex={
-                        handleActiveTooltipIndexChange
+                      onUpdateActiveTooltipIndices={
+                        handleActiveTooltipIndicesChange
                       }
                     />
                   }
                   labelFormatter={(value) =>
-                    new Date(value).toLocaleDateString("fr-FR", {
-                      month: "short",
-                      day: "numeric",
-                    })
+                    formatDates.formatShort(new Date(value))
                   }
                 />
                 <defs>
@@ -313,7 +316,8 @@ export default function GlobalAverageChart({
                       <CustomDot
                         key={key}
                         {...rest}
-                        activeTooltipIndex={activeTooltipIndex}
+                        dataKey="average"
+                        activeTooltipIndex={activeTooltipIndices["average"]}
                       />
                     );
                   }}

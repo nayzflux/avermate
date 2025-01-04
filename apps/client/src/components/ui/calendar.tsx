@@ -7,6 +7,7 @@ import { DayPicker } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { fr } from "react-day-picker/locale";
+import { useLocale } from "next-intl";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -16,6 +17,13 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: CalendarProps) {
+  const locale = useLocale();
+
+  if (locale === "fr") {
+    props.locale = fr;
+    props.weekStartsOn = 1;
+  }
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -63,7 +71,6 @@ function Calendar({
         hidden: "invisible",
         ...classNames,
       }}
-      locale={fr}
       components={{
         Chevron: ({ ...props }) =>
           props.orientation === "left" ? (

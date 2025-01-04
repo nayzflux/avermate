@@ -12,6 +12,8 @@ import { averageOverTime, getChildren } from "@/utils/average";
 import React, { useState } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 function getCumulativeStartDate(
   periods: Period[],
@@ -60,7 +62,10 @@ export default function SubjectAverageChart({
   subjects: Subject[];
   periods: Period[];
 }) {
+  const formatter = useFormatter();
   const t = useTranslations("Dashboard.Charts.SubjectAverageChart");
+  const formatDates = useFormatDates(formatter);
+
   const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
     [key: string]: number | null;
   }>({});
@@ -149,12 +154,7 @@ export default function SubjectAverageChart({
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            tickFormatter={(value) =>
-              new Date(value).toLocaleDateString("fr-FR", {
-                month: "short",
-                day: "numeric",
-              })
-            }
+            tickFormatter={(value) => formatDates.formatShort(new Date(value))}
           />
           <YAxis
             tickLine={false}
@@ -175,12 +175,7 @@ export default function SubjectAverageChart({
                 onUpdateActiveTooltipIndices={handleActiveTooltipIndicesChange}
               />
             }
-            labelFormatter={(value) =>
-              new Date(value).toLocaleDateString("fr-FR", {
-                month: "short",
-                day: "numeric",
-              })
-            }
+            labelFormatter={(value) => formatDates.formatShort(new Date(value))}
           />
 
           {childrenAverage?.map((child) => (

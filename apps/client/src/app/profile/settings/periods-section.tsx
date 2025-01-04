@@ -25,9 +25,13 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { BookOpenIcon, PlusCircleIcon } from "lucide-react";
 import ProfileSection from "../profile-section";
 import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 export const PeriodsSection = () => {
+  const formatter = useFormatter();
   const t = useTranslations("Settings.Settings.Periods");
+  const formatDates = useFormatDates(formatter);
 
   // Fetch period data
   const {
@@ -87,10 +91,10 @@ export const PeriodsSection = () => {
   }
 
   if (isPeriodError) {
-    return <div>{ErrorStateCard()}</div>;
+    return <div>{<ErrorStateCard />}</div>;
   }
 
-  if (period.length == 0) {
+  if (period.length === 0) {
     return (
       <ProfileSection title={t("title")} description={t("description")}>
         <div className="flex flex-col gap-4 justify-center items-center ">
@@ -115,16 +119,18 @@ export const PeriodsSection = () => {
   return (
     <ProfileSection title={t("title")} description={t("description")}>
       <div className="flex flex-col gap-4">
-        {period?.map((period) => (
+        {period?.map((periodItem) => (
           <div
-            key={period.id}
+            key={periodItem.id}
             className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2"
           >
             <div className="flex flex-col gap-1">
-              <Label>{period.name}</Label>
+              <Label>{periodItem.name}</Label>
               <span className="text-muted-foreground text-sm">
-                {t("from")} {new Date(period.startAt).toLocaleDateString()}{" "}
-                {t("to")} {new Date(period.endAt).toLocaleDateString()}
+                {t("from")}{" "}
+                {formatDates.formatIntermediate(new Date(periodItem.startAt))}{" "}
+                {t("to")}{" "}
+                {formatDates.formatIntermediate(new Date(periodItem.endAt))}
               </span>
             </div>
             <div>
@@ -141,7 +147,7 @@ export const PeriodsSection = () => {
                     asChild
                     onSelect={(e) => e.preventDefault()}
                   >
-                    <UpdatePeriodDialog periodId={period.id} />
+                    <UpdatePeriodDialog periodId={periodItem.id} />
                   </DropdownMenuItem>
 
                   {/* Delete period */}
@@ -149,7 +155,7 @@ export const PeriodsSection = () => {
                     asChild
                     onSelect={(e) => e.preventDefault()}
                   >
-                    <DeletePeriodDialog period={period} />
+                    <DeletePeriodDialog period={periodItem} />
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

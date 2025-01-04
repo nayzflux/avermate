@@ -48,6 +48,8 @@ import { Calendar } from "../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -60,7 +62,10 @@ export const UpdateGradeForm = ({
 }: {
   close: () => void;
   grade: Grade;
-}) => {
+  }) => {
+  const formatter = useFormatter();
+  const formatDates = useFormatDates(formatter);
+
   const errorTranslations = useTranslations("Errors");
   const t = useTranslations("Dashboard.Forms.UpdateGrade");
   const toaster = useToast();
@@ -345,7 +350,7 @@ export const UpdateGradeForm = ({
                         )}
                       >
                         {field.value
-                          ? dayjs(field.value).format("dddd DD MMM YYYY")
+                          ? formatDates.formatLong(new Date(field.value))
                           : t("chooseDate")}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
@@ -363,7 +368,6 @@ export const UpdateGradeForm = ({
                         date > new Date() || date < new Date("2023-01-02")
                       }
                       autoFocus
-                      weekStartsOn={1}
                       defaultMonth={
                         field.value ? dayjs(field.value).toDate() : new Date()
                       }
