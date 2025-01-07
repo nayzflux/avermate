@@ -24,6 +24,7 @@ import {
   CartesianGrid,
   PolarAngleAxis,
   PolarGrid,
+  PolarRadiusAxis,
   Radar,
   RadarChart,
   XAxis,
@@ -80,18 +81,15 @@ export default function GlobalAverageChart({
 
   const formatDates = useFormatDates(formatter);
 
-  // Updated state to handle multiple tooltip indices
-  const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
-    [key: string]: number | null;
-  }>({});
-
-  // Updated callback to handle multiple tooltip indices
-  const handleActiveTooltipIndicesChange = useCallback(
-    (indices: { [key: string]: number | null }) => {
-      setActiveTooltipIndices(indices);
-    },
-    []
+  // Update state to use single index instead of indices
+  const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(
+    null
   );
+
+  // Update callback to handle single index
+  const handleActiveTooltipIndexChange = useCallback((index: number | null) => {
+    setActiveTooltipIndex(index);
+  }, []);
 
   // Calculate the start and end dates
   const endDate = new Date(period.endAt);
@@ -202,20 +200,11 @@ export default function GlobalAverageChart({
     );
   };
 
-  // Updated Custom Dot component to handle multiple tooltip indices
+  // Update CustomDot component to use single index
   const CustomDot = (props: any) => {
-    const { cx, cy, index, stroke, dataKey } = props;
-    const activeIndex = activeTooltipIndices[dataKey];
-    if (activeIndex !== null && index === activeIndex) {
-      return (
-        <circle
-          cx={cx}
-          cy={cy}
-          r={4} // Adjust size as needed
-          fill={stroke}
-          opacity={0.8}
-        />
-      );
+    const { cx, cy, index, stroke } = props;
+    if (activeTooltipIndex !== null && index === activeTooltipIndex) {
+      return <circle cx={cx} cy={cy} r={4} fill={stroke} opacity={0.8} />;
     }
     return null;
   };
@@ -288,8 +277,8 @@ export default function GlobalAverageChart({
                       dataKey="average"
                       labelFormatter={(value) => value}
                       valueFormatter={(val) => val.toFixed(2)}
-                      onUpdateActiveTooltipIndices={
-                        handleActiveTooltipIndicesChange
+                      onUpdateActiveTooltipIndex={
+                        handleActiveTooltipIndexChange
                       }
                     />
                   }
@@ -317,7 +306,7 @@ export default function GlobalAverageChart({
                         key={key}
                         {...rest}
                         dataKey="average"
-                        activeTooltipIndex={activeTooltipIndices["average"]}
+                        activeTooltipIndex={activeTooltipIndex}
                       />
                     );
                   }}
@@ -347,6 +336,7 @@ export default function GlobalAverageChart({
                   fill="#2662d9"
                   fillOpacity={0.6}
                 />
+                <PolarRadiusAxis domain={[0, 20]} />
                 <ChartTooltip
                   content={
                     <ChartTooltipContent

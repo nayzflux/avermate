@@ -1,1156 +1,1173 @@
 {
-    "Landing": {
-        "Headline": {
-            "title": "Prenez le contrôle de vos notes",
-            "subtitle": "Obtenez un aperçu instantané et précis de vos notes et de vos moyennes. Suivez votre progression en temps réel pour atteindre vos objectifs.",
-            "discoverFeatures": "Découvrir les fonctionnalités",
-            "getStarted": "Commencer maintenant",
-            "goToDashboard": "Aller au tableau de bord"
-        },
-        "SocialProof": {
-            "users": "Utilisateurs inscrits",
-            "grades": "Notes entrées",
-            "subjects": "Matières créées"
-        },
-        "Benefits": {
-            "easyToSetup": "Facile à mettre en place",
-            "fastAndSecure": "Rapide et sécurisé",
-            "flexibleAndCustomizable": "Flexible et personnalisable",
-            "goodUserExperience": "Bonne expérience utilisateur",
-            "hardToSetup": "Difficile à mettre en place",
-            "badUserExperience": "Mauvaise expérience utilisateur",
-            "lackOfFeatures": "Manque de fonctionnalités",
-            "stayFocused": "Restez concentré sur ce qui compte vraiment",
-            "simplifyResults": "Laissez-nous simplifier vos résultats",
-            "withoutAvermate": "Sans Avermate",
-            "withAvermate": "Avec Avermate"
-        },
-        "Product": {
-            "heading": "Suivez votre progression en un coup d'oeil",
-            "subHeading": "Découvrez nos fonctionnalités",
-            "Features": {
-                "preciseOverview": "Aperçu précis et clair",
-                "preciseOverviewDescription": "Analysez vos résultats avec des statistiques avancées, des moyennes précises. Identifiez vos points forts et vos axes d'améliorations en un coup d'oeil.",
-                "flexibleSubjects": "Matières et coefficients flexibles",
-                "flexibleSubjectsDescription": "Personnalisez votre suivi : créez vos matières, ajustez les coefficients et suivez des moyennes adaptées à votre parcours.",
-                "realTimeProgress": "Évolution en temps réel",
-                "realTimeProgressDescription": "Suivez l'évolution de vos résultats en temps réel grâce à des graphiques détaillés. Visualisez vos progrès et ajustez vos efforts.",
-                "discover": "Découvrir",
-                "learnMore": "En savoir plus",
-                "use": "Utilisez"
-            },
-            "Mocks": {
-                "Data": {
-                    "scientificModule": "Module Scientifique",
-                    "mathematics": "Mathématiques",
-                    "physicsChemistry": "Physique-Chimie",
-                    "computerScience": "Informatique",
-                    "french": "Français",
-                    "english": "Anglais",
-                    "lv2": "LV2",
-                    "mathWritten": "Mathématiques - Écrits",
-                    "mathOral": "Mathématiques - Oraux",
-                    "physicsChemistryWritten": "Physique-Chimie - Écrits",
-                    "physicsChemistryOral": "Physique-Chimie - Oraux",
-                    "physicsChemistryLab": "Physique-Chimie - TP",
-                    "frenchWritten": "Français - Écrits",
-                    "frenchOral": "Français - Oraux",
-                    "englishWritten": "Anglais - Écrits",
-                    "englishOral": "Anglais - Oraux"
-                },
-                "Insights": {
-                    "obtainedGrade": "Note obtenue",
-                    "obtainedGradeDescription": "Votre note obtenue lors de cette évaluation sur 20",
-                    "impactOnOverallAverage": "Impact sur la moyenne générale",
-                    "impactOnOverallAverageDescription": "Visualisez l'impact de cette évaluation sur votre moyenne générale",
-                    "impactOnMathAverage": "Impact sur Mathématiques",
-                    "impactOnMathAverageDescription": "Visualisez l'impact de cette évaluation sur votre moyenne de la matière Mathématiques",
-                    "coefficient": "Coefficient",
-                    "coefficientDescription": "Le coefficient de cette évaluation",
-                    "subject": "Matières",
-                    "subjectDescription": "La matière de cette évaluation",
-                    "mathWritten": "Mathématiques - Écrit",
-                    "examDate": "Date de passage",
-                    "examDateDescription": "La date de passage de cette évaluation",
-                    "examDateValue": "04 déc. 2024"
-                },
-                "Grades": {
-                    "fullYear": "Année complète",
-                    "subjects": "Matières",
-                    "averages": "Moyennes",
-                    "grades": "Notes",
-                    "overallAverage": "Moyenne générale",
-                    "average": "Moyenne"
-                },
-                "Charts": {
-                    "fullYear": "Toute l'année",
-                    "average": "Moyenne",
-                    "noGradesYet": "Aucune note pour l'instant",
-                    "addGradeToStartTracking": "Ajouter une nouvelle note pour commencer à suivre vos moyennes.",
-                    "addGrade": "Ajouter une note",
-                    "overallAverage": "Moyenne Générale",
-                    "visualizeOverallAverage": "Visualiser l'évolution de votre moyenne générale sur ce trimestre",
-                    "visualizeAverageBySubject": "Visualiser votre moyenne par matière"
-                }
-            }
-        },
-        "CTA": {
-            "startToday": "Commencez dès aujourd'hui",
-            "transformEfforts": "Transformez vos efforts en succès"
-        },
-        "FAQ": {
-            "question1": "Comment mes données sont elles stockées ?",
-            "answer1": "Vos données sont stockées de façon sécurisée dans notre base de données.",
-            "question2": "Qui d'autres peut voir mes notes ?",
-            "answer2": "Vous êtes le seul à avoir accès à vos notes.",
-            "question3": "Pourquoi utiliser Avermate plutôt qu'Excel ?",
-            "answer3": "Contrairement à Excel, tout est déjà prêt : suivez vos moyennes automatiquement, visualisez vos progrès avec des graphiques clairs et gérez vos matières et coefficients facilement. Plus besoin de créer des formules ou des tableaux compliqués, on s'occupe de tout pour vous simplifier la vie !",
-            "question4": "Combien coûte Avermate ?",
-            "answer4": "Notre service est entièrement gratuit. Profitez de toutes nos fonctionnalités sans aucun frais !"
-        }
+  "Landing": {
+    "Headline": {
+      "title": "Prenez le contrôle de vos notes",
+      "subtitle": "Obtenez un aperçu instantané et précis de vos notes et de vos moyennes. Suivez votre progression en temps réel pour atteindre vos objectifs.",
+      "discoverFeatures": "Découvrir les fonctionnalités",
+      "getStarted": "Commencer maintenant",
+      "goToDashboard": "Aller au tableau de bord"
     },
-    "Auth": {
-        "orContinueWith": "Ou continuer avec",
-        "consentText": "En continuant, vous acceptez les",
-        "termsOfService": "Conditions d'utilisation",
-        "and": "et la",
-        "privacyPolicy": "Politique de confidentialité",
-        "Verify": {
-            "verifyEmail": "Vérifiez votre email",
-            "emailSent": "Un lien a été envoyé à {email}. Cliquez sur le lien pour vérifier votre email.",
-            "welcomeBack": "👋 Ravi de vous revoir {name} !",
-            "hopeYouAchievedGoals": "Nous espérons que vous avez atteint vos objectifs !",
-            "linkResent": "🔗 Lien renvoyé",
-            "linkResentDescription": "Un nouveau lien de vérification a été renvoyé à l'adresse {email}.",
-            "errorSendingLink": "Erreur lors de l'envoi du lien de vérification.",
-            "resendVerificationLink": "Renvoyer un lien de vérification"
-        },
-        "Reset": {
-            "resetPassword": "Réinitialiser le mot de passe",
-            "resetPasswordDescription": "Réinitialisez votre mot de passe en saisissant votre nouveau mot de passe.",
-            "signIn": "Se connecter",
-            "password": "Mot de passe",
-            "hidePassword": "Masquer le mot de passe",
-            "showPassword": "Afficher le mot de passe",
-            "passwordStrength": "Niveau de sécurité du mot de passe",
-            "passwordReset": "Réinitialisation du mot de passe",
-            "passwordResetSuccess": "Votre mot de passe a été réinitialisé avec succès !",
-            "errorResettingPassword": "Erreur lors de la réinitialisation du mot de passe.",
-            "passwordTooWeak": "Le mot de passe est trop faible."
-        },
-        "Forgot": {
-            "forgotPassword": "Mot de passe oublié",
-            "enterEmail": "Saisissez votre e-mail pour recevoir un lien de réinitialisation.",
-            "signIn": "Se connecter",
-            "email": "Email",
-            "emailPlaceholder": "email@exemple.com",
-            "resetEmailSent": "Email de réinitialisation du mot de passe envoyé",
-            "checkEmailForInstructions": "Veuillez vérifier votre email pour plus d'instructions.",
-            "errorSendingResetEmail": "Erreur lors de l'envoi de l'email de réinitialisation du mot de passe.",
-            "resetPassword": "Réinitialiser le mot de passe",
-            "invalidEmail": "Adresse e-mail invalide",
-            "emailTooLong": "L'adresse e-mail est trop longue"
-        },
-        "SignUp": {
-            "signUp": "S'inscrire",
-            "signUpDescription": "Inscrivez-vous pour rester au top de vos moyennes et atteindre vos objectifs.",
-            "alreadyHaveAccount": "J'ai déjà un compte",
-            "firstName": "Prénom",
-            "firstNamePlaceholder": "Entrez votre prénom",
-            "firstNameTooShort": "Le prénom est trop court",
-            "firstNameTooLong": "Le prénom est trop long",
-            "lastName": "Nom",
-            "lastNamePlaceholder": "Entrez votre nom",
-            "lastNameTooShort": "Le nom est trop court",
-            "lastNameTooLong": "Le nom est trop long",
-            "email": "Email",
-            "emailPlaceholder": "email@exemple.com",
-            "invalidEmail": "Adresse e-mail invalide",
-            "emailTooLong": "L'adresse e-mail est trop longue",
-            "password": "Mot de passe",
-            "passwordTooShort": "Le mot de passe est trop court",
-            "passwordTooLong": "Le mot de passe est trop long",
-            "passwordTooWeak": "Le mot de passe est trop faible",
-            "passwordStrength": "Niveau de sécurité du mot de passe",
-            "hidePassword": "Masquer le mot de passe",
-            "showPassword": "Afficher le mot de passe",
-            "emailNotVerified": "Email non vérifié",
-            "verificationLinkSent": "Un lien de vérification a été envoyé à {email}",
-            "signUpError": "Erreur lors de l'inscription"
-        },
-        "SignIn": {
-            "signIn": "Se connecter",
-            "signInDescription": "Connectez-vous pour rester au top de vos moyennes et atteindre vos objectifs.",
-            "noAccount": "Je n'ai pas de compte",
-            "email": "Email",
-            "emailPlaceholder": "email@exemple.com",
-            "password": "Mot de passe",
-            "passwordTooShort": "Le mot de passe est trop court",
-            "passwordTooLong": "Le mot de passe est trop long",
-            "invalidEmail": "Adresse e-mail invalide",
-            "emailTooLong": "L'adresse e-mail est trop longue",
-            "hidePassword": "Masquer le mot de passe",
-            "showPassword": "Afficher le mot de passe",
-            "emailNotVerified": "✉️ Email non vérifié",
-            "verificationLinkSent": "Un lien de vérification a été envoyé à l'adresse {email}.",
-            "welcomeBack": "👋 Ravi de vous revoir {name} !",
-            "hopeYouAchievedGoals": "Nous espérons que vous avez atteint vos objectifs !",
-            "error": "❌ Erreur",
-            "incorrectEmailOrPassword": "Email ou mot de passe incorrect",
-            "signInError": "Erreur lors de la connexion.",
-            "forgotPassword": "Vous avez oublié votre mot de passe ?"
-        }
+    "SocialProof": {
+      "users": "Utilisateurs inscrits",
+      "grades": "Notes entrées",
+      "subjects": "Matières créées"
     },
-    "Errors": {
-        "unauthorized": "Vous n'êtes pas autorisé à effectuer cette action. Veuillez réessayer plus tard.",
-        "forbidden": "Vous n'êtes pas autorisé à effectuer cette action. Veuillez réessayer plus tard.",
-        "notFound": "La ressource demandée est introuvable. Veuillez réessayer plus tard.",
-        "serverError": "Une erreur s'est produite sur le serveur. Veuillez réessayer plus tard.",
-        "tooManyRequests": "Trop de requêtes. Veuillez réessayer plus tard.",
-        "serviceUnavailable": "Le serveur est indisponible. Veuillez réessayer plus tard.",
-        "badRequest": "Une erreur s'est produite. Veuillez réessayer plus tard.",
-        "unknownError": "Une erreur inconnue s'est produite.",
-        "error": "Erreur",
-        "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
+    "Benefits": {
+      "easyToSetup": "Facile à mettre en place",
+      "fastAndSecure": "Rapide et sécurisé",
+      "flexibleAndCustomizable": "Flexible et personnalisable",
+      "goodUserExperience": "Bonne expérience utilisateur",
+      "hardToSetup": "Difficile à mettre en place",
+      "badUserExperience": "Mauvaise expérience utilisateur",
+      "lackOfFeatures": "Manque de fonctionnalités",
+      "stayFocused": "Restez concentré sur ce qui compte vraiment",
+      "simplifyResults": "Laissez-nous simplifier vos résultats",
+      "withoutAvermate": "Sans Avermate",
+      "withAvermate": "Avec Avermate"
     },
-    "Onboarding": {
-        "welcomeTitle": "Bienvenue sur Avermate",
-        "setupMessage": "Configurons quelques choses avant de commencer",
-        "back": "Retour",
-        "previous": "Précédent",
-        "startAdventure": "Commencer l'aventure",
-        "finish": "Terminer",
-        "next": "Suivant",
-        "welcome": "Bienvenue",
-        "periodes": "Périodes",
-        "matieres": "Matières",
-        "notes": "Notes",
-        "Welcome": {
-            "welcomeTitle": "Bienvenue sur Avermate",
-            "welcomeMessage": "Nous sommes ravis de vous accueillir à bord. Préparez-vous à décoller vers une expérience exceptionnelle !",
-            "whatToExpectTitle": "Ce qui vous attend :",
-            "createPeriods": "Création de vos périodes",
-            "createSubjects": "Création de vos matières",
-            "addGrades": "Ajout de vos premières notes",
-            "installAppMessage": "Installer l'application pour un accès rapide",
-            "installAppButton": "Installer l'application",
-            "installOnIphoneTitle": "Installer sur iPhone",
-            "installOnIphoneMessage": "Pour installer Avermate sur votre iPhone :",
-            "openInSafari": "Ouvrez Avermate dans Safari.",
-            "tapShareIcon": "Touchez l'icône <share>Partager</share>",
-            "atBottomOfScreen": "en bas de l'écran.",
-            "selectAddToHomeScreen": "Sélectionnez <addToHomeScreen>Ajouter à l'écran d'accueil</addToHomeScreen>",
-            "tapAddToConfirm": "Appuyez sur <add>Ajouter</add> pour confirmer."
+    "Product": {
+      "heading": "Suivez votre progression en un coup d'oeil",
+      "subHeading": "Découvrez nos fonctionnalités",
+      "Features": {
+        "preciseOverview": "Aperçu précis et clair",
+        "preciseOverviewDescription": "Analysez vos résultats avec des statistiques avancées, des moyennes précises. Identifiez vos points forts et vos axes d'améliorations en un coup d'oeil.",
+        "flexibleSubjects": "Matières et coefficients flexibles",
+        "flexibleSubjectsDescription": "Personnalisez votre suivi : créez vos matières, ajustez les coefficients et suivez des moyennes adaptées à votre parcours.",
+        "realTimeProgress": "Évolution en temps réel",
+        "realTimeProgressDescription": "Suivez l'évolution de vos résultats en temps réel grâce à des graphiques détaillés. Visualisez vos progrès et ajustez vos efforts.",
+        "discover": "Découvrir",
+        "learnMore": "En savoir plus",
+        "use": "Utilisez"
+      },
+      "Mocks": {
+        "Data": {
+          "scientificModule": "Module Scientifique",
+          "mathematics": "Mathématiques",
+          "physicsChemistry": "Physique-Chimie",
+          "computerScience": "Informatique",
+          "french": "Français",
+          "english": "Anglais",
+          "lv2": "LV2",
+          "mathWritten": "Mathématiques - Écrits",
+          "mathOral": "Mathématiques - Oraux",
+          "physicsChemistryWritten": "Physique-Chimie - Écrits",
+          "physicsChemistryOral": "Physique-Chimie - Oraux",
+          "physicsChemistryLab": "Physique-Chimie - TP",
+          "frenchWritten": "Français - Écrits",
+          "frenchOral": "Français - Oraux",
+          "englishWritten": "Anglais - Écrits",
+          "englishOral": "Anglais - Oraux"
         },
-        "Step1": {
-            "title": "Périodes",
-            "addNewPeriod": "Ajouter une nouvelle période",
-            "periodsDescription": "Les périodes, <bold>facultatives</bold>, sont des intervalles de temps (année scolaire, semestre, trimestre, etc.) pour regrouper vos notes. Sans elles, toutes vos notes sont regroupées dans une seule section.",
-            "addPeriod": "Ajouter une période",
-            "from": "Du",
-            "to": "au"
+        "Insights": {
+          "obtainedGrade": "Note obtenue",
+          "obtainedGradeDescription": "Votre note obtenue lors de cette évaluation sur 20",
+          "impactOnOverallAverage": "Impact sur la moyenne générale",
+          "impactOnOverallAverageDescription": "Visualisez l'impact de cette évaluation sur votre moyenne générale",
+          "impactOnMathAverage": "Impact sur Mathématiques",
+          "impactOnMathAverageDescription": "Visualisez l'impact de cette évaluation sur votre moyenne de la matière Mathématiques",
+          "coefficient": "Coefficient",
+          "coefficientDescription": "Le coefficient de cette évaluation",
+          "subject": "Matières",
+          "subjectDescription": "La matière de cette évaluation",
+          "mathWritten": "Mathématiques - Écrit",
+          "examDate": "Date de passage",
+          "examDateDescription": "La date de passage de cette évaluation",
+          "examDateValue": "04 déc. 2024"
         },
-        "Step2": {
-            "title": "Matières",
-            "addSubject": "Ajouter une matière",
-            "addPresetSubjects": "Ajouter des matières prédéfinies",
-            "mainSubjectsDescription": "Les matières principales (ex. <b>Mathématiques</b>) apparaissent sur la page d'accueil.",
-            "categoriesDescription": "Les catégories (ex. <b>Langues</b>) regroupent des matières sans moyenne propre.",
-            "subSubjectsDescription": "Les sous-matières (ex. <b>Écrit</b>, <b>Oral</b>) organisent les notes.",
-            "mainSubject": "Matière Principale",
-            "category": "Catégorie",
-            "addNewSubject": "Ajouter une nouvelle matière",
-            "Presets": {
-                "successTitle": "Préréglage appliqué avec succès !",
-                "successDescription": "Le préréglage a été appliqué avec succès.",
-                "errorDescription": "Erreur lors de l'application du préréglage.",
-                "select": "Sélectionner"
-            }
-        },
-        "Step3": {
-            "title": "Notes",
-            "addNewGrade": "Ajouter une nouvelle note",
-            "noSubjectsMessage": "Il semble que vous n'ayez pas encore ajouté de matières. Veuillez ajouter des matières pour pouvoir ajouter des notes.",
-            "addSubject": "Ajouter une matière"
-        }
-    },
-    "Settings": {
-        "Nav": {
-            "profile": "Profil",
-            "accountSecurity": "Compte & Sécurité",
-            "settings": "Paramètres",
-            "about": "À propos",
-            "back": "Retour"
-        },
-        "Profile": {
-            "Name": {
-                "title": "Votre nom",
-                "description": "Modifiez comment vous apparaissez sur Avermate.",
-                "save": "Sauvegarder",
-                "successTitle": "Succès",
-                "successMessage": "Votre nom a été mis à jour avec succès !",
-                "errorMessage": "Erreur lors de la mise à jour du nom.",
-                "nameMinLength": "Le nom est trop court",
-                "nameMaxLength": "Le nom est trop long"
-            },
-            "Email": {
-                "title": "Votre Email",
-                "description": "Modifiez votre adresse email.",
-                "save": "Sauvegarder",
-                "emailMinLength": "L'email doit comporter au moins 1 caractère.",
-                "emailMaxLength": "L'email doit comporter au maximum 64 caractères.",
-                "invalidEmail": "Adresse e-mail invalide.",
-                "successTitle": "Lien de vérification envoyé",
-                "successMessage": "Cliquez sur le lien envoyé à {email} pour confirmer le changement.",
-                "errorMessage": "Erreur lors de la mise à jour de l'email."
-            },
-            "Avatar": {
-                "title": "Avatar",
-                "description": "Changez votre avatar.",
-                "errorTitle": "Erreur",
-                "cropError": "Une erreur est survenue lors du recadrage de l'image.",
-                "invalidFileType": "Veuillez sélectionner un fichier image valide.",
-                "animationDetectionError": "Une erreur est survenue lors de la détection de l'animation de l'image.",
-                "unableToReadFile": "Impossible de lire le fichier image.",
-                "fileReaderError": "Une erreur est survenue lors de la lecture du fichier.",
-                "uploadingAvatar": "Téléchargement de l'avatar...",
-                "changeAvatar": "Modifier l'avatar",
-                "allowedFormats": "Formats d'images acceptés. Taille max : 4MB.",
-                "successTitle": "Avatar modifié avec succès !",
-                "successMessage": "Votre avatar a été mis à jour avec succès.",
-                "updateError": "Une erreur est survenue lors de la mise à jour de l'avatar.",
-                "fileTooLarge": "Le fichier que vous avez essayé de télécharger est trop volumineux.",
-                "uploadError": "Une erreur est survenue lors du téléchargement de votre avatar. Veuillez réessayer plus tard.",
-                "uploadingTitle": "Téléchargement de l'avatar...",
-                "uploadingMessage": "Veuillez patienter quelques instants.",
-                "cropAvatar": "Recadrez votre avatar",
-                "cancel": "Annuler",
-                "save": "Enregistrer"
-            }
-        },
-        "Account": {
-            "SessionList": {
-                "title": "Active Sessions",
-                "description": "Manage and monitor all your active sessions.",
-                "revoke": "Revoke",
-                "current": "Current",
-                "expired": "Expired",
-                "active": "Active",
-                "successTitle": "Session révoquée",
-                "successMessage": "La session a été révoquée avec succès !",
-                "errorMessage": "Erreur lors de la révocation de la session.",
-                "revokeDialog": "Révoquer",
-                "titleDialog": "Révoquer la session",
-                "descriptionDialog": "L'utilisateur sera invité à se reconnecter lors de sa prochaine visite.",
-                "cancel": "Annuler",
-                "revokeSession": "Révoquer la session"
-            },
-            "LinkedAccounts": {
-                "title": "Comptes Liés",
-                "description": "Liste de tous les comptes liés à votre utilisateur",
-                "linkWithOtherServices": "Lier avec d'autres services",
-                "linkingWith": "Lien en cours avec {label}...",
-                "link": "Lier {label}",
-                "linkWithPassword": "Lier avec Mot de Passe"
-            },
-            "DeleteAccount": {
-                "title": "Supprimer le compte",
-                "description": "Supprimez votre compte définitivement de Avermate",
-                "successTitle": "Compte supprimé",
-                "successMessage": "Votre compte a été supprimé avec succès.",
-                "errorMessage": "Erreur lors de la suppression du compte.",
-                "triggerButton": "Supprimer votre compte",
-                "titleDialog": "Supprimer votre compte",
-                "descriptionDialog": "Votre compte sera définitivement supprimé de nos serveurs. Cette action est irréversible.",
-                "cancel": "Annuler",
-                "delete": "Supprimer"
-            }
-        },
-        "Settings": {
-            "Theme": {
-                "title": "Apparence",
-                "description": "Personnalisez le thème qui sera utilisé.",
-                "themeLabel": "Thème",
-                "selectPlaceholder": "Sélectionnez un thème",
-                "system": "Système",
-                "light": "Clair",
-                "dark": "Sombre"
-            },
-            "Periods": {
-                "title": "Périodes",
-                "description": "Gérez vos périodes scolaires",
-                "addPeriod": "Ajouter une période",
-                "noPeriods": "Aucune période pour l'instant",
-                "addNewPeriod": "Ajouter une nouvelle période",
-                "from": "Du",
-                "to": "au"
-            },
-            "Onboarding": {
-                "title": "Mise en route",
-                "description": "Accéder à la page de mise en route",
-                "start": "Commencer"
-            },
-            "Language": {
-                "title": "Langue",
-                "description": "Personnalisez la langue de l'application.",
-                "languageLabel": "Langue",
-                "selectPlaceholder": "Sélectionnez une langue",
-                "system": "Système",
-                "english": "Anglais",
-                "french": "Français"
-            },
-            "CustomAverages": {
-                "title": "Moyennes personnalisées",
-                "description": "Gérez vos moyennes personnalisées",
-                "addCustomAverage": "Ajouter une moyenne personnalisée",
-                "noCustomAverages": "Aucune moyenne personnalisée pour l'instant",
-                "addNewCustomAverage": "Ajouter une nouvelle moyenne personnalisée"
-            }
-        },
-        "About": {
-            "about": "À propos d' {name}",
-            "defaultDescription": "Prenez le contrôle de vos notes",
-            "viewOnGitHub": "Voir sur GitHub",
-            "contributors": "Contributeurs",
-            "noContributors": "Aucun contributeur pour l'instant. Soyez le premier à contribuer!",
-            "usefulLinks": "Liens utiles",
-            "githubIssues": "Problèmes GitHub",
-            "discordServer": "Serveur Discord",
-            "homePage": "Page d'accueil"
-        }
-    },
-    "ErrorPages": {
-        "NotFound": {
-            "title": "Oups! Page non trouvée",
-            "description": "La page que vous recherchez a peut-être été supprimée, son nom a été changé ou elle est temporairement indisponible.",
-            "backToHome": "Retour à l'accueil"
-        },
-        "Error": {
-            "title": "Une erreur s'est produite",
-            "description": "Quelque chose s'est mal passé. Veuillez réessayer plus tard. (Code d'erreur : {statusCode})",
-            "backToHome": "Retour à l'accueil"
-        }
-    },
-    "Header": {
-        "Dropdown": {
-            "switchToLight": "Basculer en mode clair",
-            "switchToDark": "Basculer en mode sombre",
-            "signedOut": "Déconnecté",
-            "seeYouSoon": "À bientôt 👋!",
-            "signOut": "Se déconnecter",
-            "confirmSignOut": "Êtes-vous sûr de vouloir vous déconnecter ?",
-            "stay": "Rester",
-            "emailNotVerifiedTitle": "✉️ Email non vérifié",
-            "emailNotVerifiedDescription": "Un lien de vérification a été envoyé à {email}.",
-            "profile": "Profil",
-            "account": "Compte",
-            "settings": "Paramètres",
-            "appearance": "Apparence",
-            "github": "Github",
-            "support": "Support",
-            "feedback": "Retour",
-            "notLoggedInTitle": "Vous n'êtes pas connecté",
-            "notLoggedInDescription": "Vous devez être connecté pour accéder à cette page."
-        }
-    },
-    "Dashboard": {
-        "EmptyStates": {
-            "Onboarding": {
-                "configureSpace": "Configurer mon espace"
-            },
-            "SubjectEmptyState": {
-                "noSubjectsTitle": "Aucune matière pour l'instant",
-                "noSubjectsDescription": "Configurer votre espace pour commencer à suivre vos moyennes."
-            },
-            "ErrorCard": {
-                "title": "Oups, quelque chose s'est mal passé !",
-                "description": "Nous sommes désolés, mais il semble qu'il y ait eu une erreur. Veuillez réessayer plus tard ou contactez-nous si le problème persiste.",
-                "backToHome": "Retourner sur la page d'accueil"
-            }
-        },
-        "Buttons": {
-            "MoreButton": {
-                "addSubject": "Ajouter une matière",
-                "addPeriod": "Ajouter une période"
-            },
-            "MobileAddButtons": {
-                "addGrade": "Ajouter une note",
-                "addSubject": "Ajouter une matière",
-                "addPeriod": "Ajouter une période"
-            },
-            "AddSubjectButton": {
-                "addSubject": "Ajouter une matière"
-            },
-            "SubjectMoreButton": {
-                "addGrade": "Ajouter une note"
-            }
+        "Grades": {
+          "fullYear": "Année complète",
+          "subjects": "Matières",
+          "averages": "Moyennes",
+          "grades": "Notes",
+          "overallAverage": "Moyenne générale",
+          "average": "Moyenne"
         },
         "Charts": {
-            "GlobalAverageChart": {
-                "average": "Moyenne",
-                "noGradesTitle": "Aucune note pour l'instant",
-                "noGradesDescription": "Ajouter une nouvelle note pour commencer à suivre vos moyennes.",
-                "addGrade": "Ajouter une note",
-                "globalAverageTitle": "Moyenne Générale",
-                "areaChartDescription": "Visualiser l'évolution de votre moyenne générale sur ce trimestre",
-                "radarChartDescription": "Visualiser votre moyenne par matière"
-            },
-            "SubjectAverageChart": {
-                "average": "Moyenne"
-            }
-        },
-        "Cards": {
-            "RecentGradesCard": {
-                "title": "Notes récentes",
-                "description": "Vous avez reçu {recentCount} nouvelles notes cette semaine !",
-                "noRecentGrades": "Aucune note récente",
-                "addGrade": "Ajouter une note"
-            }
-        },
-        "Nav": {
-            "overview": "Vue d'ensemble",
-            "grades": "Notes"
-        },
-        "Loader": {
-            "GradeLoader": {
-                "back": "Retour"
-            },
-            "GradesLoader": {
-                "addGrade": "Ajouter une note",
-                "addSubject": "Ajouter une matière",
-                "addPeriod": "Ajouter une période"
-            },
-            "SubjectLoader": {
-                "back": "Retour",
-                "addGrade": "Ajouter une note"
-            }
-        },
-        "Tables": {
-            "GradesTable": {
-                "fullYear": "Année complète",
-                "subjects": "Matières",
-                "averages": "Moyennes",
-                "grades": "Notes",
-                "overallAverage": "Moyenne générale",
-                "average": "Moyenne"
-            }
-        },
-        "Dialogs": {
-            "AddAverage": {
-                "title": "Ajouter une moyenne personnalisée",
-                "description": "Créez une moyenne personnalisée pour des matières spécifiques."
-            },
-            "AddGrade": {
-                "title": "Ajouter une note",
-                "description": "Commencer à suivre votre évolution."
-            },
-            "AddPeriod": {
-                "title": "Ajouter une période",
-                "description": "Créer une nouvelle période avant d'ajouter des notes."
-            },
-            "AddSubject": {
-                "title": "Ajouter une matière",
-                "description": "Créer une nouvelle matière avant d'ajouter des notes."
-            },
-            "DeleteAverage": {
-                "title": "Supprimer {name}",
-                "description": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action est irréversible.",
-                "cancel": "Annuler",
-                "delete": "Supprimer",
-                "successTitle": "Moyenne personnalisée supprimée",
-                "successDescription": "{name} a été supprimée avec succès.",
-                "error": "Erreur lors de la suppression de la moyenne personnalisée."
-            },
-            "DeleteGrade": {
-                "title": "Supprimer {name}",
-                "description": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action est irréversible.",
-                "cancel": "Annuler",
-                "delete": "Supprimer",
-                "successTitle": "Note supprimée",
-                "successDescription": "{name} a été supprimée avec succès.",
-                "error": "Erreur lors de la suppression de la note."
-            },
-            "DeletePeriod": {
-                "title": "Supprimer {name}",
-                "description": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action est irréversible.",
-                "cancel": "Annuler",
-                "delete": "Supprimer",
-                "successTitle": "Période supprimée",
-                "successDescription": "{name} a été supprimée avec succès.",
-                "error": "Erreur lors de la suppression de la période."
-            },
-            "DeleteSubject": {
-                "title": "Supprimer {name}",
-                "description": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action est irréversible.",
-                "cancel": "Annuler",
-                "delete": "Supprimer",
-                "successTitle": "Matière supprimée",
-                "successDescription": "{name} a été supprimée avec succès.",
-                "error": "Erreur lors de la suppression de la matière."
-            },
-            "Feedback": {
-                "title": "Faites nous part de vos suggestions",
-                "description": "Votre avis est très important pour nous. Nous sommes toujours à l'écoute de vos suggestions pour améliorer notre service."
-            },
-            "ListPresets": {
-                "title": "Sélectionnez un préréglage",
-                "description": "Choisissez le préréglage qui vous correspond le mieux."
-            },
-            "UpdateAverage": {
-                "editAverage": "Modifier la moyenne",
-                "title": "Modifier une moyenne personnalisée",
-                "description": "Mettre à jour la moyenne personnalisée pour des matières spécifiques."
-            },
-            "UpdateGrade": {
-                "editGrade": "Modifier la note",
-                "title": "Modifier la note",
-                "description": "Modifier les données de la note."
-            },
-            "UpdatePeriod": {
-                "editPeriod": "Modifier la période",
-                "title": "Modifier la période",
-                "description": "Modifier les données de la période."
-            },
-            "UpdateSubject": {
-                "editSubject": "Modifier la matière",
-                "title": "Modifier la matière",
-                "description": "Modifier les données de la matière."
-            }
-        },
-        "Forms": {
-            "AddAverage": {
-                "errorCreating": "Erreur lors de la création de la moyenne personnalisée.",
-                "successTitle": "Moyenne personnalisée créée avec succès !",
-                "successDescription": "Votre moyenne personnalisée a été ajoutée.",
-                "error": "Erreur",
-                "selectAtLeastOneSubject": "Veuillez sélectionner au moins une matière.",
-                "subject": "Matière",
-                "chooseSubject": "Choisir une matière",
-                "searchSubject": "Rechercher une matière...",
-                "noSubjectFound": "Aucune matière trouvée.",
-                "customCoefficient": "Coefficient personnalisé",
-                "optional": "Optionnel",
-                "includeChildren": "Inclure les sous matières",
-                "removeSubject": "Retirer cette matière",
-                "customAverageName": "Nom de la moyenne personnalisée",
-                "customAveragePlaceholder": "Moyenne Semestre 1",
-                "showOnMainPage": "Afficher sur la page principale",
-                "subjects": "Matières",
-                "addSubject": "Ajouter une matière",
-                "createCustomAverage": "Créer la moyenne personnalisée",
-                "nameRequired": "Le nom est requis",
-                "nameTooLong": "Le nom est trop long",
-                "subjectIdRequired": "L'ID de la matière est requis",
-                "coefficientMin": "Le coefficient doit être au moins 1",
-                "coefficientMax": "Le coefficient ne peut pas dépasser 1000",
-                "atLeastOneSubject": "Au moins une matière doit être sélectionnée"
-            },
-            "AddGrade": {
-                "nameRequired": "Le nom est requis",
-                "nameTooLong": "Le nom est trop long",
-                "outOfMin": "Le total doit être au moins 0",
-                "outOfMax": "Le total ne peut pas dépasser 1000",
-                "valueMin": "La valeur doit être au moins 0",
-                "valueMax": "La valeur ne peut pas dépasser 1000",
-                "coefficientMin": "Le coefficient doit être au moins 0",
-                "coefficientMax": "Le coefficient ne peut pas dépasser 1000",
-                "subjectIdRequired": "L'ID de la matière est requis",
-                "subjectIdMax": "L'ID de la matière ne peut pas dépasser 64 caractères",
-                "periodIdRequired": "L'ID de la période est requis",
-                "periodIdMax": "L'ID de la période ne peut pas dépasser 64 caractères",
-                "successTitle": "Note ajoutée avec succès !",
-                "successDescription": "Votre note a été ajoutée.",
-                "errorAddingGrade": "Erreur lors de l'ajout de la note.",
-                "gradeName": "Nom de la note",
-                "gradeNamePlaceholder": "DS : Nombres complexes",
-                "gradeValue": "Note",
-                "gradeValuePlaceholder": "13.5",
-                "gradeOutOf": "Sur",
-                "gradeOutOfPlaceholder": "20",
-                "gradeCoefficient": "Coefficient",
-                "gradeCoefficientPlaceholder": "2",
-                "passedAt": "Passé le",
-                "chooseDate": "Choisir une date",
-                "period": "Période",
-                "fullYear": "Année complète",
-                "choosePeriod": "Choisir une période",
-                "noPeriodFound": "Aucune période trouvée.",
-                "periodDescription": "Une note doit être associée à une période. Celle-ci peut être différente de la date de passage si besoin.",
-                "subject": "Matière",
-                "chooseSubject": "Choisir une matière",
-                "noSubjectFound": "Aucune matière trouvée.",
-                "submit": "Ajouter ma note"
-            },
-            "AddPeriod": {
-                "nameRequired": "Le nom est requis",
-                "nameTooLong": "Le nom est trop long",
-                "startDateRequired": "La date de début est requise",
-                "endDateRequired": "La date de fin est requise",
-                "startDateBeforeEndDate": "La date de début doit être antérieure ou égale à la date de fin",
-                "overlappingPeriods": "Les périodes se chevauchent",
-                "successDescription": "Vous pouvez maintenant organiser vos activités dans cette période.",
-                "errorAddingPeriod": "Erreur lors de la création de la période.",
-                "name": "Nom",
-                "namePlaceholder": "Nom de la période",
-                "dateRange": "Date de la période",
-                "selectDateRange": "Sélectionner une plage de dates",
-                "isCumulative": "Période cumulative",
-                "isCumulativeDescription": "Les périodes cumulatives contiennent les notes des périodes précédentes en plus de celles de la période actuelle.",
-                "submit": "Ajouter une période"
-            },
-            "AddSubject": {
-                "nameRequired": "Le nom est requis",
-                "nameTooLong": "Le nom est trop long",
-                "coefficientMin": "Le coefficient doit être au moins 0",
-                "coefficientMax": "Le coefficient ne peut pas dépasser 1000",
-                "parentIdMax": "L'ID de la matière parente ne peut pas dépasser 64 caractères",
-                "successTitle": "Matière ajoutée avec succès !",
-                "successDescription": "Ajoutez des notes à cette matière pour suivre votre progression.",
-                "errorAddingSubject": "Erreur lors de l'ajout de la matière.",
-                "name": "Nom",
-                "namePlaceholder": "Mathématiques",
-                "coefficient": "Coefficient",
-                "coefficientPlaceholder": "2",
-                "coefficientDescription": "Les catégories ne prennent pas en compte le coefficient.",
-                "isMainSubject": "Matière principale",
-                "isMainSubjectDescription": "Les matières principales sont affichées en premier dans le tableau de bord.",
-                "isDisplaySubject": "Catégorie",
-                "isDisplaySubjectDescription": "Les catégories ne comptent pas dans la moyenne générale. Elles regroupent des matières, mais leurs enfants sont calculés comme au niveau supérieur. Impossible d'y ajouter des notes.",
-                "parentSubject": "Sous-matière",
-                "optional": "Optionnel",
-                "chooseParentSubject": "Choisir une matière parente",
-                "chooseParentSubjectPlaceholder": "Choisir une matière",
-                "noParentSubjectFound": "Aucune matière parente trouvée.",
-                "parentSubjectDescription": "Une matière parente regroupe plusieurs sous-matières, facilitant leur organisation.",
-                "submit": "Ajouter une matière"
-            },
-            "Feedback": {
-                "feedbackType": "Type de remarque",
-                "selectFeedbackType": "Sélectionner le type de remarque",
-                "searchFeedbackType": "Rechercher un type de remarque",
-                "noFeedbackTypeFound": "Aucun type de remarque trouvé",
-                "subject": "Titre",
-                "subjectPlaceholder": "Titre de votre remarque",
-                "subjectRequired": "Un titre est requis",
-                "subjectTooLong": "Le titre est trop long",
-                "content": "Contenu",
-                "contentPlaceholder": "Décrivez votre remarque en détail",
-                "contentMin": "Le contenu doit contenir au moins 10 caractères",
-                "contentMax": "Le contenu ne peut pas dépasser 1000 caractères",
-                "addImage": "Ajouter une image",
-                "imageDescription": "Optionnel : Téléchargez une image pour accompagner votre remarque.",
-                "email": "Email",
-                "emailPlaceholder": "votre.email@exemple.com",
-                "invalidEmail": "Adresse email invalide",
-                "successTitle": "Remarque envoyée",
-                "successDescription": "Merci pour votre retour. Nous allons étudier votre remarque attentivement.",
-                "errorSubmittingFeedback": "Erreur lors de l'envoi de la remarque.",
-                "submitting": "Envoi en cours...",
-                "submit": "Envoyer",
-                "general": "Général",
-                "bug": "Bug",
-                "suggestion": "Suggestion"
-            },
-            "UpdateAverage": {
-                "averageName": "Nom de la moyenne personnalisée",
-                "averageNamePlaceholder": "Entrez le nom de la moyenne",
-                "nameRequired": "Le nom est requis",
-                "nameTooLong": "Le nom est trop long",
-                "displayOnMainPage": "Afficher sur la page principale",
-                "subjects": "Matières",
-                "addSubject": "Ajouter une matière",
-                "removeSubject": "Retirer cette matière",
-                "subject": "Matière",
-                "chooseSubject": "Choisir une matière",
-                "searchSubject": "Rechercher une matière",
-                "noSubjectFound": "Aucune matière trouvée.",
-                "customCoefficient": "Coefficient personnalisé",
-                "customCoefficientPlaceholder": "Entrez le coefficient",
-                "customCoefficientMin": "Le coefficient doit être au moins 1",
-                "customCoefficientMax": "Le coefficient ne peut pas dépasser 1000",
-                "optional": "Optionnel",
-                "includeChildren": "Inclure les sous-matières",
-                "subjectsMin": "Au moins une matière doit être sélectionnée",
-                "subjectIdRequired": "L'ID de la matière est requis",
-                "successTitle": "Moyenne personnalisée mise à jour avec succès !",
-                "successDescription": "Votre moyenne personnalisée a été mise à jour.",
-                "updateError": "Erreur lors de la mise à jour de la moyenne personnalisée.",
-                "errorTitle": "Erreur",
-                "selectAtLeastOneSubject": "Veuillez sélectionner au moins une matière.",
-                "updateAverage": "Mettre à jour la moyenne personnalisée"
-            },
-            "UpdateGrade": {
-                "name": "Nom",
-                "nameRequired": "Le nom est requis",
-                "nameTooLong": "Le nom est trop long",
-                "grade": "Note",
-                "outOf": "Sur",
-                "outOfMin": "La note sur doit être au moins 0",
-                "outOfMax": "La note sur ne peut pas dépasser 1000",
-                "value": "Valeur",
-                "valueMin": "La valeur doit être au moins 0",
-                "valueMax": "La valeur ne peut pas dépasser 1000",
-                "coefficient": "Coefficient",
-                "coefficientMin": "Le coefficient doit être au moins 0",
-                "coefficientMax": "Le coefficient ne peut pas dépasser 1000",
-                "passedAtRequired": "Une date de passage est requise",
-                "subjectIdRequired": "Une matière est requise",
-                "subjectIdMax": "L'ID de la matière ne peut pas dépasser 64 caractères",
-                "periodIdRequired": "Une période est requise",
-                "periodIdMax": "L'ID de la période ne peut pas dépasser 64 caractères",
-                "passedAt": "Passé le",
-                "chooseDate": "Choisir une date",
-                "choosePeriod": "Choisir une période",
-                "chooseSubject": "Choisir une matière",
-                "fullYear": "Année complète",
-                "noPeriodFound": "Aucune période trouvée",
-                "noSubjectFound": "Aucune matière trouvée",
-                "period": "Période",
-                "subject": "Matière",
-                "periodDescription": "Une note doit être associée à une période. Celle-ci peut être différente de la date de passage si besoin.",
-                "successTitle": "Note modifiée avec succès !",
-                "successDescription": "Votre note a été mise à jour.",
-                "updateError": "Erreur lors de la modification de la note.",
-                "submit": "Modifier la note"
-            },
-            "UpdatePeriod": {
-                "name": "Nom",
-                "namePlaceholder": "Entrez le nom de la période",
-                "nameRequired": "Le nom est requis",
-                "nameTooLong": "Le nom est trop long",
-                "dateRange": "Plage de dates",
-                "selectDateRange": "Sélectionner une plage de dates",
-                "fromRequired": "La date de début est requise",
-                "toRequired": "La date de fin est requise",
-                "dateRangeError": "La date de début doit être antérieure ou égale à la date de fin",
-                "isCumulative": "Période cumulative",
-                "isCumulativeDescription": "Les périodes cumulatives contiennent les notes des périodes précédentes en plus de celles de la période actuelle.",
-                "overlapTitle": "Périodes se chevauchant",
-                "successTitle": "Période mise à jour",
-                "successDescription": "La période a été modifiée avec succès.",
-                "updateError": "Erreur lors de la mise à jour de la période.",
-                "submit": "Modifier la période"
-            },
-            "UpdateSubject": {
-                "name": "Nom",
-                "nameRequired": "Le nom est requis",
-                "nameTooLong": "Le nom est trop long",
-                "coefficient": "Coefficient",
-                "coefficientMin": "Le coefficient doit être au moins 0",
-                "coefficientMax": "Le coefficient ne peut pas dépasser 1000",
-                "parentIdInvalid": "L'ID de la matière parente est invalide",
-                "coefficientDescription": "Les catégories ne prennent pas en compte le coefficient",
-                "isMainSubject": "Matière principale",
-                "isMainSubjectDescription": "Les matières principales sont affichées en premier dans le tableau de bord.",
-                "isDisplaySubject": "Catégorie",
-                "isDisplaySubjectDescription": "Les catégories ne comptent pas dans la moyenne générale. Elles regroupent des matières, mais leurs enfants sont calculés comme au niveau supérieur. Impossible d'y ajouter des notes.",
-                "parentSubject": "Matière parente",
-                "optional": "Optionnel",
-                "chooseParentSubject": "Choisir une matière parente",
-                "noSubjectsFound": "Aucune matière trouvée",
-                "parentSubjectDescription": "Une matière parente regroupe plusieurs sous-matières, facilitant leur organisation.",
-                "successTitle": "Matière modifiée avec succès !",
-                "successDescription": "Votre matière a été mise à jour.",
-                "updateError": "Erreur lors de la modification de la matière.",
-                "submit": "Modifier la matière"
-            }
-        },
-        "Components": {
-            "DataCards": {
-                "generalAverage": "Moyenne générale",
-                "sinceStart": "depuis le début",
-                "noChangeSinceStart": "Pas d'évolution depuis le début",
-                "comparedToGeneralAverage": "par rapport à la moyenne générale",
-                "noComparison": "Pas de comparaison",
-                "bestGrade": "Meilleure Note",
-                "bestGradeWithSubject": "En {subjectName} ? Impressionnant ! ({gradeName})",
-                "noBestGrade": "Pas de meilleure note",
-                "bestSubject": "Meilleure Matière",
-                "bestSubjectWithComparison": "{subjectName} est {percentage}% plus élevée que les autres matières",
-                "noBestSubject": "Pas de meilleure matière",
-                "worstGrade": "Pire Note",
-                "worstGradeWithSubject": "En {subjectName} ? Oui, c'est mauvais ({gradeName})",
-                "noWorstGrade": "Pas de pire note",
-                "worstSubject": "Pire Matière",
-                "worstSubjectWithComparison": "{subjectName} est {percentage}% plus basse que les autres matières",
-                "noWorstSubject": "Pas de pire matière"
-            }
-        },
-        "Pages": {
-            "OverviewPage": {
-                "overviewTitle": "Vue d'ensemble",
-                "greeting": "Bonjour {name}",
-                "fullYear": "Toute l'année",
-                "periodName": "{name}"
-            },
-            "GradesPage": {
-                "gradesTitle": "Vos notes",
-                "addGrade": "Ajouter une note",
-                "addSubject": "Ajouter une matière",
-                "addPeriod": "Ajouter une période",
-                "fullYear": "Toute l'année",
-                "periodName": "{name}"
-            },
-            "SubjectWrapper": {
-                "back": "Retour",
-                "coefficientTitle": "Coefficient",
-                "coefficientDescription": "Coefficient de {name}",
-                "noGradesTitle": "Aucune note pour l'instant",
-                "noGradesMessage": "Ajouter une nouvelle note pour commencer à suivre vos moyennes.",
-                "addGradeInSubject": "Ajouter une note dans {name}",
-                "addGrade": "Ajouter une note",
-                "averageTitle": "Moyenne",
-                "averageDescription": "Votre moyenne actuelle en {name}",
-                "impactTitle": "Impact sur la moyenne générale",
-                "impactDescription": "Impact de {name} sur la moyenne générale",
-                "customImpactTitle": "Impact sur {name}",
-                "customImpactDescription": "Impact de {name} sur la moyenne personnalisée {customName}",
-                "parentImpactTitle": "Impact sur {name}",
-                "parentImpactDescription": "Impact de {name} sur la moyenne de {parentName}",
-                "bestGradeTitle": "Meilleure note",
-                "bestGradeDescription": "Votre plus belle performance en {name}",
-                "worstGradeTitle": "Pire note",
-                "worstGradeDescription": "Votre moins bonne performance en {name}",
-                "notAvailable": "N/A",
-                "averageEvolution": "Evolution de la moyenne"
-            },
-            "GradeWrapper": {
-                "back": "Retour",
-                "scoreObtainedTitle": "Note obtenue",
-                "scoreObtainedDescription": "Votre note obtenue lors de cette évaluation sur {outOf}",
-                "subjectTitle": "Matière",
-                "subjectDescription": "La matière de cette évaluation",
-                "coefficientTitle": "Coefficient",
-                "coefficientDescription": "Le coefficient de cette évaluation",
-                "impactOverallAverageTitle": "Impact sur la moyenne générale",
-                "impactOverallAverageDescription": "Visualisez l'impact de cette évaluation sur votre moyenne générale",
-                "impactCustomAverageTitle": "Impact sur {name}",
-                "impactCustomAverageDescription": "Visualisez l'impact de cette note sur le custom average: {name}",
-                "impactParentAverageTitle": "Impact sur {name}",
-                "impactParentAverageDescription": "Visualisez l'impact de cette évaluation sur votre moyenne de la matière {parentName}",
-                "impactSubjectAverageTitle": "Impact sur {name}",
-                "impactSubjectAverageDescription": "Visualisez l'impact de cette évaluation sur votre moyenne de la matière {name}",
-                "passDateTitle": "Date de passage",
-                "passDateDescription": "La date de passage de cette évaluation",
-                "addedDateTitle": "Date d'ajout",
-                "addedDateDescription": "La date d'ajout de cette évaluation"
-            }
+          "fullYear": "Toute l'année",
+          "average": "Moyenne",
+          "noGradesYet": "Aucune note pour l'instant",
+          "addGradeToStartTracking": "Ajouter une nouvelle note pour commencer à suivre vos moyennes.",
+          "addGrade": "Ajouter une note",
+          "overallAverage": "Moyenne Générale",
+          "visualizeOverallAverage": "Visualiser l'évolution de votre moyenne générale sur ce trimestre",
+          "visualizeAverageBySubject": "Visualiser votre moyenne par matière"
         }
+      }
     },
-    "Legal": {
-        "Privacy": {
-            "backButton": "Retour",
-            "title": "Politique de Confidentialité",
-            "lastUpdated": "Dernière mise à jour : 07 décembre 2024",
-            "intro": {
-                "p1": "La présente Politique de Confidentialité décrit nos politiques et procédures concernant la collecte, l’utilisation et la divulgation de vos informations lorsque vous utilisez le Service, et vous informe de vos droits en matière de confidentialité ainsi que de la manière dont la loi vous protège.",
-                "p2": "Nous utilisons vos données personnelles pour fournir et améliorer le Service. En utilisant le Service, vous acceptez la collecte et l’utilisation d’informations conformément à cette Politique de Confidentialité."
-            },
-            "interpretationDefinitions": {
-                "title": "Interprétation et Définitions",
-                "interpretationTitle": "Interprétation",
-                "interpretationText": "Les mots dont la première lettre est en majuscule ont les significations définies dans les conditions suivantes. Les définitions suivantes ont la même signification, qu’elles apparaissent au singulier ou au pluriel.",
-                "definitionsTitle": "Définitions",
-                "definitionsIntro": "Dans le cadre de la présente Politique de Confidentialité :",
-                "list": {
-                    "account": "<b>Compte</b> désigne un compte unique créé pour vous permettre d’accéder à notre Service ou à certaines parties de notre Service.",
-                    "affiliate": "<b>Affilié</b> désigne toute entité qui contrôle, est contrôlée par ou est sous contrôle commun avec une partie, où « contrôle » signifie la détention de 50 % ou plus des actions, intérêts ou autres titres donnant droit de vote pour l’élection de directeurs ou toute autre autorité de gestion.",
-                    "application": "<b>Application</b> désigne Avermate, le programme logiciel fourni par la Société.",
-                    "company": "<b>Société</b> (désignée sous le nom de « la Société », « Nous », « Notre » ou « Nos » dans le présent Accord) fait référence à Avermate.",
-                    "country": "<b>Pays</b> fait référence à : France",
-                    "device": "<b>Appareil</b> désigne tout appareil pouvant accéder au Service, tel qu’un ordinateur, un téléphone mobile ou une tablette numérique.",
-                    "personalData": "<b>Données Personnelles</b> désigne toute information relative à une personne physique identifiée ou identifiable.",
-                    "service": "<b>Service</b> désigne l’Application.",
-                    "serviceProvider": "<b>Prestataire de Service</b> désigne toute personne physique ou morale qui traite les données pour le compte de la Société. Il s’agit d’entreprises tierces ou de particuliers engagés par la Société pour faciliter le Service, fournir le Service au nom de la Société, exécuter des services liés au Service ou aider la Société à analyser l’utilisation du Service.",
-                    "usageData": "<b>Données d’Utilisation</b> désigne les données collectées automatiquement, générées par l’utilisation du Service ou provenant de l’infrastructure du Service elle-même (par exemple, la durée d’une visite de page).",
-                    "you": "<b>Vous</b> désigne la personne physique accédant au Service ou l’utilisant, ou l’entreprise, ou toute autre entité juridique pour le compte de laquelle ladite personne accède ou utilise le Service, selon le cas."
-                }
-            },
-            "collectingUsingData": {
-                "title": "Collecte et Utilisation de Vos Données Personnelles",
-                "typesDataCollectedTitle": "Types de Données Collectées",
-                "personalDataTitle": "Données Personnelles",
-                "personalDataP1": "Pendant l’utilisation de Notre Service, Nous pouvons vous demander de nous fournir certaines informations personnellement identifiables pouvant être utilisées pour vous contacter ou vous identifier. Les informations personnellement identifiables peuvent inclure, sans s’y limiter :",
-                "listEmail": "Adresse e-mail",
-                "listNames": "Prénom et nom",
-                "listUsageData": "Données d’Utilisation",
-                "usageDataTitle": "Données d’Utilisation",
-                "usageDataP1": "Les Données d’Utilisation sont collectées automatiquement lors de l’utilisation du Service.",
-                "usageDataP2": "Les Données d’Utilisation peuvent inclure des informations telles que l’adresse de protocole Internet (IP) de votre Appareil, le type de navigateur, la version du navigateur, les pages de notre Service que vous visitez, l’heure et la date de votre visite, le temps passé sur ces pages, les identifiants uniques de l’appareil et d’autres données de diagnostic.",
-                "usageDataP3": "Lorsque vous accédez au Service par ou via un appareil mobile, Nous pouvons collecter automatiquement certaines informations, notamment, mais sans s’y limiter, le type d’appareil mobile que vous utilisez, l’ID unique de votre appareil mobile, l’adresse IP de votre appareil mobile, votre système d’exploitation mobile, le type de navigateur Internet mobile que vous utilisez, des identifiants uniques d’appareil et d’autres données de diagnostic.",
-                "usageDataP4": "Nous pouvons également collecter les informations que votre navigateur envoie chaque fois que vous visitez notre Service ou lorsque vous accédez au Service par ou via un appareil mobile."
-            },
-            "useOfPersonalData": {
-                "title": "Utilisation de Vos Données Personnelles",
-                "p1": "La Société peut utiliser les Données Personnelles aux fins suivantes :",
-                "list1": "<b>Fournir et maintenir notre Service</b>, y compris pour surveiller l’utilisation de notre Service.",
-                "list2": "<b>Gérer votre Compte :</b> gérer votre inscription en tant qu’utilisateur du Service. Les Données Personnelles que vous fournissez peuvent vous donner accès à différentes fonctionnalités du Service qui vous sont accessibles en tant qu’utilisateur enregistré.",
-                "list3": "<b>Pour l’exécution d’un contrat :</b> le développement, la conformité et l’exécution du contrat d’achat pour les produits, articles ou services que vous avez achetés ou de tout autre contrat avec Nous via le Service.",
-                "list4": "<b>Pour vous contacter :</b> vous contacter par e-mail, appels téléphoniques, SMS ou d’autres formes équivalentes de communication électronique, telles que les notifications push d’une application mobile, concernant les mises à jour ou les communications informatives relatives aux fonctionnalités, produits ou services souscrits, y compris les mises à jour de sécurité, lorsque cela est nécessaire ou raisonnable pour leur mise en œuvre.",
-                "list5": "<b>Pour vous fournir</b> des actualités, des offres spéciales et des informations générales sur d’autres biens, services et événements que Nous proposons, similaires à ceux que vous avez déjà achetés ou sur lesquels vous vous êtes renseignés, sauf si vous avez choisi de ne pas recevoir ces informations.",
-                "list6": "<b>Gérer vos demandes :</b> répondre et gérer vos demandes que vous nous adressez.",
-                "list7": "<b>Pour les transferts d’entreprise :</b> Nous pouvons utiliser vos informations pour évaluer ou réaliser une fusion, cession, restructuration, réorganisation, dissolution ou toute autre vente ou transfert de tout ou partie de Nos actifs, que ce soit dans le cadre d’une activité en cours ou dans le cadre d’une faillite, liquidation ou procédure similaire, dans laquelle les Données Personnelles détenues par Nous au sujet des utilisateurs de Notre Service font partie des actifs transférés.",
-                "list8": "<b>À d’autres fins</b> : Nous pouvons utiliser vos informations à d’autres fins, telles que l’analyse de données, l’identification des tendances d’utilisation, la détermination de l’efficacité de nos campagnes promotionnelles et pour évaluer et améliorer Notre Service, nos produits, nos services, notre marketing et votre expérience.",
-                "p2": "Nous pouvons partager vos informations personnelles dans les situations suivantes :",
-                "listShare1": "<b>Avec des Prestataires de Service :</b> Nous pouvons partager vos informations personnelles avec des Prestataires de Service pour surveiller et analyser l’utilisation de Notre Service, pour vous contacter.",
-                "listShare2": "<b>Pour les transferts d’entreprise :</b> Nous pouvons partager ou transférer vos informations personnelles dans le cadre ou pendant des négociations de toute fusion, vente d’actifs de la Société, financement ou acquisition de tout ou partie de Notre entreprise par une autre société.",
-                "listShare3": "<b>Avec des Affiliés :</b> Nous pouvons partager vos informations avec Nos affiliés, auquel cas Nous exigerons de ces affiliés qu’ils respectent la présente Politique de Confidentialité. Les affiliés comprennent notre société mère et toute autre filiale, partenaires de coentreprise, ou autres sociétés que Nous contrôlons ou qui sont sous contrôle commun avec Nous.",
-                "listShare4": "<b>Avec des partenaires commerciaux :</b> Nous pouvons partager vos informations avec Nos partenaires commerciaux pour vous proposer certains produits, services ou promotions.",
-                "listShare5": "<b>Avec d’autres utilisateurs :</b> lorsque vous partagez des informations personnelles ou interagissez autrement dans les espaces publics avec d’autres utilisateurs, ces informations peuvent être vues par tous les utilisateurs et peuvent être diffusées publiquement à l’extérieur.",
-                "listShare6": "<b>Avec votre consentement :</b> Nous pouvons divulguer vos informations personnelles à toute autre fin avec votre consentement."
-            },
-            "retention": {
-                "title": "Conservation de Vos Données Personnelles",
-                "p1": "La Société conservera vos Données Personnelles uniquement aussi longtemps que nécessaire aux fins exposées dans la présente Politique de Confidentialité. Nous conserverons et utiliserons vos Données Personnelles dans la mesure nécessaire pour respecter nos obligations légales (par exemple, si nous sommes tenus de conserver vos données pour nous conformer aux lois applicables), résoudre les litiges et faire respecter nos accords et politiques légaux.",
-                "p2": "La Société conservera également les Données d’Utilisation à des fins d’analyse interne. Les Données d’Utilisation sont généralement conservées pendant une période plus courte, sauf lorsque ces données sont utilisées pour renforcer la sécurité ou améliorer la fonctionnalité de Notre Service, ou si Nous sommes légalement tenus de conserver ces données pendant des périodes plus longues."
-            },
-            "transfer": {
-                "title": "Transfert de Vos Données Personnelles",
-                "p1": "Vos informations, y compris vos Données Personnelles, sont traitées dans les bureaux de la Société et dans tout autre lieu où se trouvent les parties impliquées dans le traitement. Cela signifie que ces informations peuvent être transférées — et conservées — sur des ordinateurs situés en dehors de votre état, province, pays ou autre juridiction gouvernementale, où les lois sur la protection des données peuvent différer de celles de votre juridiction.",
-                "p2": "Votre consentement à la présente Politique de Confidentialité suivi de votre soumission de ces informations représente votre accord à ce transfert.",
-                "p3": "La Société prendra toutes les mesures raisonnablement nécessaires pour s’assurer que vos données sont traitées de manière sécurisée et conformément à la présente Politique de Confidentialité, et aucun transfert de vos Données Personnelles n’aura lieu vers une organisation ou un pays à moins qu’un niveau de contrôle adéquat ne soit en place, y compris la sécurité de vos données et d’autres informations personnelles."
-            },
-            "deleteData": {
-                "title": "Supprimer Vos Données Personnelles",
-                "p1": "Vous avez le droit de supprimer ou de demander Notre assistance pour supprimer les Données Personnelles que Nous avons collectées à votre sujet.",
-                "p2": "Notre Service peut vous permettre de supprimer certaines informations vous concernant directement depuis le Service.",
-                "p3": "Vous pouvez mettre à jour, modifier ou supprimer vos informations à tout moment en vous connectant à votre Compte, si vous en avez un, et en visitant la section des paramètres de compte qui vous permet de gérer vos informations personnelles. Vous pouvez également nous contacter pour demander l'accès, la correction ou la suppression de toute information personnelle que vous nous avez fournie.",
-                "p4": "Veuillez noter, cependant, que Nous pouvons avoir besoin de conserver certaines informations lorsque Nous avons une obligation légale ou un fondement légitime pour le faire."
-            },
-            "disclosure": {
-                "title": "Divulgation de Vos Données Personnelles",
-                "businessTitle": "Transactions Commerciales",
-                "businessText": "Si la Société est impliquée dans une fusion, acquisition ou vente d’actifs, vos Données Personnelles peuvent être transférées. Nous vous en informerons avant que vos Données Personnelles ne soient transférées et soumises à une Politique de Confidentialité différente.",
-                "lawTitle": "Application de la loi",
-                "lawText": "Dans certaines circonstances, la Société peut être tenue de divulguer vos Données Personnelles si la loi l’exige ou en réponse à des demandes valides émanant d’autorités publiques (par exemple un tribunal ou une agence gouvernementale).",
-                "otherTitle": "Autres exigences légales",
-                "otherText": "La Société peut divulguer vos Données Personnelles en toute bonne foi si une telle action est nécessaire pour :",
-                "otherList1": "Se conformer à une obligation légale",
-                "otherList2": "Protéger et défendre les droits ou la propriété de la Société",
-                "otherList3": "Prévenir ou enquêter sur d’éventuels actes répréhensibles en rapport avec le Service",
-                "otherList4": "Protéger la sécurité personnelle des Utilisateurs du Service ou du public",
-                "otherList5": "Se protéger contre toute responsabilité légale"
-            },
-            "security": {
-                "title": "Sécurité de Vos Données Personnelles",
-                "p1": "La sécurité de vos Données Personnelles est importante pour Nous, mais n’oubliez pas qu’aucune méthode de transmission sur Internet ou de stockage électronique n’est sûre à 100 %. Bien que Nous mettions en œuvre des moyens commercialement acceptables pour protéger vos Données Personnelles, Nous ne pouvons garantir leur sécurité absolue."
-            },
-            "children": {
-                "title": "Confidentialité des Enfants",
-                "p1": "Notre Service ne s’adresse pas aux personnes de moins de 13 ans. Nous ne collectons pas sciemment d’informations personnellement identifiables auprès de quiconque âgé de moins de 13 ans. Si vous êtes un parent ou tuteur et que vous êtes conscient que votre enfant nous a fourni des Données Personnelles, veuillez nous contacter. Si nous découvrons que nous avons collecté des Données Personnelles d'une personne de moins de 13 ans sans vérification du consentement parental, nous prenons des mesures pour supprimer ces informations de nos serveurs.",
-                "p2": "Si Nous devons nous appuyer sur le consentement comme base légale pour traiter vos informations et que votre pays exige le consentement d’un parent, Nous pouvons exiger le consentement de votre parent avant de collecter et d’utiliser ces informations."
-            },
-            "links": {
-                "title": "Liens vers d’Autres Sites Web",
-                "p1": "Notre Service peut contenir des liens vers d’autres sites Web qui ne sont pas exploités par Nous. Si vous cliquez sur un lien tiers, vous serez dirigé vers le site de ce tiers. Nous vous recommandons vivement de consulter la Politique de Confidentialité de chaque site que vous visitez.",
-                "p2": "Nous n’avons aucun contrôle sur et n’assumons aucune responsabilité quant au contenu, aux politiques de confidentialité ou aux pratiques de tout site ou service tiers."
-            },
-            "changes": {
-                "title": "Modifications de cette Politique de Confidentialité",
-                "p1": "Nous pouvons mettre à jour Notre Politique de Confidentialité de temps à autre. Nous vous informerons de toute modification en publiant la nouvelle Politique de Confidentialité sur cette page.",
-                "p2": "Nous vous informerons via l’e-mail et/ou un avis visible sur Notre Service, avant que la modification ne prenne effet et nous mettrons à jour la date « Dernière mise à jour » en haut de la présente Politique de Confidentialité.",
-                "p3": "Nous vous conseillons de consulter périodiquement la présente Politique de Confidentialité pour prendre connaissance de toute modification. Les modifications apportées à cette Politique de Confidentialité entrent en vigueur lorsqu’elles sont publiées sur cette page."
-            },
-            "contactUs": {
-                "title": "Nous Contacter",
-                "text": "Si vous avez des questions concernant cette Politique de Confidentialité, vous pouvez nous contacter :",
-                "email": "Par e-mail : noreply@avermate.fr"
-            }
-        },
-        "Tos": {
-            "backButton": "Retour",
-            "title": "Conditions Générales d’Utilisation",
-            "lastUpdated": "Dernière mise à jour : 07 décembre 2024",
-            "intro": {
-                "p1": "Veuillez lire attentivement ces conditions générales avant d’utiliser Notre Service."
-            },
-            "interpretationDefinitions": {
-                "title": "Interprétation et Définitions",
-                "interpretationTitle": "Interprétation",
-                "interpretationText": "Les mots dont la première lettre est en majuscule ont les significations définies dans les conditions suivantes. Les définitions suivantes auront la même signification qu’elles apparaissent au singulier ou au pluriel.",
-                "definitionsTitle": "Définitions",
-                "definitionsIntro": "Aux fins des présentes Conditions Générales d’Utilisation :",
-                "list": {
-                    "application": "<b>Application</b> désigne le programme logiciel fourni par la Société que vous avez téléchargé sur tout appareil électronique, nommé Avermate.",
-                    "applicationStore": "<b>Store d’Applications</b> désigne le service de distribution numérique exploité et développé par Apple Inc. (Apple App Store) ou Google Inc. (Google Play Store) dans lequel l'Application a été téléchargée.",
-                    "affiliate": "<b>Affilié</b> désigne toute entité qui contrôle, est contrôlée par, ou est sous le contrôle commun d’une partie, où « contrôle » signifie la possession de 50 % ou plus des actions, parts sociales, ou autres titres donnant droit de vote pour l’élection des administrateurs ou autre autorité de gestion.",
-                    "country": "<b>Pays</b> fait référence à : France",
-                    "company": "<b>Société</b> (désignée sous le nom de « la Société », « Nous », « Notre » ou « Nos » dans le présent Accord) fait référence à Avermate.",
-                    "device": "<b>Appareil</b> désigne tout appareil pouvant accéder au Service, tel qu’un ordinateur, un téléphone mobile ou une tablette numérique.",
-                    "service": "<b>Service</b> désigne l’Application.",
-                    "termsAndConditions": "<b>Conditions Générales d’Utilisation</b> (également appelées « Conditions ») désignent les présentes Conditions Générales d’Utilisation qui constituent l'intégralité de l'accord entre Vous et la Société concernant l'utilisation du Service.",
-                    "thirdPartySocial": "<b>Service de Réseaux Sociaux Tiers</b> désigne tout service ou contenu (y compris des données, informations, produits ou services) fourni par un tiers qui peut être affiché, inclus ou rendu disponible par le Service.",
-                    "you": "<b>Vous</b> désigne la personne physique accédant au Service ou l’utilisant, ou l’entreprise, ou toute autre entité juridique pour le compte de laquelle ladite personne accède ou utilise le Service, selon le cas."
-                }
-            },
-            "acknowledgment": {
-                "title": "Reconnaissance",
-                "p1": "Les présentes Conditions Générales d’Utilisation régissent l’utilisation de ce Service et l’accord conclu entre Vous et la Société. Ces Conditions définissent les droits et obligations de tous les utilisateurs concernant l’utilisation du Service.",
-                "p2": "Votre accès au Service et son utilisation sont subordonnés à votre acceptation et votre respect de ces Conditions. Ces Conditions s’appliquent à tous les visiteurs, utilisateurs et autres personnes qui accèdent au Service ou l’utilisent.",
-                "p3": "En accédant ou en utilisant le Service, vous acceptez d’être lié par ces Conditions Générales d’Utilisation. Si vous n’êtes pas d’accord avec une partie de ces Conditions, vous ne pouvez pas accéder au Service.",
-                "p4": "Vous déclarez avoir plus de 18 ans. La Société n’autorise pas les personnes de moins de 18 ans à utiliser le Service.",
-                "p5": "Votre accès au Service et son utilisation sont également subordonnés à votre acceptation et votre respect de la Politique de Confidentialité de la Société. Notre Politique de Confidentialité décrit Nos politiques et procédures concernant la collecte, l’utilisation et la divulgation de vos informations personnelles lorsque vous utilisez l’Application ou le Site Web, et vous informe de vos droits en matière de confidentialité et de la manière dont la loi vous protège. Veuillez lire attentivement Notre Politique de Confidentialité avant d’utiliser Notre Service."
-            },
-            "links": {
-                "title": "Liens vers d’Autres Sites Web",
-                "p1": "Notre Service peut contenir des liens vers des sites Web ou des services tiers qui ne sont pas la propriété de la Société ni contrôlés par elle.",
-                "p2": "La Société n’a aucun contrôle sur, et n’assume aucune responsabilité quant au contenu, aux politiques de confidentialité ou aux pratiques de tout site Web ou service tiers. Vous reconnaissez et acceptez en outre que la Société ne peut être tenue responsable, directement ou indirectement, de tout dommage ou perte causé ou prétendument causé par ou en relation avec l’utilisation ou la confiance accordée à un tel contenu, bien ou service disponible sur ou via de tels sites ou services.",
-                "p3": "Nous vous conseillons vivement de lire les conditions générales et les politiques de confidentialité de tout site Web ou service tiers que vous visitez."
-            },
-            "termination": {
-                "title": "Résiliation",
-                "p1": "Nous pouvons résilier ou suspendre votre accès immédiatement, sans préavis ni responsabilité, pour quelque raison que ce soit, y compris, sans s’y limiter, si vous enfreignez les présentes Conditions Générales d’Utilisation.",
-                "p2": "À la résiliation, votre droit d’utiliser le Service cessera immédiatement."
-            },
-            "limitationOfLiability": {
-                "title": "Limitation de Responsabilité",
-                "p1": "Nonobstant les dommages que vous pourriez subir, la responsabilité intégrale de la Société et de l’un de ses fournisseurs en vertu de toute disposition de ces Conditions et votre recours exclusif pour tout ce qui précède sera limitée au montant que vous avez effectivement payé via le Service ou à 100 USD si vous n’avez rien acheté via le Service.",
-                "p2": "Dans toute la mesure permise par la loi applicable, en aucun cas la Société ou ses fournisseurs ne pourront être tenus responsables de dommages spéciaux, accessoires, indirects ou consécutifs de quelque nature que ce soit (y compris, mais sans s’y limiter, les dommages pour perte de profits, perte de données ou d’autres informations, pour interruption d’activité, pour atteinte corporelle, perte de confidentialité découlant de ou liée de quelque manière que ce soit à l’utilisation ou à l’impossibilité d’utiliser le Service, les logiciels tiers et/ou le matériel tiers utilisé avec le Service, ou autrement en rapport avec toute disposition de ces Conditions), même si la Société ou tout fournisseur a été informé de la possibilité de tels dommages et même si le recours échoue à son objet essentiel.",
-                "p3": "Certains états n’autorisent pas l’exclusion des garanties implicites ou la limitation de responsabilité pour les dommages accessoires ou consécutifs, ce qui signifie que certaines des limitations ci-dessus peuvent ne pas s’appliquer. Dans ces états, la responsabilité de chaque partie sera limitée dans toute la mesure permise par la loi."
-            },
-            "asIs": {
-                "title": "\"EN L’ÉTAT\" et \"TEL QUE DISPONIBLE\" – Clause de non-responsabilité",
-                "p1": "Le Service vous est fourni « EN L’ÉTAT » et « TEL QUE DISPONIBLE » avec tous les défauts et vices sans garantie d’aucune sorte. Dans toute la mesure permise en vertu de la loi applicable, la Société, en son nom et au nom de ses Affiliés ainsi que de leurs concédants respectifs et prestataires de services, décline expressément toute garantie, qu’elle soit expresse, implicite, légale ou autre, concernant le Service, y compris toutes les garanties implicites de qualité marchande, d’adéquation à un usage particulier, de titre et d’absence de contrefaçon, ainsi que les garanties pouvant découler d’un déroulement des transactions, d’une exécution ou d’une pratique commerciale. Sans limitation de ce qui précède, la Société ne garantit pas et ne fait aucune promesse ou déclaration d’aucune sorte que le Service répondra à vos exigences, obtiendra les résultats escomptés, sera compatible ou fonctionnera avec d’autres logiciels, applications, systèmes ou services, fonctionnera sans interruption, répondra à des normes de performance ou de fiabilité ou sera exempt d’erreurs, ou que les erreurs ou défauts pourront ou seront corrigés.",
-                "p2": "Sans limiter ce qui précède, ni la Société ni aucun fournisseur de la Société ne fait aucune déclaration ou garantie de quelque nature que ce soit, expresse ou implicite : (i) quant au fonctionnement ou à la disponibilité du Service, ou des informations, contenus et éléments ou produits qui y sont inclus ; (ii) que le Service sera ininterrompu ou exempt d’erreurs ; (iii) quant à l’exactitude, la fiabilité ou la mise à jour de toute information ou de tout contenu fourni via le Service ; ou (iv) que le Service, ses serveurs, le contenu ou les e-mails envoyés par ou pour le compte de la Société sont exempts de virus, de scripts, de chevaux de Troie, de vers, de logiciels malveillants, de bombes à retardement ou d’autres composants nuisibles.",
-                "p3": "Certaines juridictions n’autorisent pas l’exclusion de certains types de garanties ou de limitations sur les droits statutaires applicables d’un consommateur, de sorte que certaines ou toutes les exclusions et limitations ci-dessus peuvent ne pas s’appliquer à vous. Mais dans un tel cas, les exclusions et limitations énoncées dans cette section seront appliquées dans toute la mesure exécutoire en vertu de la loi applicable."
-            },
-            "governingLaw": {
-                "title": "Droit Applicable",
-                "p1": "Les lois du Pays, à l’exclusion de ses règles de conflits de lois, régiront les présentes Conditions et votre utilisation du Service. Votre utilisation de l’Application peut également être soumise à d’autres lois locales, régionales, nationales ou internationales."
-            },
-            "disputesResolution": {
-                "title": "Règlement des Litiges",
-                "p1": "Si vous avez une préoccupation ou un litige concernant le Service, vous acceptez d’abord de tenter de résoudre le litige de manière informelle en contactant la Société."
-            },
-            "euUsers": {
-                "title": "Pour les Utilisateurs de l’Union Européenne (UE)",
-                "p1": "Si vous êtes un consommateur de l’Union Européenne, vous bénéficierez de toutes les dispositions impératives de la loi du pays dans lequel vous résidez."
-            },
-            "usCompliance": {
-                "title": "Conformité Légale aux États-Unis",
-                "p1": "Vous déclarez et garantissez que (i) vous n’êtes pas situé dans un pays faisant l’objet d’un embargo du gouvernement des États-Unis, ou qui a été désigné par le gouvernement des États-Unis comme un pays « soutenant le terrorisme », et (ii) vous ne figurez sur aucune liste du gouvernement des États-Unis de parties interdites ou restreintes."
-            },
-            "severability": {
-                "title": "Divisibilité et Renonciation",
-                "subTitle1": "Divisibilité",
-                "p1": "Si une disposition de ces Conditions est jugée inapplicable ou invalide, ladite disposition sera modifiée et interprétée de manière à atteindre au mieux les objectifs de cette disposition dans toute la mesure permise par la loi applicable, et les autres dispositions resteront en vigueur et de plein effet.",
-                "subTitle2": "Renonciation",
-                "p2": "Sauf disposition contraire dans les présentes, le fait de ne pas exercer un droit ou d’exiger l’exécution d’une obligation en vertu de ces Conditions n’affectera pas la capacité d’une partie à exercer ce droit ou d’exiger ladite exécution à tout moment par la suite, ni la renonciation à une violation ne constituera une renonciation à toute violation ultérieure."
-            },
-            "translation": {
-                "title": "Interprétation de la Traduction",
-                "p1": "Les présentes Conditions Générales d’Utilisation peuvent avoir été traduites si Nous les avons mises à votre disposition sur Notre Service. Vous convenez que le texte original en anglais prévaudra en cas de litige."
-            },
-            "changes": {
-                "title": "Modifications de ces Conditions Générales d’Utilisation",
-                "p1": "Nous nous réservons le droit, à Notre seule discrétion, de modifier ou de remplacer ces Conditions à tout moment. Si une révision est importante, Nous ferons des efforts raisonnables pour fournir un préavis d’au moins 30 jours avant l’entrée en vigueur des nouvelles conditions. Ce qui constitue un changement important sera déterminé à Notre seule discrétion.",
-                "p2": "En continuant d’accéder à Notre Service ou de l’utiliser après l’entrée en vigueur de ces révisions, vous acceptez d’être lié par les conditions révisées. Si vous n’êtes pas d’accord avec les nouvelles conditions, en totalité ou en partie, veuillez cesser d’utiliser le site Web et le Service."
-            },
-            "contactUs": {
-                "title": "Nous Contacter",
-                "text": "Si vous avez des questions concernant ces Conditions Générales d’Utilisation, vous pouvez nous contacter :",
-                "email": "Par e-mail : noreply@avermate.fr"
-            }
-        }
+    "CTA": {
+      "startToday": "Commencez dès aujourd'hui",
+      "transformEfforts": "Transformez vos efforts en succès"
+    },
+    "FAQ": {
+      "question1": "Comment mes données sont elles stockées ?",
+      "answer1": "Vos données sont stockées de façon sécurisée dans notre base de données.",
+      "question2": "Qui d'autres peut voir mes notes ?",
+      "answer2": "Vous êtes le seul à avoir accès à vos notes.",
+      "question3": "Pourquoi utiliser Avermate plutôt qu'Excel ?",
+      "answer3": "Contrairement à Excel, tout est déjà prêt : suivez vos moyennes automatiquement, visualisez vos progrès avec des graphiques clairs et gérez vos matières et coefficients facilement. Plus besoin de créer des formules ou des tableaux compliqués, on s'occupe de tout pour vous simplifier la vie !",
+      "question4": "Combien coûte Avermate ?",
+      "answer4": "Notre service est entièrement gratuit. Profitez de toutes nos fonctionnalités sans aucun frais !"
     }
+  },
+  "Auth": {
+    "orContinueWith": "Ou continuer avec",
+    "consentText": "En continuant, vous acceptez les",
+    "termsOfService": "Conditions d'utilisation",
+    "and": "et la",
+    "privacyPolicy": "Politique de confidentialité",
+    "Verify": {
+      "verifyEmail": "Vérifiez votre email",
+      "emailSent": "Un lien a été envoyé à {email}. Cliquez sur le lien pour vérifier votre email.",
+      "welcomeBack": "👋 Ravi de vous revoir {name} !",
+      "hopeYouAchievedGoals": "Nous espérons que vous avez atteint vos objectifs !",
+      "linkResent": "🔗 Lien renvoyé",
+      "linkResentDescription": "Un nouveau lien de vérification a été renvoyé à l'adresse {email}.",
+      "errorSendingLink": "Erreur lors de l'envoi du lien de vérification.",
+      "resendVerificationLink": "Renvoyer un lien de vérification"
+    },
+    "Reset": {
+      "resetPassword": "Réinitialiser le mot de passe",
+      "resetPasswordDescription": "Réinitialisez votre mot de passe en saisissant votre nouveau mot de passe.",
+      "signIn": "Se connecter",
+      "password": "Mot de passe",
+      "hidePassword": "Masquer le mot de passe",
+      "showPassword": "Afficher le mot de passe",
+      "passwordStrength": "Niveau de sécurité du mot de passe",
+      "passwordReset": "Réinitialisation du mot de passe",
+      "passwordResetSuccess": "Votre mot de passe a été réinitialisé avec succès !",
+      "errorResettingPassword": "Erreur lors de la réinitialisation du mot de passe.",
+      "passwordTooWeak": "Le mot de passe est trop faible."
+    },
+    "Forgot": {
+      "forgotPassword": "Mot de passe oublié",
+      "enterEmail": "Saisissez votre e-mail pour recevoir un lien de réinitialisation.",
+      "signIn": "Se connecter",
+      "email": "Email",
+      "emailPlaceholder": "email@exemple.com",
+      "resetEmailSent": "Email de réinitialisation du mot de passe envoyé",
+      "checkEmailForInstructions": "Veuillez vérifier votre email pour plus d'instructions.",
+      "errorSendingResetEmail": "Erreur lors de l'envoi de l'email de réinitialisation du mot de passe.",
+      "resetPassword": "Réinitialiser le mot de passe",
+      "invalidEmail": "Adresse e-mail invalide",
+      "emailTooLong": "L'adresse e-mail est trop longue"
+    },
+    "SignUp": {
+      "signUp": "S'inscrire",
+      "signUpDescription": "Inscrivez-vous pour rester au top de vos moyennes et atteindre vos objectifs.",
+      "alreadyHaveAccount": "J'ai déjà un compte",
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "Entrez votre prénom",
+      "firstNameTooShort": "Le prénom est trop court",
+      "firstNameTooLong": "Le prénom est trop long",
+      "lastName": "Nom",
+      "lastNamePlaceholder": "Entrez votre nom",
+      "lastNameTooShort": "Le nom est trop court",
+      "lastNameTooLong": "Le nom est trop long",
+      "email": "Email",
+      "emailPlaceholder": "email@exemple.com",
+      "invalidEmail": "Adresse e-mail invalide",
+      "emailTooLong": "L'adresse e-mail est trop longue",
+      "password": "Mot de passe",
+      "passwordTooShort": "Le mot de passe est trop court",
+      "passwordTooLong": "Le mot de passe est trop long",
+      "passwordTooWeak": "Le mot de passe est trop faible",
+      "passwordStrength": "Niveau de sécurité du mot de passe",
+      "hidePassword": "Masquer le mot de passe",
+      "showPassword": "Afficher le mot de passe",
+      "emailNotVerified": "Email non vérifié",
+      "verificationLinkSent": "Un lien de vérification a été envoyé à {email}",
+      "signUpError": "Erreur lors de l'inscription"
+    },
+    "SignIn": {
+      "signIn": "Se connecter",
+      "signInDescription": "Connectez-vous pour rester au top de vos moyennes et atteindre vos objectifs.",
+      "noAccount": "Je n'ai pas de compte",
+      "email": "Email",
+      "emailPlaceholder": "email@exemple.com",
+      "password": "Mot de passe",
+      "passwordTooShort": "Le mot de passe est trop court",
+      "passwordTooLong": "Le mot de passe est trop long",
+      "invalidEmail": "Adresse e-mail invalide",
+      "emailTooLong": "L'adresse e-mail est trop longue",
+      "hidePassword": "Masquer le mot de passe",
+      "showPassword": "Afficher le mot de passe",
+      "emailNotVerified": "✉️ Email non vérifié",
+      "verificationLinkSent": "Un lien de vérification a été envoyé à l'adresse {email}.",
+      "welcomeBack": "👋 Ravi de vous revoir {name} !",
+      "hopeYouAchievedGoals": "Nous espérons que vous avez atteint vos objectifs !",
+      "error": "❌ Erreur",
+      "incorrectEmailOrPassword": "Email ou mot de passe incorrect",
+      "signInError": "Erreur lors de la connexion.",
+      "forgotPassword": "Vous avez oublié votre mot de passe ?"
+    }
+  },
+  "Errors": {
+    "unauthorized": "Vous n'êtes pas autorisé à effectuer cette action. Veuillez réessayer plus tard.",
+    "forbidden": "Vous n'êtes pas autorisé à effectuer cette action. Veuillez réessayer plus tard.",
+    "notFound": "La ressource demandée est introuvable. Veuillez réessayer plus tard.",
+    "serverError": "Une erreur s'est produite sur le serveur. Veuillez réessayer plus tard.",
+    "tooManyRequests": "Trop de requêtes. Veuillez réessayer plus tard.",
+    "serviceUnavailable": "Le serveur est indisponible. Veuillez réessayer plus tard.",
+    "badRequest": "Une erreur s'est produite. Veuillez réessayer plus tard.",
+    "unknownError": "Une erreur inconnue s'est produite.",
+    "error": "Erreur",
+    "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
+  },
+  "Onboarding": {
+    "welcomeTitle": "Bienvenue sur Avermate",
+    "setupMessage": "Configurons quelques choses avant de commencer",
+    "back": "Retour",
+    "previous": "Précédent",
+    "startAdventure": "Commencer l'aventure",
+    "finish": "Terminer",
+    "next": "Suivant",
+    "welcome": "Bienvenue",
+    "periodes": "Périodes",
+    "matieres": "Matières",
+    "notes": "Notes",
+    "Welcome": {
+      "welcomeTitle": "Bienvenue sur Avermate",
+      "welcomeMessage": "Nous sommes ravis de vous accueillir à bord. Préparez-vous à décoller vers une expérience exceptionnelle !",
+      "whatToExpectTitle": "Ce qui vous attend :",
+      "createPeriods": "Création de vos périodes",
+      "createSubjects": "Création de vos matières",
+      "addGrades": "Ajout de vos premières notes",
+      "installAppMessage": "Installer l'application pour un accès rapide",
+      "installAppButton": "Installer l'application",
+      "installOnIphoneTitle": "Installer sur iPhone",
+      "installOnIphoneMessage": "Pour installer Avermate sur votre iPhone :",
+      "openInSafari": "Ouvrez Avermate dans Safari.",
+      "tapShareIcon": "Touchez l'icône <share>Partager</share>",
+      "atBottomOfScreen": "en bas de l'écran.",
+      "selectAddToHomeScreen": "Sélectionnez <addToHomeScreen>Ajouter à l'écran d'accueil</addToHomeScreen>",
+      "tapAddToConfirm": "Appuyez sur <add>Ajouter</add> pour confirmer.",
+      "resetAccount": "Réinitialiser le compte",
+      "resetAccountTitle": "Réinitialiser votre compte ?",
+      "resetAccountDescription": "Cela supprimera définitivement toutes vos périodes, matières, notes et moyennes personnalisées. Cette action ne peut pas être annulée.",
+      "cancel": "Annuler",
+      "confirmReset": "Oui, réinitialiser le compte",
+      "resetAccountText": "Nous avons détecté que vous avez des données existantes. Si vous souhaitez redémarrer à zéro, vous pouvez réinitialiser votre compte.",
+      "resetAccountError": "Une erreur s'est produite lors de la réinitialisation de votre compte. Veuillez réessayer plus tard.",
+      "accountResetSuccess": "Compte réinitialisé avec succès !",
+      "accountResetDescription": "Votre compte a été réinitialisé avec succès !"
+    },
+    "Step1": {
+      "title": "Périodes",
+      "addNewPeriod": "Ajouter une nouvelle période",
+      "periodsDescription": "Les périodes, <bold>facultatives</bold>, sont des intervalles de temps (année scolaire, semestre, trimestre, etc.) pour regrouper vos notes. Sans elles, toutes vos notes sont regroupées dans une seule section.",
+      "addPeriod": "Ajouter une période",
+      "from": "Du",
+      "to": "au"
+    },
+    "Step2": {
+      "title": "Matières",
+      "addSubject": "Ajouter une matière",
+      "addPresetSubjects": "Ajouter des matières prédéfinies",
+      "mainSubjectsDescription": "Les matières principales (ex. <b>Mathématiques</b>) apparaissent sur la page d'accueil.",
+      "categoriesDescription": "Les catégories (ex. <b>Langues</b>) regroupent des matières sans moyenne propre.",
+      "subSubjectsDescription": "Les sous-matières (ex. <b>Écrit</b>, <b>Oral</b>) organisent les notes.",
+      "mainSubject": "Matière Principale",
+      "category": "Catégorie",
+      "addNewSubject": "Ajouter une nouvelle matière",
+      "Presets": {
+        "successTitle": "Préréglage appliqué avec succès !",
+        "successDescription": "Le préréglage a été appliqué avec succès.",
+        "errorDescription": "Erreur lors de l'application du préréglage.",
+        "select": "Sélectionner",
+        "search": "Rechercher des préréglages...",
+        "noPresets": "Aucun préréglage trouvé.",
+        "noSearchResults": "Aucun préréglage trouvé pour {search}."
+      }
+    },
+    "Step3": {
+      "title": "Notes",
+      "addNewGrade": "Ajouter une nouvelle note",
+      "noSubjectsMessage": "Il semble que vous n'ayez pas encore ajouté de matières. Veuillez ajouter des matières pour pouvoir ajouter des notes.",
+      "addSubject": "Ajouter une matière"
+    }
+  },
+  "Settings": {
+    "Nav": {
+      "profile": "Profil",
+      "accountSecurity": "Compte & Sécurité",
+      "settings": "Paramètres",
+      "about": "À propos",
+      "back": "Retour"
+    },
+    "Profile": {
+      "Name": {
+        "title": "Votre nom",
+        "description": "Modifiez comment vous apparaissez sur Avermate.",
+        "save": "Sauvegarder",
+        "successTitle": "Succès",
+        "successMessage": "Votre nom a été mis à jour avec succès !",
+        "errorMessage": "Erreur lors de la mise à jour du nom.",
+        "nameMinLength": "Le nom est trop court",
+        "nameMaxLength": "Le nom est trop long"
+      },
+      "Email": {
+        "title": "Votre Email",
+        "description": "Modifiez votre adresse email.",
+        "save": "Sauvegarder",
+        "emailMinLength": "L'email doit comporter au moins 1 caractère.",
+        "emailMaxLength": "L'email doit comporter au maximum 64 caractères.",
+        "invalidEmail": "Adresse e-mail invalide.",
+        "successTitle": "Lien de vérification envoyé",
+        "successMessage": "Cliquez sur le lien envoyé à {email} pour confirmer le changement.",
+        "errorMessage": "Erreur lors de la mise à jour de l'email."
+      },
+      "Avatar": {
+        "title": "Avatar",
+        "description": "Changez votre avatar.",
+        "errorTitle": "Erreur",
+        "cropError": "Une erreur est survenue lors du recadrage de l'image.",
+        "invalidFileType": "Veuillez sélectionner un fichier image valide.",
+        "animationDetectionError": "Une erreur est survenue lors de la détection de l'animation de l'image.",
+        "unableToReadFile": "Impossible de lire le fichier image.",
+        "fileReaderError": "Une erreur est survenue lors de la lecture du fichier.",
+        "uploadingAvatar": "Téléchargement de l'avatar...",
+        "changeAvatar": "Modifier l'avatar",
+        "allowedFormats": "Formats d'images acceptés. Taille max : 4MB.",
+        "successTitle": "Avatar modifié avec succès !",
+        "successMessage": "Votre avatar a été mis à jour avec succès.",
+        "updateError": "Une erreur est survenue lors de la mise à jour de l'avatar.",
+        "fileTooLarge": "Le fichier que vous avez essayé de télécharger est trop volumineux.",
+        "uploadError": "Une erreur est survenue lors du téléchargement de votre avatar. Veuillez réessayer plus tard.",
+        "uploadingTitle": "Téléchargement de l'avatar...",
+        "uploadingMessage": "Veuillez patienter quelques instants.",
+        "cropAvatar": "Recadrez votre avatar",
+        "cancel": "Annuler",
+        "save": "Enregistrer"
+      }
+    },
+    "Account": {
+      "SessionList": {
+        "title": "Active Sessions",
+        "description": "Manage and monitor all your active sessions.",
+        "revoke": "Revoke",
+        "current": "Current",
+        "expired": "Expired",
+        "active": "Active",
+        "successTitle": "Session révoquée",
+        "successMessage": "La session a été révoquée avec succès !",
+        "errorMessage": "Erreur lors de la révocation de la session.",
+        "revokeDialog": "Révoquer",
+        "titleDialog": "Révoquer la session",
+        "descriptionDialog": "L'utilisateur sera invité à se reconnecter lors de sa prochaine visite.",
+        "cancel": "Annuler",
+        "revokeSession": "Révoquer la session"
+      },
+      "LinkedAccounts": {
+        "title": "Comptes Liés",
+        "description": "Liste de tous les comptes liés à votre utilisateur",
+        "linkWithOtherServices": "Lier avec d'autres services",
+        "linkingWith": "Lien en cours avec {label}...",
+        "link": "Lier {label}",
+        "linkWithPassword": "Lier avec Mot de Passe"
+      },
+      "DeleteAccount": {
+        "title": "Supprimer le compte",
+        "description": "Supprimez votre compte définitivement de Avermate",
+        "successTitle": "Compte supprimé",
+        "successMessage": "Votre compte a été supprimé avec succès.",
+        "errorMessage": "Erreur lors de la suppression du compte.",
+        "triggerButton": "Supprimer votre compte",
+        "titleDialog": "Supprimer votre compte",
+        "descriptionDialog": "Votre compte sera définitivement supprimé de nos serveurs. Cette action est irréversible.",
+        "cancel": "Annuler",
+        "delete": "Supprimer"
+      }
+    },
+    "Settings": {
+      "Theme": {
+        "title": "Apparence",
+        "description": "Personnalisez le thème qui sera utilisé.",
+        "themeLabel": "Thème",
+        "selectPlaceholder": "Sélectionnez un thème",
+        "system": "Système",
+        "light": "Clair",
+        "dark": "Sombre"
+      },
+      "Periods": {
+        "title": "Périodes",
+        "description": "Gérez vos périodes scolaires",
+        "addPeriod": "Ajouter une période",
+        "noPeriods": "Aucune période pour l'instant",
+        "addNewPeriod": "Ajouter une nouvelle période",
+        "from": "Du",
+        "to": "au"
+      },
+      "Onboarding": {
+        "title": "Mise en route",
+        "description": "Accéder à la page de mise en route",
+        "start": "Commencer"
+      },
+      "Language": {
+        "title": "Langue",
+        "description": "Personnalisez la langue de l'application.",
+        "languageLabel": "Langue",
+        "selectPlaceholder": "Sélectionnez une langue",
+        "system": "Système",
+        "english": "Anglais",
+        "french": "Français"
+      },
+      "CustomAverages": {
+        "title": "Moyennes personnalisées",
+        "description": "Gérez vos moyennes personnalisées",
+        "addCustomAverage": "Ajouter une moyenne personnalisée",
+        "noCustomAverages": "Aucune moyenne personnalisée pour l'instant",
+        "addNewCustomAverage": "Ajouter une nouvelle moyenne personnalisée"
+      }
+    },
+    "About": {
+      "about": "À propos d' {name}",
+      "defaultDescription": "Prenez le contrôle de vos notes",
+      "viewOnGitHub": "Voir sur GitHub",
+      "contributors": "Contributeurs",
+      "noContributors": "Aucun contributeur pour l'instant. Soyez le premier à contribuer!",
+      "usefulLinks": "Liens utiles",
+      "githubIssues": "Problèmes GitHub",
+      "discordServer": "Serveur Discord",
+      "homePage": "Page d'accueil"
+    }
+  },
+  "ErrorPages": {
+    "NotFound": {
+      "title": "Oups! Page non trouvée",
+      "description": "La page que vous recherchez a peut-être été supprimée, son nom a été changé ou elle est temporairement indisponible.",
+      "backToHome": "Retour à l'accueil"
+    },
+    "Error": {
+      "title": "Une erreur s'est produite",
+      "description": "Quelque chose s'est mal passé. Veuillez réessayer plus tard. ({statusCode})",
+      "backToHome": "Retour à l'accueil",
+      "tryAgain": "Réessayer",
+      "errorReportSentTitle": "Signalement envoyé",
+      "errorReportSentDescription": "Merci ! Votre signalement a été envoyé à notre équipe.",
+      "errorSubmittingReport": "Erreur lors de l'envoi du signalement. Veuillez réessayer plus tard."
+    }
+  },
+  "Header": {
+    "Dropdown": {
+      "switchToLight": "Basculer en mode clair",
+      "switchToDark": "Basculer en mode sombre",
+      "signedOut": "Déconnecté",
+      "seeYouSoon": "À bientôt 👋!",
+      "signOut": "Se déconnecter",
+      "confirmSignOut": "Êtes-vous sûr de vouloir vous déconnecter ?",
+      "stay": "Rester",
+      "emailNotVerifiedTitle": "✉️ Email non vérifié",
+      "emailNotVerifiedDescription": "Un lien de vérification a été envoyé à {email}.",
+      "profile": "Profil",
+      "account": "Compte",
+      "settings": "Paramètres",
+      "appearance": "Apparence",
+      "github": "Github",
+      "support": "Support",
+      "feedback": "Retour",
+      "notLoggedInTitle": "Vous n'êtes pas connecté",
+      "notLoggedInDescription": "Vous devez être connecté pour accéder à cette page."
+    }
+  },
+  "Dashboard": {
+    "EmptyStates": {
+      "Onboarding": {
+        "configureSpace": "Configurer mon espace"
+      },
+      "SubjectEmptyState": {
+        "noSubjectsTitle": "Aucune matière pour l'instant",
+        "noSubjectsDescription": "Configurer votre espace pour commencer à suivre vos moyennes."
+      },
+      "ErrorCard": {
+        "title": "Oups, quelque chose s'est mal passé !",
+        "description": "Nous sommes désolés, mais il semble qu'il y ait eu une erreur. Veuillez réessayer plus tard ou contactez-nous si le problème persiste.",
+        "backToHome": "Retourner sur la page d'accueil"
+      }
+    },
+    "Buttons": {
+      "MoreButton": {
+        "addSubject": "Ajouter une matière",
+        "addPeriod": "Ajouter une période"
+      },
+      "MobileAddButtons": {
+        "addGrade": "Ajouter une note",
+        "addSubject": "Ajouter une matière",
+        "addPeriod": "Ajouter une période"
+      },
+      "AddSubjectButton": {
+        "addSubject": "Ajouter une matière"
+      },
+      "SubjectMoreButton": {
+        "addGrade": "Ajouter une note"
+      }
+    },
+    "Charts": {
+      "GlobalAverageChart": {
+        "average": "Moyenne",
+        "noGradesTitle": "Aucune note pour l'instant",
+        "noGradesDescription": "Ajouter une nouvelle note pour commencer à suivre vos moyennes.",
+        "addGrade": "Ajouter une note",
+        "globalAverageTitle": "Moyenne Générale",
+        "areaChartDescription": "Visualiser l'évolution de votre moyenne générale sur ce trimestre",
+        "radarChartDescription": "Visualiser votre moyenne par matière"
+      },
+      "SubjectAverageChart": {
+        "average": "Moyenne"
+      }
+    },
+    "Cards": {
+      "RecentGradesCard": {
+        "title": "Notes récentes",
+        "description": "Vous avez reçu {recentCount} nouvelles notes cette semaine !",
+        "noRecentGrades": "Aucune note récente",
+        "addGrade": "Ajouter une note"
+      }
+    },
+    "Nav": {
+      "overview": "Vue d'ensemble",
+      "grades": "Notes"
+    },
+    "Loader": {
+      "GradeLoader": {
+        "back": "Retour"
+      },
+      "GradesLoader": {
+        "addGrade": "Ajouter une note",
+        "addSubject": "Ajouter une matière",
+        "addPeriod": "Ajouter une période"
+      },
+      "SubjectLoader": {
+        "back": "Retour",
+        "addGrade": "Ajouter une note"
+      }
+    },
+    "Tables": {
+      "GradesTable": {
+        "fullYear": "Année complète",
+        "subjects": "Matières",
+        "averages": "Moyennes",
+        "grades": "Notes",
+        "overallAverage": "Moyenne générale",
+        "average": "Moyenne"
+      }
+    },
+    "Dialogs": {
+      "AddAverage": {
+        "title": "Ajouter une moyenne personnalisée",
+        "description": "Créez une moyenne personnalisée pour des matières spécifiques."
+      },
+      "AddGrade": {
+        "title": "Ajouter une note",
+        "description": "Commencer à suivre votre évolution."
+      },
+      "AddPeriod": {
+        "title": "Ajouter une période",
+        "description": "Créer une nouvelle période avant d'ajouter des notes."
+      },
+      "AddSubject": {
+        "title": "Ajouter une matière",
+        "description": "Créer une nouvelle matière avant d'ajouter des notes."
+      },
+      "DeleteAverage": {
+        "title": "Supprimer {name}",
+        "description": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action est irréversible.",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "successTitle": "Moyenne personnalisée supprimée",
+        "successDescription": "{name} a été supprimée avec succès.",
+        "error": "Erreur lors de la suppression de la moyenne personnalisée."
+      },
+      "DeleteGrade": {
+        "title": "Supprimer {name}",
+        "description": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action est irréversible.",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "successTitle": "Note supprimée",
+        "successDescription": "{name} a été supprimée avec succès.",
+        "error": "Erreur lors de la suppression de la note."
+      },
+      "DeletePeriod": {
+        "title": "Supprimer {name}",
+        "description": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action est irréversible.",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "successTitle": "Période supprimée",
+        "successDescription": "{name} a été supprimée avec succès.",
+        "error": "Erreur lors de la suppression de la période."
+      },
+      "DeleteSubject": {
+        "title": "Supprimer {name}",
+        "description": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action est irréversible.",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "successTitle": "Matière supprimée",
+        "successDescription": "{name} a été supprimée avec succès.",
+        "error": "Erreur lors de la suppression de la matière."
+      },
+      "Feedback": {
+        "title": "Faites nous part de vos suggestions",
+        "description": "Votre avis est très important pour nous. Nous sommes toujours à l'écoute de vos suggestions pour améliorer notre service."
+      },
+      "ListPresets": {
+        "title": "Sélectionnez un préréglage",
+        "description": "Choisissez le préréglage qui vous correspond le mieux."
+      },
+      "UpdateAverage": {
+        "editAverage": "Modifier la moyenne",
+        "title": "Modifier une moyenne personnalisée",
+        "description": "Mettre à jour la moyenne personnalisée pour des matières spécifiques."
+      },
+      "UpdateGrade": {
+        "editGrade": "Modifier la note",
+        "title": "Modifier la note",
+        "description": "Modifier les données de la note."
+      },
+      "UpdatePeriod": {
+        "editPeriod": "Modifier la période",
+        "title": "Modifier la période",
+        "description": "Modifier les données de la période."
+      },
+      "UpdateSubject": {
+        "editSubject": "Modifier la matière",
+        "title": "Modifier la matière",
+        "description": "Modifier les données de la matière."
+      }
+    },
+    "Forms": {
+      "AddAverage": {
+        "errorCreating": "Erreur lors de la création de la moyenne personnalisée.",
+        "successTitle": "Moyenne personnalisée créée avec succès !",
+        "successDescription": "Votre moyenne personnalisée a été ajoutée.",
+        "error": "Erreur",
+        "selectAtLeastOneSubject": "Veuillez sélectionner au moins une matière.",
+        "subject": "Matière",
+        "chooseSubject": "Choisir une matière",
+        "searchSubject": "Rechercher une matière...",
+        "noSubjectFound": "Aucune matière trouvée.",
+        "customCoefficient": "Coefficient personnalisé",
+        "optional": "Optionnel",
+        "includeChildren": "Inclure les sous matières",
+        "removeSubject": "Retirer cette matière",
+        "customAverageName": "Nom de la moyenne personnalisée",
+        "customAveragePlaceholder": "Moyenne Semestre 1",
+        "showOnMainPage": "Afficher sur la page principale",
+        "subjects": "Matières",
+        "addSubject": "Ajouter une matière",
+        "createCustomAverage": "Créer la moyenne personnalisée",
+        "nameRequired": "Le nom est requis",
+        "nameTooLong": "Le nom est trop long",
+        "subjectIdRequired": "L'ID de la matière est requis",
+        "coefficientMin": "Le coefficient doit être au moins 1",
+        "coefficientMax": "Le coefficient ne peut pas dépasser 1000",
+        "atLeastOneSubject": "Au moins une matière doit être sélectionnée"
+      },
+      "AddGrade": {
+        "nameRequired": "Le nom est requis",
+        "nameTooLong": "Le nom est trop long",
+        "outOfMin": "Le total doit être au moins 0",
+        "outOfMax": "Le total ne peut pas dépasser 1000",
+        "valueMin": "La valeur doit être au moins 0",
+        "valueMax": "La valeur ne peut pas dépasser 1000",
+        "coefficientMin": "Le coefficient doit être au moins 0",
+        "coefficientMax": "Le coefficient ne peut pas dépasser 1000",
+        "subjectIdRequired": "L'ID de la matière est requis",
+        "subjectIdMax": "L'ID de la matière ne peut pas dépasser 64 caractères",
+        "periodIdRequired": "L'ID de la période est requis",
+        "periodIdMax": "L'ID de la période ne peut pas dépasser 64 caractères",
+        "successTitle": "Note ajoutée avec succès !",
+        "successDescription": "Votre note a été ajoutée.",
+        "errorAddingGrade": "Erreur lors de l'ajout de la note.",
+        "gradeName": "Nom de la note",
+        "gradeNamePlaceholder": "DS : Nombres complexes",
+        "gradeValue": "Note",
+        "gradeValuePlaceholder": "13.5",
+        "gradeOutOf": "Sur",
+        "gradeOutOfPlaceholder": "20",
+        "gradeCoefficient": "Coefficient",
+        "gradeCoefficientPlaceholder": "2",
+        "passedAt": "Passé le",
+        "chooseDate": "Choisir une date",
+        "period": "Période",
+        "fullYear": "Année complète",
+        "choosePeriod": "Choisir une période",
+        "noPeriodFound": "Aucune période trouvée.",
+        "periodDescription": "Une note doit être associée à une période. Celle-ci peut être différente de la date de passage si besoin.",
+        "subject": "Matière",
+        "chooseSubject": "Choisir une matière",
+        "noSubjectFound": "Aucune matière trouvée.",
+        "submit": "Ajouter ma note"
+      },
+      "AddPeriod": {
+        "nameRequired": "Le nom est requis",
+        "nameTooLong": "Le nom est trop long",
+        "startDateRequired": "La date de début est requise",
+        "endDateRequired": "La date de fin est requise",
+        "startDateBeforeEndDate": "La date de début doit être antérieure ou égale à la date de fin",
+        "overlappingPeriods": "Les périodes se chevauchent",
+        "successDescription": "Vous pouvez maintenant organiser vos activités dans cette période.",
+        "errorAddingPeriod": "Erreur lors de la création de la période.",
+        "name": "Nom",
+        "namePlaceholder": "Nom de la période",
+        "dateRange": "Date de la période",
+        "selectDateRange": "Sélectionner une plage de dates",
+        "isCumulative": "Période cumulative",
+        "isCumulativeDescription": "Les périodes cumulatives contiennent les notes des périodes précédentes en plus de celles de la période actuelle.",
+        "submit": "Ajouter une période"
+      },
+      "AddSubject": {
+        "nameRequired": "Le nom est requis",
+        "nameTooLong": "Le nom est trop long",
+        "coefficientMin": "Le coefficient doit être au moins 0",
+        "coefficientMax": "Le coefficient ne peut pas dépasser 1000",
+        "parentIdMax": "L'ID de la matière parente ne peut pas dépasser 64 caractères",
+        "successTitle": "Matière ajoutée avec succès !",
+        "successDescription": "Ajoutez des notes à cette matière pour suivre votre progression.",
+        "errorAddingSubject": "Erreur lors de l'ajout de la matière.",
+        "name": "Nom",
+        "namePlaceholder": "Mathématiques",
+        "coefficient": "Coefficient",
+        "coefficientPlaceholder": "2",
+        "coefficientDescription": "Les catégories ne prennent pas en compte le coefficient.",
+        "isMainSubject": "Matière principale",
+        "isMainSubjectDescription": "Les matières principales sont affichées en premier dans le tableau de bord.",
+        "isDisplaySubject": "Catégorie",
+        "isDisplaySubjectDescription": "Les catégories ne comptent pas dans la moyenne générale. Elles regroupent des matières, mais leurs enfants sont calculés comme au niveau supérieur. Impossible d'y ajouter des notes.",
+        "parentSubject": "Sous-matière",
+        "optional": "Optionnel",
+        "chooseParentSubject": "Choisir une matière parente",
+        "chooseParentSubjectPlaceholder": "Choisir une matière",
+        "noParentSubjectFound": "Aucune matière parente trouvée.",
+        "parentSubjectDescription": "Une matière parente regroupe plusieurs sous-matières, facilitant leur organisation.",
+        "submit": "Ajouter une matière"
+      },
+      "Feedback": {
+        "feedbackType": "Type de remarque",
+        "selectFeedbackType": "Sélectionner le type de remarque",
+        "searchFeedbackType": "Rechercher un type de remarque",
+        "noFeedbackTypeFound": "Aucun type de remarque trouvé",
+        "subject": "Titre",
+        "subjectPlaceholder": "Titre de votre remarque",
+        "subjectRequired": "Un titre est requis",
+        "subjectTooLong": "Le titre est trop long",
+        "content": "Contenu",
+        "contentPlaceholder": "Décrivez votre remarque en détail",
+        "contentMin": "Le contenu doit contenir au moins 10 caractères",
+        "contentMax": "Le contenu ne peut pas dépasser 1000 caractères",
+        "addImage": "Ajouter une image",
+        "imageDescription": "Optionnel : Téléchargez une image pour accompagner votre remarque.",
+        "email": "Email",
+        "emailPlaceholder": "votre.email@exemple.com",
+        "invalidEmail": "Adresse email invalide",
+        "successTitle": "Remarque envoyée",
+        "successDescription": "Merci pour votre retour. Nous allons étudier votre remarque attentivement.",
+        "errorSubmittingFeedback": "Erreur lors de l'envoi de la remarque.",
+        "submitting": "Envoi en cours...",
+        "submit": "Envoyer",
+        "general": "Général",
+        "bug": "Bug",
+        "suggestion": "Suggestion"
+      },
+      "UpdateAverage": {
+        "averageName": "Nom de la moyenne personnalisée",
+        "averageNamePlaceholder": "Entrez le nom de la moyenne",
+        "nameRequired": "Le nom est requis",
+        "nameTooLong": "Le nom est trop long",
+        "displayOnMainPage": "Afficher sur la page principale",
+        "subjects": "Matières",
+        "addSubject": "Ajouter une matière",
+        "removeSubject": "Retirer cette matière",
+        "subject": "Matière",
+        "chooseSubject": "Choisir une matière",
+        "searchSubject": "Rechercher une matière",
+        "noSubjectFound": "Aucune matière trouvée.",
+        "customCoefficient": "Coefficient personnalisé",
+        "customCoefficientPlaceholder": "Entrez le coefficient",
+        "customCoefficientMin": "Le coefficient doit être au moins 1",
+        "customCoefficientMax": "Le coefficient ne peut pas dépasser 1000",
+        "optional": "Optionnel",
+        "includeChildren": "Inclure les sous-matières",
+        "subjectsMin": "Au moins une matière doit être sélectionnée",
+        "subjectIdRequired": "L'ID de la matière est requis",
+        "successTitle": "Moyenne personnalisée mise à jour avec succès !",
+        "successDescription": "Votre moyenne personnalisée a été mise à jour.",
+        "updateError": "Erreur lors de la mise à jour de la moyenne personnalisée.",
+        "errorTitle": "Erreur",
+        "selectAtLeastOneSubject": "Veuillez sélectionner au moins une matière.",
+        "updateAverage": "Mettre à jour la moyenne personnalisée"
+      },
+      "UpdateGrade": {
+        "name": "Nom",
+        "nameRequired": "Le nom est requis",
+        "nameTooLong": "Le nom est trop long",
+        "grade": "Note",
+        "outOf": "Sur",
+        "outOfMin": "La note sur doit être au moins 0",
+        "outOfMax": "La note sur ne peut pas dépasser 1000",
+        "value": "Valeur",
+        "valueMin": "La valeur doit être au moins 0",
+        "valueMax": "La valeur ne peut pas dépasser 1000",
+        "coefficient": "Coefficient",
+        "coefficientMin": "Le coefficient doit être au moins 0",
+        "coefficientMax": "Le coefficient ne peut pas dépasser 1000",
+        "passedAtRequired": "Une date de passage est requise",
+        "subjectIdRequired": "Une matière est requise",
+        "subjectIdMax": "L'ID de la matière ne peut pas dépasser 64 caractères",
+        "periodIdRequired": "Une période est requise",
+        "periodIdMax": "L'ID de la période ne peut pas dépasser 64 caractères",
+        "passedAt": "Passé le",
+        "chooseDate": "Choisir une date",
+        "choosePeriod": "Choisir une période",
+        "chooseSubject": "Choisir une matière",
+        "fullYear": "Année complète",
+        "noPeriodFound": "Aucune période trouvée",
+        "noSubjectFound": "Aucune matière trouvée",
+        "period": "Période",
+        "subject": "Matière",
+        "periodDescription": "Une note doit être associée à une période. Celle-ci peut être différente de la date de passage si besoin.",
+        "successTitle": "Note modifiée avec succès !",
+        "successDescription": "Votre note a été mise à jour.",
+        "updateError": "Erreur lors de la modification de la note.",
+        "submit": "Modifier la note"
+      },
+      "UpdatePeriod": {
+        "name": "Nom",
+        "namePlaceholder": "Entrez le nom de la période",
+        "nameRequired": "Le nom est requis",
+        "nameTooLong": "Le nom est trop long",
+        "dateRange": "Plage de dates",
+        "selectDateRange": "Sélectionner une plage de dates",
+        "fromRequired": "La date de début est requise",
+        "toRequired": "La date de fin est requise",
+        "dateRangeError": "La date de début doit être antérieure ou égale à la date de fin",
+        "isCumulative": "Période cumulative",
+        "isCumulativeDescription": "Les périodes cumulatives contiennent les notes des périodes précédentes en plus de celles de la période actuelle.",
+        "overlapTitle": "Périodes se chevauchant",
+        "successTitle": "Période mise à jour",
+        "successDescription": "La période a été modifiée avec succès.",
+        "updateError": "Erreur lors de la mise à jour de la période.",
+        "submit": "Modifier la période"
+      },
+      "UpdateSubject": {
+        "name": "Nom",
+        "nameRequired": "Le nom est requis",
+        "nameTooLong": "Le nom est trop long",
+        "coefficient": "Coefficient",
+        "coefficientMin": "Le coefficient doit être au moins 0",
+        "coefficientMax": "Le coefficient ne peut pas dépasser 1000",
+        "parentIdInvalid": "L'ID de la matière parente est invalide",
+        "coefficientDescription": "Les catégories ne prennent pas en compte le coefficient",
+        "isMainSubject": "Matière principale",
+        "isMainSubjectDescription": "Les matières principales sont affichées en premier dans le tableau de bord.",
+        "isDisplaySubject": "Catégorie",
+        "isDisplaySubjectDescription": "Les catégories ne comptent pas dans la moyenne générale. Elles regroupent des matières, mais leurs enfants sont calculés comme au niveau supérieur. Impossible d'y ajouter des notes.",
+        "parentSubject": "Matière parente",
+        "optional": "Optionnel",
+        "chooseParentSubject": "Choisir une matière parente",
+        "noSubjectsFound": "Aucune matière trouvée",
+        "parentSubjectDescription": "Une matière parente regroupe plusieurs sous-matières, facilitant leur organisation.",
+        "successTitle": "Matière modifiée avec succès !",
+        "successDescription": "Votre matière a été mise à jour.",
+        "updateError": "Erreur lors de la modification de la matière.",
+        "submit": "Modifier la matière"
+      }
+    },
+    "Components": {
+      "DataCards": {
+        "generalAverage": "Moyenne générale",
+        "sinceStart": "depuis le début",
+        "noChangeSinceStart": "Pas d'évolution depuis le début",
+        "comparedToGeneralAverage": "par rapport à la moyenne générale",
+        "noComparison": "Pas de comparaison",
+        "bestGrade": "Meilleure Note",
+        "bestGradeWithSubject": "En {subjectName} ? Impressionnant ! ({gradeName})",
+        "noBestGrade": "Pas de meilleure note",
+        "bestSubject": "Meilleure Matière",
+        "bestSubjectWithComparison": "{subjectName} est {percentage}% plus élevée que les autres matières",
+        "noBestSubject": "Pas de meilleure matière",
+        "worstGrade": "Pire Note",
+        "worstGradeWithSubject": "En {subjectName} ? Oui, c'est mauvais ({gradeName})",
+        "noWorstGrade": "Pas de pire note",
+        "worstSubject": "Pire Matière",
+        "worstSubjectWithComparison": "{subjectName} est {percentage}% plus basse que les autres matières",
+        "noWorstSubject": "Pas de pire matière"
+      }
+    },
+    "Pages": {
+      "OverviewPage": {
+        "overviewTitle": "Vue d'ensemble",
+        "greeting": "Bonjour {name}",
+        "fullYear": "Toute l'année",
+        "periodName": "{name}"
+      },
+      "GradesPage": {
+        "gradesTitle": "Vos notes",
+        "addGrade": "Ajouter une note",
+        "addSubject": "Ajouter une matière",
+        "addPeriod": "Ajouter une période",
+        "fullYear": "Toute l'année",
+        "periodName": "{name}"
+      },
+      "SubjectWrapper": {
+        "back": "Retour",
+        "coefficientTitle": "Coefficient",
+        "coefficientDescription": "Coefficient de {name}",
+        "noGradesTitle": "Aucune note pour l'instant",
+        "noGradesMessage": "Ajouter une nouvelle note pour commencer à suivre vos moyennes.",
+        "addGradeInSubject": "Ajouter une note dans {name}",
+        "addGrade": "Ajouter une note",
+        "averageTitle": "Moyenne",
+        "averageDescription": "Votre moyenne actuelle en {name} (pendant {periodName})",
+        "impactTitle": "Impact sur la moyenne générale",
+        "impactDescription": "Impact de {name} sur la moyenne générale (pendant {periodName})",
+        "customImpactTitle": "Impact sur {name}",
+        "customImpactDescription": "Impact de {name} sur la moyenne personnalisée {customName} (pendant {periodName})",
+        "parentImpactTitle": "Impact sur {name}",
+        "parentImpactDescription": "Impact de {name} sur la moyenne de {parentName} (pendant {periodName})",
+        "bestGradeTitle": "Meilleure note",
+        "bestGradeDescription": "Votre plus belle performance en {name} (pendant {periodName})",
+        "worstGradeTitle": "Pire note",
+        "worstGradeDescription": "Votre moins bonne performance en {name} (pendant {periodName})",
+        "notAvailable": "N/A",
+        "averageEvolution": "Evolution de la moyenne"
+      },
+      "GradeWrapper": {
+        "back": "Retour",
+        "scoreObtainedTitle": "Note obtenue",
+        "scoreObtainedDescription": "Votre note obtenue lors de cette évaluation sur {outOf}",
+        "subjectTitle": "Matière",
+        "subjectDescription": "La matière de cette évaluation",
+        "coefficientTitle": "Coefficient",
+        "coefficientDescription": "Le coefficient de cette évaluation",
+        "impactOverallAverageTitle": "Impact sur la moyenne générale",
+        "impactOverallAverageDescription": "Visualisez l'impact de cette évaluation sur votre moyenne générale (pendant {periodName})",
+        "impactCustomAverageTitle": "Impact sur {name}",
+        "impactCustomAverageDescription": "Visualisez l'impact de cette note sur le custom average: {name} (pendant {periodName})",
+        "impactParentAverageTitle": "Impact sur {name}",
+        "impactParentAverageDescription": "Visualisez l'impact de cette évaluation sur votre moyenne de la matière {parentName} (pendant {periodName})",
+        "impactSubjectAverageTitle": "Impact sur {name}",
+        "impactSubjectAverageDescription": "Visualisez l'impact de cette évaluation sur votre moyenne de la matière {name} (pendant {periodName})",
+        "passDateTitle": "Date de passage",
+        "passDateDescription": "La date de passage de cette évaluation",
+        "addedDateTitle": "Date d'ajout",
+        "addedDateDescription": "La date d'ajout de cette évaluation",
+        "fullYear": "Toute l'année"
+      }
+    }
+  },
+  "Legal": {
+    "Privacy": {
+      "backButton": "Retour",
+      "title": "Politique de Confidentialité",
+      "lastUpdated": "Dernière mise à jour : 07 décembre 2024",
+      "intro": {
+        "p1": "La présente Politique de Confidentialité décrit nos politiques et procédures concernant la collecte, l’utilisation et la divulgation de vos informations lorsque vous utilisez le Service, et vous informe de vos droits en matière de confidentialité ainsi que de la manière dont la loi vous protège.",
+        "p2": "Nous utilisons vos données personnelles pour fournir et améliorer le Service. En utilisant le Service, vous acceptez la collecte et l’utilisation d’informations conformément à cette Politique de Confidentialité."
+      },
+      "interpretationDefinitions": {
+        "title": "Interprétation et Définitions",
+        "interpretationTitle": "Interprétation",
+        "interpretationText": "Les mots dont la première lettre est en majuscule ont les significations définies dans les conditions suivantes. Les définitions suivantes ont la même signification, qu’elles apparaissent au singulier ou au pluriel.",
+        "definitionsTitle": "Définitions",
+        "definitionsIntro": "Dans le cadre de la présente Politique de Confidentialité :",
+        "list": {
+          "account": "<b>Compte</b> désigne un compte unique créé pour vous permettre d’accéder à notre Service ou à certaines parties de notre Service.",
+          "affiliate": "<b>Affilié</b> désigne toute entité qui contrôle, est contrôlée par ou est sous contrôle commun avec une partie, où « contrôle » signifie la détention de 50 % ou plus des actions, intérêts ou autres titres donnant droit de vote pour l’élection de directeurs ou toute autre autorité de gestion.",
+          "application": "<b>Application</b> désigne Avermate, le programme logiciel fourni par la Société.",
+          "company": "<b>Société</b> (désignée sous le nom de « la Société », « Nous », « Notre » ou « Nos » dans le présent Accord) fait référence à Avermate.",
+          "country": "<b>Pays</b> fait référence à : France",
+          "device": "<b>Appareil</b> désigne tout appareil pouvant accéder au Service, tel qu’un ordinateur, un téléphone mobile ou une tablette numérique.",
+          "personalData": "<b>Données Personnelles</b> désigne toute information relative à une personne physique identifiée ou identifiable.",
+          "service": "<b>Service</b> désigne l’Application.",
+          "serviceProvider": "<b>Prestataire de Service</b> désigne toute personne physique ou morale qui traite les données pour le compte de la Société. Il s’agit d’entreprises tierces ou de particuliers engagés par la Société pour faciliter le Service, fournir le Service au nom de la Société, exécuter des services liés au Service ou aider la Société à analyser l’utilisation du Service.",
+          "usageData": "<b>Données d’Utilisation</b> désigne les données collectées automatiquement, générées par l’utilisation du Service ou provenant de l’infrastructure du Service elle-même (par exemple, la durée d’une visite de page).",
+          "you": "<b>Vous</b> désigne la personne physique accédant au Service ou l’utilisant, ou l’entreprise, ou toute autre entité juridique pour le compte de laquelle ladite personne accède ou utilise le Service, selon le cas."
+        }
+      },
+      "collectingUsingData": {
+        "title": "Collecte et Utilisation de Vos Données Personnelles",
+        "typesDataCollectedTitle": "Types de Données Collectées",
+        "personalDataTitle": "Données Personnelles",
+        "personalDataP1": "Pendant l’utilisation de Notre Service, Nous pouvons vous demander de nous fournir certaines informations personnellement identifiables pouvant être utilisées pour vous contacter ou vous identifier. Les informations personnellement identifiables peuvent inclure, sans s’y limiter :",
+        "listEmail": "Adresse e-mail",
+        "listNames": "Prénom et nom",
+        "listUsageData": "Données d’Utilisation",
+        "usageDataTitle": "Données d’Utilisation",
+        "usageDataP1": "Les Données d’Utilisation sont collectées automatiquement lors de l’utilisation du Service.",
+        "usageDataP2": "Les Données d’Utilisation peuvent inclure des informations telles que l’adresse de protocole Internet (IP) de votre Appareil, le type de navigateur, la version du navigateur, les pages de notre Service que vous visitez, l’heure et la date de votre visite, le temps passé sur ces pages, les identifiants uniques de l’appareil et d’autres données de diagnostic.",
+        "usageDataP3": "Lorsque vous accédez au Service par ou via un appareil mobile, Nous pouvons collecter automatiquement certaines informations, notamment, mais sans s’y limiter, le type d’appareil mobile que vous utilisez, l’ID unique de votre appareil mobile, l’adresse IP de votre appareil mobile, votre système d’exploitation mobile, le type de navigateur Internet mobile que vous utilisez, des identifiants uniques d’appareil et d’autres données de diagnostic.",
+        "usageDataP4": "Nous pouvons également collecter les informations que votre navigateur envoie chaque fois que vous visitez notre Service ou lorsque vous accédez au Service par ou via un appareil mobile."
+      },
+      "useOfPersonalData": {
+        "title": "Utilisation de Vos Données Personnelles",
+        "p1": "La Société peut utiliser les Données Personnelles aux fins suivantes :",
+        "list1": "<b>Fournir et maintenir notre Service</b>, y compris pour surveiller l’utilisation de notre Service.",
+        "list2": "<b>Gérer votre Compte :</b> gérer votre inscription en tant qu’utilisateur du Service. Les Données Personnelles que vous fournissez peuvent vous donner accès à différentes fonctionnalités du Service qui vous sont accessibles en tant qu’utilisateur enregistré.",
+        "list3": "<b>Pour l’exécution d’un contrat :</b> le développement, la conformité et l’exécution du contrat d’achat pour les produits, articles ou services que vous avez achetés ou de tout autre contrat avec Nous via le Service.",
+        "list4": "<b>Pour vous contacter :</b> vous contacter par e-mail, appels téléphoniques, SMS ou d’autres formes équivalentes de communication électronique, telles que les notifications push d’une application mobile, concernant les mises à jour ou les communications informatives relatives aux fonctionnalités, produits ou services souscrits, y compris les mises à jour de sécurité, lorsque cela est nécessaire ou raisonnable pour leur mise en œuvre.",
+        "list5": "<b>Pour vous fournir</b> des actualités, des offres spéciales et des informations générales sur d’autres biens, services et événements que Nous proposons, similaires à ceux que vous avez déjà achetés ou sur lesquels vous vous êtes renseignés, sauf si vous avez choisi de ne pas recevoir ces informations.",
+        "list6": "<b>Gérer vos demandes :</b> répondre et gérer vos demandes que vous nous adressez.",
+        "list7": "<b>Pour les transferts d’entreprise :</b> Nous pouvons utiliser vos informations pour évaluer ou réaliser une fusion, cession, restructuration, réorganisation, dissolution ou toute autre vente ou transfert de tout ou partie de Nos actifs, que ce soit dans le cadre d’une activité en cours ou dans le cadre d’une faillite, liquidation ou procédure similaire, dans laquelle les Données Personnelles détenues par Nous au sujet des utilisateurs de Notre Service font partie des actifs transférés.",
+        "list8": "<b>À d’autres fins</b> : Nous pouvons utiliser vos informations à d’autres fins, telles que l’analyse de données, l’identification des tendances d’utilisation, la détermination de l’efficacité de nos campagnes promotionnelles et pour évaluer et améliorer Notre Service, nos produits, nos services, notre marketing et votre expérience.",
+        "p2": "Nous pouvons partager vos informations personnelles dans les situations suivantes :",
+        "listShare1": "<b>Avec des Prestataires de Service :</b> Nous pouvons partager vos informations personnelles avec des Prestataires de Service pour surveiller et analyser l’utilisation de Notre Service, pour vous contacter.",
+        "listShare2": "<b>Pour les transferts d’entreprise :</b> Nous pouvons partager ou transférer vos informations personnelles dans le cadre ou pendant des négociations de toute fusion, vente d’actifs de la Société, financement ou acquisition de tout ou partie de Notre entreprise par une autre société.",
+        "listShare3": "<b>Avec des Affiliés :</b> Nous pouvons partager vos informations avec Nos affiliés, auquel cas Nous exigerons de ces affiliés qu’ils respectent la présente Politique de Confidentialité. Les affiliés comprennent notre société mère et toute autre filiale, partenaires de coentreprise, ou autres sociétés que Nous contrôlons ou qui sont sous contrôle commun avec Nous.",
+        "listShare4": "<b>Avec des partenaires commerciaux :</b> Nous pouvons partager vos informations avec Nos partenaires commerciaux pour vous proposer certains produits, services ou promotions.",
+        "listShare5": "<b>Avec d’autres utilisateurs :</b> lorsque vous partagez des informations personnelles ou interagissez autrement dans les espaces publics avec d’autres utilisateurs, ces informations peuvent être vues par tous les utilisateurs et peuvent être diffusées publiquement à l’extérieur.",
+        "listShare6": "<b>Avec votre consentement :</b> Nous pouvons divulguer vos informations personnelles à toute autre fin avec votre consentement."
+      },
+      "retention": {
+        "title": "Conservation de Vos Données Personnelles",
+        "p1": "La Société conservera vos Données Personnelles uniquement aussi longtemps que nécessaire aux fins exposées dans la présente Politique de Confidentialité. Nous conserverons et utiliserons vos Données Personnelles dans la mesure nécessaire pour respecter nos obligations légales (par exemple, si nous sommes tenus de conserver vos données pour nous conformer aux lois applicables), résoudre les litiges et faire respecter nos accords et politiques légaux.",
+        "p2": "La Société conservera également les Données d’Utilisation à des fins d’analyse interne. Les Données d’Utilisation sont généralement conservées pendant une période plus courte, sauf lorsque ces données sont utilisées pour renforcer la sécurité ou améliorer la fonctionnalité de Notre Service, ou si Nous sommes légalement tenus de conserver ces données pendant des périodes plus longues."
+      },
+      "transfer": {
+        "title": "Transfert de Vos Données Personnelles",
+        "p1": "Vos informations, y compris vos Données Personnelles, sont traitées dans les bureaux de la Société et dans tout autre lieu où se trouvent les parties impliquées dans le traitement. Cela signifie que ces informations peuvent être transférées — et conservées — sur des ordinateurs situés en dehors de votre état, province, pays ou autre juridiction gouvernementale, où les lois sur la protection des données peuvent différer de celles de votre juridiction.",
+        "p2": "Votre consentement à la présente Politique de Confidentialité suivi de votre soumission de ces informations représente votre accord à ce transfert.",
+        "p3": "La Société prendra toutes les mesures raisonnablement nécessaires pour s’assurer que vos données sont traitées de manière sécurisée et conformément à la présente Politique de Confidentialité, et aucun transfert de vos Données Personnelles n’aura lieu vers une organisation ou un pays à moins qu’un niveau de contrôle adéquat ne soit en place, y compris la sécurité de vos données et d’autres informations personnelles."
+      },
+      "deleteData": {
+        "title": "Supprimer Vos Données Personnelles",
+        "p1": "Vous avez le droit de supprimer ou de demander Notre assistance pour supprimer les Données Personnelles que Nous avons collectées à votre sujet.",
+        "p2": "Notre Service peut vous permettre de supprimer certaines informations vous concernant directement depuis le Service.",
+        "p3": "Vous pouvez mettre à jour, modifier ou supprimer vos informations à tout moment en vous connectant à votre Compte, si vous en avez un, et en visitant la section des paramètres de compte qui vous permet de gérer vos informations personnelles. Vous pouvez également nous contacter pour demander l'accès, la correction ou la suppression de toute information personnelle que vous nous avez fournie.",
+        "p4": "Veuillez noter, cependant, que Nous pouvons avoir besoin de conserver certaines informations lorsque Nous avons une obligation légale ou un fondement légitime pour le faire."
+      },
+      "disclosure": {
+        "title": "Divulgation de Vos Données Personnelles",
+        "businessTitle": "Transactions Commerciales",
+        "businessText": "Si la Société est impliquée dans une fusion, acquisition ou vente d’actifs, vos Données Personnelles peuvent être transférées. Nous vous en informerons avant que vos Données Personnelles ne soient transférées et soumises à une Politique de Confidentialité différente.",
+        "lawTitle": "Application de la loi",
+        "lawText": "Dans certaines circonstances, la Société peut être tenue de divulguer vos Données Personnelles si la loi l’exige ou en réponse à des demandes valides émanant d’autorités publiques (par exemple un tribunal ou une agence gouvernementale).",
+        "otherTitle": "Autres exigences légales",
+        "otherText": "La Société peut divulguer vos Données Personnelles en toute bonne foi si une telle action est nécessaire pour :",
+        "otherList1": "Se conformer à une obligation légale",
+        "otherList2": "Protéger et défendre les droits ou la propriété de la Société",
+        "otherList3": "Prévenir ou enquêter sur d’éventuels actes répréhensibles en rapport avec le Service",
+        "otherList4": "Protéger la sécurité personnelle des Utilisateurs du Service ou du public",
+        "otherList5": "Se protéger contre toute responsabilité légale"
+      },
+      "security": {
+        "title": "Sécurité de Vos Données Personnelles",
+        "p1": "La sécurité de vos Données Personnelles est importante pour Nous, mais n’oubliez pas qu’aucune méthode de transmission sur Internet ou de stockage électronique n’est sûre à 100 %. Bien que Nous mettions en œuvre des moyens commercialement acceptables pour protéger vos Données Personnelles, Nous ne pouvons garantir leur sécurité absolue."
+      },
+      "children": {
+        "title": "Confidentialité des Enfants",
+        "p1": "Notre Service ne s’adresse pas aux personnes de moins de 13 ans. Nous ne collectons pas sciemment d’informations personnellement identifiables auprès de quiconque âgé de moins de 13 ans. Si vous êtes un parent ou tuteur et que vous êtes conscient que votre enfant nous a fourni des Données Personnelles, veuillez nous contacter. Si nous découvrons que nous avons collecté des Données Personnelles d'une personne de moins de 13 ans sans vérification du consentement parental, nous prenons des mesures pour supprimer ces informations de nos serveurs.",
+        "p2": "Si Nous devons nous appuyer sur le consentement comme base légale pour traiter vos informations et que votre pays exige le consentement d’un parent, Nous pouvons exiger le consentement de votre parent avant de collecter et d’utiliser ces informations."
+      },
+      "links": {
+        "title": "Liens vers d’Autres Sites Web",
+        "p1": "Notre Service peut contenir des liens vers d’autres sites Web qui ne sont pas exploités par Nous. Si vous cliquez sur un lien tiers, vous serez dirigé vers le site de ce tiers. Nous vous recommandons vivement de consulter la Politique de Confidentialité de chaque site que vous visitez.",
+        "p2": "Nous n’avons aucun contrôle sur et n’assumons aucune responsabilité quant au contenu, aux politiques de confidentialité ou aux pratiques de tout site ou service tiers."
+      },
+      "changes": {
+        "title": "Modifications de cette Politique de Confidentialité",
+        "p1": "Nous pouvons mettre à jour Notre Politique de Confidentialité de temps à autre. Nous vous informerons de toute modification en publiant la nouvelle Politique de Confidentialité sur cette page.",
+        "p2": "Nous vous informerons via l’e-mail et/ou un avis visible sur Notre Service, avant que la modification ne prenne effet et nous mettrons à jour la date « Dernière mise à jour » en haut de la présente Politique de Confidentialité.",
+        "p3": "Nous vous conseillons de consulter périodiquement la présente Politique de Confidentialité pour prendre connaissance de toute modification. Les modifications apportées à cette Politique de Confidentialité entrent en vigueur lorsqu’elles sont publiées sur cette page."
+      },
+      "contactUs": {
+        "title": "Nous Contacter",
+        "text": "Si vous avez des questions concernant cette Politique de Confidentialité, vous pouvez nous contacter :",
+        "email": "Par e-mail : noreply@avermate.fr"
+      }
+    },
+    "Tos": {
+      "backButton": "Retour",
+      "title": "Conditions Générales d’Utilisation",
+      "lastUpdated": "Dernière mise à jour : 07 décembre 2024",
+      "intro": {
+        "p1": "Veuillez lire attentivement ces conditions générales avant d’utiliser Notre Service."
+      },
+      "interpretationDefinitions": {
+        "title": "Interprétation et Définitions",
+        "interpretationTitle": "Interprétation",
+        "interpretationText": "Les mots dont la première lettre est en majuscule ont les significations définies dans les conditions suivantes. Les définitions suivantes auront la même signification qu’elles apparaissent au singulier ou au pluriel.",
+        "definitionsTitle": "Définitions",
+        "definitionsIntro": "Aux fins des présentes Conditions Générales d’Utilisation :",
+        "list": {
+          "application": "<b>Application</b> désigne le programme logiciel fourni par la Société que vous avez téléchargé sur tout appareil électronique, nommé Avermate.",
+          "applicationStore": "<b>Store d’Applications</b> désigne le service de distribution numérique exploité et développé par Apple Inc. (Apple App Store) ou Google Inc. (Google Play Store) dans lequel l'Application a été téléchargée.",
+          "affiliate": "<b>Affilié</b> désigne toute entité qui contrôle, est contrôlée par, ou est sous le contrôle commun d’une partie, où « contrôle » signifie la possession de 50 % ou plus des actions, parts sociales, ou autres titres donnant droit de vote pour l’élection des administrateurs ou autre autorité de gestion.",
+          "country": "<b>Pays</b> fait référence à : France",
+          "company": "<b>Société</b> (désignée sous le nom de « la Société », « Nous », « Notre » ou « Nos » dans le présent Accord) fait référence à Avermate.",
+          "device": "<b>Appareil</b> désigne tout appareil pouvant accéder au Service, tel qu’un ordinateur, un téléphone mobile ou une tablette numérique.",
+          "service": "<b>Service</b> désigne l’Application.",
+          "termsAndConditions": "<b>Conditions Générales d’Utilisation</b> (également appelées « Conditions ») désignent les présentes Conditions Générales d’Utilisation qui constituent l'intégralité de l'accord entre Vous et la Société concernant l'utilisation du Service.",
+          "thirdPartySocial": "<b>Service de Réseaux Sociaux Tiers</b> désigne tout service ou contenu (y compris des données, informations, produits ou services) fourni par un tiers qui peut être affiché, inclus ou rendu disponible par le Service.",
+          "you": "<b>Vous</b> désigne la personne physique accédant au Service ou l’utilisant, ou l’entreprise, ou toute autre entité juridique pour le compte de laquelle ladite personne accède ou utilise le Service, selon le cas."
+        }
+      },
+      "acknowledgment": {
+        "title": "Reconnaissance",
+        "p1": "Les présentes Conditions Générales d’Utilisation régissent l’utilisation de ce Service et l’accord conclu entre Vous et la Société. Ces Conditions définissent les droits et obligations de tous les utilisateurs concernant l’utilisation du Service.",
+        "p2": "Votre accès au Service et son utilisation sont subordonnés à votre acceptation et votre respect de ces Conditions. Ces Conditions s’appliquent à tous les visiteurs, utilisateurs et autres personnes qui accèdent au Service ou l’utilisent.",
+        "p3": "En accédant ou en utilisant le Service, vous acceptez d’être lié par ces Conditions Générales d’Utilisation. Si vous n’êtes pas d’accord avec une partie de ces Conditions, vous ne pouvez pas accéder au Service.",
+        "p4": "Vous déclarez avoir plus de 18 ans. La Société n’autorise pas les personnes de moins de 18 ans à utiliser le Service.",
+        "p5": "Votre accès au Service et son utilisation sont également subordonnés à votre acceptation et votre respect de la Politique de Confidentialité de la Société. Notre Politique de Confidentialité décrit Nos politiques et procédures concernant la collecte, l’utilisation et la divulgation de vos informations personnelles lorsque vous utilisez l’Application ou le Site Web, et vous informe de vos droits en matière de confidentialité et de la manière dont la loi vous protège. Veuillez lire attentivement Notre Politique de Confidentialité avant d’utiliser Notre Service."
+      },
+      "links": {
+        "title": "Liens vers d’Autres Sites Web",
+        "p1": "Notre Service peut contenir des liens vers des sites Web ou des services tiers qui ne sont pas la propriété de la Société ni contrôlés par elle.",
+        "p2": "La Société n’a aucun contrôle sur, et n’assume aucune responsabilité quant au contenu, aux politiques de confidentialité ou aux pratiques de tout site Web ou service tiers. Vous reconnaissez et acceptez en outre que la Société ne peut être tenue responsable, directement ou indirectement, de tout dommage ou perte causé ou prétendument causé par ou en relation avec l’utilisation ou la confiance accordée à un tel contenu, bien ou service disponible sur ou via de tels sites ou services.",
+        "p3": "Nous vous conseillons vivement de lire les conditions générales et les politiques de confidentialité de tout site Web ou service tiers que vous visitez."
+      },
+      "termination": {
+        "title": "Résiliation",
+        "p1": "Nous pouvons résilier ou suspendre votre accès immédiatement, sans préavis ni responsabilité, pour quelque raison que ce soit, y compris, sans s’y limiter, si vous enfreignez les présentes Conditions Générales d’Utilisation.",
+        "p2": "À la résiliation, votre droit d’utiliser le Service cessera immédiatement."
+      },
+      "limitationOfLiability": {
+        "title": "Limitation de Responsabilité",
+        "p1": "Nonobstant les dommages que vous pourriez subir, la responsabilité intégrale de la Société et de l’un de ses fournisseurs en vertu de toute disposition de ces Conditions et votre recours exclusif pour tout ce qui précède sera limitée au montant que vous avez effectivement payé via le Service ou à 100 USD si vous n’avez rien acheté via le Service.",
+        "p2": "Dans toute la mesure permise par la loi applicable, en aucun cas la Société ou ses fournisseurs ne pourront être tenus responsables de dommages spéciaux, accessoires, indirects ou consécutifs de quelque nature que ce soit (y compris, mais sans s’y limiter, les dommages pour perte de profits, perte de données ou d’autres informations, pour interruption d’activité, pour atteinte corporelle, perte de confidentialité découlant de ou liée de quelque manière que ce soit à l’utilisation ou à l’impossibilité d’utiliser le Service, les logiciels tiers et/ou le matériel tiers utilisé avec le Service, ou autrement en rapport avec toute disposition de ces Conditions), même si la Société ou tout fournisseur a été informé de la possibilité de tels dommages et même si le recours échoue à son objet essentiel.",
+        "p3": "Certains états n’autorisent pas l’exclusion des garanties implicites ou la limitation de responsabilité pour les dommages accessoires ou consécutifs, ce qui signifie que certaines des limitations ci-dessus peuvent ne pas s’appliquer. Dans ces états, la responsabilité de chaque partie sera limitée dans toute la mesure permise par la loi."
+      },
+      "asIs": {
+        "title": "\"EN L’ÉTAT\" et \"TEL QUE DISPONIBLE\" – Clause de non-responsabilité",
+        "p1": "Le Service vous est fourni « EN L’ÉTAT » et « TEL QUE DISPONIBLE » avec tous les défauts et vices sans garantie d’aucune sorte. Dans toute la mesure permise en vertu de la loi applicable, la Société, en son nom et au nom de ses Affiliés ainsi que de leurs concédants respectifs et prestataires de services, décline expressément toute garantie, qu’elle soit expresse, implicite, légale ou autre, concernant le Service, y compris toutes les garanties implicites de qualité marchande, d’adéquation à un usage particulier, de titre et d’absence de contrefaçon, ainsi que les garanties pouvant découler d’un déroulement des transactions, d’une exécution ou d’une pratique commerciale. Sans limitation de ce qui précède, la Société ne garantit pas et ne fait aucune promesse ou déclaration d’aucune sorte que le Service répondra à vos exigences, obtiendra les résultats escomptés, sera compatible ou fonctionnera avec d’autres logiciels, applications, systèmes ou services, fonctionnera sans interruption, répondra à des normes de performance ou de fiabilité ou sera exempt d’erreurs, ou que les erreurs ou défauts pourront ou seront corrigés.",
+        "p2": "Sans limiter ce qui précède, ni la Société ni aucun fournisseur de la Société ne fait aucune déclaration ou garantie de quelque nature que ce soit, expresse ou implicite : (i) quant au fonctionnement ou à la disponibilité du Service, ou des informations, contenus et éléments ou produits qui y sont inclus ; (ii) que le Service sera ininterrompu ou exempt d’erreurs ; (iii) quant à l’exactitude, la fiabilité ou la mise à jour de toute information ou de tout contenu fourni via le Service ; ou (iv) que le Service, ses serveurs, le contenu ou les e-mails envoyés par ou pour le compte de la Société sont exempts de virus, de scripts, de chevaux de Troie, de vers, de logiciels malveillants, de bombes à retardement ou d’autres composants nuisibles.",
+        "p3": "Certaines juridictions n’autorisent pas l’exclusion de certains types de garanties ou de limitations sur les droits statutaires applicables d’un consommateur, de sorte que certaines ou toutes les exclusions et limitations ci-dessus peuvent ne pas s’appliquer à vous. Mais dans un tel cas, les exclusions et limitations énoncées dans cette section seront appliquées dans toute la mesure exécutoire en vertu de la loi applicable."
+      },
+      "governingLaw": {
+        "title": "Droit Applicable",
+        "p1": "Les lois du Pays, à l’exclusion de ses règles de conflits de lois, régiront les présentes Conditions et votre utilisation du Service. Votre utilisation de l’Application peut également être soumise à d’autres lois locales, régionales, nationales ou internationales."
+      },
+      "disputesResolution": {
+        "title": "Règlement des Litiges",
+        "p1": "Si vous avez une préoccupation ou un litige concernant le Service, vous acceptez d’abord de tenter de résoudre le litige de manière informelle en contactant la Société."
+      },
+      "euUsers": {
+        "title": "Pour les Utilisateurs de l’Union Européenne (UE)",
+        "p1": "Si vous êtes un consommateur de l’Union Européenne, vous bénéficierez de toutes les dispositions impératives de la loi du pays dans lequel vous résidez."
+      },
+      "usCompliance": {
+        "title": "Conformité Légale aux États-Unis",
+        "p1": "Vous déclarez et garantissez que (i) vous n’êtes pas situé dans un pays faisant l’objet d’un embargo du gouvernement des États-Unis, ou qui a été désigné par le gouvernement des États-Unis comme un pays « soutenant le terrorisme », et (ii) vous ne figurez sur aucune liste du gouvernement des États-Unis de parties interdites ou restreintes."
+      },
+      "severability": {
+        "title": "Divisibilité et Renonciation",
+        "subTitle1": "Divisibilité",
+        "p1": "Si une disposition de ces Conditions est jugée inapplicable ou invalide, ladite disposition sera modifiée et interprétée de manière à atteindre au mieux les objectifs de cette disposition dans toute la mesure permise par la loi applicable, et les autres dispositions resteront en vigueur et de plein effet.",
+        "subTitle2": "Renonciation",
+        "p2": "Sauf disposition contraire dans les présentes, le fait de ne pas exercer un droit ou d’exiger l’exécution d’une obligation en vertu de ces Conditions n’affectera pas la capacité d’une partie à exercer ce droit ou d’exiger ladite exécution à tout moment par la suite, ni la renonciation à une violation ne constituera une renonciation à toute violation ultérieure."
+      },
+      "translation": {
+        "title": "Interprétation de la Traduction",
+        "p1": "Les présentes Conditions Générales d’Utilisation peuvent avoir été traduites si Nous les avons mises à votre disposition sur Notre Service. Vous convenez que le texte original en anglais prévaudra en cas de litige."
+      },
+      "changes": {
+        "title": "Modifications de ces Conditions Générales d’Utilisation",
+        "p1": "Nous nous réservons le droit, à Notre seule discrétion, de modifier ou de remplacer ces Conditions à tout moment. Si une révision est importante, Nous ferons des efforts raisonnables pour fournir un préavis d’au moins 30 jours avant l’entrée en vigueur des nouvelles conditions. Ce qui constitue un changement important sera déterminé à Notre seule discrétion.",
+        "p2": "En continuant d’accéder à Notre Service ou de l’utiliser après l’entrée en vigueur de ces révisions, vous acceptez d’être lié par les conditions révisées. Si vous n’êtes pas d’accord avec les nouvelles conditions, en totalité ou en partie, veuillez cesser d’utiliser le site Web et le Service."
+      },
+      "contactUs": {
+        "title": "Nous Contacter",
+        "text": "Si vous avez des questions concernant ces Conditions Générales d’Utilisation, vous pouvez nous contacter :",
+        "email": "Par e-mail : noreply@avermate.fr"
+      }
+    }
+  }
 }

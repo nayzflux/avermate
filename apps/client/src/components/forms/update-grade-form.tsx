@@ -152,6 +152,7 @@ export const UpdateGradeForm = ({
       queryClient.invalidateQueries({ queryKey: ["grades"] });
       queryClient.invalidateQueries({ queryKey: ["grade", grade.id] });
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
+      queryClient.invalidateQueries({ queryKey: ["recent-grades"] });
     },
     onError: (error) => {
       handleError(error, toaster, errorTranslations, t("updateError"));

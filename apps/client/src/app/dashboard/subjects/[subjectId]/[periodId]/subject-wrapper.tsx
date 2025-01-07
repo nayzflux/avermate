@@ -237,7 +237,10 @@ function SubjectWrapper({
         {/* Subject Average */}
         <DataCard
           title={t("averageTitle")}
-          description={t("averageDescription", { name: subject?.name })}
+          description={t("averageDescription", {
+            name: subject?.name,
+            periodName: period?.name,
+          })}
           icon={AcademicCapIcon}
         >
           <GradeValue
@@ -260,7 +263,10 @@ function SubjectWrapper({
         {/* Subject Impact on overall average */}
         <DataCard
           title={t("impactTitle")}
-          description={t("impactDescription", { name: subject?.name })}
+          description={t("impactDescription", {
+            name: subject?.name,
+            periodName: period?.name,
+          })}
           icon={ArrowUpCircleIcon}
         >
           <DifferenceBadge
@@ -288,6 +294,7 @@ function SubjectWrapper({
               description={t("customImpactDescription", {
                 name: subject.name,
                 customName: ca.name,
+                periodName: period?.name,
               })}
               icon={ArrowUpCircleIcon}
             >
@@ -304,6 +311,7 @@ function SubjectWrapper({
             description={t("parentImpactDescription", {
               name: subject?.name,
               parentName: parent.name,
+              periodName: period?.name,
             })}
             icon={ArrowUpCircleIcon}
           >
@@ -325,6 +333,7 @@ function SubjectWrapper({
             const bestGradeObj = getBestGradeInSubject(subjects, subject.id);
             return t("bestGradeDescription", {
               name: bestGradeObj?.subject?.name ?? t("notAvailable"),
+              periodName: period?.name,
             });
           })()}
           icon={SparklesIcon}
@@ -346,6 +355,7 @@ function SubjectWrapper({
             const worstGradeObj = getWorstGradeInSubject(subjects, subject.id);
             return t("worstGradeDescription", {
               name: worstGradeObj?.subject?.name ?? t("notAvailable"),
+              periodName: period?.name,
             });
           })()}
           icon={SparklesIcon}

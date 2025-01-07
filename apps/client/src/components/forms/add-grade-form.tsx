@@ -158,6 +158,7 @@ export const AddGradeForm = ({
       close();
       queryClient.invalidateQueries({ queryKey: ["grades"] });
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
+      queryClient.invalidateQueries({ queryKey: ["recent-grades"] });
     },
     onError: (error) => {
       handleError(error, toaster, errorTranslations, t("errorAddingGrade"));

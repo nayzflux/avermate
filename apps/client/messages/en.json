@@ -240,7 +240,16 @@
             "tapShareIcon": "Tap the <share>Share</share> icon",
             "atBottomOfScreen": "at the bottom of the screen.",
             "selectAddToHomeScreen": "Select <addToHomeScreen>Add to Home Screen</addToHomeScreen>",
-            "tapAddToConfirm": "Tap <add>Add</add> to confirm."
+            "tapAddToConfirm": "Tap <add>Add</add> to confirm.",
+            "resetAccount": "Reset Account",
+            "resetAccountTitle": "Reset your account?",
+            "resetAccountDescription": "This will permanently delete all your periods, subjects, grades, and custom averages. This action cannot be undone.",
+            "cancel": "Cancel",
+            "confirmReset": "Yes, reset account",
+            "resetAccountText": "We have detected that you have existing data. If you want to restart from scratch, you can reset your account.",
+            "resetAccountError": "An error occurred while resetting your account. Please try again later.",
+            "accountResetSuccess": "Account reset successfully!",
+            "accountResetDescription": "Your account has been successfully reset!"
         },
         "Step1": {
             "title": "Periods",
@@ -264,7 +273,10 @@
                 "successTitle": "Preset applied successfully!",
                 "successDescription": "The preset has been applied successfully.",
                 "errorDescription": "Error applying the preset.",
-                "select": "Select"
+                "select": "Select",
+                "search": "Search presets...",
+                "noPresets": "No presets found.",
+                "noSearchResults": "No presets found for {search}."
             }
         },
         "Step3": {
@@ -427,8 +439,12 @@
         },
         "Error": {
             "title": "Oops! An error occurred",
-            "description": "An error occurred while processing your request. Please try again later.",
-            "backToHome": "Back to Home"
+            "description": "An error occurred while processing your request. Please try again later. ({statusCode})",
+            "backToHome": "Back to Home",
+            "tryAgain": "Try Again",
+            "errorReportSentTitle": "Report Sent",
+            "errorReportSentDescription": "Thank you! Your error report has been sent to our team.",
+            "errorSubmittingReport": "Failed to send error report. Please try again later."
         }
     },
     "Header": {
@@ -900,17 +916,17 @@
                 "addGradeInSubject": "Add Grade in {name}",
                 "addGrade": "Add Grade",
                 "averageTitle": "Average",
-                "averageDescription": "Your current average in {name}",
+                "averageDescription": "Your current average in {name} (during {periodName})",
                 "impactTitle": "Impact on Overall Average",
-                "impactDescription": "Impact of {name} on the overall average",
+                "impactDescription": "Impact of {name} on the overall average (during {periodName})",
                 "customImpactTitle": "Impact on {name}",
-                "customImpactDescription": "Impact of {name} on the custom average {customName}",
+                "customImpactDescription": "Impact of {name} on the custom average {customName} (during {periodName})",
                 "parentImpactTitle": "Impact on {name}",
-                "parentImpactDescription": "Impact of {name} on the average of {parentName}",
+                "parentImpactDescription": "Impact of {name} on the average of {parentName} (during {periodName})",
                 "bestGradeTitle": "Best Grade",
-                "bestGradeDescription": "Your best performance in {name}",
+                "bestGradeDescription": "Your best performance in {name} (during {periodName})",
                 "worstGradeTitle": "Worst Grade",
-                "worstGradeDescription": "Your worst performance in {name}",
+                "worstGradeDescription": "Your worst performance in {name} (during {periodName})",
                 "notAvailable": "N/A",
                 "averageEvolution": "Average Evolution"
             },
@@ -923,17 +939,18 @@
                 "coefficientTitle": "Coefficient",
                 "coefficientDescription": "The coefficient of this evaluation",
                 "impactOverallAverageTitle": "Impact on Overall Average",
-                "impactOverallAverageDescription": "See the impact of this evaluation on your overall average",
+                "impactOverallAverageDescription": "See the impact of this evaluation on your overall average (during {periodName})",
                 "impactCustomAverageTitle": "Impact on {name}",
-                "impactCustomAverageDescription": "See the impact of this grade on the custom average: {name}",
+                "impactCustomAverageDescription": "See the impact of this grade on the custom average: {name} (during {periodName})",
                 "impactParentAverageTitle": "Impact on {name}",
-                "impactParentAverageDescription": "See the impact of this evaluation on your average in {parentName}",
+                "impactParentAverageDescription": "See the impact of this evaluation on your average in {parentName} (during {periodName})",
                 "impactSubjectAverageTitle": "Impact on {name}",
-                "impactSubjectAverageDescription": "See the impact of this evaluation on your average in {name}",
+                "impactSubjectAverageDescription": "See the impact of this evaluation on your average in {name} (during {periodName})",
                 "passDateTitle": "Pass Date",
                 "passDateDescription": "The date when this evaluation was taken",
                 "addedDateTitle": "Added Date",
-                "addedDateDescription": "The date when this evaluation was added"
+                "addedDateDescription": "The date when this evaluation was added",
+                "fullYear": "the full year"
             }
         }
     },
