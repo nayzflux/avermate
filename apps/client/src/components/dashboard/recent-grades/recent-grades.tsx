@@ -9,12 +9,15 @@ import {
 } from "@/components/ui/card";
 import { Grade } from "@/types/grade";
 import RecentGradesList from "./recent-grades-list";
+import { Period } from "@/types/period";
 import { useTranslations } from "next-intl";
 
 export default function RecentGradesCard({
   recentGrades,
+  period,
 }: {
   recentGrades: Grade[];
+  period: Period;
 }) {
   const t = useTranslations("Dashboard.Cards.RecentGradesCard");
 
@@ -31,7 +34,7 @@ export default function RecentGradesCard({
       </CardHeader>
 
       <CardContent className="h-full overflow-hidden min-w-0">
-        <RecentGradesList recentGrades={recentGrades} />
+        <RecentGradesList recentGrades={recentGrades} period={period} />
       </CardContent>
     </Card>
   );

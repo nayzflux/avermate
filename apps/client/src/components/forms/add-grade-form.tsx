@@ -224,6 +224,7 @@ export const AddGradeForm = ({
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-8"
+          noValidate
         >
           {/* Nom de la note */}
           <FormField
