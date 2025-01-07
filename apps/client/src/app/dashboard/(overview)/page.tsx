@@ -276,7 +276,7 @@ export default function OverviewPage() {
 
                     {/* Dernières notes */}
                     {subjects.length > 0 && (
-                      <RecentGradesCard recentGrades={recentGrades} />
+                      <RecentGradesCard recentGrades={recentGrades} period={period} />
                     )}
                   </div>
                 </TabsContent>
@@ -297,7 +297,7 @@ export default function OverviewPage() {
               />
 
               {subjects.length > 0 && (
-                <RecentGradesCard recentGrades={recentGrades} />
+                <RecentGradesCard recentGrades={recentGrades} period={fullYearPeriod(subjects)} />
               )}
             </div>
           </TabsContent>

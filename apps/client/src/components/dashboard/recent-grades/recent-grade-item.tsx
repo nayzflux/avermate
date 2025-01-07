@@ -4,8 +4,9 @@ import { Grade } from "@/types/grade";
 import Link from "next/link";
 import GradeValue from "../grade-value";
 import { usePathname } from "next/navigation";
+import { Period } from "@/types/period";
 
-export default function RecentGradeItem({ grade }: { grade: Grade }) {
+export default function RecentGradeItem({ grade, period }: { grade: Grade, period: Period }) {
   const pathname = usePathname();
 
   const handleClick = () => {
@@ -14,7 +15,7 @@ export default function RecentGradeItem({ grade }: { grade: Grade }) {
   };
   return (
     <Link
-      href={`/dashboard/grades/${grade.id}/${grade.periodId}`}
+      href={`/dashboard/grades/${grade.id}/${period.id === "full-year" ? grade.periodId : period.id}`}
       onClick={handleClick}
     >
       <div className="flex items-center justify-between gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2 overflow-hidden min-w-0">
