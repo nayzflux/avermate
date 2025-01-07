@@ -327,11 +327,7 @@ export const AddGradeForm = ({
                         )}
                       >
                         {field.value
-                          ? formatDates.formatLong(
-                              new Date(
-                                new Date(field.value).setHours(12, 0, 0, 0)
-                              )
-                            )
+                          ? formatDates.formatLong(new Date(field.value))
                           : t("chooseDate")}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
@@ -342,11 +338,7 @@ export const AddGradeForm = ({
                       mode="single"
                       selected={field.value}
                       onSelect={(date) => {
-                        console.log(date);
                         field.onChange(date);
-                        if (date) {
-                          console.log(formatDates.formatLong(new Date(date)));
-                        }
                         setIsManualPeriod(false); // Reset manual period selection
                       }}
                       disabled={(date) =>
