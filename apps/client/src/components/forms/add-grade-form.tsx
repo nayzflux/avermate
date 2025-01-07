@@ -338,6 +338,7 @@ export const AddGradeForm = ({
                       mode="single"
                       selected={field.value}
                       onSelect={(date) => {
+                        console.log(date);
                         field.onChange(date);
                         setIsManualPeriod(false); // Reset manual period selection
                       }}
