@@ -27,7 +27,7 @@
         },
         "Product": {
             "heading": "Suivez votre progression en un coup d'oeil",
-            "subHeading": "Découvrez nos fonctionnalitées",
+            "subHeading": "Découvrez nos fonctionnalités",
             "Features": {
                 "preciseOverview": "Aperçu précis et clair",
                 "preciseOverviewDescription": "Analysez vos résultats avec des statistiques avancées, des moyennes précises. Identifiez vos points forts et vos axes d'améliorations en un coup d'oeil.",
@@ -69,7 +69,7 @@
                     "coefficientDescription": "Le coefficient de cette évaluation",
                     "subject": "Matières",
                     "subjectDescription": "La matière de cette évaluation",
-                    "mathWritten": "Mathématiques - Ecrit",
+                    "mathWritten": "Mathématiques - Écrit",
                     "examDate": "Date de passage",
                     "examDateDescription": "La date de passage de cette évaluation",
                     "examDateValue": "04 déc. 2024"
@@ -261,9 +261,9 @@
             "category": "Catégorie",
             "addNewSubject": "Ajouter une nouvelle matière",
             "Presets": {
-                "successTitle": "Préset appliqué avec succès !",
-                "successDescription": "Le préset a été appliqué avec succès.",
-                "errorDescription": "Erreur lors de l'application du préset.",
+                "successTitle": "Préréglage appliqué avec succès !",
+                "successDescription": "Le préréglage a été appliqué avec succès.",
+                "errorDescription": "Erreur lors de l'application du préréglage.",
                 "select": "Sélectionner"
             }
         },
@@ -341,7 +341,7 @@
                 "errorMessage": "Erreur lors de la révocation de la session.",
                 "revokeDialog": "Révoquer",
                 "titleDialog": "Révoquer la session",
-                "descriptionDialog": "L'utilisateur sera invité à se réauthentifier.",
+                "descriptionDialog": "L'utilisateur sera invité à se reconnecter lors de sa prochaine visite.",
                 "cancel": "Annuler",
                 "revokeSession": "Révoquer la session"
             },
@@ -593,8 +593,8 @@
                 "description": "Votre avis est très important pour nous. Nous sommes toujours à l'écoute de vos suggestions pour améliorer notre service."
             },
             "ListPresets": {
-                "title": "Sélectionnez un préset",
-                "description": "Choisissez le préset qui vous correspond le mieux."
+                "title": "Sélectionnez un préréglage",
+                "description": "Choisissez le préréglage qui vous correspond le mieux."
             },
             "UpdateAverage": {
                 "editAverage": "Modifier la moyenne",

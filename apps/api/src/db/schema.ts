@@ -143,6 +143,8 @@ export const usersRelations = relations(users, ({ many }) => ({
   grades: many(grades),
   sessions: many(sessions),
   accounts: many(accounts),
+  cardTemplates: many(cardTemplates),
+  cardLayouts: many(cardLayouts),
 }));
 
 export const sessions = sqliteTable("sessions", {
@@ -237,3 +239,52 @@ export const customAverages = sqliteTable("custom_averages", {
 
   createdAt: integer({ mode: "timestamp" }).notNull(),
 });
+
+export const cardTemplates = sqliteTable("card_templates", {
+  id: text()
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => generateId("ct")),
+
+  type: text().notNull(), // 'built_in' or 'custom'
+  identifier: text().notNull(),
+  
+  config: text().notNull(), // JSON string containing title, description template, etc.
+  
+  userId: text() // Only for custom templates
+    .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
+
+  createdAt: integer({ mode: "timestamp" }).notNull(),
+});
+
+export const cardTemplatesRelations = relations(cardTemplates, ({ one }) => ({
+  user: one(users, {
+    fields: [cardTemplates.userId],
+    references: [users.id],
+  }),
+}));
+
+export const cardLayouts = sqliteTable("card_layouts", {
+  id: text()
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => generateId("cl")),
+
+  userId: text()
+    .notNull()
+    .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
+    
+  page: text().notNull(), // 'dashboard', 'grade', or 'subject'
+  
+  cards: text().notNull(), // JSON array of card positions and customizations
+  
+  createdAt: integer({ mode: "timestamp" }).notNull(),
+  updatedAt: integer({ mode: "timestamp" }).notNull(),
+});
+
+export const cardLayoutsRelations = relations(cardLayouts, ({ one }) => ({
+  user: one(users, {
+    fields: [cardLayouts.userId],
+    references: [users.id],
+  }),
+}));

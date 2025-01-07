@@ -14,7 +14,11 @@ export function Stepper({ steps, currentStep, onStepChange }: StepperProps) {
 
   return (
     <div className="mb-6">
-      <Progress value={progress} className="w-full" />
+      <Progress
+        value={progress}
+        className="w-full"
+        aria-label="Progress through steps"
+      />
       <div className="flex justify-between mt-2">
         {steps.map((step, index) => (
           <div key={index} className="flex flex-col items-center">

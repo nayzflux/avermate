@@ -9,9 +9,11 @@ sub - subject
 gra - grade
 per - period
 ca - custom average
+ct - card template
+cl - card layout
 */
 
-type IdPrefix = "u" | "acc" | "ses" | "ver" | "sub" | "gra" | "per" | "ca";
+type IdPrefix = "u" | "acc" | "ses" | "ver" | "sub" | "gra" | "per" | "ca" | "ct" | "cl";
 
 const ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyz";
 
