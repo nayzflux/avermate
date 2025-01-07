@@ -16,7 +16,7 @@ export async function ratelimit(c: Context, next: Next) {
   const session = c.get("session");
   const forwardedFor = c.req.header("x-forwarded-for");
   const identifier =
-    session?.user?.id || forwardedFor || info.remote.address || "anon";
+    session?.user?.id || forwardedFor || info?.remote?.address || "anon";
 
   /**
    * Auth routes
