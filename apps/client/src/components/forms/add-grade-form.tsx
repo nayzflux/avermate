@@ -328,7 +328,9 @@ export const AddGradeForm = ({
                       >
                         {field.value
                           ? formatDates.formatLong(
-                              new Date(field.value).setHours(12, 0, 0, 0)
+                              new Date(
+                                new Date(field.value).setHours(12, 0, 0, 0)
+                              )
                             )
                           : t("chooseDate")}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
