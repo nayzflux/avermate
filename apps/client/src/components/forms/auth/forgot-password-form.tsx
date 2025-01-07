@@ -19,17 +19,23 @@ import { useMutation } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
-
-const forgotPasswordSchema = z.object({
-  email: z.string().email().max(320),
-});
-
-type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
 
 export const ForgotPasswordForm = () => {
   const router = useRouter();
   const toaster = useToast();
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Auth.Forgot");
+
+  const forgotPasswordSchema = z.object({
+    email: z
+      .string()
+      .email({ message: t("invalidEmail") })
+      .max(320, { message: t("emailTooLong") }),
+  });
+
+  type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["sign-up"],
@@ -43,13 +49,18 @@ export const ForgotPasswordForm = () => {
     },
     onSuccess: (data) => {
       toaster.toast({
-        title: `Email de réinitialisation du mot de passe envoyé`,
-        description: "Veuillez vérifier votre email pour plus d'instructions.",
+        title: t("resetEmailSent"),
+        description: t("checkEmailForInstructions"),
       });
     },
 
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(
+        error,
+        toaster,
+        errorTranslations,
+        t("errorSendingResetEmail")
+      );
     },
   });
 
@@ -77,12 +88,12 @@ export const ForgotPasswordForm = () => {
             disabled={isPending}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t("email")}</FormLabel>
 
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="email@exemple.com"
+                    placeholder={t("emailPlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -94,7 +105,7 @@ export const ForgotPasswordForm = () => {
 
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2Icon className="animate-spin mr-2 size-4" />}
-            Réinitialiser le mot de passe
+            {t("resetPassword")}
           </Button>
         </form>
       </Form>

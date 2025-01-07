@@ -25,7 +25,12 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -47,32 +52,14 @@ import { useSubjects } from "@/hooks/use-subjects";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api";
 import { handleError } from "@/utils/error-utils";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useTranslations } from "next-intl";
 
 dayjs.locale("fr");
 
-// Schema
-const addCustomAverageSchema = z.object({
-  name: z.string().min(1, "Le nom est requis").max(64, "Le nom est trop long"),
-  subjects: z
-    .array(
-      z.object({
-        id: z.string().min(1, "L'ID de la matière est requis"),
-        customCoefficient: z
-          .number()
-          .min(1, "Le coefficient doit être au moins 1")
-          .max(1000, "Le coefficient ne peut pas dépasser 1000")
-          .nullable()
-          .optional(),
-        includeChildren: z.boolean().optional(),
-      })
-    )
-    .min(1, "Au moins une matière doit être sélectionnée"),
-  isMainAverage: z.boolean().optional().default(false),
-});
-
-type AddCustomAverageSchema = z.infer<typeof addCustomAverageSchema>;
-
 export const AddAverageForm = ({ close }: { close: () => void }) => {
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Dashboard.Forms.AddAverage");
   const toaster = useToast();
   const queryClient = useQueryClient();
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -80,6 +67,27 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
   const [openSubjectIndex, setOpenSubjectIndex] = useState<number | null>(null);
 
   const { data: subjects } = useSubjects();
+
+  const addCustomAverageSchema = z.object({
+    name: z.string().min(1, t("nameRequired")).max(64, t("nameTooLong")),
+    subjects: z
+      .array(
+        z.object({
+          id: z.string().min(1, t("subjectIdRequired")),
+          customCoefficient: z
+            .number()
+            .min(1, t("coefficientMin"))
+            .max(1000, t("coefficientMax"))
+            .nullable()
+            .optional(),
+          includeChildren: z.boolean().optional(),
+        })
+      )
+      .min(1, t("atLeastOneSubject")),
+    isMainAverage: z.boolean().optional().default(false),
+  });
+
+  type AddCustomAverageSchema = z.infer<typeof addCustomAverageSchema>;
 
   const { mutate, isPending: isSubmitting } = useMutation({
     mutationKey: ["create-custom-average"],
@@ -91,24 +99,19 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
           isMainAverage: formData.isMainAverage,
         },
       });
-      if (!res.ok) {
-        throw new Error(
-          "Erreur lors de la création de la moyenne personnalisée."
-        );
-      }
       const data = await res.json();
       return data;
     },
     onSuccess: () => {
       toaster.toast({
-        title: "Moyenne personnalisée créée avec succès !",
-        description: "Votre moyenne personnalisée a été ajoutée.",
+        title: t("successTitle"),
+        description: t("successDescription"),
       });
       close();
       queryClient.invalidateQueries({ queryKey: ["customAverages"] });
     },
     onError: (error: any) => {
-      handleError(error, toaster);
+      handleError(error, toaster, errorTranslations, t("errorCreating"));
     },
   });
 
@@ -130,8 +133,8 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
     const filteredSubjects = values.subjects.filter((s) => s.id !== "");
     if (filteredSubjects.length === 0) {
       toaster.toast({
-        title: "Erreur",
-        description: "Veuillez sélectionner au moins une matière.",
+        title: t("error"),
+        description: t("selectAtLeastOneSubject"),
         variant: "destructive",
       });
       return;
@@ -171,7 +174,7 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
           name={`subjects.${index}.id`}
           render={({ field }) => (
             <FormItem className="flex flex-col gap-2">
-              <FormLabel>Matière</FormLabel>
+              <FormLabel>{t("subject")}</FormLabel>
               {isDesktop ? (
                 <Popover
                   modal
@@ -189,7 +192,7 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
                         className="justify-between w-full"
                         disabled={isSubmitting}
                       >
-                        {selectedSubjectName || "Choisir une matière"}
+                        {selectedSubjectName || t("chooseSubject")}
                         <ChevronsUpDown className="opacity-50" />
                       </Button>
                     </PopoverTrigger>
@@ -197,11 +200,11 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
                   <PopoverContent className="p-0 min-w-[var(--radix-popover-trigger-width)]">
                     <Command>
                       <CommandInput
-                        placeholder="Rechercher une matière..."
+                        placeholder={t("searchSubject")}
                         className="h-9"
                       />
                       <CommandList>
-                        <CommandEmpty>Aucune matière trouvée.</CommandEmpty>
+                        <CommandEmpty>{t("noSubjectFound")}</CommandEmpty>
                         <CommandGroup>
                           {subjects
                             ?.slice()
@@ -243,22 +246,25 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
                           onClick={() => setOpenSubjectIndex(index)}
                           disabled={isSubmitting}
                         >
-                          {selectedSubjectName || "Choisir une matière"}
+                          {selectedSubjectName || t("chooseSubject")}
                           <ChevronsUpDown className="opacity-50" />
                         </Button>
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
+                      <VisuallyHidden>
+                        <DrawerTitle>{t("chooseSubject")}</DrawerTitle>
+                      </VisuallyHidden>
                       <div className="mt-4 border-t p-4">
                         <Command>
                           <CommandInput
                             ref={subjectInputRef}
-                            placeholder="Rechercher une matière..."
+                            placeholder={t("searchSubject")}
                             className="h-9"
                             autoFocus
                           />
                           <CommandList>
-                            <CommandEmpty>Aucune matière trouvée.</CommandEmpty>
+                            <CommandEmpty>{t("noSubjectFound")}</CommandEmpty>
                             <CommandGroup>
                               {subjects
                                 ?.slice()
@@ -297,8 +303,8 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
           render={({ field }) => (
             <FormItem className="flex flex-col gap-2">
               <FormLabel>
-                Coefficient personnalisé{" "}
-                <Badge className="ml-2">Optionnel</Badge>
+                {t("customCoefficient")}{" "}
+                <Badge className="ml-2">{t("optional")}</Badge>
               </FormLabel>
               <FormControl>
                 <Input
@@ -326,7 +332,7 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
           name={`subjects.${index}.includeChildren`}
           render={({ field }) => (
             <FormItem className="flex flex-row items-center gap-4">
-              <FormLabel>Inclure les sous matières</FormLabel>
+              <FormLabel>{t("includeChildren")}</FormLabel>
               <FormControl>
                 <Switch
                   checked={field.value ?? false}
@@ -350,7 +356,7 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
             className="mt-2"
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            Retirer cette matière
+            {t("removeSubject")}
           </Button>
         )}
       </div>
@@ -370,11 +376,11 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
             name="name"
             render={({ field }) => (
               <FormItem className="mx-1">
-                <FormLabel>Nom de la moyenne personnalisée</FormLabel>
+                <FormLabel>{t("customAverageName")}</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Moyenne Semestre 1"
+                    placeholder={t("customAveragePlaceholder")}
                     {...field}
                     disabled={isSubmitting}
                   />
@@ -390,7 +396,7 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
             name="isMainAverage"
             render={({ field }) => (
               <FormItem className="mx-1 flex flex-row items-center gap-4">
-                <FormLabel>Afficher sur la page principale</FormLabel>
+                <FormLabel>{t("showOnMainPage")}</FormLabel>
                 <FormControl>
                   <Switch
                     checked={field.value}
@@ -405,7 +411,7 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
 
           {/* Subjects */}
           <div className="flex flex-col gap-4 mx-1">
-            <FormLabel>Matières</FormLabel>
+            <FormLabel>{t("subjects")}</FormLabel>
             <div className="flex flex-col gap-4">
               {fields.map((fieldItem, index) =>
                 renderSubjectField(index, fieldItem)
@@ -425,7 +431,7 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
               className="mt-2 flex items-center gap-2"
             >
               <PlusCircle className="h-4 w-4" />
-              Ajouter une matière
+              {t("addSubject")}
             </Button>
           </div>
 
@@ -434,7 +440,7 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
             {isSubmitting && (
               <Loader2Icon className="animate-spin mr-2 h-4 w-4" />
             )}
-            Créer la moyenne personnalisée
+            {t("createCustomAverage")}
           </Button>
         </form>
       </Form>

@@ -12,8 +12,11 @@ import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
 
 export default function MobileAddButtons() {
+  const t = useTranslations("Dashboard.Buttons.MobileAddButtons");
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -23,31 +26,32 @@ export default function MobileAddButtons() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="flex flex-col items-start">
-        {/* Update grade */}
+        {/* Add grade */}
         <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
           <AddGradeDialog>
             <Button variant="ghost" className="w-full justify-start">
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une note
+              {t("addGrade")}
             </Button>
           </AddGradeDialog>
         </DropdownMenuItem>
 
-        {/* Delete grade */}
+        {/* Add subject */}
         <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
           <AddSubjectDialog>
             <Button variant="ghost" className="w-full justify-start">
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une matière
+              {t("addSubject")}
             </Button>
           </AddSubjectDialog>
         </DropdownMenuItem>
 
+        {/* Add period */}
         <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
           <AddPeriodDialog>
             <Button variant="ghost" className="w-full justify-start">
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une période
+              {t("addPeriod")}
             </Button>
           </AddPeriodDialog>
         </DropdownMenuItem>

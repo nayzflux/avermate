@@ -1,4 +1,6 @@
-import { useState } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -13,6 +15,14 @@ export default function Avatar({
 }) {
   const [loaded, setLoaded] = useState(false);
 
+  useEffect(() => {
+    if (!src) return;
+    const img = new Image();
+    img.src = src;
+    img.onload = () => setLoaded(true);
+    img.onerror = () => setLoaded(true);
+  }, [src]);
+
   return (
     <>
       {!loaded && (
@@ -22,21 +32,19 @@ export default function Avatar({
           )}
           {size === 32 && <Skeleton className="rounded-full size-8" />}
           {size === 128 && <Skeleton className="rounded-full size-32" />}
+          {size === 40 && <Skeleton className="rounded-full size-10" />}
         </>
       )}
-      <img
-        src={src}
-        alt="User avatar"
-        width={size}
-        height={size}
-        className={cn(
-          "rounded-full !object-cover",
-          className,
-          loaded ? "block" : "hidden"
-        )}
-        onLoad={() => setLoaded(true)}
-        onError={() => setLoaded(true)}
-      />
+
+      {loaded && (
+        <img
+          src={src}
+          alt="User avatar"
+          width={size}
+          height={size}
+          className={cn("rounded-full !object-cover", className)}
+        />
+      )}
     </>
   );
 }

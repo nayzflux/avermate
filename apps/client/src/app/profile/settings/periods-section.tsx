@@ -3,7 +3,7 @@
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import DeletePeriodDialog from "@/components/dialogs/delete-period-dialog";
 import UpdatePeriodDialog from "@/components/dialogs/update-period-dialog";
-import errorStateCard from "@/components/skeleton/error-card";
+import ErrorStateCard from "@/components/skeleton/error-card";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,9 +24,16 @@ import { usePeriods } from "@/hooks/use-periods";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { BookOpenIcon, PlusCircleIcon } from "lucide-react";
 import ProfileSection from "../profile-section";
+import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 export const PeriodsSection = () => {
-  //Fetch period data
+  const formatter = useFormatter();
+  const t = useTranslations("Settings.Settings.Periods");
+  const formatDates = useFormatDates(formatter);
+
+  // Fetch period data
   const {
     data: period,
     isError: isPeriodError,
@@ -41,9 +48,9 @@ export const PeriodsSection = () => {
             <CardTitle>
               <Skeleton className="w-36 h-6" />
             </CardTitle>
-            <CardDescription>
+            <div>
               <Skeleton className="w-20 h-4" />
-            </CardDescription>
+            </div>
           </CardHeader>
 
           <CardContent className="p-0">
@@ -51,8 +58,7 @@ export const PeriodsSection = () => {
               {Array.from({ length: 3 }).map((_, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2
-              "
+                  className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2"
                 >
                   <div className="flex flex-col gap-1 w-full">
                     <Label>
@@ -69,6 +75,14 @@ export const PeriodsSection = () => {
                   </div>
                 </div>
               ))}
+              <div className="flex justify-start">
+                <AddPeriodDialog>
+                  <Button disabled>
+                    <PlusCircleIcon className="size-4 mr-2" />
+                    {t("addPeriod")}
+                  </Button>
+                </AddPeriodDialog>
+              </div>
             </div>
           </CardContent>
         </div>
@@ -77,27 +91,24 @@ export const PeriodsSection = () => {
   }
 
   if (isPeriodError) {
-    return <div>{errorStateCard()}</div>;
+    return <div>{<ErrorStateCard />}</div>;
   }
 
-  if (period.length == 0) {
+  if (period.length === 0) {
     return (
-      <ProfileSection
-        title="Périodes"
-        description="Gérez vos périodes scolaires"
-      >
+      <ProfileSection title={t("title")} description={t("description")}>
         <div className="flex flex-col gap-4 justify-center items-center ">
           <BookOpenIcon className="w-12 h-12" />
           <div className="flex flex-col items-center gap-1">
             <h2 className="text-xl font-semibold text-center">
-              Aucune période pour l&apos;instant
+              {t("noPeriods")}
             </h2>
-            <p className="text-center">Ajouter une nouvelle période</p>
+            <p className="text-center">{t("addNewPeriod")}</p>
           </div>
           <AddPeriodDialog>
             <Button variant="outline">
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une période
+              {t("addPeriod")}
             </Button>
           </AddPeriodDialog>
         </div>
@@ -106,19 +117,20 @@ export const PeriodsSection = () => {
   }
 
   return (
-    <ProfileSection title="Périodes" description="Gérez vos périodes scolaires">
+    <ProfileSection title={t("title")} description={t("description")}>
       <div className="flex flex-col gap-4">
-        {period?.map((period) => (
+        {period?.map((periodItem) => (
           <div
-            key={period.id}
-            className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2
-              "
+            key={periodItem.id}
+            className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2"
           >
             <div className="flex flex-col gap-1">
-              <Label>{period.name}</Label>
+              <Label>{periodItem.name}</Label>
               <span className="text-muted-foreground text-sm">
-                Du {new Date(period.startAt).toLocaleDateString()} au{" "}
-                {new Date(period.endAt).toLocaleDateString()}
+                {t("from")}{" "}
+                {formatDates.formatIntermediate(new Date(periodItem.startAt))}{" "}
+                {t("to")}{" "}
+                {formatDates.formatIntermediate(new Date(periodItem.endAt))}
               </span>
             </div>
             <div>
@@ -130,20 +142,20 @@ export const PeriodsSection = () => {
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent className="flex flex-col items-start">
-                  {/* Update grade */}
+                  {/* Update period */}
                   <DropdownMenuItem
                     asChild
                     onSelect={(e) => e.preventDefault()}
                   >
-                    <UpdatePeriodDialog periodId={period.id} />
+                    <UpdatePeriodDialog periodId={periodItem.id} />
                   </DropdownMenuItem>
 
-                  {/* Delete grade */}
+                  {/* Delete period */}
                   <DropdownMenuItem
                     asChild
                     onSelect={(e) => e.preventDefault()}
                   >
-                    <DeletePeriodDialog period={period} />
+                    <DeletePeriodDialog period={periodItem} />
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -154,7 +166,7 @@ export const PeriodsSection = () => {
           <AddPeriodDialog>
             <Button>
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une période
+              {t("addPeriod")}
             </Button>
           </AddPeriodDialog>
         </div>

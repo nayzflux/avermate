@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "../ui/table";
 
-export default function gradesLoader() {
+export default function gradesLoader(t: any) {
   return (
     <main className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
       <div className="flex gap-2 md:gap-16 justify-between items-center">
@@ -30,16 +30,16 @@ export default function gradesLoader() {
         <div className="hidden lg:flex gap-4">
           <Button disabled={true}>
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une note
+            {t("addGrade")}
           </Button>
 
           <Button variant="outline" disabled={true}>
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une matière
+            {t("addSubject")}
           </Button>
           <Button variant="outline" disabled={true}>
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une période
+            {t("addPeriod")}
           </Button>
         </div>
         <div className="flex lg:hidden">
@@ -72,7 +72,7 @@ export default function gradesLoader() {
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
         {/* Desktop layout (unchanged) */}
-        <Table className="w-full table-auto hidden md:table">
+        <Table className="w-full table-auto hidden md:table mt-2">
           <TableCaption>
             <div className="flex w-full justify-center">
               <Skeleton className="w-64 h-[14px]" />
@@ -94,7 +94,7 @@ export default function gradesLoader() {
           </TableHeader>
 
           <TableBody>
-            {Array.from({ length: 10 }, (_, i) => (
+            {Array.from({ length: 20 }, (_, i) => (
               <TableRow key={i}>
                 <TableCell>
                   <Skeleton className="w-full h-[20px]" />
@@ -119,7 +119,7 @@ export default function gradesLoader() {
           </TableCaption>
           {/* No header on mobile */}
           <TableBody>
-            {Array.from({ length: 5 }, (_, i) => i).map((item) => (
+            {Array.from({ length: 20 }, (_, i) => i).map((item) => (
               <React.Fragment key={item}>
                 {/* Subject + average row on mobile */}
                 <TableRow className="border-b">

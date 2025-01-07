@@ -1,7 +1,9 @@
+"use client";
+
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import DeletePeriodDialog from "@/components/dialogs/delete-period-dialog";
 import UpdatePeriodDialog from "@/components/dialogs/update-period-dialog";
-import errorStateCard from "@/components/skeleton/error-card";
+import ErrorStateCard from "@/components/skeleton/error-card";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,8 +18,15 @@ import {
   EllipsisVerticalIcon,
   PlusCircleIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 export default function Step1() {
+  const formatter = useFormatter();
+  const t = useTranslations("Onboarding.Step1");
+  const formatDates = useFormatDates(formatter);
+
   const {
     data: periods,
     isError: periodsIsError,
@@ -27,12 +36,11 @@ export default function Step1() {
   if (periodsIsPending) {
     return (
       <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold text-primary">Vos Périodes</h2>
+        <h2 className="text-2xl font-bold text-primary">{t("title")}</h2>
         {Array.from({ length: 3 }).map((_, index) => (
           <div
             key={index}
-            className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2
-              "
+            className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2"
           >
             <div className="flex flex-col gap-1 w-full">
               <Label>
@@ -53,7 +61,7 @@ export default function Step1() {
           <AddPeriodDialog>
             <Button variant="outline" disabled>
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une nouvelle période
+              {t("addNewPeriod")}
             </Button>
           </AddPeriodDialog>
         </div>
@@ -62,24 +70,23 @@ export default function Step1() {
   }
 
   if (periodsIsError) {
-    return errorStateCard();
+    return <ErrorStateCard />;
   }
 
   // if the period field is empty, we display a message explaining what periods are and how to create them (we also say that they are optional)
   if (!periods || periods.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center space-y-8">
-        <h2 className="text-2xl font-bold text-primary">Périodes</h2>
+        <h2 className="text-2xl font-bold text-primary">{t("title")}</h2>
         <p className="text-muted-foreground text-center">
-          Les périodes, <b className="text-foreground">facultatives</b>, sont
-          des intervalles de temps (année scolaire, semestre, trimestre, etc.)
-          pour regrouper vos notes. Sans elles, toutes vos notes sont regroupées
-          dans une seule section.
+          {t.rich("periodsDescription", {
+            bold: (chunks) => <b className="text-foreground">{chunks}</b>,
+          })}
         </p>
         <AddPeriodDialog>
           <Button variant="outline">
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une période
+            {t("addPeriod")}
           </Button>
         </AddPeriodDialog>
       </div>
@@ -88,18 +95,18 @@ export default function Step1() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold text-primary">Vos Périodes</h2>
+      <h2 className="text-2xl font-bold text-primary">{t("title")}</h2>
       {periods?.map((period) => (
         <div
           key={period.id}
-          className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2
-              "
+          className="flex items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer rounded-lg p-2"
         >
           <div className="flex flex-col gap-1">
             <Label>{period.name}</Label>
             <span className="text-muted-foreground text-sm">
-              Du {new Date(period.startAt).toLocaleDateString()} au{" "}
-              {new Date(period.endAt).toLocaleDateString()}
+              {t("from")}{" "}
+              {formatDates.formatIntermediate(new Date(period.startAt))}{" "}
+              {t("to")} {formatDates.formatIntermediate(new Date(period.endAt))}
             </span>
           </div>
           <div>
@@ -111,12 +118,12 @@ export default function Step1() {
               </DropdownMenuTrigger>
 
               <DropdownMenuContent className="flex flex-col items-start">
-                {/* Update grade */}
+                {/* Update period */}
                 <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
                   <UpdatePeriodDialog periodId={period.id} />
                 </DropdownMenuItem>
 
-                {/* Delete grade */}
+                {/* Delete period */}
                 <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
                   <DeletePeriodDialog period={period} />
                 </DropdownMenuItem>
@@ -129,7 +136,7 @@ export default function Step1() {
         <AddPeriodDialog>
           <Button variant="outline">
             <PlusCircleIcon className="size-4 mr-2" />
-            Ajouter une nouvelle période
+            {t("addNewPeriod")}
           </Button>
         </AddPeriodDialog>
       </div>

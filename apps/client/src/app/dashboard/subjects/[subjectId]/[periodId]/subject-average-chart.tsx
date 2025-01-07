@@ -1,3 +1,5 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -9,6 +11,33 @@ import { Subject } from "@/types/subject";
 import { averageOverTime, getChildren } from "@/utils/average";
 import React, { useState } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
+
+function getCumulativeStartDate(
+  periods: Period[],
+  currentPeriod: Period
+): Date {
+  if (currentPeriod.id === "full-year") {
+    return new Date(currentPeriod.startAt);
+  }
+
+  const sorted = [...periods].sort(
+    (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+  );
+
+  const currentIndex = sorted.findIndex((p) => p.id === currentPeriod.id);
+  if (currentIndex === -1) {
+    return new Date(currentPeriod.startAt);
+  }
+
+  if (currentPeriod.isCumulative) {
+    return new Date(sorted[0].startAt);
+  }
+
+  return new Date(currentPeriod.startAt);
+}
 
 const predefinedColors = [
   "#ea5545",
@@ -26,16 +55,21 @@ export default function SubjectAverageChart({
   subjectId,
   period,
   subjects,
+  periods,
 }: {
   subjectId: string;
   period: Period;
   subjects: Subject[];
+  periods: Period[];
 }) {
+  const formatter = useFormatter();
+  const t = useTranslations("Dashboard.Charts.SubjectAverageChart");
+  const formatDates = useFormatDates(formatter);
+
   const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
     [key: string]: number | null;
   }>({});
 
-  // Callback to update active tooltip index
   const handleActiveTooltipIndicesChange = React.useCallback(
     (indices: { [key: string]: number | null }) => {
       setActiveTooltipIndices(indices);
@@ -43,23 +77,12 @@ export default function SubjectAverageChart({
     []
   );
 
-  // State to manage the active index for the data series
-  // const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(
-  //   null
-  // );
-
-  // // Callback to update active tooltip index
-  // const handleActiveTooltipIndexChange = (index: number | null) => {
-  //   setActiveTooltipIndex(index);
-  // };
-
   const { childrenAverage, chartData, chartConfig } = (() => {
-    const childrensId = getChildren(subjects, subjectId);
-
+    const childrenIds = getChildren(subjects, subjectId);
     const endDate = new Date(period.endAt);
-    const startDate = new Date(period.startAt);
+    const startDate = getCumulativeStartDate(periods, period);
 
-    const dates = [];
+    const dates: Date[] = [];
     for (
       let dt = new Date(startDate);
       dt <= endDate;
@@ -68,31 +91,27 @@ export default function SubjectAverageChart({
       dates.push(new Date(dt));
     }
 
-    const mainSubject = subjects.find((subject) => subject.id === subjectId);
-
-    let childrensObjects = subjects.filter((subject) =>
-      childrensId.includes(subject.id)
+    const mainSubject = subjects.find((s) => s.id === subjectId);
+    let childrenObjects = subjects.filter((subj) =>
+      childrenIds.includes(subj.id)
     );
 
-    // TODO: add an option to enable/disable the depth filter
-    childrensObjects = childrensObjects.filter(
+    childrenObjects = childrenObjects.filter(
       (child) => child.depth === (mainSubject?.depth ?? 0) + 1
     );
 
-    const childrenAverage = childrensObjects.map((child, index) => {
-      return {
-        id: child.id,
-        name: child.name,
-        average: averageOverTime(subjects, child.id, period),
-        color: predefinedColors[index % predefinedColors.length], // Assign color from the list
-      };
-    });
+    const childrenAverage = childrenObjects.map((child, index) => ({
+      id: child.id,
+      name: child.name,
+      average: averageOverTime(subjects, child.id, period, periods),
+      color: predefinedColors[index % predefinedColors.length],
+    }));
 
-    const averages = averageOverTime(subjects, subjectId, period);
+    const mainAverages = averageOverTime(subjects, subjectId, period, periods);
 
     const chartData = dates.map((date, index) => ({
       date: date.toISOString(),
-      average: averages[index],
+      average: mainAverages[index],
       ...Object.fromEntries(
         childrenAverage.map((child) => [child.id, child.average[index]])
       ),
@@ -100,7 +119,7 @@ export default function SubjectAverageChart({
 
     const chartConfig = {
       average: {
-        label: "Moyenne",
+        label: t("average"),
         color: "#2662d9",
       },
       ...Object.fromEntries(
@@ -108,7 +127,7 @@ export default function SubjectAverageChart({
           child.id,
           {
             label: child.name,
-            color: child.color, // Use the dynamically assigned color
+            color: child.color,
           },
         ])
       ),
@@ -117,19 +136,10 @@ export default function SubjectAverageChart({
     return { childrenAverage, chartData, chartConfig };
   })();
 
-  // Custom dot component
   const CustomDot = (props: any) => {
     const { cx, cy, index, stroke, activeTooltipIndex } = props;
     if (activeTooltipIndex !== null && index === activeTooltipIndex) {
-      return (
-        <circle
-          cx={cx}
-          cy={cy}
-          r={4} // Adjust size as needed
-          fill={stroke}
-          opacity={0.8}
-        />
-      );
+      return <circle cx={cx} cy={cy} r={4} fill={stroke} opacity={0.8} />;
     }
     return null;
   };
@@ -144,12 +154,7 @@ export default function SubjectAverageChart({
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            tickFormatter={(value) =>
-              new Date(value).toLocaleDateString("fr-FR", {
-                month: "short",
-                day: "numeric",
-              })
-            }
+            tickFormatter={(value) => formatDates.formatShort(new Date(value))}
           />
           <YAxis
             tickLine={false}
@@ -170,12 +175,7 @@ export default function SubjectAverageChart({
                 onUpdateActiveTooltipIndices={handleActiveTooltipIndicesChange}
               />
             }
-            labelFormatter={(value) =>
-              new Date(value).toLocaleDateString("fr-FR", {
-                month: "short",
-                day: "numeric",
-              })
-            }
+            labelFormatter={(value) => formatDates.formatShort(new Date(value))}
           />
 
           {childrenAverage?.map((child) => (
@@ -187,13 +187,17 @@ export default function SubjectAverageChart({
               stroke={child.color}
               connectNulls={true}
               activeDot={false}
-              dot={(props) => (
-                <CustomDot
-                  {...props}
-                  dataKey={child.id}
-                  activeTooltipIndex={activeTooltipIndices[child.id]}
-                />
-              )}
+              dot={(props) => {
+                const { key, ...rest } = props;
+                return (
+                  <CustomDot
+                    key={key}
+                    {...rest}
+                    dataKey={child.id}
+                    activeTooltipIndex={activeTooltipIndices[child.id]}
+                  />
+                );
+              }}
             />
           ))}
 
@@ -205,13 +209,16 @@ export default function SubjectAverageChart({
             strokeWidth={3}
             connectNulls={true}
             activeDot={false}
-            dot={(props) => (
-              <CustomDot
-                {...props}
-                dataKey="average"
-                activeTooltipIndex={activeTooltipIndices["average"]}
-              />
-            )}
+            dot={(props) => {
+              const { key, ...restProps } = props;
+              return (
+                <CustomDot
+                  key={key}
+                  {...restProps}
+                  activeTooltipIndex={activeTooltipIndices["average"]}
+                />
+              );
+            }}
           />
         </LineChart>
       </ChartContainer>

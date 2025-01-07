@@ -1,16 +1,19 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function Consent() {
+  const t = useTranslations("Auth");
+
   return (
     <div className="flex items-center justify-center">
       <p className="text-center text-sm text-muted-foreground py-8 max-w-[400px]">
-        En continuant, vous acceptez les{" "}
+        {t("consentText")}{" "}
         <Link href="/legal/terms-of-service" className="underline">
-          Conditions d&apos;utilisation
+          {t("termsOfService")}
         </Link>{" "}
-        d&apos;Avermate et la{" "}
+        {t("and")}{" "}
         <Link href="/legal/privacy-policy" className="underline">
-          Politique de confidentialité
+          {t("privacyPolicy")}
         </Link>
         .
       </p>

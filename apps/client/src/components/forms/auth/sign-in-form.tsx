@@ -22,20 +22,29 @@ import { Eye, EyeOff, Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
-
-const signInSchema = z.object({
-  password: z.string().min(8).max(2048),
-  email: z.string().email().max(320),
-});
-
-type SignInSchema = z.infer<typeof signInSchema>;
 
 export const SignInForm = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const router = useRouter();
   const toaster = useToast();
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Auth.SignIn");
+
+  const signInSchema = z.object({
+    password: z
+      .string()
+      .min(8, { message: t("passwordTooShort") })
+      .max(2048, { message: t("passwordTooLong") }),
+    email: z
+      .string()
+      .email({ message: t("invalidEmail") })
+      .max(320, { message: t("emailTooLong") }),
+  });
+
+  type SignInSchema = z.infer<typeof signInSchema>;
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState);
 
@@ -59,8 +68,8 @@ export const SignInForm = () => {
         });
 
         toaster.toast({
-          title: "✉️ Email non vérifié",
-          description: `Un lien de vérification a été envoyé à l'adresse ${data.user.email}.`,
+          title: t("emailNotVerified"),
+          description: t("verificationLinkSent", { email: data.user.email }),
         });
 
         router.push("/auth/verify-email");
@@ -73,8 +82,8 @@ export const SignInForm = () => {
 
       // Notification toast
       toaster.toast({
-        title: `👋 Ravi de vous revoir ${data.user.name} !`,
-        description: "Nous espérons que vous avez atteint vos objectifs !",
+        title: t("welcomeBack", { name: data.user.name }),
+        description: t("hopeYouAchievedGoals"),
       });
     },
 
@@ -84,15 +93,15 @@ export const SignInForm = () => {
 
         if (status === 401) {
           toaster.toast({
-            title: "❌ Erreur",
-            description: "Email ou mot de passe incorrect",
+            title: t("error"),
+            description: t("incorrectEmailOrPassword"),
             variant: "destructive",
           });
           return;
         }
       }
 
-      handleError(err, toaster);
+      handleError(err, toaster, errorTranslations, t("signInError"));
     },
   });
 
@@ -121,12 +130,12 @@ export const SignInForm = () => {
             disabled={isPending}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t("email")}</FormLabel>
 
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="email@exemple.com"
+                    placeholder={t("emailPlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -142,10 +151,10 @@ export const SignInForm = () => {
             disabled={isPending}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mot de passe</FormLabel>
+                <FormLabel>{t("password")}</FormLabel>
                 <FormControl>
                   <div>
-                    {/* Champ de saisie du mot de passe avec bouton d'affichage/masquage */}
+                    {/* Password input field with toggle visibility button */}
                     <div className="space-y-2">
                       <div className="relative">
                         <Input
@@ -160,9 +169,7 @@ export const SignInForm = () => {
                           type="button"
                           onClick={toggleVisibility}
                           aria-label={
-                            isVisible
-                              ? "Masquer le mot de passe"
-                              : "Afficher le mot de passe"
+                            isVisible ? t("hidePassword") : t("showPassword")
                           }
                           aria-pressed={isVisible}
                           aria-controls="password"
@@ -192,7 +199,7 @@ export const SignInForm = () => {
               {isPending && (
                 <Loader2Icon className="animate-spin mr-2 size-4" />
               )}
-              Se connecter
+              {t("signIn")}
             </Button>
 
             <div className="flex justify-end">

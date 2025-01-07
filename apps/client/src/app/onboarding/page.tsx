@@ -15,18 +15,20 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ConfettiButton } from "@/components/ui/confetti";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslations } from "next-intl";
 
 const stepIds = ["welcome", "periodes", "matieres", "notes"];
 const steps = [
-  { title: "Bienvenue", component: WelcomeScreen, id: "welcome" },
-  { title: "Périodes", component: Step1, id: "periodes" },
-  { title: "Matières", component: Step2, id: "matieres" },
-  { title: "Notes", component: Step3, id: "notes" },
+  { title: "welcome", component: WelcomeScreen, id: "welcome" },
+  { title: "periodes", component: Step1, id: "periodes" },
+  { title: "matieres", component: Step2, id: "matieres" },
+  { title: "notes", component: Step3, id: "notes" },
 ];
 
 function OnboardingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations("Onboarding");
 
   const getStepIndexFromParams = useCallback(() => {
     const step = searchParams.get("step")?.toLowerCase() || "";
@@ -35,6 +37,7 @@ function OnboardingContent() {
   }, [searchParams]);
 
   const [currentStep, setCurrentStep] = useState(getStepIndexFromParams());
+  const [isAnimating, setIsAnimating] = useState(false); // Track animation state
 
   const { data: session } = authClient.useSession() as unknown as {
     data: { session: Session; user: User };
@@ -57,16 +60,19 @@ function OnboardingContent() {
   }, [searchParams, getStepIndexFromParams]);
 
   const handleNext = () => {
-    setCurrentStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
+    if (!isAnimating) {
+      setCurrentStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
+    }
   };
 
   const handleBack = () => {
-    setCurrentStep((prevStep) => Math.max(prevStep - 1, 0));
+    if (!isAnimating) {
+      setCurrentStep((prevStep) => Math.max(prevStep - 1, 0));
+    }
   };
 
   const CurrentStepComponent = steps[currentStep].component;
 
-  // create a new function to handle the onboarding completion
   const handleOnboardingCompletion = () => {
     localStorage.setItem("isOnboardingCompleted", "true");
     router.push("/dashboard");
@@ -77,9 +83,9 @@ function OnboardingContent() {
       <div className="flex flex-col md:flex-row items-center justify-between p-6">
         <div className="flex flex-col mb-4 md:mb-0">
           <h1 className="md:text-3xl font-bold text-xl">
-            {steps[currentStep].title === "Bienvenue"
-              ? "Bienvenue sur Avermate"
-              : steps[currentStep].title}
+            {steps[currentStep].title === "welcome"
+              ? t("welcomeTitle")
+              : t(steps[currentStep].title)}
             {currentStep === 0 && (
               <>
                 ,&nbsp;
@@ -94,10 +100,7 @@ function OnboardingContent() {
               </>
             )}
           </h1>
-
-          <p className="text-muted-foreground text-sm">
-            Configurons quelques choses avant de commencer
-          </p>
+          <p className="text-muted-foreground text-sm">{t("setupMessage")}</p>
         </div>
 
         <div className="flex flex-row md:items-center md:space-y-0 md:space-x-4 justify-between w-full md:justify-end md:w-auto">
@@ -107,7 +110,7 @@ function OnboardingContent() {
               variant="link"
               onClick={handleOnboardingCompletion}
             >
-              Retour
+              {t("back")}
             </Button>
           ) : (
             <Button
@@ -116,7 +119,7 @@ function OnboardingContent() {
               onClick={handleBack}
               disabled={currentStep === 0}
             >
-              Précédent
+              {t("previous")}
             </Button>
           )}
           {currentStep === 0 ? (
@@ -125,16 +128,16 @@ function OnboardingContent() {
               onClick={handleNext}
               size="sm"
             >
-              Commencer l&apos;aventure
+              {t("startAdventure")}
               <Rocket className="w-6 h-6 ml-2" />
             </Button>
           ) : currentStep === steps.length - 1 ? (
             <Link href="/dashboard" onClick={handleOnboardingCompletion}>
-              <ConfettiButton size="sm">Terminer 🎉</ConfettiButton>
+              <ConfettiButton size="sm">{t("finish")} 🎉</ConfettiButton>
             </Link>
           ) : (
             <Button size="sm" onClick={handleNext}>
-              Suivant
+              {t("next")}
             </Button>
           )}
         </div>
@@ -154,6 +157,8 @@ function OnboardingContent() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -100 }}
             transition={{ duration: 0.3 }}
+            onAnimationStart={() => setIsAnimating(true)} // Set animation state
+            onAnimationComplete={() => setIsAnimating(false)} // Reset animation state
           >
             <CurrentStepComponent />
           </motion.div>

@@ -19,6 +19,7 @@ import {
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 import { handleError } from "@/utils/error-utils";
+import { useTranslations } from "next-intl";
 
 export default function RevokeSessionButton({
   sessionId,
@@ -27,8 +28,10 @@ export default function RevokeSessionButton({
   sessionId: string;
   sessionToken: string;
 }) {
-  const toaster = useToast();
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Settings.Account.SessionList");
 
+  const toaster = useToast();
   const router = useRouter();
 
   const { data: currentSession } = authClient.useSession() as unknown as {
@@ -46,10 +49,10 @@ export default function RevokeSessionButton({
       return data;
     },
     onSuccess: () => {
-      // Envoyer une notification toast
+      // Send a notification toast
       toaster.toast({
-        title: `Session révoquée`,
-        description: "La session a été révoquée avec succès !",
+        title: t("successTitle"),
+        description: t("successMessage"),
       });
 
       if (sessionId === currentSession?.session?.id) {
@@ -57,7 +60,7 @@ export default function RevokeSessionButton({
       }
     },
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, errorTranslations, t("errorMessage"));
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["sessions-list"] });
@@ -71,19 +74,19 @@ export default function RevokeSessionButton({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Révoquer</Button>
+        <Button variant="destructive">{t("revokeDialog")}</Button>
       </AlertDialogTrigger>
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Révoquer la session</AlertDialogTitle>
+          <AlertDialogTitle>{t("titleDialog")}</AlertDialogTitle>
           <AlertDialogDescription>
-            L&apos;utilisateur sera invité à se réauthentifier.
+            {t("descriptionDialog")}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Annuler</AlertDialogCancel>
+          <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
 
           <Button variant="destructive" disabled={isPending} asChild>
             <AlertDialogAction
@@ -91,7 +94,7 @@ export default function RevokeSessionButton({
               onClick={() => handleRevokeSession()}
             >
               {isPending && <Loader2 className="size-4 mr-2 animate-spin" />}
-              Révoquer la session
+              {t("revokeSession")}
             </AlertDialogAction>
           </Button>
         </AlertDialogFooter>

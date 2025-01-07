@@ -11,38 +11,40 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const routes = [
-  {
-    icon: UserIcon,
-    label: "Profile",
-    path: "/profile",
-  },
-  {
-    icon: ShieldCheckIcon,
-    label: "Compte & Sécutité",
-    path: "/profile/account",
-  },
-  {
-    icon: Cog6ToothIcon,
-    label: "Paramètres",
-    path: "/profile/settings",
-  },
-  {
-    icon: InformationCircleIcon,
-    label: "À propos",
-    path: "/profile/about",
-  },
-  {
-    icon: ArrowLeftIcon,
-    label: "Retour",
-    action: "back",
-    path: "",
-  },
-];
+import { useTranslations } from "next-intl";
 
 export default function ProfileNav({ onBack }: { onBack: () => void }) {
+  const t = useTranslations("Settings.Nav");
   const path = usePathname();
+
+  const routes = [
+    {
+      icon: UserIcon,
+      label: t("profile"),
+      path: "/profile",
+    },
+    {
+      icon: ShieldCheckIcon,
+      label: t("accountSecurity"),
+      path: "/profile/account",
+    },
+    {
+      icon: Cog6ToothIcon,
+      label: t("settings"),
+      path: "/profile/settings",
+    },
+    {
+      icon: InformationCircleIcon,
+      label: t("about"),
+      path: "/profile/about",
+    },
+    {
+      icon: ArrowLeftIcon,
+      label: t("back"),
+      action: "back",
+      path: "",
+    },
+  ];
 
   const filteredRoutes = routes.filter((route) => route.action !== "back");
 
@@ -74,7 +76,7 @@ export default function ProfileNav({ onBack }: { onBack: () => void }) {
             onClick={onBack}
           >
             <ArrowLeftIcon className="size-4 mr-0 lg:mr-2" />
-            <p className="hidden lg:inline">Retour</p>
+            <p className="hidden lg:inline">{t("back")}</p>
           </Button>
         </li>
       </ul>

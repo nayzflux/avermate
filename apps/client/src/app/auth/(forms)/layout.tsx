@@ -2,8 +2,11 @@ import SocialAuth from "@/components/buttons/auth/social-auth";
 import Consent from "@/components/paragraphs/auth/consent";
 import { Separator } from "@/components/ui/separator";
 import { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 const FormLayout = ({ children }: { children: ReactNode }) => {
+  const t = useTranslations("Auth");
+
   return (
     <>
       {children}
@@ -12,7 +15,7 @@ const FormLayout = ({ children }: { children: ReactNode }) => {
         <Separator className="col-span-1" />
 
         <p className="text-center text-sm text-muted-foreground">
-          Ou continuer avec
+          {t("orContinueWith")}
         </p>
 
         <Separator className="col-span-1" />

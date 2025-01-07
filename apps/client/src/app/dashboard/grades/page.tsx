@@ -4,8 +4,8 @@ import MobileAddButtons from "@/components/buttons/dashboard/mobile-add-buttons"
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
-import errorStateCard from "@/components/skeleton/error-card";
-import gradesLoader from "@/components/skeleton/grades-loader";
+import ErrorStateCard from "@/components/skeleton/error-card";
+import GradesLoader from "@/components/skeleton/grades-loader";
 import GradesTable from "@/components/tables/grades-table";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -26,8 +26,10 @@ import { Subject } from "@/types/subject";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function GradesPage() {
+  const t = useTranslations("Dashboard.Pages.GradesPage"); // Initialize t
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
 
   const {
@@ -36,7 +38,7 @@ export default function GradesPage() {
     isPending: periodsIsPending,
   } = usePeriods();
 
-  // fetch subjects but organized by period
+  // Fetch subjects organized by period
   const {
     data: organizedSubjects,
     isError: organizedSubjectsIsError,
@@ -76,21 +78,9 @@ export default function GradesPage() {
     }
   }, [periods]);
 
-  // useEffect(() => {
-  //   const handleBeforeUnload = () => {
-  //     localStorage.removeItem("selectedTab");
-  //   };
-
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-  //   };
-  // }, []);
-
   // Error State
   if (periodsIsError || organizedSubjectsIsError || subjectsIsError) {
-    return <div>{errorStateCard()}</div>;
+    return <div>{ErrorStateCard()}</div>;
   }
 
   // Loading State
@@ -99,35 +89,34 @@ export default function GradesPage() {
     organizedSubjectsIsPending ||
     subjectsIsPending ||
     selectedTab === null
-    // || true
   ) {
-    return <div>{gradesLoader()}</div>;
+    return <div>{GradesLoader(t)}</div>;
   }
 
   return (
     <main className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
-      <div className="flex gap-2 md:gap-16 justify-between items-center">
-        <h1 className="text-xl md:text-3xl font-semibold">Vos notes</h1>
+      <div className="flex gap-2 md:gap-16 justify-between items-center min-h-9">
+        <h1 className="text-xl md:text-3xl font-bold">{t("gradesTitle")}</h1>
 
         <div className=" gap-4 hidden lg:flex">
           <AddGradeDialog>
             <Button>
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une note
+              {t("addGrade")}
             </Button>
           </AddGradeDialog>
 
           <AddSubjectDialog>
             <Button variant="outline">
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une matière
+              {t("addSubject")}
             </Button>
           </AddSubjectDialog>
 
           <AddPeriodDialog>
             <Button variant="outline">
               <PlusCircleIcon className="size-4 mr-2" />
-              Ajouter une période
+              {t("addPeriod")}
             </Button>
           </AddPeriodDialog>
         </div>
@@ -161,10 +150,10 @@ export default function GradesPage() {
                     )
                     .map((period) => (
                       <TabsTrigger key={period.id} value={period.id}>
-                        {period.name}
+                        {t("periodName", { name: period.name })}
                       </TabsTrigger>
                     ))}
-                <TabsTrigger value="full-year">Toute l&apos;année</TabsTrigger>
+                <TabsTrigger value="full-year">{t("fullYear")}</TabsTrigger>
               </TabsList>
             </div>
             <ScrollBar orientation="horizontal" />
@@ -181,7 +170,7 @@ export default function GradesPage() {
             <SelectTrigger>
               <SelectValue>
                 {periods?.find((period) => period.id === selectedTab)?.name ||
-                  "Toute l'année"}
+                  t("fullYear")}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
@@ -190,7 +179,7 @@ export default function GradesPage() {
                   {period.name}
                 </SelectItem>
               ))}
-              <SelectItem value="full-year">Toute l&apos;année</SelectItem>
+              <SelectItem value="full-year">{t("fullYear")}</SelectItem>
             </SelectContent>
           </Select>
         </div>

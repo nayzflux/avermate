@@ -7,21 +7,24 @@ import {
   SparklesIcon,
   VariableIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
 
 export const MockInsights = () => {
+  const t = useTranslations("Landing.Product.Mocks.Insights");
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 3xl:grid-cols-3 gap-4">
       <DataCard
-        title="Note obtenue"
-        description="Votre note obtenue lors de cette évaluation sur 20"
+        title={t("obtainedGrade")}
+        description={t("obtainedGradeDescription")}
         icon={SparklesIcon}
       >
         <GradeValue outOf={2000} value={1650} />
       </DataCard>
 
       <DataCard
-        title="Impact sur la moyenne générale"
-        description="Visualisez l'impact de cette évaluation sur votre moyenne générale"
+        title={t("impactOnOverallAverage")}
+        description={t("impactOnOverallAverageDescription")}
         icon={ArrowUpCircleIcon}
       >
         <DifferenceBadge diff={1.4} />
@@ -29,35 +32,37 @@ export const MockInsights = () => {
 
       <DataCard
         className="hidden 3xl:flex"
-        title="Impact sur Mathématiques"
-        description="Visualisez l'impact de cette évaluation sur votre moyenne de la matière Mathématiques"
+        title={t("impactOnMathAverage")}
+        description={t("impactOnMathAverageDescription")}
         icon={ArrowUpCircleIcon}
       >
         <DifferenceBadge diff={2.38} />
       </DataCard>
 
       <DataCard
-        title="Coefficient"
-        description="Le coefficient de cette évaluation"
+        title={t("coefficient")}
+        description={t("coefficientDescription")}
         icon={VariableIcon}
       >
         <p className="texl-xl md:text-3xl font-bold">2</p>
       </DataCard>
 
       <DataCard
-        title="Matières"
-        description="La matière de cette évaluation"
+        title={t("subject")}
+        description={t("subjectDescription")}
         icon={AcademicCapIcon}
       >
-        <p className="texl-xl md:text-3xl font-bold">Mathématiques - Ecrit</p>
+        <p className="texl-xl md:text-3xl font-bold">{t("mathWritten")}</p>
       </DataCard>
 
       <DataCard
-        title="Date de passage"
-        description="La date de passage de cette évaluation"
+        title={t("examDate")}
+        description={t("examDateDescription")}
         icon={AcademicCapIcon}
       >
-        <p className="texl-xl md:text-3xl font-bold">04 déc. 2024</p>
+        <p className="texl-xl md:text-3xl font-bold">
+          {t("examDateValue")}
+        </p>
       </DataCard>
     </div>
   );

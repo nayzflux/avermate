@@ -2,13 +2,7 @@
 
 import RevokeSessionButton from "@/components/buttons/revoke-session-button";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -16,11 +10,13 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ProfileSection from "../profile-section";
-import errorStateCard from "@/components/skeleton/error-card";
+import ErrorStateCard from "@/components/skeleton/error-card";
 import "dayjs/locale/fr";
+import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
 
 dayjs.locale("fr");
-
 dayjs.extend(relativeTime);
 
 type Session = {
@@ -35,12 +31,16 @@ type Session = {
 };
 
 export default function SessionList() {
+  const formatter = useFormatter();
+  const t = useTranslations("Settings.Account.SessionList");
+  const formatDates = useFormatDates(formatter);
+
   const { data: currentSession } = authClient.useSession() as unknown as {
     data: { session: Session };
   };
 
   const {
-    data: sesssions,
+    data: sessions,
     isError,
     isPending,
   } = useQuery({
@@ -53,35 +53,36 @@ export default function SessionList() {
 
   if (isPending) {
     return (
-      <Card className={"p-6 w-full"}>
+      <Card className="p-6 w-full">
         <div className="flex flex-col gap-6">
           <CardHeader className="p-0">
             <CardTitle>
               <Skeleton className="w-36 h-6" />
             </CardTitle>
-            <CardDescription>
-              <Skeleton className="w-20 h-4" />
-            </CardDescription>
+            <div>
+              <Skeleton className="w-32 h-5" />
+            </div>
           </CardHeader>
 
           <CardContent className="p-0">
-            <div className="flex flex-col gap-4">
-              {Array.from({ length: 2 }).map((_, index) => (
+            <div className="flex flex-col gap-6">
+              {Array.from({ length: 5 }).map((_, index) => (
                 <div
                   key={index}
-                  className="flex flex-col gap-2 border-t text-sm px-2 pt-4 w-full"
+                  className="flex flex-col gap-2 border-t pt-4 w-full"
                 >
-                  <div className="flex gap-2 w-full">
-                    <Skeleton className="md:w-32 w-full h-6" />
+                  <div className="flex justify-between items-center">
+                    <Skeleton className="w-32 h-6" />
+                    <Skeleton className="w-20 h-4" />
                   </div>
 
-                  <div className="flex gap-1 text-muted-foreground">
-                    <Skeleton className="md:w-32 w-full h-4" />
+                  <div className="flex gap-2">
+                    <Skeleton className="w-full md:w-64 h-4" />
                   </div>
 
                   <div className="flex justify-end">
                     <Button variant="destructive" disabled>
-                      Révoquer
+                      {t("revoke")}
                     </Button>
                   </div>
                 </div>
@@ -94,16 +95,13 @@ export default function SessionList() {
   }
 
   if (isError) {
-    return <div>{errorStateCard()}</div>;
+    return <ErrorStateCard />;
   }
 
   return (
-    <ProfileSection
-      title="Sessions actives"
-      description="Gérez et surveillez toutes vos sessions actives."
-    >
+    <ProfileSection title={t("title")} description={t("description")}>
       <div className="flex flex-col gap-4">
-        {sesssions?.map((session) => (
+        {sessions?.map((session) => (
           <div
             key={session.id}
             className="flex flex-col gap-2 border-t text-sm px-2 pt-4"
@@ -113,14 +111,13 @@ export default function SessionList() {
                 <p className="font-semibold">{session.id.substring(0, 10)}</p>
 
                 <p className="text-muted-foreground">
-                  {dayjs(session.expiresAt).fromNow()}
+                  {formatDates.formatRelative(new Date(session.expiresAt))}
                 </p>
               </div>
 
-              {/* Fix spaghetti code */}
               <span
                 className={cn(
-                  "items-center px-2 py-1 rounded bg-opacity-30 text-xs",
+                  "items-center px-2 py-1 rounded bg-opacity-30 text-xs border",
                   session.expiresAt < new Date()
                     ? "bg-red-600 text-red-500 border-red-500"
                     : currentSession?.session?.id === session.id
@@ -129,11 +126,11 @@ export default function SessionList() {
                 )}
               >
                 {currentSession?.session?.id === session.id ? (
-                  <p>Actuelle</p>
+                  <p>{t("current")}</p>
                 ) : session.expiresAt < new Date() ? (
-                  <p>Expirée</p>
+                  <p>{t("expired")}</p>
                 ) : (
-                  <p>Active</p>
+                  <p>{t("active")}</p>
                 )}
               </span>
             </div>

@@ -27,10 +27,13 @@ import { Session, User } from "better-auth/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
+import { useTranslations } from "next-intl"; // Import useTranslations
+
 /**
  * Vue d'ensemble des notes
  */
 export default function OverviewPage() {
+  const t = useTranslations("Dashboard.Pages.OverviewPage"); // Initialize t
   const { data: session } = authClient.useSession() as unknown as {
     data: { session: Session; user: User };
   };
@@ -110,17 +113,6 @@ export default function OverviewPage() {
     }
   }, [periods]);
 
-  // useEffect(() => {
-  //   const handleBeforeUnload = () => {
-  //     localStorage.removeItem("selectedTab");
-  //   };
-
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-  //   };
-  // }, []);
   // Error State
   if (
     isError ||
@@ -146,7 +138,6 @@ export default function OverviewPage() {
     isPendingAccount ||
     isCustomAveragesPending ||
     selectedTab === null
-    // || true
   ) {
     return (
       <div>
@@ -165,7 +156,8 @@ export default function OverviewPage() {
 
   //todo implement a custom field
   if (
-    new Date(session?.user?.createdAt).getTime() > Date.now() - 1000 * 60 &&
+    new Date(session?.user?.createdAt).getTime() >
+      Date.now() - 1000 * 60 * 10 &&
     (!subjects || subjects.length === 0) &&
     (linkedProviders.has("google") || linkedProviders.has("microsoft")) &&
     localStorage.getItem("isOnboardingCompleted") !== "true"
@@ -175,10 +167,12 @@ export default function OverviewPage() {
 
   return (
     <main className="flex flex-col gap-4 md:gap-8 mx-auto max-w-[2000px]">
-      <div className="flex flex-wrap items-center justify-between">
-        <h1 className="md:text-3xl font-bold text-xl">Vue d&apos;ensemble</h1>
+      <div className="flex flex-wrap items-center justify-between min-h-9">
+        <h1 className="md:text-3xl font-bold text-xl">{t("overviewTitle")}</h1>
         <h1 className="md:text-3xl font-normal text-lg">
-          Bonjour {session?.user?.name ? session?.user?.name.split(" ")[0] : ""}{" "}
+          {t("greeting", {
+            name: session?.user?.name ? session?.user?.name.split(" ")[0] : "",
+          })}{" "}
           👋
         </h1>
       </div>
@@ -208,13 +202,11 @@ export default function OverviewPage() {
                 <TabsList className="flex">
                   {periods?.map((period) => (
                     <TabsTrigger key={period.id} value={period.id}>
-                      {period.name}
+                      {t("periodName", { name: period.name })}
                     </TabsTrigger>
                   ))}
 
-                  <TabsTrigger value="full-year">
-                    Toute l&apos;année
-                  </TabsTrigger>
+                  <TabsTrigger value="full-year">{t("fullYear")}</TabsTrigger>
                 </TabsList>
               </div>
 
@@ -233,16 +225,16 @@ export default function OverviewPage() {
               <SelectTrigger>
                 <SelectValue>
                   {periods?.find((period) => period.id === selectedTab)?.name ||
-                    "Toute l'année"}
+                    t("fullYear")}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {periods?.map((period) => (
                   <SelectItem key={period.id} value={period.id}>
-                    {period.name}
+                    {t("periodName", { name: period.name })}
                   </SelectItem>
                 ))}
-                <SelectItem value="full-year">Toute l&apos;année</SelectItem>
+                <SelectItem value="full-year">{t("fullYear")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -263,6 +255,7 @@ export default function OverviewPage() {
                         ?.subjects || []
                     }
                     customAverages={customAverages}
+                    periods={periods}
                   />
 
                   <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
@@ -278,6 +271,7 @@ export default function OverviewPage() {
                           (p) => p.period.id === period.id
                         )?.period || fullYearPeriod(subjects)
                       }
+                      periods={periods}
                     />
 
                     {/* Dernières notes */}
@@ -292,12 +286,14 @@ export default function OverviewPage() {
               subjects={subjects || []}
               period={fullYearPeriod(subjects)}
               customAverages={customAverages}
+              periods={periods}
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
               <GlobalAverageChart
                 subjects={subjects || []}
                 period={fullYearPeriod(subjects)}
+                periods={periods}
               />
 
               {subjects.length > 0 && (

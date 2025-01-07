@@ -17,15 +17,6 @@ export default function DataCard({
   icon: any;
   className?: string;
 }) {
-  // const [isMounted, setIsMounted] = useState(false);
-
-  // useEffect(() => {
-  //   setIsMounted(true);
-  // }, []);
-
-  // if (!isMounted) {
-  //   return null; // Don't render anything until mounted
-  // }
 
   return (
     <Card className={cn("p-6 rounded-lg", className)}>

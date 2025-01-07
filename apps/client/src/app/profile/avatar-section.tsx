@@ -13,8 +13,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth";
 import { Session, User } from "better-auth/types";
 import ProfileSection from "./profile-section";
+import { useTranslations } from "next-intl";
 
 export default function AvatarSection() {
+  const t = useTranslations("Settings.Profile.Avatar");
   const { data: session, isPending } = authClient.useSession() as unknown as {
     data: { user: User; session: Session };
     isPending: boolean;
@@ -25,20 +27,22 @@ export default function AvatarSection() {
       <Card className={"p-6 w-full"}>
         <div className="flex flex-col gap-6">
           <CardHeader className="p-0">
-            <CardTitle>
+            <div>
               <Skeleton className="md:w-32 w-full h-6" />
-            </CardTitle>
-            <CardDescription>
+            </div>
+            <div>
               <Skeleton className="md:w-64 w-full h-4" />
-            </CardDescription>
+            </div>
           </CardHeader>
 
           <CardContent className="p-0">
-            <div className="flex flex-col md:flex-row items-center gap-6 mt-4">
+            <div className="flex flex-col md:flex-row items-center  gap-6 align">
               {/* Avatar Skeleton */}
-              <Skeleton className="size-32 rounded-full" />
+              <div className="min-w-[128px] flex justify-center">
+                <Skeleton className="size-32 rounded-full" />
+              </div>
               {/* Upload Button Skeleton */}
-              <Skeleton className="w-full md:w-48 h-10 rounded-md" />
+              <Skeleton className="w-full  h-10 rounded-md" />
             </div>
           </CardContent>
         </div>
@@ -48,20 +52,20 @@ export default function AvatarSection() {
 
   return (
     <ProfileSection
-      title="Avatar"
-      description="Changez votre avatar"
+      title={t("title")}
+      description={t("description")}
       className="flex flex-col gap-4"
     >
       <div className="flex flex-col md:flex-row items-center  gap-6 align">
         <div className="min-w-[128px] flex justify-center">
-        <Avatar
-          className="size-32"
-          size={128}
-          src={
-            session?.user?.image ||
-            `https://avatar.vercel.sh/${session?.user?.id}?size=256`
-          }
-        />
+          <Avatar
+            className="size-32"
+            size={128}
+            src={
+              session?.user?.image ||
+              `https://avatar.vercel.sh/${session?.user?.id}?size=256`
+            }
+          />
         </div>
         <UpdateAvatar />
       </div>

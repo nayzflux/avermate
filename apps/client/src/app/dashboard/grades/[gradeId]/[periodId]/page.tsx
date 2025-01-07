@@ -1,6 +1,6 @@
 "use client";
 
-import errorStateCard from "@/components/skeleton/error-card";
+import ErrorStateCard from "@/components/skeleton/error-card";
 import gradeLoader from "@/components/skeleton/grade-loader";
 import { useCustomAverages } from "@/hooks/use-custom-averages";
 import { useGrade } from "@/hooks/use-grade";
@@ -10,12 +10,15 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import GradeWrapper from "./grade-wrapper";
+import { useTranslations } from "next-intl";
 
 export default function GradePage() {
   const { periodId, gradeId } = useParams() as {
     periodId: string;
     gradeId: string;
   };
+
+  const t = useTranslations("Dashboard.Loader.GradeLoader");
 
   let periodIdCorrected = periodId;
 
@@ -64,11 +67,16 @@ export default function GradePage() {
   } = useCustomAverages();
 
   if (isError || organizedSubjectsIsError || isCustomAveragesError) {
-    return <div>{errorStateCard()}</div>;
+    return <div>{ErrorStateCard()}</div>;
   }
 
-  if (isPending || organizedSubjectsIsPending || isCustomAveragesPending) {
-    return <div>{gradeLoader()}</div>;
+  if (
+    isPending ||
+    organizedSubjectsIsPending ||
+    isCustomAveragesPending
+    // || true
+  ) {
+    return <div>{gradeLoader(t)}</div>;
   }
 
   return (

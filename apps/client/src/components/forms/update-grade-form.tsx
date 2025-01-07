@@ -9,7 +9,12 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -41,38 +46,15 @@ import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Calendar } from "../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useTranslations } from "next-intl";
+import { useFormatDates } from "@/utils/format";
+import { useFormatter } from "next-intl";
+
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
 dayjs.locale("fr");
-
-const updateGradeSchema = z.object({
-  name: z.string().min(1).max(64),
-  outOf: z.coerce.number().min(0).max(1000),
-  value: z.coerce.number().min(0).max(1000),
-  coefficient: z.coerce.number().min(0).max(1000),
-  passedAt: z.date(),
-  subjectId: z.string().min(1).max(64),
-  periodId: z.string().min(1).max(64).nullable(),
-});
-
-type UpdateGradeSchema = z.infer<typeof updateGradeSchema>;
-
-const determinePeriodId = (
-  date: Date | null | undefined,
-  periods:
-    | { id: string; name: string; startAt: string; endAt: string }[]
-    | undefined
-) => {
-  if (!date || !periods) return "";
-  const formattedDate = dayjs(date);
-  const matchedPeriod = periods.find(
-    (period) =>
-      formattedDate.isSameOrAfter(dayjs(period.startAt)) &&
-      formattedDate.isSameOrBefore(dayjs(period.endAt))
-  );
-  return matchedPeriod ? matchedPeriod.id : "full-year";
-};
 
 export const UpdateGradeForm = ({
   close,
@@ -80,7 +62,12 @@ export const UpdateGradeForm = ({
 }: {
   close: () => void;
   grade: Grade;
-}) => {
+  }) => {
+  const formatter = useFormatter();
+  const formatDates = useFormatDates(formatter);
+
+  const errorTranslations = useTranslations("Errors");
+  const t = useTranslations("Dashboard.Forms.UpdateGrade");
   const toaster = useToast();
   const queryClient = useQueryClient();
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -104,6 +91,45 @@ export const UpdateGradeForm = ({
 
   const { data: periods } = usePeriods();
 
+  // Feedback schema validation
+  const updateGradeSchema = z.object({
+    name: z.string().min(1, t("nameRequired")).max(64, t("nameTooLong")),
+    outOf: z.coerce.number().min(0, t("outOfMin")).max(1000, t("outOfMax")),
+    value: z.coerce.number().min(0, t("valueMin")).max(1000, t("valueMax")),
+    coefficient: z.coerce
+      .number()
+      .min(0, t("coefficientMin"))
+      .max(1000, t("coefficientMax")),
+    passedAt: z.date({ required_error: t("passedAtRequired") }),
+    subjectId: z
+      .string()
+      .min(1, t("subjectIdRequired"))
+      .max(64, t("subjectIdMax")),
+    periodId: z
+      .string()
+      .min(1, t("periodIdRequired"))
+      .max(64, t("periodIdMax"))
+      .nullable(),
+  });
+
+  type UpdateGradeSchema = z.infer<typeof updateGradeSchema>;
+
+  const determinePeriodId = (
+    date: Date | null | undefined,
+    periods:
+      | { id: string; name: string; startAt: string; endAt: string }[]
+      | undefined
+  ) => {
+    if (!date || !periods) return "";
+    const formattedDate = dayjs(date);
+    const matchedPeriod = periods.find(
+      (period) =>
+        formattedDate.isSameOrAfter(dayjs(period.startAt)) &&
+        formattedDate.isSameOrBefore(dayjs(period.endAt))
+    );
+    return matchedPeriod ? matchedPeriod.id : "full-year";
+  };
+
   const { mutate, isPending } = useMutation({
     mutationKey: ["update-grade"],
     mutationFn: async (values: UpdateGradeSchema) => {
@@ -119,8 +145,8 @@ export const UpdateGradeForm = ({
     },
     onSuccess: () => {
       toaster.toast({
-        title: `Note modifiée avec succès !`,
-        description: "Votre note a été mise à jour.",
+        title: t("successTitle"),
+        description: t("successDescription"),
       });
       close();
       queryClient.invalidateQueries({ queryKey: ["grades"] });
@@ -128,7 +154,7 @@ export const UpdateGradeForm = ({
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
     },
     onError: (error) => {
-      handleError(error, toaster);
+      handleError(error, toaster, errorTranslations, t("updateError"));
     },
   });
 
@@ -212,10 +238,10 @@ export const UpdateGradeForm = ({
     if (openPeriod) {
       setPeriodInputValue(
         selectedPeriod?.name ||
-          (selectedPeriodValue === "full-year" ? "Année complète" : "")
+          (selectedPeriodValue === "full-year" ? t("fullYear") : "")
       );
     }
-  }, [openPeriod, selectedPeriod, selectedPeriodValue]);
+  }, [openPeriod, selectedPeriod, selectedPeriodValue, t]);
 
   // Update subjectInputValue when popover/drawer opens
   useEffect(() => {
@@ -238,7 +264,7 @@ export const UpdateGradeForm = ({
             disabled={isPending}
             render={({ field }) => (
               <FormItem className="mx-1">
-                <FormLabel>Nom</FormLabel>
+                <FormLabel>{t("name")}</FormLabel>
                 <FormControl>
                   <Input type="text" {...field} />
                 </FormControl>
@@ -255,7 +281,7 @@ export const UpdateGradeForm = ({
               disabled={isPending}
               render={({ field }) => (
                 <FormItem className="mx-1">
-                  <FormLabel>Note</FormLabel>
+                  <FormLabel>{t("grade")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -274,7 +300,7 @@ export const UpdateGradeForm = ({
               disabled={isPending}
               render={({ field }) => (
                 <FormItem className="mx-1">
-                  <FormLabel>Sur</FormLabel>
+                  <FormLabel>{t("outOf")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -293,7 +319,7 @@ export const UpdateGradeForm = ({
               disabled={isPending}
               render={({ field }) => (
                 <FormItem className="col-span-2 mx-1">
-                  <FormLabel>Coefficient</FormLabel>
+                  <FormLabel>{t("coefficient")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -312,7 +338,7 @@ export const UpdateGradeForm = ({
             name="passedAt"
             render={({ field }) => (
               <FormItem className="flex flex-col mx-1">
-                <FormLabel>Passé le</FormLabel>
+                <FormLabel>{t("passedAt")}</FormLabel>
                 <Popover modal>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -324,8 +350,8 @@ export const UpdateGradeForm = ({
                         )}
                       >
                         {field.value
-                          ? dayjs(field.value).format("dddd DD MMM YYYY")
-                          : "Choisir une date"}
+                          ? formatDates.formatLong(new Date(field.value))
+                          : t("chooseDate")}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </FormControl>
@@ -342,7 +368,6 @@ export const UpdateGradeForm = ({
                         date > new Date() || date < new Date("2023-01-02")
                       }
                       autoFocus
-                      weekStartsOn={1}
                       defaultMonth={
                         field.value ? dayjs(field.value).toDate() : new Date()
                       }
@@ -360,7 +385,9 @@ export const UpdateGradeForm = ({
             name="periodId"
             render={({ field }) => (
               <FormItem className="flex flex-col mx-1">
-                <FormLabel className="pointer-events-none">Période</FormLabel>
+                <FormLabel className="pointer-events-none">
+                  {t("period")}
+                </FormLabel>
                 {isDesktop ? (
                   <Popover
                     modal
@@ -378,8 +405,8 @@ export const UpdateGradeForm = ({
                           {selectedPeriod
                             ? selectedPeriod.name
                             : selectedPeriodValue === "full-year"
-                            ? "Année complète"
-                            : "Choisir une période"}
+                            ? t("fullYear")
+                            : t("choosePeriod")}
                           <ChevronsUpDown className="opacity-50" />
                         </Button>
                       </PopoverTrigger>
@@ -387,16 +414,16 @@ export const UpdateGradeForm = ({
                     <PopoverContent className="p-0 min-w-[var(--radix-popover-trigger-width)]">
                       <Command>
                         <CommandInput
-                          placeholder="Choisir une période"
+                          placeholder={t("choosePeriod")}
                           ref={periodInputRef}
                           value={periodInputValue}
                           onValueChange={setPeriodInputValue}
                           className="h-9"
                         />
                         <CommandList>
-                          <CommandEmpty>Aucune période trouvée</CommandEmpty>
+                          <CommandEmpty>{t("noPeriodFound")}</CommandEmpty>
                           <CommandGroup>
-                            {periods?.map((period) => (
+                            {filteredPeriods?.map((period) => (
                               <CommandItem
                                 key={period.id}
                                 value={period.name}
@@ -416,7 +443,7 @@ export const UpdateGradeForm = ({
                             ))}
                             <CommandItem
                               key="full-year"
-                              value="Année complète"
+                              value={t("fullYear")}
                               onSelect={() => {
                                 form.setValue("periodId", "full-year", {
                                   shouldValidate: true,
@@ -425,7 +452,7 @@ export const UpdateGradeForm = ({
                                 setOpenPeriod(false);
                               }}
                             >
-                              <span>Année complète</span>
+                              <span>{t("fullYear")}</span>
                               {form.getValues("periodId") === "full-year" && (
                                 <Check className="ml-auto h-4 w-4" />
                               )}
@@ -448,69 +475,71 @@ export const UpdateGradeForm = ({
                           {selectedPeriod
                             ? selectedPeriod.name
                             : selectedPeriodValue === "full-year"
-                            ? "Année complète"
-                            : "Choisir une période"}
+                            ? t("fullYear")
+                            : t("choosePeriod")}
                           <ChevronsUpDown className="opacity-50" />
                         </Button>
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
-                      <Command>
-                        <CommandInput
-                          ref={periodInputRef}
-                          placeholder="Choisir une période"
-                          className="h-9"
-                          onValueChange={setPeriodInputValue}
-                          value={periodInputValue}
-                        />
-                        <CommandList>
-                          <CommandEmpty>Aucune période trouvée</CommandEmpty>
-                          <CommandGroup>
-                            {periods?.map((period) => (
+                      <VisuallyHidden>
+                        <DrawerTitle>{t("choosePeriod")}</DrawerTitle>
+                      </VisuallyHidden>
+                      <div className="mt-4 border-t p-4">
+                        <Command>
+                          <CommandInput
+                            ref={periodInputRef}
+                            placeholder={t("choosePeriod")}
+                            className="h-9"
+                            onValueChange={setPeriodInputValue}
+                            value={periodInputValue}
+                          />
+                          <CommandList>
+                            <CommandEmpty>{t("noPeriodFound")}</CommandEmpty>
+                            <CommandGroup>
+                              {filteredPeriods?.map((period) => (
+                                <CommandItem
+                                  key={period.id}
+                                  value={period.name}
+                                  onSelect={() => {
+                                    form.setValue("periodId", period.id, {
+                                      shouldValidate: true,
+                                    });
+                                    setIsManualPeriod(true);
+                                    setOpenPeriod(false);
+                                  }}
+                                >
+                                  <span>{period.name}</span>
+                                  {form.getValues("periodId") === period.id && (
+                                    <Check className="ml-auto h-4 w-4" />
+                                  )}
+                                </CommandItem>
+                              ))}
                               <CommandItem
-                                key={period.id}
-                                value={period.name}
+                                key="full-year"
+                                value={t("fullYear")}
                                 onSelect={() => {
-                                  form.setValue("periodId", period.id, {
+                                  form.setValue("periodId", "full-year", {
                                     shouldValidate: true,
                                   });
                                   setIsManualPeriod(true);
                                   setOpenPeriod(false);
                                 }}
                               >
-                                <span>{period.name}</span>
-                                {form.getValues("periodId") === period.id && (
+                                <span>{t("fullYear")}</span>
+                                {form.getValues("periodId") === "full-year" && (
                                   <Check className="ml-auto h-4 w-4" />
                                 )}
                               </CommandItem>
-                            ))}
-                            <CommandItem
-                              key="full-year"
-                              value="Année complète"
-                              onSelect={() => {
-                                form.setValue("periodId", "full-year", {
-                                  shouldValidate: true,
-                                });
-                                setIsManualPeriod(true);
-                                setOpenPeriod(false);
-                              }}
-                            >
-                              <span>Année complète</span>
-                              {form.getValues("periodId") === "full-year" && (
-                                <Check className="ml-auto h-4 w-4" />
-                              )}
-                            </CommandItem>
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </div>
                     </DrawerContent>
                   </Drawer>
                 )}
                 <FormMessage />
-                <FormDescription>
-                  Une note doit être associée à une période. Celle-ci peut être
-                  différente de la date de passage si besoin.
-                </FormDescription>
+                <FormDescription>{t("periodDescription")}</FormDescription>
               </FormItem>
             )}
           />
@@ -521,7 +550,7 @@ export const UpdateGradeForm = ({
             name="subjectId"
             render={({ field }) => (
               <FormItem className="flex flex-col mx-1">
-                <FormLabel>Matière</FormLabel>
+                <FormLabel>{t("subject")}</FormLabel>
                 {isDesktop ? (
                   <Popover
                     modal
@@ -538,7 +567,7 @@ export const UpdateGradeForm = ({
                         >
                           {selectedSubject
                             ? selectedSubject.name
-                            : "Choisir une matière"}
+                            : t("chooseSubject")}
                           <ChevronsUpDown className="opacity-50" />
                         </Button>
                       </PopoverTrigger>
@@ -546,38 +575,32 @@ export const UpdateGradeForm = ({
                     <PopoverContent className="p-0 min-w-[var(--radix-popover-trigger-width)]">
                       <Command>
                         <CommandInput
-                          placeholder="Choisir une matière"
+                          placeholder={t("chooseSubject")}
                           ref={subjectInputRef}
                           value={subjectInputValue}
                           onValueChange={setSubjectInputValue}
                           className="h-9"
                         />
                         <CommandList>
-                          <CommandEmpty>Aucune matière trouvée</CommandEmpty>
+                          <CommandEmpty>{t("noSubjectFound")}</CommandEmpty>
                           <CommandGroup>
-                            {subjects
-                              ?.filter(
-                                (subject) => subject.isDisplaySubject === false
-                              )
-                              .sort((a, b) => a.name.localeCompare(b.name))
-                              .map((subject) => (
-                                <CommandItem
-                                  key={subject.id}
-                                  value={subject.name}
-                                  onSelect={() => {
-                                    form.setValue("subjectId", subject.id, {
-                                      shouldValidate: true,
-                                    });
-                                    setOpenSubject(false);
-                                  }}
-                                >
-                                  <span>{subject.name}</span>
-                                  {form.getValues("subjectId") ===
-                                    subject.id && (
-                                    <Check className="ml-auto h-4 w-4" />
-                                  )}
-                                </CommandItem>
-                              ))}
+                            {filteredSubjects?.map((subject) => (
+                              <CommandItem
+                                key={subject.id}
+                                value={subject.name}
+                                onSelect={() => {
+                                  form.setValue("subjectId", subject.id, {
+                                    shouldValidate: true,
+                                  });
+                                  setOpenSubject(false);
+                                }}
+                              >
+                                <span>{subject.name}</span>
+                                {form.getValues("subjectId") === subject.id && (
+                                  <Check className="ml-auto h-4 w-4" />
+                                )}
+                              </CommandItem>
+                            ))}
                           </CommandGroup>
                         </CommandList>
                       </Command>
@@ -595,29 +618,28 @@ export const UpdateGradeForm = ({
                         >
                           {selectedSubject
                             ? selectedSubject.name
-                            : "Choisir une matière"}
+                            : t("chooseSubject")}
                           <ChevronsUpDown className="opacity-50" />
                         </Button>
                       </FormControl>
                     </DrawerTrigger>
                     <DrawerContent>
-                      <Command>
-                        <CommandInput
-                          ref={subjectInputRef}
-                          placeholder="Choisir une matière"
-                          className="h-9"
-                          value={subjectInputValue}
-                          onValueChange={setSubjectInputValue}
-                        />
-                        <CommandList>
-                          <CommandEmpty>Aucune matière trouvée</CommandEmpty>
-                          <CommandGroup>
-                            {subjects
-                              ?.filter(
-                                (subject) => subject.isDisplaySubject === false
-                              )
-                              .sort((a, b) => a.name.localeCompare(b.name))
-                              .map((subject) => (
+                      <VisuallyHidden>
+                        <DrawerTitle>{t("chooseSubject")}</DrawerTitle>
+                      </VisuallyHidden>
+                      <div className="mt-4 border-t p-4">
+                        <Command>
+                          <CommandInput
+                            ref={subjectInputRef}
+                            placeholder={t("chooseSubject")}
+                            className="h-9"
+                            value={subjectInputValue}
+                            onValueChange={setSubjectInputValue}
+                          />
+                          <CommandList>
+                            <CommandEmpty>{t("noSubjectFound")}</CommandEmpty>
+                            <CommandGroup>
+                              {filteredSubjects?.map((subject) => (
                                 <CommandItem
                                   key={subject.id}
                                   value={subject.name}
@@ -635,9 +657,10 @@ export const UpdateGradeForm = ({
                                   )}
                                 </CommandItem>
                               ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </div>
                     </DrawerContent>
                   </Drawer>
                 )}
@@ -649,7 +672,7 @@ export const UpdateGradeForm = ({
           {/* Submit Button */}
           <Button className="w-full" type="submit" disabled={isPending}>
             {isPending && <Loader2Icon className="animate-spin mr-2 size-4" />}
-            Modifier la note
+            {t("submit")}
           </Button>
         </form>
       </Form>

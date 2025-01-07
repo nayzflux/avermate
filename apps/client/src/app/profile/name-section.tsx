@@ -13,8 +13,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth";
 import { Session, User } from "better-auth/types";
 import ProfileSection from "./profile-section";
+import { useTranslations } from "next-intl";
 
 export default function NameSection() {
+  const t = useTranslations("Settings.Profile.Name");
   const { data: session, isPending } = authClient.useSession() as unknown as {
     data: { user: User; session: Session };
     isPending: boolean;
@@ -25,12 +27,12 @@ export default function NameSection() {
       <Card className={"p-6 w-full"}>
         <div className="flex flex-col gap-6">
           <CardHeader className="p-0">
-            <CardTitle>
+            <div>
               <Skeleton className="w-36 h-6" />
-            </CardTitle>
-            <CardDescription>
+            </div>
+            <div>
               <Skeleton className="w-20 h-4" />
-            </CardDescription>
+            </div>
           </CardHeader>
 
           <CardContent className="p-0">
@@ -42,7 +44,7 @@ export default function NameSection() {
 
                 <div className="flex w-full justify-end">
                   <Button type="submit" variant="outline" disabled={isPending}>
-                    Sauvegarder
+                    {t("save")}
                   </Button>
                 </div>
               </form>
@@ -54,10 +56,7 @@ export default function NameSection() {
   }
 
   return (
-    <ProfileSection
-      title="Votre nom"
-      description="Modifiez comment vous apparaissez sur Avermate."
-    >
+    <ProfileSection title={t("title")} description={t("description")}>
       <UpdateNameForm defaultName={session?.user?.name} />
     </ProfileSection>
   );

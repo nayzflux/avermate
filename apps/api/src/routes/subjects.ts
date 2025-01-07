@@ -117,13 +117,13 @@ app.get("/organized-by-periods", async (c) => {
     );
   }
 
-  // Fetch periods for the user
+  // 1) Fetch periods for the user
   const userPeriods = await db.query.periods.findMany({
     where: eq(periods.userId, session.user.id),
     orderBy: asc(periods.startAt),
   });
 
-  // Fetch subjects with grades
+  // 2) Fetch subjects with grades
   const subjectsWithGrades = await db.query.subjects.findMany({
     where: eq(subjects.userId, session.user.id),
     with: {
@@ -142,16 +142,28 @@ app.get("/organized-by-periods", async (c) => {
     orderBy: asc(subjects.name),
   });
 
-  // Organize subjects by periods
-  const periodsWithSubjects = userPeriods.map((period) => {
+  // 3) Sort periods by start date
+  const sortedPeriods = [...userPeriods].sort(
+    (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+  );
+
+  // 4) Build the data structure: for each period, if isCumulative = true,
+  //    include the grades from all *previous* periods plus the current one.
+  const periodsWithSubjects = sortedPeriods.map((period, index) => {
+    // Gather relevant period IDs
+    const relevantPeriodIds = period.isCumulative
+      ? sortedPeriods.slice(0, index + 1).map((p) => p.id)
+      : [period.id];
+
+    // Now, for each subject, we include only the grades whose `periodId` is in relevantPeriodIds
     const subjectsInPeriod = subjectsWithGrades.map((subject) => {
-      const gradesInPeriod = subject.grades.filter(
-        (grade) => grade.periodId === period.id
+      const relevantGrades = subject.grades.filter((grade) =>
+        relevantPeriodIds.includes(grade.periodId ?? "")
       );
 
       return {
         ...subject,
-        grades: gradesInPeriod, // Grades for this period, or an empty array
+        grades: relevantGrades,
       };
     });
 
@@ -161,22 +173,19 @@ app.get("/organized-by-periods", async (c) => {
     };
   });
 
-  // Calculate startAt and endAt for full-year period
-  const sortedPeriods = userPeriods.sort(
-    (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
-  );
-
+  // -- The following is the "full-year" logic you already have. --
+  // Calculate startAt and endAt for the "full-year" period:
   const fullYearStartAt =
-    sortedPeriods && sortedPeriods.length > 0
+    sortedPeriods.length > 0
       ? new Date(sortedPeriods[0].startAt)
       : new Date(new Date().getFullYear(), 8, 1);
 
   const fullYearEndAt =
-    sortedPeriods && sortedPeriods.length > 0
+    sortedPeriods.length > 0
       ? new Date(sortedPeriods[sortedPeriods.length - 1].endAt)
       : new Date(new Date().getFullYear() + 1, 5, 30);
 
-  // Add hardcoded full-year period with all grades
+  // Hardcoded full-year period
   const fullYearPeriod = {
     id: "full-year",
     name: "Full Year",
@@ -184,20 +193,25 @@ app.get("/organized-by-periods", async (c) => {
     endAt: fullYearEndAt,
     createdAt: new Date(),
     userId: session.user.id,
+    isCumulative: false, // or true, depending on your logic
   };
 
+  // All subjects with all grades
   const allSubjectsWithAllGrades = subjectsWithGrades.map((subject) => ({
     ...subject,
-    grades: subject.grades, // All grades for this subject
+    grades: subject.grades,
   }));
 
+  // Add the full-year period to the array
   periodsWithSubjects.push({
     period: fullYearPeriod,
     subjects: allSubjectsWithAllGrades,
   });
 
+  // 5) Return the final result
   return c.json({ periods: periodsWithSubjects });
 });
+
 
 // Get a specific subject organized by periods
 const getSubjectByPeriodSchema = z.object({
@@ -224,7 +238,7 @@ app.get(
 
     const { subjectId } = c.req.valid("param");
 
-    //if period is null, then get all the grades from all periods
+    // if subjectId is null or empty, return all subjects
     if (!subjectId) {
       const allSubjects = await db.query.subjects.findMany({
         where: eq(subjects.userId, session.user.id),
@@ -237,7 +251,7 @@ app.get(
       return c.json({ subjects: allSubjects });
     }
 
-    // Fetch the subject with grades
+    // Fetch the single subject + its grades
     const subject = await db.query.subjects.findFirst({
       where: and(
         eq(subjects.id, subjectId),
@@ -260,20 +274,28 @@ app.get(
 
     if (!subject) throw new HTTPException(404);
 
-    // Fetch periods for the user
+    // Fetch periods for the user and sort them
     const userPeriods = await db.query.periods.findMany({
       where: eq(periods.userId, session.user.id),
       orderBy: asc(periods.startAt),
     });
+    const sortedPeriods = [...userPeriods].sort(
+      (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+    );
 
-    // Organize grades of the subject by periods
-    const periodsWithGrades = userPeriods.map((period) => {
-      const gradesInPeriod = subject.grades.filter(
-        (grade) => grade.periodId === period.id
+    // For each period, if isCumulative, gather all prior period IDs too
+    const periodsWithGrades = sortedPeriods.map((p, index) => {
+      const relevantPeriodIds = p.isCumulative
+        ? sortedPeriods.slice(0, index + 1).map((p2) => p2.id)
+        : [p.id];
+
+      // Filter subject's own grades that match relevantPeriodIds
+      const gradesInPeriod = subject.grades.filter((grade) =>
+        relevantPeriodIds.includes(grade.periodId ?? "")
       );
 
       return {
-        period,
+        period: p,
         grades: gradesInPeriod,
       };
     });
@@ -281,6 +303,7 @@ app.get(
     return c.json({ subject: { ...subject, periods: periodsWithGrades } });
   }
 );
+
 
 /**
  * Get subject by ID

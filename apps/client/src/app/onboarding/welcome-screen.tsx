@@ -4,8 +4,10 @@ import { Session, User } from "better-auth/types";
 import { ArrowRight, ShareIcon, SquarePlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslations } from "next-intl";
 
 export default function WelcomeScreen() {
+  const t = useTranslations("Onboarding.Welcome");
   const { data: session } = authClient.useSession() as unknown as {
     data: { session: Session; user: User };
   };
@@ -67,16 +69,8 @@ export default function WelcomeScreen() {
 
   return (
     <div className="text-center space-y-8">
-      {/* Optional fancy icons */}
-      {/* 
-      <div className="relative inline-block">
-        <Rocket className="w-24 h-24 mx-auto text-primary" />
-        <Sparkles className="w-8 h-8 text-yellow-400 absolute top-0 right-0 animate-pulse" />
-      </div> 
-      */}
-
       <h2 className="text-4xl font-bold text-primary">
-        Bienvenue sur Avermate,&nbsp;
+        {t("welcomeTitle")},&nbsp;
         <span className="items-center">
           {session?.user?.name ? (
             session.user.name.split(" ")[0]
@@ -88,25 +82,26 @@ export default function WelcomeScreen() {
       </h2>
 
       <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-        Nous sommes ravis de vous accueillir à bord. Préparez-vous à décoller
-        vers une expérience exceptionnelle !
+        {t("welcomeMessage")}
       </p>
 
       <div className="bg-secondary/50 rounded-lg p-6 max-w-xl mx-auto space-y-6">
         <div>
-          <h3 className="text-lg font-semibold mb-2">Ce qui vous attend :</h3>
+          <h3 className="text-lg font-semibold mb-2">
+            {t("whatToExpectTitle")}
+          </h3>
           <ul className="text-left text-muted-foreground space-y-2">
             <li className="flex items-center">
               <ArrowRight className="w-5 h-5 mr-2 text-primary" />
-              Création de vos périodes
+              {t("createPeriods")}
             </li>
             <li className="flex items-center">
               <ArrowRight className="w-5 h-5 mr-2 text-primary" />
-              Création de vos matières
+              {t("createSubjects")}
             </li>
             <li className="flex items-center">
               <ArrowRight className="w-5 h-5 mr-2 text-primary" />
-              Ajout de vos premières notes
+              {t("addGrades")}
             </li>
           </ul>
         </div>
@@ -114,11 +109,9 @@ export default function WelcomeScreen() {
         {/* If canInstall is true (Android/Chrome), show the install button */}
         {canInstall && (
           <div className="flex flex-col md:flex-row items-center justify-center space-x-4">
-            <p className="text-muted-foreground">
-              Installer l&apos;application pour un accès rapide
-            </p>
+            <p className="text-muted-foreground">{t("installAppMessage")}</p>
             <Button variant="default" onClick={handleInstallClick}>
-              Installer l&apos;application
+              {t("installAppButton")}
             </Button>
           </div>
         )}
@@ -126,25 +119,31 @@ export default function WelcomeScreen() {
         {/* If not installable (no beforeinstallprompt) but on iPhone, show iOS instructions */}
         {!canInstall && isIos && (
           <div className="text-left bg-secondary p-4 rounded-lg">
-            <h4 className="text-lg font-semibold mb-2">Installer sur iPhone</h4>
+            <h4 className="text-lg font-semibold mb-2">
+              {t("installOnIphoneTitle")}
+            </h4>
             <p className="text-muted-foreground mb-2">
-              Pour installer Avermate sur votre iPhone :
+              {t("installOnIphoneMessage")}
             </p>
             <ol className="list-decimal list-inside text-muted-foreground space-y-1">
-              <li>Ouvrez Avermate dans Safari.</li>
+              <li>{t("openInSafari")}</li>
               <li>
-                Touchez l&apos;icône <strong>Partager</strong>{" "}
+                {t.rich("tapShareIcon", {
+                  share: (chunks) => <strong>{chunks}</strong>,
+                })}{" "}
                 <ShareIcon className="inline-block w-4 h-4 ml-1 align-text-bottom" />{" "}
-                en bas de l&apos;écran.
+                {t("atBottomOfScreen")}
               </li>
               <li>
-                Sélectionnez{" "}
-                <strong>Ajouter à l&apos;écran d&apos;accueil</strong>{" "}
+                {t.rich("selectAddToHomeScreen", {
+                  addToHomeScreen: (chunks) => <strong>{chunks}</strong>,
+                })}{" "}
                 <SquarePlusIcon className="inline-block w-4 h-4 ml-1 align-text-bottom" />
-                .
               </li>
               <li>
-                Appuyez sur <strong>Ajouter</strong> pour confirmer.
+                {t.rich("tapAddToConfirm", {
+                  add: (chunks) => <strong>{chunks}</strong>,
+                })}
               </li>
             </ol>
           </div>

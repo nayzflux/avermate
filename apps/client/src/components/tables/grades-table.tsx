@@ -22,9 +22,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { SubjectEmptyState } from "../empty-states/subject-empty-state";
-import errorStateCard from "../skeleton/error-card";
+import ErrorStateCard from "../skeleton/error-card";
 import { Skeleton } from "../ui/skeleton";
 import GradeBadge from "./grade-badge";
+import { useTranslations } from "next-intl";
 
 export default function GradesTable({
   subjects,
@@ -34,6 +35,7 @@ export default function GradesTable({
   periodId: string;
 }) {
   const pathname = usePathname();
+  const t = useTranslations("Dashboard.Tables.GradesTable");
 
   const {
     data: period,
@@ -65,7 +67,7 @@ export default function GradesTable({
 
   // Error State
   if (isPeriodError || isCustomAveragesError) {
-    return <div>{errorStateCard()}</div>;
+    return <div>{ErrorStateCard()}</div>;
   }
 
   // Empty State
@@ -73,7 +75,7 @@ export default function GradesTable({
     return <SubjectEmptyState />;
   }
 
-  const periodName = periodId !== "full-year" ? period?.name : "Année complète";
+  const periodName = periodId !== "full-year" ? period?.name : t("fullYear");
   const overallAverageVal = average(undefined, subjects);
   const overallAverage =
     overallAverageVal !== null ? overallAverageVal.toFixed(2) : "—";
@@ -83,23 +85,25 @@ export default function GradesTable({
       <TableCaption>{periodName}</TableCaption>
       <TableHeader className="hidden md:table-header-group">
         <TableRow>
-          <TableHead className="w-[50px] md:w-[200px]">Matières</TableHead>
-          <TableHead className="w-[50px] md:w-[100px] text-center">
-            Moyennes
+          <TableHead className="w-[50px] md:w-[200px]">
+            {t("subjects")}
           </TableHead>
-          <TableHead>Notes</TableHead>
+          <TableHead className="w-[50px] md:w-[100px] text-center">
+            {t("averages")}
+          </TableHead>
+          <TableHead>{t("grades")}</TableHead>
         </TableRow>
       </TableHeader>
 
       <TableBody>
-        {renderSubjects(subjects, periodId, null, pathname, customAverages)}
+        {renderSubjects(subjects, periodId, null, pathname, customAverages, t)}
       </TableBody>
 
       <TableFooter>
         {/* Main Average */}
         <TableRow className="hidden md:table-row">
           <TableCell className="font-semibold" colSpan={2}>
-            Moyenne générale
+            {t("overallAverage")}
           </TableCell>
           <TableCell className="text-right font-semibold">
             {overallAverage}
@@ -107,7 +111,7 @@ export default function GradesTable({
         </TableRow>
         <TableRow className="md:hidden">
           <TableCell className="font-semibold text-center" colSpan={3}>
-            Moyenne générale: {overallAverage}
+            {t("overallAverage")}: {overallAverage}
           </TableCell>
         </TableRow>
 
@@ -200,7 +204,8 @@ function renderSubjects(
   periodId: string,
   parentId: string | null,
   pathname: string,
-  customAverages?: Average[]
+  customAverages?: Average[],
+  t?: any
 ) {
   return subjects
     .filter((subject) => subject.parentId === parentId)
@@ -237,7 +242,7 @@ function renderSubjects(
 
               {/* Mobile-only average display */}
               <div className="md:hidden mt-1 text-sm text-muted-foreground">
-                Moyenne:{" "}
+                {t("average")}:{" "}
                 <span className="font-bold text-foreground">{subjAverage}</span>
               </div>
             </TableCell>
@@ -290,7 +295,8 @@ function renderSubjects(
             periodId,
             subject.id,
             pathname,
-            customAverages
+            customAverages,
+            t
           )}
         </React.Fragment>
       );
