@@ -340,6 +340,9 @@ export const AddGradeForm = ({
                       onSelect={(date) => {
                         console.log(date);
                         field.onChange(date);
+                        console.log(
+                          formatDates.formatLong(new Date(field.value))
+                        );
                         setIsManualPeriod(false); // Reset manual period selection
                       }}
                       disabled={(date) =>
