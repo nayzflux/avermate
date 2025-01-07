@@ -174,7 +174,7 @@ const presets: Preset[] = [
             customCoefficient: 1,
           },
         ],
-      }
+      },
     ],
   },
   /**
@@ -358,7 +358,7 @@ const presets: Preset[] = [
             customCoefficient: 1,
           },
         ],
-      }
+      },
     ],
   },
   /**
@@ -526,7 +526,7 @@ const presets: Preset[] = [
             customCoefficient: 1,
           },
         ],
-      }
+      },
     ],
   },
   /**
@@ -694,7 +694,272 @@ const presets: Preset[] = [
             customCoefficient: 1,
           },
         ],
-      }
+      },
+    ],
+  },
+  /**
+   * Lycée - G
+   */
+  /**
+   * Terminal G
+   */
+  {
+    id: "LYCEE_TERMINALE_G",
+    name: "Terminale - Section Générale",
+    description: "Préset pour la terminale générale.",
+    subjects: [
+      /**
+       * Spécialité 1
+       */
+      {
+        name: "Spé. 1",
+        isMainSubject: true,
+        coefficient: 16,
+      },
+      /**
+       * Spécialité 2
+       */
+      {
+        name: "Spé. 2",
+        isMainSubject: true,
+        coefficient: 16,
+      },
+      /**
+       * Philosophie
+       */
+      {
+        name: "Philosophie",
+        isMainSubject: true,
+        coefficient: 8,
+      },
+      /**
+       * Histoire-Géographie
+       */
+      {
+        name: "Histoire-Géographie",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * EMC
+       */
+      {
+        name: "EMC",
+        isMainSubject: true,
+        coefficient: 1,
+      },
+      /**
+       * Enseignement-Scientifique
+       */
+      {
+        name: "Enseignement-Scientifique",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * EPS
+       */
+      {
+        name: "EPS",
+        isMainSubject: true,
+        coefficient: 6,
+      },
+      /**
+       * LV1
+       */
+      {
+        name: "LV1",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * LV2
+       */
+      {
+        name: "LV2",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+    ],
+  },
+  /**
+   * 1ère G
+   */
+  {
+    id: "LYCEE_1ERE_G",
+    name: "1ère - Section Générale",
+    description: "Préset pour la 1ère générale.",
+    subjects: [
+      /**
+       * Spécialité 1
+       */
+      {
+        name: "Spé. 1",
+        isMainSubject: true,
+        coefficient: 16,
+      },
+      /**
+       * Spécialité 2
+       */
+      {
+        name: "Spé. 2",
+        isMainSubject: true,
+        coefficient: 16,
+      },
+      /**
+       * Spécialité 3
+       */
+      {
+        name: "Spé. 3",
+        isMainSubject: true,
+        coefficient: 16,
+      },
+      /**
+       * Français
+       */
+      {
+        name: "Français",
+        isMainSubject: true,
+        coefficient: 10,
+      },
+      /**
+       * Histoire-Géographie
+       */
+      {
+        name: "Histoire-Géographie",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * EMC
+       */
+      {
+        name: "EMC",
+        isMainSubject: true,
+        coefficient: 1,
+      },
+      /**
+       * Enseignement-Scientifique
+       */
+      {
+        name: "Enseignement-Scientifique",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * EPS
+       */
+      {
+        name: "EPS",
+        isMainSubject: true,
+        coefficient: 6,
+      },
+      /**
+       * LV1
+       */
+      {
+        name: "LV1",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * LV2
+       */
+      {
+        name: "LV2",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+    ],
+  },
+  /**
+   * 2nd GT
+   */
+  {
+    id: "LYCEE_2NDE_GT",
+    name: "2nde - Section Générale & Technologique",
+    description: "Préset pour la 2nde générale & technologie.",
+    subjects: [
+      /**
+       * Mathématiques
+       */
+      {
+        name: "Mathématiques",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * Physique-Chimie
+       */
+      {
+        name: "Physique-Chimie",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * Science de la vie et de la terre
+       */
+      {
+        name: "Science de la Vie et de la Terre",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * Français
+       */
+      {
+        name: "Français",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * Histoire-Géographie
+       */
+      {
+        name: "Histoire-Géographie",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * SNT
+       */
+      {
+        name: "Science Numérique et Technologique",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * EMC
+       */
+      {
+        name: "EMC",
+        isMainSubject: true,
+        coefficient: 1,
+      },
+      /**
+       * EPS
+       */
+      {
+        name: "EPS",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * LV1
+       */
+      {
+        name: "LV1",
+        isMainSubject: true,
+        coefficient: 3,
+      },
+      /**
+       * LV2
+       */
+      {
+        name: "LV2",
+        isMainSubject: true,
+        coefficient: 3,
+      },
     ],
   },
 ];
@@ -704,7 +969,7 @@ type Preset = {
   name: string;
   description: string;
   subjects: PresetSubject[];
-  customAverages?: CustomAveragePreset[]; 
+  customAverages?: CustomAveragePreset[];
 };
 
 type PresetSubject = {
@@ -734,7 +999,6 @@ type InsertedCustomAverage = {
   createdAt: Date;
 };
 
-
 /**
  * Get all presets
  */
@@ -755,6 +1019,9 @@ router.post(
         "CPE_PREPA_SUP_CHI",
         "CPE_PREPA_SPE_PC",
         "CPE_PREPA_SPE_PSI",
+        "LYCEE_TERMINALE_G",
+        "LYCEE_1ERE_G",
+        "LYCEE_2NDE_GT",
       ]),
     })
   ),
@@ -861,9 +1128,7 @@ router.post(
         for (const subj of customAvg.subjects) {
           const foundSubj = insertedSubjects.find((s) => s.name === subj.name);
           if (!foundSubj) {
-            throw new HTTPException(
-              400
-            );
+            throw new HTTPException(400);
           }
           avgSubjects.push({
             id: foundSubj.id,
