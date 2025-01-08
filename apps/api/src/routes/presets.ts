@@ -852,7 +852,7 @@ const presets: Preset[] = [
       {
         name: "EPS",
         isMainSubject: true,
-        coefficient: 6,
+        coefficient: 3,
       },
       /**
        * LV1
