@@ -61,7 +61,6 @@ export const UpdateSubjectForm = ({
 
   const parentInputRef = useRef<HTMLInputElement>(null);
 
-  // Focus the CommandInput inside the Drawer whenever it opens on mobile
   useEffect(() => {
     if (!isDesktop && openParent) {
       setTimeout(() => parentInputRef.current?.focus(), 350);
@@ -70,9 +69,9 @@ export const UpdateSubjectForm = ({
 
   const { data: subjects } = useSubjects();
 
-  const filteredSubjects = subjects?.filter((s) => s.id !== subject.id);
-
-  // Feedback schema validation
+  // -----------------------------------
+  // 1) First, define 'form'
+  // -----------------------------------
   const updateSubjectSchema = z.object({
     name: z.string().min(1, t("nameRequired")).max(64, t("nameTooLong")),
     coefficient: z.coerce
@@ -94,6 +93,34 @@ export const UpdateSubjectForm = ({
 
   type UpdateSubjectSchema = z.infer<typeof updateSubjectSchema>;
 
+  const form = useForm<UpdateSubjectSchema>({
+    resolver: zodResolver(updateSubjectSchema),
+    defaultValues: {
+      name: subject.name,
+      coefficient: subject.coefficient / 100,
+      parentId: subject.parentId ?? "none",
+      isMainSubject: subject.isMainSubject,
+      isDisplaySubject: subject.isDisplaySubject,
+    },
+  });
+
+  // -----------------------------------
+  // 2) Then use 'form' to find selectedParent
+  // -----------------------------------
+  const selectedParent = subjects?.find(
+    (s) => s.id === form.getValues("parentId")
+  );
+
+  // 3) Filter based on parentInputValue
+  const filteredSubjects = subjects
+    ?.filter(
+      (s) =>
+        s.id !== subject.id &&
+        s.name.toLowerCase().includes(parentInputValue.toLowerCase())
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  // 4) Use the rest exactly the same
   const { mutate, isPending } = useMutation({
     mutationKey: ["update-subject"],
     mutationFn: async ({
@@ -121,9 +148,7 @@ export const UpdateSubjectForm = ({
         title: t("successTitle"),
         description: t("successDescription"),
       });
-
       close();
-
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
       queryClient.invalidateQueries({ queryKey: ["subject", subject.id] });
     },
@@ -132,20 +157,8 @@ export const UpdateSubjectForm = ({
     },
   });
 
-  const form = useForm<UpdateSubjectSchema>({
-    resolver: zodResolver(updateSubjectSchema),
-    defaultValues: {
-      name: subject.name,
-      coefficient: subject.coefficient / 100,
-      parentId: subject.parentId ?? "none",
-      isMainSubject: subject.isMainSubject,
-      isDisplaySubject: subject.isDisplaySubject,
-    },
-  });
-
   const isDisplaySubject = form.watch("isDisplaySubject");
 
-  // Update coefficient when category is toggled on
   useEffect(() => {
     if (isDisplaySubject) {
       form.setValue("coefficient", 1);
@@ -156,16 +169,12 @@ export const UpdateSubjectForm = ({
     mutate(values);
   };
 
+  // Reset parentInputValue when popover/drawer opens
   useEffect(() => {
     if (openParent) {
-      const parentId = form.getValues("parentId");
-      setParentInputValue(
-        parentId && parentId !== "none"
-          ? filteredSubjects?.find((s) => s.id === parentId)?.name || ""
-          : ""
-      );
+      setParentInputValue(selectedParent?.name ?? "");
     }
-  }, [openParent, filteredSubjects, form]);
+  }, [openParent, selectedParent]);
 
   return (
     <div className="">
@@ -287,11 +296,11 @@ export const UpdateSubjectForm = ({
                           className="justify-between"
                           onClick={() => setOpenParent(!openParent)}
                         >
-                          {field.value && field.value !== "none"
-                            ? filteredSubjects?.find(
-                                (s) => s.id === field.value
-                              )?.name
-                            : t("chooseParentSubject")}
+                          {selectedParent
+                            ? selectedParent.name
+                            : field.value === "none"
+                            ? t("chooseParentSubject")
+                            : ""}
                           <ChevronUpDownIcon className="opacity-50" />
                         </Button>
                       </PopoverTrigger>
@@ -302,6 +311,7 @@ export const UpdateSubjectForm = ({
                     >
                       <Command>
                         <CommandInput
+                          ref={parentInputRef}
                           placeholder={t("chooseParentSubject")}
                           value={parentInputValue}
                           onValueChange={setParentInputValue}
@@ -310,27 +320,37 @@ export const UpdateSubjectForm = ({
                         <CommandList>
                           <CommandEmpty>{t("noSubjectsFound")}</CommandEmpty>
                           <CommandGroup>
-                            {filteredSubjects
-                              ?.slice()
-                              .sort((a, b) => a.name.localeCompare(b.name))
-                              .map((subject) => (
-                                <CommandItem
-                                  key={subject.id}
-                                  value={subject.name}
-                                  onSelect={() => {
-                                    form.setValue("parentId", subject.id, {
-                                      shouldValidate: true,
-                                    });
-                                    setOpenParent(false);
-                                  }}
-                                >
-                                  <span>{subject.name}</span>
-                                  {form.getValues("parentId") ===
-                                    subject.id && (
-                                    <CheckIcon className="w-4 h-4 ml-auto" />
-                                  )}
-                                </CommandItem>
-                              ))}
+                            <CommandItem
+                              value="none"
+                              onSelect={() => {
+                                form.setValue("parentId", "none", {
+                                  shouldValidate: true,
+                                });
+                                setOpenParent(false);
+                              }}
+                            >
+                              <span>{t("noParent")}</span>
+                              {form.getValues("parentId") === "none" && (
+                                <CheckIcon className="w-4 h-4 ml-auto" />
+                              )}
+                            </CommandItem>
+                            {filteredSubjects?.map((item) => (
+                              <CommandItem
+                                key={item.id}
+                                value={item.name}
+                                onSelect={() => {
+                                  form.setValue("parentId", item.id, {
+                                    shouldValidate: true,
+                                  });
+                                  setOpenParent(false);
+                                }}
+                              >
+                                <span>{item.name}</span>
+                                {form.getValues("parentId") === item.id && (
+                                  <CheckIcon className="w-4 h-4 ml-auto" />
+                                )}
+                              </CommandItem>
+                            ))}
                           </CommandGroup>
                         </CommandList>
                       </Command>
@@ -348,11 +368,11 @@ export const UpdateSubjectForm = ({
                           className="justify-between"
                           onClick={() => setOpenParent(!openParent)}
                         >
-                          {field.value && field.value !== "none"
-                            ? filteredSubjects?.find(
-                                (s) => s.id === field.value
-                              )?.name
-                            : t("chooseParentSubject")}
+                          {selectedParent
+                            ? selectedParent.name
+                            : field.value === "none"
+                            ? t("chooseParentSubject")
+                            : ""}
                           <ChevronUpDownIcon className="opacity-50" />
                         </Button>
                       </FormControl>
@@ -374,27 +394,37 @@ export const UpdateSubjectForm = ({
                           <CommandList>
                             <CommandEmpty>{t("noSubjectsFound")}</CommandEmpty>
                             <CommandGroup>
-                              {filteredSubjects
-                                ?.slice()
-                                .sort((a, b) => a.name.localeCompare(b.name))
-                                .map((subject) => (
-                                  <CommandItem
-                                    key={subject.id}
-                                    value={subject.name}
-                                    onSelect={() => {
-                                      form.setValue("parentId", subject.id, {
-                                        shouldValidate: true,
-                                      });
-                                      setOpenParent(false);
-                                    }}
-                                  >
-                                    <span>{subject.name}</span>
-                                    {form.getValues("parentId") ===
-                                      subject.id && (
-                                      <CheckIcon className="w-4 h-4 ml-auto" />
-                                    )}
-                                  </CommandItem>
-                                ))}
+                              <CommandItem
+                                value="none"
+                                onSelect={() => {
+                                  form.setValue("parentId", "none", {
+                                    shouldValidate: true,
+                                  });
+                                  setOpenParent(false);
+                                }}
+                              >
+                                <span>{t("noParent")}</span>
+                                {form.getValues("parentId") === "none" && (
+                                  <CheckIcon className="w-4 h-4 ml-auto" />
+                                )}
+                              </CommandItem>
+                              {filteredSubjects?.map((item) => (
+                                <CommandItem
+                                  key={item.id}
+                                  value={item.name}
+                                  onSelect={() => {
+                                    form.setValue("parentId", item.id, {
+                                      shouldValidate: true,
+                                    });
+                                    setOpenParent(false);
+                                  }}
+                                >
+                                  <span>{item.name}</span>
+                                  {form.getValues("parentId") === item.id && (
+                                    <CheckIcon className="w-4 h-4 ml-auto" />
+                                  )}
+                                </CommandItem>
+                              ))}
                             </CommandGroup>
                           </CommandList>
                         </Command>

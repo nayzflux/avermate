@@ -588,7 +588,7 @@ function deepCloneSubjects(subjects: Subject[]): Subject[] {
 /**
  * Calculates the impact of a subject on the average.
  *
- * @param impactingSubjectId - The ID of the subject to assess the impact of.
+ * @param impactingSubjectIds - The ID of the subject to assess the impact of.
  * @param impactedSubjectId - The ID of the subject whose average is being impacted. If undefined, impacts the general average.
  * @param subjects - An array of all subjects.
  * @param customAverage - Optional custom average configuration.
@@ -610,19 +610,27 @@ function deepCloneSubjects(subjects: Subject[]): Subject[] {
  * If the impacting subject is not found or the averages cannot be determined, the function returns `null`.
  */
 export function subjectImpact(
-  impactingSubjectId: string,
+  impactingSubjectIds: string | string[],
   impactedSubjectId: string | undefined,
   subjects: Subject[],
   customAverage?: Average
 ): { difference: number; percentageChange: number | null } | null {
   const subjectsCopy = deepCloneSubjects(subjects);
 
-  const impactingIds = [impactingSubjectId, ...getChildren(subjectsCopy, impactingSubjectId)];
+  // Handle both single string and array of strings
+  const impactingIds = Array.isArray(impactingSubjectIds) 
+    ? impactingSubjectIds
+    : [impactingSubjectIds];
+
+  // Get all impacting IDs including children
+  const allImpactingIds = impactingIds.flatMap(id => 
+    [id, ...getChildren(subjectsCopy, id)]
+  );
 
   const avgWithSubject = average(impactedSubjectId, subjectsCopy, customAverage);
-
-  const subjectsWithoutImpacting = subjectsCopy.filter((s) => !impactingIds.includes(s.id));
-
+  const subjectsWithoutImpacting = subjectsCopy.filter(
+    (s) => !allImpactingIds.includes(s.id)
+  );
   const avgWithoutSubject = average(impactedSubjectId, subjectsWithoutImpacting, customAverage);
 
   if (avgWithSubject !== null && avgWithoutSubject !== null) {
@@ -2479,4 +2487,103 @@ export function calculateStreak(
   });
 
   return streak;
+}
+
+export function buildVirtualSubject(
+  average: Average | null,
+  subjects: Subject[]
+): Subject {
+  // For general average
+  if (!average) {
+    return buildGeneralAverageSubject();
+  }
+
+  // For custom averages
+  const includedSubjects = subjects.filter(subject => 
+    average.subjects.some(avgSubj => {
+      if (avgSubj.id === subject.id) {
+        return true;
+      }
+      // Check if parent subject and includeChildren is true
+      if (avgSubj.includeChildren) {
+        const parents = getParents(subjects, subject.id);
+        return parents.includes(avgSubj.id);
+      }
+      return false;
+    })
+  );
+
+  return {
+    id: average.id,
+    name: average.name,
+    parentId: null,
+    coefficient: 100,
+    isDisplaySubject: true,
+    depth: 0,
+    grades: [],
+    createdAt: new Date(),
+    userId: "",
+    isMainSubject: false,
+  };
+}
+
+export function buildGeneralAverageSubject(): Subject {
+  return {
+    id: "general-average",
+    name: "General Average",
+    parentId: null,
+    coefficient: 100,
+    isDisplaySubject: true,
+    depth: 0,
+    grades: [],
+    createdAt: new Date(),
+    userId: "",
+    isMainSubject: false,
+  };
+}
+
+export function addGeneralAverageToSubjects(
+  subjects: Subject[], 
+  customAverage?: Average
+): Subject[] {
+  if (!customAverage) {
+    // Handle general average case
+    const modifiedSubjects = subjects.map(subject => ({
+      ...subject,
+      depth: subject.depth + 1,
+      parentId: subject.parentId === null ? "general-average" : subject.parentId
+    }));
+    return [buildGeneralAverageSubject(), ...modifiedSubjects];
+  }
+
+  // Handle custom average case
+  const includedSubjects = subjects.filter(subject => 
+    customAverage.subjects.some(avgSubj => {
+      if (avgSubj.id === subject.id) {
+        return true;
+      }
+      // Check if parent subject and includeChildren is true
+      if (avgSubj.includeChildren) {
+        const parents = getParents(subjects, subject.id);
+        return parents.includes(avgSubj.id);
+      }
+      return false;
+    })
+  );
+
+  // Modify subjects with custom coefficients if specified
+  const modifiedSubjects = includedSubjects.map(subject => {
+    const customSubject = customAverage.subjects.find(s => s.id === subject.id);
+    return {
+      ...subject,
+      depth: 1,
+      parentId: customAverage.id,
+      // Override coefficient if custom coefficient is specified
+      coefficient: customSubject?.customCoefficient != null 
+        ? customSubject!.customCoefficient * 100 
+        : subject.coefficient
+    };
+  });
+
+  return [buildVirtualSubject(customAverage, subjects), ...modifiedSubjects];
 }

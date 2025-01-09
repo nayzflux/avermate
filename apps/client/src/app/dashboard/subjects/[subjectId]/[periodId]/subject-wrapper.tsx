@@ -62,6 +62,7 @@ function SubjectWrapper({
   subject,
   period,
   customAverages,
+  customAverageImpact,
   onBack,
   periods,
 }: {
@@ -69,10 +70,14 @@ function SubjectWrapper({
   subject: Subject;
   period: Period;
   customAverages: Average[];
+  customAverageImpact?: number | null;
   onBack: () => void;
   periods: Period[];
 }) {
   const t = useTranslations("Dashboard.Pages.SubjectWrapper");
+
+  const isVirtualSubject =
+    subject.id.startsWith("ca") || subject.id.startsWith("general-average");
 
   const parentSubjects = () => {
     if (!subject || !subjects) {
@@ -115,6 +120,10 @@ function SubjectWrapper({
 
   function get4xlColsClass(cardCount: number) {
     switch (cardCount) {
+      case 3:
+        return "4xl:grid-cols-3";
+      case 4:
+        return "4xl:grid-cols-4";
       case 5:
         return "4xl:grid-cols-5";
       case 6:
@@ -141,22 +150,30 @@ function SubjectWrapper({
 
         {/* Subject Title & More Button */}
         <div className="flex justify-between items-center">
-          <p className="text-2xl font-semibold">{subject?.name}</p>
-          {subject && <SubjectMoreButton subject={subject} />}
+          <p className="text-2xl font-semibold">
+            {subject?.id === "general-average"
+              ? t("generalAverage")
+              : subject?.name}
+          </p>
+          {subject && !isVirtualSubject && (
+            <SubjectMoreButton subject={subject} />
+          )}
         </div>
 
         <Separator />
 
         {/* Coefficient card (optional) */}
-        <DataCard
-          title={t("coefficientTitle")}
-          description={t("coefficientDescription", { name: subject?.name })}
-          icon={VariableIcon}
-        >
-          <p className="text-3xl font-bold">
-            {formatGradeValue(subject?.coefficient || 0)}
-          </p>
-        </DataCard>
+        {!isVirtualSubject && (
+          <DataCard
+            title={t("coefficientTitle")}
+            description={t("coefficientDescription", { name: subject?.name })}
+            icon={VariableIcon}
+          >
+            <p className="text-3xl font-bold">
+              {formatGradeValue(subject?.coefficient || 0)}
+            </p>
+          </DataCard>
+        )}
 
         {/* Empty state */}
         <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
@@ -198,9 +215,14 @@ function SubjectWrapper({
       </div>
 
       {/* Header */}
+
       <div className="flex justify-between items-center">
-        <p className="text-2xl font-semibold">{subject?.name}</p>
-        {subject && (
+        <p className="text-2xl font-semibold">
+          {subject?.id === "general-average"
+            ? t("generalAverage")
+            : subject?.name}
+        </p>
+        {!isVirtualSubject && (
           <div className="flex gap-4">
             {!subject.isDisplaySubject && (
               <AddGradeDialog parentId={subject.id}>
@@ -222,15 +244,19 @@ function SubjectWrapper({
         className={cn(
           `grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4`,
           get4xlColsClass(
-            5 +
-              customAverages.filter((ca) =>
-                isSubjectIncludedInCustomAverage(
-                  subject,
-                  subjects,
-                  buildCustomConfig(ca)
-                )
-              ).length +
-              parentSubjects().length
+            subject.id === "general-average"
+              ? 3
+              : subject.id.startsWith("ca")
+              ? 4
+              : 5 +
+                customAverages.filter((ca) =>
+                  isSubjectIncludedInCustomAverage(
+                    subject,
+                    subjects,
+                    buildCustomConfig(ca)
+                  )
+                ).length +
+                parentSubjects().length
           )
         )}
       >
@@ -250,34 +276,40 @@ function SubjectWrapper({
         </DataCard>
 
         {/* Coefficient */}
-        <DataCard
-          title={t("coefficientTitle")}
-          description={t("coefficientDescription", { name: subject?.name })}
-          icon={VariableIcon}
-        >
-          <p className="text-3xl font-bold">
-            {formatGradeValue(subject?.coefficient || 0)}
-          </p>
-        </DataCard>
+        {!isVirtualSubject && (
+          <DataCard
+            title={t("coefficientTitle")}
+            description={t("coefficientDescription", { name: subject?.name })}
+            icon={VariableIcon}
+          >
+            <p className="text-3xl font-bold">
+              {formatGradeValue(subject?.coefficient || 0)}
+            </p>
+          </DataCard>
+        )}
 
         {/* Subject Impact on overall average */}
-        <DataCard
-          title={t("impactTitle")}
-          description={t("impactDescription", {
-            name: subject?.name,
-            periodName: period?.name,
-          })}
-          icon={ArrowUpCircleIcon}
-        >
-          <DifferenceBadge
-            diff={
-              subjects
-                ? subjectImpact(subject.id, undefined, subjects)?.difference ||
-                  0
-                : 0
-            }
-          />
-        </DataCard>
+        {subject.id !== "general-average" && (
+          <DataCard
+            title={t("impactTitle")}
+            description={t("impactDescription", {
+              name: subject?.name,
+              periodName: period?.name,
+            })}
+            icon={ArrowUpCircleIcon}
+          >
+            <DifferenceBadge
+              diff={
+                subject.id.startsWith("ca")
+                  ? customAverageImpact || 0
+                  : subjects
+                  ? subjectImpact(subject.id, undefined, subjects)
+                      ?.difference || 0
+                  : 0
+              }
+            />
+          </DataCard>
+        )}
 
         {/* Custom Averages if subject is included */}
         {customAverages.map((ca) => {

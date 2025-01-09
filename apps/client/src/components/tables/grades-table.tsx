@@ -103,7 +103,20 @@ export default function GradesTable({
         {/* Main Average */}
         <TableRow className="hidden md:table-row">
           <TableCell className="font-semibold" colSpan={2}>
-            {t("overallAverage")}
+            <Link
+              href={`/dashboard/subjects/general-average/${periodId}`}
+              className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
+              onClick={() => {
+                const currentPath =
+                  pathname + window.location.search || "/dashboard";
+                localStorage.setItem(
+                  "backFromGradeOrSubject",
+                  currentPath
+                );
+              }}
+            >
+              {t("overallAverage")}
+            </Link>
           </TableCell>
           <TableCell className="text-right font-semibold">
             {overallAverage}
@@ -111,7 +124,20 @@ export default function GradesTable({
         </TableRow>
         <TableRow className="md:hidden">
           <TableCell className="font-semibold text-center" colSpan={3}>
-            {t("overallAverage")}: {overallAverage}
+            <Link
+              href={`/dashboard/subjects/general-average/${periodId}`}
+              className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
+              onClick={() => {
+                const currentPath =
+                  pathname + window.location.search || "/dashboard";
+                localStorage.setItem(
+                  "backFromGradeOrSubject",
+                  currentPath
+                );
+              }}
+            >
+              {t("overallAverage")}</Link>: {overallAverage}
+            
           </TableCell>
         </TableRow>
 
@@ -127,7 +153,20 @@ export default function GradesTable({
                 <React.Fragment key={ca.id}>
                   <TableRow className="hidden md:table-row">
                     <TableCell className="font-semibold" colSpan={2}>
-                      {ca.name}
+                      <Link
+                        href={`/dashboard/subjects/${ca.id}/${periodId}`}
+                        onClick={() => {
+                          const currentPath =
+                            pathname + window.location.search || "/dashboard";
+                          localStorage.setItem(
+                            "backFromGradeOrSubject",
+                            currentPath
+                          );
+                        }}
+                        className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
+                      >
+                        {ca.name}
+                      </Link>
                     </TableCell>
                     <TableCell className="text-right font-semibold">
                       {customAvg}
@@ -138,7 +177,21 @@ export default function GradesTable({
                       className="font-semibold text-center"
                       colSpan={3}
                     >
-                      {ca.name}: {customAvg}
+                      <Link
+                        href={`/dashboard/subjects/${ca.id}/${periodId}`}
+                        onClick={() => {
+                          const currentPath =
+                            pathname + window.location.search || "/dashboard";
+                          localStorage.setItem(
+                            "backFromGradeOrSubject",
+                            currentPath
+                          );
+                        }}
+                        className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
+                      >
+                        {ca.name}
+                      </Link>
+                      : {customAvg}
                     </TableCell>
                   </TableRow>
                 </React.Fragment>

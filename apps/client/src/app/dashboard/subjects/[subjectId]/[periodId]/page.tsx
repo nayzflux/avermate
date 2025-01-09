@@ -8,7 +8,13 @@ import { useSubjects } from "@/hooks/use-subjects";
 import { apiClient } from "@/lib/api";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
 import { Subject } from "@/types/subject";
-import { fullYearPeriod } from "@/utils/average";
+import {
+  addGeneralAverageToSubjects,
+  fullYearPeriod,
+  buildGeneralAverageSubject,
+  subjectImpact,
+  getParents,
+} from "@/utils/average";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,6 +27,9 @@ export default function SubjectPage() {
     periodId: string;
     subjectId: string;
   };
+
+  const isVirtualSubject =
+    subjectId.startsWith("ca") || subjectId === "general-average";
 
   const router = useRouter();
 
@@ -66,6 +75,7 @@ export default function SubjectPage() {
       const data = await res.json<{ subject: Subject }>();
       return data.subject;
     },
+    enabled: !isVirtualSubject,
   });
 
   // Fetch period data
@@ -86,6 +96,7 @@ export default function SubjectPage() {
       const data = await res.json<{ subject: Subject }>();
       return data.subject;
     },
+    enabled: !isVirtualSubject,
   });
 
   const {
@@ -103,22 +114,19 @@ export default function SubjectPage() {
   if (
     isPeriodError ||
     organizedSubjectsIsError ||
-    organizedSubjectIsError ||
-    isSubjectError ||
     isSubjectsError ||
-    isCustomAveragesError
+    isCustomAveragesError ||
+    (!isVirtualSubject && (organizedSubjectIsError || isSubjectError))
   ) {
     return <div>{ErrorStateCard()}</div>;
   }
 
   if (
     organizedSubjectsIsPending ||
-    organizedSubjectIsPending ||
     isPeriodPending ||
-    isSubjectPending ||
     isSubjectsPending ||
-    isCustomAveragesPending
-    // || true
+    isCustomAveragesPending ||
+    (!isVirtualSubject && (organizedSubjectIsPending || isSubjectPending))
   ) {
     return <div>{subjectLoader(t)}</div>;
   }
@@ -135,18 +143,83 @@ export default function SubjectPage() {
       : organizedSubjects?.find((p) => p.period.id === periodId)?.period ||
         fullYearPeriod(subjects);
 
+  // function to choose what to give to the wrapper depending on the periodId and if it's a virtual subject
+  const subjectsToGive = () => {
+    // Get the custom average if this is a custom average page
+    const customAverageId = subjectId;
+    const customAverage = customAverageId
+      ? customAverages?.find((ca) => ca.id === customAverageId)
+      : undefined;
+
+    if (periodId === "full-year") {
+      return addGeneralAverageToSubjects(subjects, customAverage);
+    } else {
+      return addGeneralAverageToSubjects(
+        organizedSubjects?.find((p) => p.period.id === periodId)?.subjects ||
+          [],
+        customAverage
+      );
+    }
+  };
+
+  const subjectVirtual = () => {
+    return (
+      subjectsToGive().find((s) => s.id === subjectId) ||
+      buildGeneralAverageSubject()
+    );
+  };
+
+  const calculateCustomAverageImpact = () => {
+    if (!isVirtualSubject || !subjectId.startsWith("ca")) return null;
+
+    const customAverageId = subjectId;
+    const customAverage = customAverages?.find(
+      (ca) => ca.id === customAverageId
+    );
+    if (!customAverage) return null;
+
+    // Get all subjects in the custom average
+    const includedSubjects = (
+      periodId === "full-year"
+        ? subjects
+        : organizedSubjects?.find((p) => p.period.id === periodId)?.subjects ||
+          []
+    ).filter((subject) =>
+      customAverage.subjects.some((avgSubj) => {
+        if (avgSubj.id === subject.id) return true;
+        if (avgSubj.includeChildren) {
+          const parents = getParents(subjects, subject.id);
+          return parents.includes(avgSubj.id);
+        }
+        return false;
+      })
+    );
+
+    // Calculate combined impact of all included subjects
+    const impact = subjectImpact(
+      includedSubjects.map((s) => s.id),
+      undefined,
+      periodId === "full-year"
+        ? subjects
+        : organizedSubjects?.find((p) => p.period.id === periodId)?.subjects ||
+            []
+    );
+
+    return impact?.difference || null;
+  };
+
   return (
     <SubjectWrapper
-      onBack={handleBack}
-      subjects={
-        periodId === "full-year"
-          ? subjects
-          : organizedSubjects?.find((p) => p.period.id === periodId)
-              ?.subjects || []
+      subjects={subjectsToGive()}
+      subject={
+        isVirtualSubject
+          ? subjectVirtual()
+          : organizedSubject || buildGeneralAverageSubject()
       }
-      subject={organizedSubject}
       period={periods}
       customAverages={customAverages}
+      customAverageImpact={calculateCustomAverageImpact()}
+      onBack={handleBack}
       periods={sortedPeriods}
     />
   );
