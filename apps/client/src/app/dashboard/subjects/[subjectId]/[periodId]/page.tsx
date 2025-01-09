@@ -151,14 +151,18 @@ export default function SubjectPage() {
       ? customAverages?.find((ca) => ca.id === customAverageId)
       : undefined;
 
-    if (periodId === "full-year") {
-      return addGeneralAverageToSubjects(subjects, customAverage);
+    if (isVirtualSubject) {
+      if (periodId === "full-year") {
+        return addGeneralAverageToSubjects(subjects, customAverage);
+      } else {
+        return addGeneralAverageToSubjects(
+          organizedSubjects?.find((p) => p.period.id === periodId)?.subjects ||
+            [],
+          customAverage
+        );
+      }
     } else {
-      return addGeneralAverageToSubjects(
-        organizedSubjects?.find((p) => p.period.id === periodId)?.subjects ||
-          [],
-        customAverage
-      );
+      return subjects;
     }
   };
 
@@ -207,6 +211,8 @@ export default function SubjectPage() {
 
     return impact?.difference || null;
   };
+  
+  console.log(subjectsToGive());
 
   return (
     <SubjectWrapper

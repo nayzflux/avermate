@@ -288,29 +288,6 @@ function SubjectWrapper({
           </DataCard>
         )}
 
-        {/* Subject Impact on overall average */}
-        {subject.id !== "general-average" && (
-          <DataCard
-            title={t("impactTitle")}
-            description={t("impactDescription", {
-              name: subject?.name,
-              periodName: period?.name,
-            })}
-            icon={ArrowUpCircleIcon}
-          >
-            <DifferenceBadge
-              diff={
-                subject.id.startsWith("ca")
-                  ? customAverageImpact || 0
-                  : subjects
-                  ? subjectImpact(subject.id, undefined, subjects)
-                      ?.difference || 0
-                  : 0
-              }
-            />
-          </DataCard>
-        )}
-
         {/* Custom Averages if subject is included */}
         {customAverages.map((ca) => {
           const configMap = buildCustomConfig(ca);
@@ -334,6 +311,29 @@ function SubjectWrapper({
             </DataCard>
           );
         })}
+
+        {/* Subject Impact on overall average */}
+        {subject.id !== "general-average" && (
+          <DataCard
+            title={t("impactTitle")}
+            description={t("impactDescription", {
+              name: subject?.name,
+              periodName: period?.name,
+            })}
+            icon={ArrowUpCircleIcon}
+          >
+            <DifferenceBadge
+              diff={
+                subject.id.startsWith("ca")
+                  ? customAverageImpact || 0
+                  : subjects
+                  ? subjectImpact(subject.id, undefined, subjects)
+                      ?.difference || 0
+                  : 0
+              }
+            />
+          </DataCard>
+        )}
 
         {/* Parent Subjects (impact on them) */}
         {parentSubjects().map((parent) => (
