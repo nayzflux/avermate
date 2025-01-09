@@ -211,7 +211,7 @@ export const UpdateCustomAverageForm = ({
                       </Button>
                     </PopoverTrigger>
                   </FormControl>
-                  <PopoverContent className="p-0">
+                  <PopoverContent className="p-0 min-w-[var(--radix-popover-trigger-width)]">
                     <Command>
                       <CommandInput
                         placeholder={t("searchSubject")}

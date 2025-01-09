@@ -79,7 +79,7 @@ export default function DeletePeriodDialog({ period }: { period: Period }) {
             {t("title", { name: period.name })}
           </AlertDialogTitle>
 
-          <AlertDialogDescription className="max-w-[300px]">
+          <AlertDialogDescription>
             {t("description", { name: period.name })}
           </AlertDialogDescription>
         </AlertDialogHeader>

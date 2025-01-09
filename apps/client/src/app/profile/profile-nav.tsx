@@ -72,7 +72,7 @@ export default function ProfileNav({ onBack }: { onBack: () => void }) {
       <ul className="flex flex-row sm:flex-col gap-1 sm:gap-4 w-full">
         {/* Conditionally render back button as the first or last item */}
         <div className="flex flex-row sm:flex-col gap-1 sm:gap-4 w-full">
-          <div className="block sm:hidden">{backButton}</div>
+          <div className="block sm:hidden w-full">{backButton}</div>
           {routes.map((route) => (
             <li key={route.path} className="w-full">
               <Button

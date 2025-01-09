@@ -26,6 +26,7 @@ function Calendar({
 
   return (
     <DayPicker
+      fixedWeeks
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{
