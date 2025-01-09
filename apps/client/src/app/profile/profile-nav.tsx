@@ -38,76 +38,75 @@ export default function ProfileNav({ onBack }: { onBack: () => void }) {
       label: t("about"),
       path: "/profile/about",
     },
-    {
-      icon: ArrowLeftIcon,
-      label: t("back"),
-      action: "back",
-      path: "",
-    },
   ];
 
-  const filteredRoutes = routes.filter((route) => route.action !== "back");
+  const backButton = (
+    <li className="w-full">
+      <Button
+        className={cn(
+          "w-full h-full",
+          "2xl:flex-row 2xl:justify-start", // Extra large screens: icon + label left-aligned
+          "lg:flex-col lg:justify-center", // Large screens: icon only centered, stay in column
+          "flex-col justify-center" // Small screens: icon centered + label below
+        )}
+        variant="ghost"
+        onClick={onBack}
+      >
+        <ArrowLeftIcon className="size-4 2xl:mr-2" />
+        <p
+          className={cn(
+            "text-xs 2xl:text-sm",
+            "2xl:block", // Show on 2xl screens
+            "sm:hidden", // Hide on large screens
+            "hidden mt-1 lg:mt-0" // Show below icon on small screens
+          )}
+        >
+          {t("back")}
+        </p>
+      </Button>
+    </li>
+  );
 
   return (
     <nav>
-      <ul className="flex flex-row justify-between sm:flex-col gap-1 sm:gap-4 w-full">
-        {filteredRoutes.map((route) => (
-          <li key={route.path} className="w-full">
-            <Button
-              className={cn(
-                "w-full h-full",
-                "2xl:flex-row 2xl:justify-start", // Extra large screens: icon + label left-aligned
-                "lg:flex-col lg:justify-center", // Large screens: icon only centered, stay in column
-                "flex-col justify-center", // Small screens: icon centered + label below
-                path === route.path ? "bg-primary/10" : ""
-              )}
-              variant="ghost"
-              asChild
-            >
-              <Link
-                href={route.path}
-                className="flex flex-col lg:flex-col 2xl:flex-row items-center"
+      <ul className="flex flex-row sm:flex-col gap-1 sm:gap-4 w-full">
+        {/* Conditionally render back button as the first or last item */}
+        <div className="flex flex-row sm:flex-col gap-1 sm:gap-4 w-full">
+          <div className="block sm:hidden">{backButton}</div>
+          {routes.map((route) => (
+            <li key={route.path} className="w-full">
+              <Button
+                className={cn(
+                  "w-full h-full",
+                  "2xl:flex-row 2xl:justify-start", // Extra large screens: icon + label left-aligned
+                  "lg:flex-col lg:justify-center", // Large screens: icon only centered, stay in column
+                  "flex-col justify-center", // Small screens: icon centered + label below
+                  path === route.path ? "bg-primary/10" : ""
+                )}
+                variant="ghost"
+                asChild
               >
-                <route.icon className="size-4 2xl:mr-2" />
-                <p
-                  className={cn(
-                    "text-xs 2xl:text-sm",
-                    "2xl:block", // Show on 2xl screens
-                    "sm:hidden", // Hide on large screens
-                    "hidden mt-1 lg:mt-0" // Show below icon on small screens
-                  )}
+                <Link
+                  href={route.path}
+                  className="flex flex-col lg:flex-col 2xl:flex-row items-center"
                 >
-                  {route.label}
-                </p>
-              </Link>
-            </Button>
-          </li>
-        ))}
-        {/* Always show the back button */}
-        <li className="w-full">
-          <Button
-            className={cn(
-              "w-full h-full",
-              "2xl:flex-row 2xl:justify-start", // Extra large screens: icon + label left-aligned
-              "lg:flex-col lg:justify-center", // Large screens: icon only centered, stay in column
-              "flex-col justify-center" // Small screens: icon centered + label below
-            )}
-            variant="ghost"
-            onClick={onBack}
-          >
-            <ArrowLeftIcon className="size-4 2xl:mr-2" />
-            <p
-              className={cn(
-                "text-xs 2xl:text-sm",
-                "2xl:block", // Show on 2xl screens
-                "sm:hidden", // Hide on large screens
-                "hidden mt-1 lg:mt-0" // Show below icon on small screens
-              )}
-            >
-              {t("back")}
-            </p>
-          </Button>
-        </li>
+                  <route.icon className="size-4 2xl:mr-2" />
+                  <p
+                    className={cn(
+                      "text-xs 2xl:text-sm",
+                      "2xl:block", // Show on 2xl screens
+                      "sm:hidden", // Hide on large screens
+                      "hidden mt-1 lg:mt-0" // Show below icon on small screens
+                    )}
+                  >
+                    {route.label}
+                  </p>
+                </Link>
+              </Button>
+            </li>
+          ))}
+          <div className="hidden sm:block">{backButton}</div>
+        </div>
       </ul>
     </nav>
   );
