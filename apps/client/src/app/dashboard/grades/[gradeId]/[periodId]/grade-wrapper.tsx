@@ -150,7 +150,7 @@ export default function GradeWrapper({
           })}
           icon={
             subjects
-              ? (gradeImpact(grade.id, undefined, subjects)?.difference ?? 0) > 0
+              ? (gradeImpact(grade.id, undefined, subjects)?.difference ?? 0) >= 0
                 ? ArrowUpCircleIcon
                 : ArrowDownCircleIcon
               : ArrowUpCircleIcon
@@ -187,7 +187,7 @@ export default function GradeWrapper({
                 periodName: period?.name,
               })}
               icon={
-                withGrade?.difference && withGrade.difference > 0
+                withGrade?.difference && withGrade.difference >= 0
                   ? ArrowUpCircleIcon
                   : ArrowDownCircleIcon
               }
@@ -207,7 +207,7 @@ export default function GradeWrapper({
             })}
             icon={
               subjects
-                ? (gradeImpact(grade.id, parent.id, subjects)?.difference ?? 0) > 0
+                ? (gradeImpact(grade.id, parent.id, subjects)?.difference ?? 0) >= 0
                   ? ArrowUpCircleIcon
                   : ArrowDownCircleIcon
                 : ArrowUpCircleIcon
@@ -231,7 +231,7 @@ export default function GradeWrapper({
           })}
           icon={
             subjects
-              ? (gradeImpact(grade.id, grade.subjectId, subjects)?.difference ?? 0) > 0
+              ? (gradeImpact(grade.id, grade.subjectId, subjects)?.difference ?? 0) >= 0
                 ? ArrowUpCircleIcon
                 : ArrowDownCircleIcon
               : ArrowUpCircleIcon

@@ -308,7 +308,7 @@ function SubjectWrapper({
                 periodName: period?.name,
               })}
               icon={
-                impact?.difference && impact.difference > 0 ? ArrowUpCircleIcon : ArrowDownCircleIcon
+                impact?.difference && impact.difference >= 0 ? ArrowUpCircleIcon : ArrowDownCircleIcon
               }
             >
               <DifferenceBadge diff={impact?.difference || 0} />
@@ -326,11 +326,11 @@ function SubjectWrapper({
             })}
             icon={
               subject.id.startsWith("ca")
-                ? customAverageImpact && customAverageImpact > 0
+                ? customAverageImpact && customAverageImpact >= 0
                   ? ArrowUpCircleIcon
                   : ArrowDownCircleIcon
                 : subjects
-                ? (subjectImpact(subject.id, undefined, subjects)?.difference ?? 0) > 0
+                ? (subjectImpact(subject.id, undefined, subjects)?.difference ?? 0) >= 0
                   ? ArrowUpCircleIcon 
                   : ArrowDownCircleIcon
                 : ArrowUpCircleIcon
@@ -361,7 +361,7 @@ function SubjectWrapper({
             })}
             icon={
               subjects
-                ? (subjectImpact(subject.id, parent.id, subjects)?.difference ?? 0) > 0
+                ? (subjectImpact(subject.id, parent.id, subjects)?.difference ?? 0) >= 0
                   ? ArrowUpCircleIcon
                   : ArrowDownCircleIcon
                 : ArrowUpCircleIcon
