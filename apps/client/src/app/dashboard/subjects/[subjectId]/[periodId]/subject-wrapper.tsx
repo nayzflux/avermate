@@ -24,6 +24,7 @@ import {
 import { formatGradeValue } from "@/utils/format";
 import {
   AcademicCapIcon,
+  ArrowDownCircleIcon,
   ArrowLeftIcon,
   ArrowUpCircleIcon,
   BookOpenIcon,
@@ -35,6 +36,7 @@ import SubjectAverageChart from "./subject-average-chart";
 import { cn } from "@/lib/utils";
 import ErrorStateCard from "@/components/skeleton/error-card";
 import { useTranslations } from "next-intl";
+import { MinusIcon, PlusIcon } from "lucide-react";
 
 function getRelevantPeriodIds(period: Period, periods: Period[]): string[] {
   if (period.id === "full-year") {
@@ -305,7 +307,9 @@ function SubjectWrapper({
                 customName: ca.name,
                 periodName: period?.name,
               })}
-              icon={ArrowUpCircleIcon}
+              icon={
+                impact?.difference && impact.difference > 0 ? ArrowUpCircleIcon : ArrowDownCircleIcon
+              }
             >
               <DifferenceBadge diff={impact?.difference || 0} />
             </DataCard>
@@ -320,7 +324,17 @@ function SubjectWrapper({
               name: subject?.name,
               periodName: period?.name,
             })}
-            icon={ArrowUpCircleIcon}
+            icon={
+              subject.id.startsWith("ca")
+                ? customAverageImpact && customAverageImpact > 0
+                  ? ArrowUpCircleIcon
+                  : ArrowDownCircleIcon
+                : subjects
+                ? (subjectImpact(subject.id, undefined, subjects)?.difference ?? 0) > 0
+                  ? ArrowUpCircleIcon 
+                  : ArrowDownCircleIcon
+                : ArrowUpCircleIcon
+            }
           >
             <DifferenceBadge
               diff={
@@ -345,7 +359,13 @@ function SubjectWrapper({
               parentName: parent.name,
               periodName: period?.name,
             })}
-            icon={ArrowUpCircleIcon}
+            icon={
+              subjects
+                ? (subjectImpact(subject.id, parent.id, subjects)?.difference ?? 0) > 0
+                  ? ArrowUpCircleIcon
+                  : ArrowDownCircleIcon
+                : ArrowUpCircleIcon
+            }
           >
             <DifferenceBadge
               diff={
@@ -368,7 +388,7 @@ function SubjectWrapper({
               periodName: period?.name,
             });
           })()}
-          icon={SparklesIcon}
+          icon={PlusIcon}
         >
             {(() => {
               const bestGradeObj = getBestGradeInSubject(subjects, subject.id);
@@ -390,7 +410,7 @@ function SubjectWrapper({
               periodName: period?.name,
             });
           })()}
-          icon={SparklesIcon}
+          icon={MinusIcon}
         >
             {(() => {
               const worstGradeObj = getWorstGradeInSubject(

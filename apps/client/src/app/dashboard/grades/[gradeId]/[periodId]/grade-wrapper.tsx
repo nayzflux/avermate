@@ -17,6 +17,7 @@ import {
 import { formatDate } from "@/utils/format";
 import {
   AcademicCapIcon,
+  ArrowDownCircleIcon,
   ArrowLeftIcon,
   ArrowUpCircleIcon,
   CalendarIcon,
@@ -147,7 +148,13 @@ export default function GradeWrapper({
           description={t("impactOverallAverageDescription", {
             periodName: period?.name
           })}
-          icon={ArrowUpCircleIcon}
+          icon={
+            subjects
+              ? (gradeImpact(grade.id, undefined, subjects)?.difference ?? 0) > 0
+                ? ArrowUpCircleIcon
+                : ArrowDownCircleIcon
+              : ArrowUpCircleIcon
+          }
         >
           <DifferenceBadge
             diff={
@@ -179,7 +186,11 @@ export default function GradeWrapper({
                 name: ca.name,
                 periodName: period?.name,
               })}
-              icon={ArrowUpCircleIcon}
+              icon={
+                withGrade?.difference && withGrade.difference > 0
+                  ? ArrowUpCircleIcon
+                  : ArrowDownCircleIcon
+              }
             >
               <DifferenceBadge diff={withGrade?.difference || 0} />
             </DataCard>
@@ -194,7 +205,13 @@ export default function GradeWrapper({
               parentName: parent.name,
               periodName: period?.name,
             })}
-            icon={ArrowUpCircleIcon}
+            icon={
+              subjects
+                ? (gradeImpact(grade.id, parent.id, subjects)?.difference ?? 0) > 0
+                  ? ArrowUpCircleIcon
+                  : ArrowDownCircleIcon
+                : ArrowUpCircleIcon
+            }
           >
             <DifferenceBadge
               diff={
@@ -212,7 +229,13 @@ export default function GradeWrapper({
             name: grade.subject.name,
             periodName: period?.name,
           })}
-          icon={ArrowUpCircleIcon}
+          icon={
+            subjects
+              ? (gradeImpact(grade.id, grade.subjectId, subjects)?.difference ?? 0) > 0
+                ? ArrowUpCircleIcon
+                : ArrowDownCircleIcon
+              : ArrowUpCircleIcon
+          }
         >
           <DifferenceBadge
             diff={
