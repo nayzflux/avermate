@@ -20,7 +20,7 @@ export default function GradeValue({
           size === "xl" && "text-xl md:text-3xl font-bold"
         )}
       >
-        <NumberTicker decimalPlaces={2} value={formatGradeValue(value)} />
+        <NumberTicker decimalPlaces={2} value={formatGradeValue(value)} duration={2} />
 
         <span
           className={cn(

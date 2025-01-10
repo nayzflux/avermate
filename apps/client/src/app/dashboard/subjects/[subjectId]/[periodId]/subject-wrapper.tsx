@@ -370,14 +370,14 @@ function SubjectWrapper({
           })()}
           icon={SparklesIcon}
         >
-          <p className="text-3xl font-bold">
             {(() => {
               const bestGradeObj = getBestGradeInSubject(subjects, subject.id);
-              return bestGradeObj?.grade !== undefined
-                ? bestGradeObj.grade / 100
-                : t("notAvailable");
+              return bestGradeObj?.grade !== undefined ? (
+                <GradeValue value={bestGradeObj.grade} outOf={bestGradeObj.outOf} />
+              ) : (
+                t("notAvailable")
+              );
             })()}
-          </p>
         </DataCard>
 
         {/* Worst Grade */}
@@ -392,17 +392,17 @@ function SubjectWrapper({
           })()}
           icon={SparklesIcon}
         >
-          <p className="text-3xl font-bold">
             {(() => {
               const worstGradeObj = getWorstGradeInSubject(
                 subjects,
                 subject.id
               );
-              return worstGradeObj?.grade !== undefined
-                ? worstGradeObj.grade / 100
-                : t("notAvailable");
+              return worstGradeObj?.grade !== undefined ? (
+                <GradeValue value={worstGradeObj.grade} outOf={worstGradeObj.outOf} />
+              ) : (
+                t("notAvailable")
+              );
             })()}
-          </p>
         </DataCard>
       </div>
 
