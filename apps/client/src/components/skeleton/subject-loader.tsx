@@ -47,7 +47,7 @@ export default function subjectLoader(t: any) {
       </div>
 
       <div className="flex justify-between items-center">
-        <Skeleton className="h-9 w-96" />
+        <Skeleton className="h-9 w-1/2" />
 
         <div className="flex gap-2">
           <Button variant="outline" className="hidden md:flex" disabled>
