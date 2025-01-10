@@ -417,6 +417,18 @@
         "addCustomAverage": "Add a custom average",
         "noCustomAverages": "No custom averages yet",
         "addNewCustomAverage": "Add a new custom average"
+      },
+      "ResetAccount": {
+        "accountResetSuccess": "Account reset successfully!",
+        "accountResetDescription": "Your account has been successfully reset!",
+        "resetAccountError": "An error occurred while resetting your account. Please try again later.",
+        "title": "Reset your account",
+        "description": "If you want to restart from scratch, you can reset your account.",
+        "resetAccount": "Reset Account",
+        "cancel": "Cancel",
+        "confirmReset": "Yes, reset account",
+        "resetAccountDescription": "This will permanently delete all your periods, subjects, grades, and custom averages. This action cannot be undone.",
+        "resetAccountTitle": "Reset your account"
       }
     },
     "About": {

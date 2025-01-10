@@ -3,6 +3,7 @@ import { PeriodsSection } from "./periods-section";
 import { OnboardingSection } from "./onboarding-section";
 import { CustomAveragesSection } from "./custom-averages-section";
 import { LanguageSection } from "./language-section";
+import { ResetAccountSection } from "./reset-account-section";
 
 export default function SettingsPage() {
   return (
@@ -12,6 +13,7 @@ export default function SettingsPage() {
       <PeriodsSection />
       <CustomAveragesSection />
       <OnboardingSection />
+      <ResetAccountSection />
     </main>
   );
 }

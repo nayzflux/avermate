@@ -417,6 +417,18 @@
         "addCustomAverage": "Ajouter une moyenne personnalisée",
         "noCustomAverages": "Aucune moyenne personnalisée pour l'instant",
         "addNewCustomAverage": "Ajouter une nouvelle moyenne personnalisée"
+      },
+      "ResetAccount": {
+        "accountResetSuccess": "Compte réinitialisé avec succès !",
+        "accountResetDescription": "Votre compte a été réinitialisé avec succès !",
+        "resetAccountError": "Une erreur s'est produite lors de la réinitialisation de votre compte. Veuillez réessayer plus tard.",
+        "title": "Réinitialiser votre compte",
+        "description": "Si vous souhaitez redémarrer à zéro, vous pouvez réinitialiser votre compte.",
+        "resetAccount": "Réinitialiser le compte",
+        "cancel": "Annuler",
+        "confirmReset": "Oui, réinitialiser le compte",
+        "resetAccountDescription": "Cela supprimera définitivement toutes vos périodes, matières, notes et moyennes personnalisées. Cette action ne peut pas être annulée.",
+        "resetAccountTitle": "Réinitialiser votre compte"
       }
     },
     "About": {
