@@ -1,7 +1,7 @@
 "use client";
 
+import { AddGradeButton } from "@/components/buttons/dashboard/grade/add-grade-button";
 import MobileAddButtons from "@/components/buttons/dashboard/mobile-add-buttons";
-import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import AddPeriodDialog from "@/components/dialogs/add-period-dialog";
 import AddSubjectDialog from "@/components/dialogs/add-subject-dialog";
 import ErrorStateCard from "@/components/skeleton/error-card";
@@ -25,8 +25,8 @@ import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 export default function GradesPage() {
   const t = useTranslations("Dashboard.Pages.GradesPage"); // Initialize t
@@ -99,12 +99,7 @@ export default function GradesPage() {
         <h1 className="text-xl md:text-3xl font-bold">{t("gradesTitle")}</h1>
 
         <div className=" gap-4 hidden lg:flex">
-          <AddGradeDialog>
-            <Button>
-              <PlusCircleIcon className="size-4 mr-2" />
-              {t("addGrade")}
-            </Button>
-          </AddGradeDialog>
+          <AddGradeButton />
 
           <AddSubjectDialog>
             <Button variant="outline">
@@ -120,7 +115,10 @@ export default function GradesPage() {
             </Button>
           </AddPeriodDialog>
         </div>
-        <div className="flex lg:hidden">
+
+        <div className="flex gap-2 lg:hidden">
+          <AddGradeButton />
+
           <MobileAddButtons />
         </div>
       </div>
