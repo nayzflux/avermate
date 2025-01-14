@@ -11,6 +11,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import GradeWrapper from "./grade-wrapper";
 import { useTranslations } from "next-intl";
+import { usePeriods } from "@/hooks/use-periods";
+import { fullYearPeriod } from "@/utils/average";
+import { useSubjects } from "@/hooks/use-subjects";
 
 export default function GradePage() {
   const { periodId, gradeId } = useParams() as {
@@ -19,6 +22,7 @@ export default function GradePage() {
   };
 
   const t = useTranslations("Dashboard.Loader.GradeLoader");
+  const tr = useTranslations("Dashboard.Pages.GradeWrapper"); // Initialize t
 
   let periodIdCorrected = periodId;
 
@@ -66,18 +70,43 @@ export default function GradePage() {
     isPending: isCustomAveragesPending,
   } = useCustomAverages();
 
-  if (isError || organizedSubjectsIsError || isCustomAveragesError) {
+  const {
+    data: subjects,
+    isPending: isSubjectsPending,
+    isError: isSubjectsError,
+  } = useSubjects();
+
+  const {
+    data: periods,
+    isPending: isPeriodPending,
+    isError: isPeriodError,
+  } = usePeriods();
+
+  if (
+    isError ||
+    organizedSubjectsIsError ||
+    isCustomAveragesError ||
+    isSubjectsError ||
+    isPeriodError
+  ) {
     return <div>{ErrorStateCard()}</div>;
   }
 
   if (
     isPending ||
     organizedSubjectsIsPending ||
-    isCustomAveragesPending
+    isCustomAveragesPending ||
+    isSubjectsPending ||
+    isPeriodPending
     // || true
   ) {
     return <div>{gradeLoader(t)}</div>;
   }
+
+  const period =
+    periodId == "full-year"
+      ? { ...fullYearPeriod(subjects), name: tr("fullYear") }
+      : periods?.find((p) => p.id === periodId) || fullYearPeriod(subjects);
 
   return (
     <GradeWrapper
@@ -89,6 +118,7 @@ export default function GradePage() {
       grade={grade}
       periodId={periodIdCorrected}
       customAverages={customAverages}
+      period={period}
     />
   );
 }

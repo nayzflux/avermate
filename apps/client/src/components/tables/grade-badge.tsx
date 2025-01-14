@@ -30,7 +30,7 @@ export default function GradeBadge({
     <Link href={`/dashboard/grades/${id}/${periodId}`} onClick={handleClick}>
       <span
         className={cn(
-          "flex items-center justify-center text-center align-middle px-2 py-0.5 bg-muted font-semibold rounded text-sm bg-opacity-40",
+          "flex items-center justify-center text-center align-middle px-2 py-0.5 bg-muted font-semibold rounded text-sm bg-opacity-40 hover:bg-muted/50 transition-all duration-300",
           rounded && "rounded-full"
         )}
       >

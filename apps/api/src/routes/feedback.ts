@@ -26,7 +26,8 @@ const feedbackSchema = z.object({
         return isBase64 && size <= 2 * 1024 * 1024; // Max size 2MB
       },
       { message: "Image invalide ou trop volumineuse" }
-    ),
+  ),
+  errorStack: z.string().optional(),
 });
 
 const client = new Client({
@@ -45,7 +46,8 @@ const client = new Client({
 client.login(env.DISCORD_TOKEN);
 
 app.post("/", zValidator("json", feedbackSchema), async (c) => {
-  const { type, subject, content, email, image } = c.req.valid("json");
+  const { type, subject, content, email, image, errorStack } =
+    c.req.valid("json");
 
   const feedbackMessage: any = {
     embeds: [
@@ -78,7 +80,16 @@ app.post("/", zValidator("json", feedbackSchema), async (c) => {
         attachment: Buffer.from(image.split(",")[1], "base64"),
         name: `feedback-image-${Date.now()}.png`,
       },
+      ...(errorStack ? [{
+        attachment: Buffer.from(errorStack),
+        name: `error-stack-${Date.now()}.txt`,
+      }] : []),
     ];
+  } else if (errorStack) {
+    feedbackMessage.files = [{
+      attachment: Buffer.from(errorStack),
+      name: `error-stack-${Date.now()}.txt`,
+    }];
   }
 
   try {

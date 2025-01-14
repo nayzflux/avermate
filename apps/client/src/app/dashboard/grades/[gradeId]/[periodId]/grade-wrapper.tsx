@@ -17,6 +17,7 @@ import {
 import { formatDate } from "@/utils/format";
 import {
   AcademicCapIcon,
+  ArrowDownCircleIcon,
   ArrowLeftIcon,
   ArrowUpCircleIcon,
   CalendarIcon,
@@ -28,18 +29,21 @@ import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useFormatDates } from "@/utils/format";
 import { useFormatter } from "next-intl";
+import { Period } from "@/types/period";
 
 export default function GradeWrapper({
   subjects,
   grade,
   periodId,
   customAverages,
+  period,
   onBack,
 }: {
   subjects: Subject[];
   grade: Grade;
   periodId: string;
   customAverages: Average[];
+  period: Period;
   onBack: () => void; // Receive the onBack prop from the parent
   }) {
   const formatter = useFormatter();
@@ -141,8 +145,16 @@ export default function GradeWrapper({
 
         <DataCard
           title={t("impactOverallAverageTitle")}
-          description={t("impactOverallAverageDescription")}
-          icon={ArrowUpCircleIcon}
+          description={t("impactOverallAverageDescription", {
+            periodName: period?.name
+          })}
+          icon={
+            subjects
+              ? (gradeImpact(grade.id, undefined, subjects)?.difference ?? 0) >= 0
+                ? ArrowUpCircleIcon
+                : ArrowDownCircleIcon
+              : ArrowUpCircleIcon
+          }
         >
           <DifferenceBadge
             diff={
@@ -172,8 +184,13 @@ export default function GradeWrapper({
               title={t("impactCustomAverageTitle", { name: ca.name })}
               description={t("impactCustomAverageDescription", {
                 name: ca.name,
+                periodName: period?.name,
               })}
-              icon={ArrowUpCircleIcon}
+              icon={
+                withGrade?.difference && withGrade.difference >= 0
+                  ? ArrowUpCircleIcon
+                  : ArrowDownCircleIcon
+              }
             >
               <DifferenceBadge diff={withGrade?.difference || 0} />
             </DataCard>
@@ -186,8 +203,15 @@ export default function GradeWrapper({
             title={t("impactParentAverageTitle", { name: parent.name })}
             description={t("impactParentAverageDescription", {
               parentName: parent.name,
+              periodName: period?.name,
             })}
-            icon={ArrowUpCircleIcon}
+            icon={
+              subjects
+                ? (gradeImpact(grade.id, parent.id, subjects)?.difference ?? 0) >= 0
+                  ? ArrowUpCircleIcon
+                  : ArrowDownCircleIcon
+                : ArrowUpCircleIcon
+            }
           >
             <DifferenceBadge
               diff={
@@ -203,8 +227,15 @@ export default function GradeWrapper({
           title={t("impactSubjectAverageTitle", { name: grade.subject.name })}
           description={t("impactSubjectAverageDescription", {
             name: grade.subject.name,
+            periodName: period?.name,
           })}
-          icon={ArrowUpCircleIcon}
+          icon={
+            subjects
+              ? (gradeImpact(grade.id, grade.subjectId, subjects)?.difference ?? 0) >= 0
+                ? ArrowUpCircleIcon
+                : ArrowDownCircleIcon
+              : ArrowUpCircleIcon
+          }
         >
           <DifferenceBadge
             diff={

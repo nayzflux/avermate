@@ -6,11 +6,14 @@ import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import { useTranslations } from "next-intl";
+import { Period } from "@/types/period";
 
 export default function RecentGradesList({
   recentGrades,
+  period,
 }: {
   recentGrades: Grade[];
+  period: Period;
 }) {
   const t = useTranslations("Dashboard.Cards.RecentGradesCard");
 
@@ -30,7 +33,7 @@ export default function RecentGradesList({
   return (
     <div className="grid grid-cols-1 gap-0.5 overflow-hidden min-w-0">
       {recentGrades.slice(0, 5).map((grade) => (
-        <RecentGradeItem key={grade.id} grade={grade} />
+        <RecentGradeItem key={grade.id} grade={grade} period={period} />
       ))}
     </div>
   );

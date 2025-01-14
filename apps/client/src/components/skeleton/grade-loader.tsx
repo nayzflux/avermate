@@ -20,7 +20,7 @@ export default function gradeLoader(t: any) {
       </div>
 
       <div className="flex justify-between items-center">
-        <Skeleton className="h-9 w-96" />
+        <Skeleton className="h-9 w-1/2" />
 
         <Button size="icon" variant="outline" disabled>
           <EllipsisVerticalIcon className="size-4" />

@@ -158,6 +158,7 @@ export const AddGradeForm = ({
       close();
       queryClient.invalidateQueries({ queryKey: ["grades"] });
       queryClient.invalidateQueries({ queryKey: ["subjects"] });
+      queryClient.invalidateQueries({ queryKey: ["recent-grades"] });
     },
     onError: (error) => {
       handleError(error, toaster, errorTranslations, t("errorAddingGrade"));
@@ -224,6 +225,7 @@ export const AddGradeForm = ({
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-8"
+          noValidate
         >
           {/* Nom de la note */}
           <FormField

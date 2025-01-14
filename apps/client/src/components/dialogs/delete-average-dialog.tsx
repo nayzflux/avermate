@@ -73,7 +73,7 @@ export default function DeleteAverageDialog({ average }: { average: Average }) {
           <AlertDialogTitle>
             {t("title", { name: average.name })}
           </AlertDialogTitle>
-          <AlertDialogDescription className="max-w-[300px]">
+          <AlertDialogDescription>
             {t("description", { name: average.name })}
           </AlertDialogDescription>
         </AlertDialogHeader>

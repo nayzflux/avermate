@@ -367,6 +367,7 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
     <div>
       <Form {...form}>
         <form
+          noValidate
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-8"
         >

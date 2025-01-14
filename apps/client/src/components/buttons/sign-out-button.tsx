@@ -28,18 +28,23 @@ export default function SignOutButton() {
   const { mutate, isPending } = useMutation({
     mutationKey: ["sign-out"],
     mutationFn: async () => {
+      localStorage.setItem("isSigningOut", "true");
       const data = await authClient.signOut();
     },
     onSuccess: () => {
       localStorage.removeItem("isOnboardingCompleted");
       localStorage.removeItem("selectedTab");
 
-      router.push("/");
+      router.push("/auth/sign-in");
 
       toaster.toast({
         title: t("signedOut"),
         description: t("seeYouSoon"),
       });
+
+      setTimeout(() => {
+        localStorage.removeItem("isSigningOut");
+      }, 1000);
     },
   });
 

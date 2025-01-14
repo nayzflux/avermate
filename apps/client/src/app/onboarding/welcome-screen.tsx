@@ -5,12 +5,43 @@ import { ArrowRight, ShareIcon, SquarePlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "next-intl";
+import { useSubjects } from "@/hooks/use-subjects";
+import { usePeriods } from "@/hooks/use-periods";
+import { useCustomAverages } from "@/hooks/use-custom-averages";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toast, useToast } from "@/hooks/use-toast";
+import { apiClient } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { handleError } from "@/utils/error-utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function WelcomeScreen() {
   const t = useTranslations("Onboarding.Welcome");
+  const errorTranslations = useTranslations("Errors");
   const { data: session } = authClient.useSession() as unknown as {
     data: { session: Session; user: User };
   };
+  const router = useRouter();
+  const toaster = useToast();
+  const { data: subjects } = useSubjects();
+  const { data: periods } = usePeriods();
+  const { data: customAverages } = useCustomAverages();
+  const queryClient = useQueryClient();
+
+  const hasExistingData =
+    (subjects && subjects.length > 0) ||
+    (periods && periods.length > 0) ||
+    (customAverages && customAverages.length > 0);
 
   // -- Detect iOS (iPhone) --
   const [isIos, setIsIos] = useState(false);
@@ -67,6 +98,26 @@ export default function WelcomeScreen() {
   }
   // -- end PWA install logic --
 
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["reset-account"],
+    mutationFn: async () => {
+      await apiClient.post("users/reset");
+    },
+    onSuccess: () => {
+      toaster.toast({
+        title: t("accountResetSuccess"),
+        description: t("accountResetDescription"),
+      });
+      // reset the query client
+      queryClient.invalidateQueries({ queryKey: ["customAverages"] });
+      queryClient.invalidateQueries({ queryKey: ["periods"] });
+      queryClient.invalidateQueries({ queryKey: ["subjects"] });
+    },
+    onError: (error) => {
+      handleError(error, toaster, errorTranslations, t("resetAccountError"));
+    },
+  });
+
   return (
     <div className="text-center space-y-8">
       <h2 className="text-4xl font-bold text-primary">
@@ -105,6 +156,39 @@ export default function WelcomeScreen() {
             </li>
           </ul>
         </div>
+
+        {hasExistingData && (
+          <div className="pt-4 border-t border-border">
+            <h3 className="text-lg font-semibold mb-2">
+              {t("resetAccountTitle")}
+            </h3>
+            <p className="text-sm text-muted-foreground mb-5">
+              {t("resetAccountText")}
+            </p>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive">{t("resetAccount")}</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t("resetAccountTitle")}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t("resetAccountDescription")}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => mutate()}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {t("confirmReset")}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        )}
 
         {/* If canInstall is true (Android/Chrome), show the install button */}
         {canInstall && (

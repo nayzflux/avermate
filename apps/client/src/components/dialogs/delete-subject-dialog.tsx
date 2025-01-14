@@ -89,7 +89,7 @@ export default function DeleteSubjectDialog({
             {t("title", { name: subject.name })}
           </AlertDialogTitle>
 
-          <AlertDialogDescription className="max-w-[300px]">
+          <AlertDialogDescription>
             {t("description", { name: subject.name })}
           </AlertDialogDescription>
         </AlertDialogHeader>

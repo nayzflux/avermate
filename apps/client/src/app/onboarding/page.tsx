@@ -19,10 +19,10 @@ import { useTranslations } from "next-intl";
 
 const stepIds = ["welcome", "periodes", "matieres", "notes"];
 const steps = [
-  { title: "welcome", component: WelcomeScreen, id: "welcome" },
-  { title: "periodes", component: Step1, id: "periodes" },
-  { title: "matieres", component: Step2, id: "matieres" },
-  { title: "notes", component: Step3, id: "notes" },
+  { title: "welcome" as const, component: WelcomeScreen, id: "welcome" },
+  { title: "periodes" as const, component: Step1, id: "periodes" },
+  { title: "matieres" as const, component: Step2, id: "matieres" },
+  { title: "notes" as const, component: Step3, id: "notes" },
 ];
 
 function OnboardingContent() {

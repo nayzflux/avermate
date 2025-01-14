@@ -167,6 +167,7 @@ export const UpdatePeriodForm = ({
     <div className="">
       <Form {...form}>
         <form
+          noValidate
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-8"
         >

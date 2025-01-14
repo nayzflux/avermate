@@ -28,19 +28,24 @@ const dateFormats: Record<string, DateTimeFormatOptions> = {
 };
 
 export const useFormatDates = (formatter: any) => {
+  const setToNoon = (date: Date) => {
+    const d = new Date(date);
+    d.setHours(12, 0, 0, 0);
+    return d;
+  };
 
   return {
-    formatShort: (date: Date) => formatter.dateTime(date, dateFormats.short),
-    formatIntermediate: (date: Date) => formatter.dateTime(date, dateFormats.intermediate),
-    formatLong: (date: Date) => formatter.dateTime(date, dateFormats.long),
-    formatFullMonthYear: (date: Date) => formatter.dateTime(date, dateFormats.fullMonthYear),
-    formatShortDay: (date: Date) => formatter.dateTime(date, dateFormats.shortDay),
-    formatRelative: (date: Date, now: Date = new Date()) => formatter.relativeTime(date, now),
-    formatRange: (start: Date, end: Date) => formatter.dateTimeRange(start, end, dateFormats.intermediate),
-    formatFromTo: (start: Date, end: Date) => `${formatter.dateTime(start, dateFormats.intermediate)} - ${formatter.dateTime(end, dateFormats.intermediate)}`,
+    formatShort: (date: Date) => formatter.dateTime(setToNoon(date), dateFormats.short),
+    formatIntermediate: (date: Date) => formatter.dateTime(setToNoon(date), dateFormats.intermediate),
+    formatLong: (date: Date) => formatter.dateTime(setToNoon(date), dateFormats.long),
+    formatFullMonthYear: (date: Date) => formatter.dateTime(setToNoon(date), dateFormats.fullMonthYear),
+    formatShortDay: (date: Date) => formatter.dateTime(setToNoon(date), dateFormats.shortDay),
+    formatRelative: (date: Date, now: Date = new Date()) => formatter.relativeTime(date, now), // Keep original for relative time
+    formatRange: (start: Date, end: Date) => formatter.dateTimeRange(setToNoon(start), setToNoon(end), dateFormats.intermediate),
+    formatFromTo: (start: Date, end: Date) => `${formatter.dateTime(setToNoon(start), dateFormats.intermediate)} - ${formatter.dateTime(setToNoon(end), dateFormats.intermediate)}`,
     formatInDays: (days: number) => {
       const targetDate = dayjs().add(days, 'day').toDate();
-      return `in ${days} days (${formatter.dateTime(targetDate, dateFormats.short)})`;
+      return `in ${days} days (${formatter.dateTime(setToNoon(targetDate), dateFormats.short)})`;
     },
   };
 };

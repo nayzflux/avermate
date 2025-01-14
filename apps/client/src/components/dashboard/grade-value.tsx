@@ -6,10 +6,12 @@ export default function GradeValue({
   value,
   outOf,
   size = "xl",
+  duration = 2
 }: {
   value: number;
   outOf: number;
   size?: "sm" | "xl";
+  duration?: number;
 }) {
   //const decimals = formatGradeValue(value).toString().split(".")[1]?.length || 0;
   return (
@@ -20,7 +22,7 @@ export default function GradeValue({
           size === "xl" && "text-xl md:text-3xl font-bold"
         )}
       >
-        <NumberTicker decimalPlaces={2} value={formatGradeValue(value)} />
+        <NumberTicker decimalPlaces={2} value={formatGradeValue(value)} duration={duration} />
 
         <span
           className={cn(

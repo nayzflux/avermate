@@ -32,14 +32,14 @@ import { useTranslations } from "next-intl";
 export default function AccountDropdown() {
   const toaster = useToast();
   const t = useTranslations("Header.Dropdown");
+  const router = useRouter();
+  const pathname = usePathname();
 
   const { data, isPending } = authClient.useSession() as unknown as {
     data: { user: User; session: Session };
     isPending: boolean;
   };
 
-  const router = useRouter();
-  const pathname = usePathname(); // Get the current path
   const handleClick = () => {
     const currentPath = pathname + window.location.search || "/dashboard";
     localStorage.setItem("backFromSettings", currentPath);
@@ -48,8 +48,8 @@ export default function AccountDropdown() {
   useEffect(() => {
     if (isPending) return;
 
-    // Not logged
-    if (!data) {
+    // Skip check if there's no data but we're in the process of signing out
+    if (!data && !localStorage.getItem("isSigningOut")) {
       router.push("/auth/sign-in");
 
       toaster.toast({
@@ -57,6 +57,9 @@ export default function AccountDropdown() {
         description: t("notLoggedInDescription"),
       });
 
+      return;
+    } else if (!data && localStorage.getItem("isSigningOut")) {
+      router.push("/auth/sign-in");
       return;
     }
 

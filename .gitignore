@@ -2,3 +2,5 @@
 /node_modules/
 .vscode/settings.json
 .hintrc
+avermate.code-workspace
+.vscode/tasks.json

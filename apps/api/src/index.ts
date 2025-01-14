@@ -3,14 +3,15 @@ import { env } from "@/lib/env";
 import { ratelimit } from "@/middlewares/ratelimit";
 import { sessionMiddleware } from "@/middlewares/session";
 import authRoutes from "@/routes/auth";
-import averagesRoute from "@/routes/averages";
-import feedbackRoute from "@/routes/feedback";
 import gradesRoutes from "@/routes/grades";
 import landingRoutes from "@/routes/landing";
 import periodsRoutes from "@/routes/periods";
 import presetsRoutes from "@/routes/presets";
 import subjectsRoutes from "@/routes/subjects";
 import usersRoutes from "@/routes/users";
+import averagesRoute from "@/routes/averages";
+import feedbackRoute from "@/routes/feedback";
+import cardsRoute from "@/routes/cards";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
@@ -60,6 +61,8 @@ app.route("/landing", landingRoutes);
 app.route("/averages", averagesRoute);
 
 app.route("/feedback", feedbackRoute);
+
+app.route("/cards", cardsRoute);
 
 app.all("/uploadthing", (ctx) => uploadHandlers(ctx.req.raw));
 

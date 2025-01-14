@@ -206,7 +206,7 @@ export default function dashboardLoader() {
                     >
                       <div className="flex flex-col gap-0.5 w-[80%]">
                         <div className="font-semibold">
-                          <Skeleton className="w-36 h-6" />
+                          <Skeleton className="w-full h-6" />
                         </div>
                         <div className="text-sm text-muted-foreground truncate">
                           <Skeleton className="w-24 h-5" />

@@ -82,7 +82,7 @@ export default function DeleteGradeDialog({ grade }: { grade: Grade }) {
             {t("title", { name: grade.name })}
           </AlertDialogTitle>
 
-          <AlertDialogDescription className="max-w-[300px]">
+          <AlertDialogDescription>
             {t("description", { name: grade.name })}
           </AlertDialogDescription>
         </AlertDialogHeader>

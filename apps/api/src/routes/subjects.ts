@@ -442,30 +442,35 @@ app.patch(
 
     // If depth has changed, update the depths of the descendants
     if (depthDifference !== 0) {
-      // Fetch all descendants of the subject
+      // Fetch all descendants of the subject using a simpler query
       const descendants = await db.query.subjects.findMany({
         where: and(
           eq(subjects.userId, session.user.id),
-          sql`${subjects.id} IN (
-            SELECT descendant.id
-            FROM ${subjects} AS ancestor
-            JOIN ${subjects} AS descendant
-            ON descendant.parentId = ancestor.id
-            WHERE ancestor.id = ${subjectId}
-          )`,
-          ne(subjects.id, subjectId)
+          eq(subjects.parentId, subjectId)  // Direct children only
         ),
       });
 
-      // Update the depth of each descendant
-      await Promise.all(
-        descendants.map((descendant) =>
-          db
+      // Update the depth of each descendant recursively
+      const updateDescendantDepths = async (parentId: string, depthOffset: number) => {
+        const children = await db.query.subjects.findMany({
+          where: and(
+            eq(subjects.userId, session.user.id),
+            eq(subjects.parentId, parentId)
+          ),
+        });
+
+        for (const child of children) {
+          await db
             .update(subjects)
-            .set({ depth: descendant.depth + depthDifference })
-            .where(eq(subjects.id, descendant.id))
-        )
-      );
+            .set({ depth: child.depth + depthOffset })
+            .where(eq(subjects.id, child.id));
+
+          // Recursively update children
+          await updateDescendantDepths(child.id, depthOffset);
+        }
+      };
+
+      await updateDescendantDepths(subjectId, depthDifference);
     }
 
     // If the subject is now a category (assuming `isMainSubject === true` indicates category)
