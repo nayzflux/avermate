@@ -8,29 +8,14 @@ import { SocialProof } from "@/components/landing/social-proof";
 
 export default function LandingPage() {
   return (
-    <div>
-      {/* Headline */}
-      {/* CTA */}
+    <main>
       <Headline />
-
       <Picture />
-
-      {/* Social Proof */}
       <SocialProof />
-
-      {/* Problems & Solutions */}
       <Benefits />
-
-      {/* Features */}
       <Product />
-
-      {/* Demo */}
-
-      {/* CTA */}
       <CTA />
-
-      {/* FAQ */}
       <FAQ />
-    </div>
+    </main>
   );
 }
