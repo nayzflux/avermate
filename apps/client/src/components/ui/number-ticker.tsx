@@ -11,6 +11,7 @@ interface NumberTickerProps {
   delay?: number; // delay in seconds
   decimalPlaces?: number;
   duration?: number; // duration in seconds
+  onValueChange?: (val: number) => void;
 }
 
 export default function NumberTicker({
@@ -20,87 +21,82 @@ export default function NumberTicker({
   className,
   decimalPlaces = 0,
   duration,
+  onValueChange,
 }: NumberTickerProps) {
-  // The ref that tells us when this element is in view
   const ref = useRef<HTMLSpanElement>(null);
 
-  // Start from 0 if counting up, or start from `value` if counting down
-  const startValue = direction === "down" ? value : 0;
-  const endValue = direction === "down" ? 0 : value;
+  // Starting/ending values for the motion
+  const startValue = 0; // always start from 0
+  const endValue = value; // end at the final "value"
 
-  // This is the raw motion value we’ll animate
+  // The raw motion value
   const motionValue = useMotionValue(startValue);
 
-  // When no duration is provided, fallback to a spring.
-  // You can tweak damping/stiffness to speed it up or slow it down.
+  // Fallback to a spring if no fixed duration is provided
   const springValue = useSpring(motionValue, {
     damping: 20,
     stiffness: 200,
   });
 
-  // Track when the component is in view so we only animate once
+  // Only animate once the element is in view (customize margin if needed)
   const isInView = useInView(ref, { once: true, margin: "0px" });
 
-  // Pre-create a formatter for all numbers, so we don’t create a new one on every re-render.
+  // Format the displayed number to X decimals
   const formatter = new Intl.NumberFormat("fr-FR", {
     minimumFractionDigits: decimalPlaces,
     maximumFractionDigits: decimalPlaces,
   });
 
-  // A small callback to update DOM text whenever motionValue changes
+  // Helper to immediately update the DOM
   const updateDom = useCallback(
     (latest: number) => {
       if (ref.current) {
-        ref.current.textContent = formatter.format(
-          Number(latest.toFixed(decimalPlaces))
-        );
+        // Round to specified decimal places before formatting
+        const rounded = Number(latest.toFixed(decimalPlaces));
+        ref.current.textContent = formatter.format(rounded);
       }
     },
     [formatter, decimalPlaces]
   );
 
-  // Trigger the actual animation when in view + after any specified delay
+  // Trigger the actual animation when in view + after the given delay
   useEffect(() => {
     if (!isInView) return;
 
-    // Delay the start with a setTimeout
     const timeoutId = setTimeout(() => {
       if (duration === undefined) {
-        // If no duration is provided, we simply set the motionValue target.
-        // The spring will handle the easing.
+        // If no duration, just set the final value and let spring handle it
         motionValue.set(endValue);
       } else {
-        // If a duration is provided, we use Framer Motion’s animate method.
-        // This gives direct control over how many seconds the transition lasts.
+        // If duration is provided, animate with a fixed time
         const controls = animate(motionValue, endValue, {
           duration,
           ease: [0.16, 1, 0.3, 1],
         });
-        // Clean up if the component unmounts mid-animation
+        // Clean up if unmounted mid-animation
         return () => controls.stop();
       }
     }, delay * 1000);
 
-    // Cleanup for the timeout
     return () => clearTimeout(timeoutId);
   }, [isInView, endValue, duration, delay, motionValue]);
 
-  // Whichever approach we’re using (spring or direct animate), we subscribe to changes
+  // Subscribe to motionValue changes and update DOM + trigger onValueChange
   useEffect(() => {
     const activeValue = duration === undefined ? springValue : motionValue;
-    const unsubscribe = activeValue.on("change", updateDom);
+    const unsubscribe = activeValue.on("change", (latest) => {
+      updateDom(latest);
+      if (onValueChange) {
+        onValueChange(latest);
+      }
+    });
     return unsubscribe;
-  }, [duration, springValue, motionValue, updateDom]);
+  }, [duration, springValue, motionValue, updateDom, onValueChange]);
 
-  // On first render, update the DOM with our initial value immediately
+  // On mount, render the starting value immediately
   useEffect(() => {
     updateDom(motionValue.get());
   }, [updateDom, motionValue]);
 
-  return (
-    <span
-      className={cn("inline-block", className)}
-      ref={ref}
-    />
-  );
+  return <span className={cn("inline-block", className)} ref={ref} />;
 }

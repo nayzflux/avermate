@@ -2,12 +2,6 @@
 
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
-import {
-  Payload,
-  ValueType,
-  NameType,
-} from "recharts/types/component/DefaultTooltipContent";
-import { debounce } from "lodash";
 
 import { cn } from "@/lib/utils";
 
@@ -75,7 +69,7 @@ ChartContainer.displayName = "Chart";
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(
-    ([_, cfg]) => cfg.theme || cfg.color
+    ([_, config]) => config.theme || config.color
   );
 
   if (!colorConfig.length) {
@@ -117,14 +111,6 @@ const ChartTooltipContent = React.forwardRef<
       indicator?: "line" | "dot" | "dashed";
       nameKey?: string;
       labelKey?: string;
-      chartData?: any[];
-      findNearestNonNull?: boolean;
-      dataKey?: string;
-      onUpdateActiveTooltipIndex?: (index: number | null) => void;
-      onUpdateActiveTooltipIndices?: (indices: {
-        [key: string]: number | null;
-      }) => void;
-      valueFormatter?: (val: number) => string; // Added prop for formatting
     }
 >(
   (
@@ -142,167 +128,18 @@ const ChartTooltipContent = React.forwardRef<
       color,
       nameKey,
       labelKey,
-      chartData,
-      onUpdateActiveTooltipIndex,
-      onUpdateActiveTooltipIndices,
-      findNearestNonNull = false,
-      dataKey,
-      valueFormatter,
     },
     ref
   ) => {
     const { config } = useChart();
 
-    const adjustedPayload = React.useMemo(() => {
-      if (
-        !findNearestNonNull ||
-        !chartData ||
-        !payload ||
-        payload.length === 0
-      ) {
-        return payload;
-      }
-
-      return payload
-        .map((item) => {
-          const currentValue = item.value;
-          if (
-            currentValue !== null &&
-            currentValue !== undefined &&
-            !isNaN(Number(currentValue))
-          ) {
-            return item;
-          }
-
-          const dataKey = item.dataKey;
-          const currentDate = item.payload.date;
-          const dataIndex = chartData.findIndex((d) => d.date === currentDate);
-
-          if (dataIndex === -1) {
-            return item;
-          }
-
-          let nearestIndex = dataIndex;
-
-          // Search forward
-          let forwardIndex = dataIndex + 1;
-          while (
-            forwardIndex < chartData.length &&
-            dataKey !== undefined &&
-            (chartData[forwardIndex]?.[dataKey] === null ||
-              chartData[forwardIndex]?.[dataKey] === undefined ||
-              isNaN(Number(chartData[forwardIndex]?.[dataKey])))
-          ) {
-            forwardIndex++;
-          }
-
-          // Search backward
-          let backwardIndex = dataIndex - 1;
-          while (
-            backwardIndex >= 0 &&
-            dataKey !== undefined &&
-            (chartData[backwardIndex]?.[dataKey] === null ||
-              chartData[backwardIndex]?.[dataKey] === undefined ||
-              isNaN(Number(chartData[backwardIndex]?.[dataKey])))
-          ) {
-            backwardIndex--;
-          }
-
-          // Choose the closest index
-          if (forwardIndex < chartData.length && backwardIndex >= 0) {
-            if (
-              Math.abs(forwardIndex - dataIndex) <
-              Math.abs(dataIndex - backwardIndex)
-            ) {
-              nearestIndex = forwardIndex;
-            } else {
-              nearestIndex = backwardIndex;
-            }
-          } else if (forwardIndex < chartData.length) {
-            nearestIndex = forwardIndex;
-          } else if (backwardIndex >= 0) {
-            nearestIndex = backwardIndex;
-          } else {
-            // No non-null data points found
-            return null;
-          }
-
-          const nearestData = chartData[nearestIndex];
-          return {
-            ...item,
-            payload: nearestData,
-            value: dataKey ? nearestData?.[dataKey] : undefined,
-          };
-        })
-        .filter(Boolean);
-    }, [findNearestNonNull, chartData, payload]);
-
-    React.useEffect(() => {
-      if (adjustedPayload && adjustedPayload.length > 0) {
-        const item = adjustedPayload[0];
-        const date = item?.payload.date;
-        if (chartData && chartData.length > 0) {
-          const index = chartData.findIndex((d) => d.date === date);
-          if (onUpdateActiveTooltipIndex) {
-            onUpdateActiveTooltipIndex(index >= 0 ? index : null);
-          }
-        } else {
-          if (onUpdateActiveTooltipIndex) {
-            onUpdateActiveTooltipIndex(null);
-          }
-        }
-      } else {
-        if (onUpdateActiveTooltipIndex) {
-          onUpdateActiveTooltipIndex(null);
-        }
-      }
-    }, [adjustedPayload, chartData, onUpdateActiveTooltipIndex]);
-
-    const computedIndices = React.useMemo(() => {
-      if (adjustedPayload && adjustedPayload.length > 0) {
-        const indices: { [key: string]: number | null } = {};
-
-        adjustedPayload.forEach((item) => {
-          const date = item?.payload.date;
-          const dataKey = item?.dataKey;
-          if (chartData && chartData.length > 0) {
-            const index = chartData.findIndex((d) => d.date === date);
-            if (dataKey !== undefined) {
-              indices[dataKey] = index >= 0 ? index : null;
-            }
-          } else {
-            if (dataKey !== undefined) {
-              indices[dataKey] = null;
-            }
-          }
-        });
-
-        return indices;
-      }
-      return {};
-    }, [adjustedPayload, chartData]);
-
-    const debouncedUpdateActiveTooltipIndices = React.useMemo(() => {
-      return debounce((indices: { [key: string]: number | null }) => {
-        if (onUpdateActiveTooltipIndices) {
-          onUpdateActiveTooltipIndices(indices);
-        }
-      }, 10);
-    }, [onUpdateActiveTooltipIndices]);
-
-    React.useEffect(() => {
-      if (onUpdateActiveTooltipIndices) {
-        debouncedUpdateActiveTooltipIndices(computedIndices);
-      }
-    }, [computedIndices, debouncedUpdateActiveTooltipIndices]);
-
     const tooltipLabel = React.useMemo(() => {
-      if (hideLabel || !adjustedPayload?.length) {
+      if (hideLabel || !payload?.length) {
         return null;
       }
 
-      const [item] = adjustedPayload;
-      const key = `${labelKey || item?.dataKey || item?.name || "value"}`;
+      const [item] = payload;
+      const key = `${labelKey || item.dataKey || item.name || "value"}`;
       const itemConfig = getPayloadConfigFromPayload(config, item, key);
       const value =
         !labelKey && typeof label === "string"
@@ -312,10 +149,7 @@ const ChartTooltipContent = React.forwardRef<
       if (labelFormatter) {
         return (
           <div className={cn("font-medium", labelClassName)}>
-            {labelFormatter(
-              value,
-              adjustedPayload as Payload<ValueType, NameType>[]
-            )}
+            {labelFormatter(value, payload)}
           </div>
         );
       }
@@ -326,31 +160,20 @@ const ChartTooltipContent = React.forwardRef<
 
       return <div className={cn("font-medium", labelClassName)}>{value}</div>;
     }, [
-      adjustedPayload,
-      hideLabel,
-      labelKey,
-      config,
       label,
       labelFormatter,
+      payload,
+      hideLabel,
       labelClassName,
+      config,
+      labelKey,
     ]);
 
-    if (!active) {
+    if (!active || !payload?.length) {
       return null;
     }
 
-    if (!adjustedPayload || adjustedPayload.length === 0) {
-      return null;
-    }
-
-    const nestLabel = adjustedPayload.length === 1 && indicator !== "dot";
-
-    // Helper to format values to two decimal places if no formatter is provided
-    const defaultFormatter = (val: number) =>
-      val?.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
+    const nestLabel = payload.length === 1 && indicator !== "dot";
 
     return (
       <div
@@ -362,64 +185,67 @@ const ChartTooltipContent = React.forwardRef<
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
-          {adjustedPayload.map((item, index) => {
-            const key = `${nameKey || item?.name || item?.dataKey || "value"}`;
+          {payload.map((item, index) => {
+            const key = `${nameKey || item.name || item.dataKey || "value"}`;
             const itemConfig = getPayloadConfigFromPayload(config, item, key);
-            const indicatorColor = color || item?.payload?.fill || item?.color;
+            const indicatorColor = color || item.payload.fill || item.color;
 
             return (
               <div
-                key={item?.dataKey}
+                key={item.dataKey}
                 className={cn(
                   "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground",
                   indicator === "dot" && "items-center"
                 )}
               >
-                {!hideIndicator && (
-                  <div
-                    className={cn(
-                      "shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg]",
-                      {
-                        "h-2.5 w-2.5": indicator === "dot",
-                        "w-1": indicator === "line",
-                        "w-0 border-[1.5px] border-dashed bg-transparent":
-                          indicator === "dashed",
-                        "my-0.5": nestLabel && indicator === "dashed",
-                      }
+                {formatter && item?.value !== undefined && item.name ? (
+                  formatter(item.value, item.name, item, index, item.payload)
+                ) : (
+                  <>
+                    {itemConfig?.icon ? (
+                      <itemConfig.icon />
+                    ) : (
+                      !hideIndicator && (
+                        <div
+                          className={cn(
+                            "shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg]",
+                            {
+                              "h-2.5 w-2.5": indicator === "dot",
+                              "w-1": indicator === "line",
+                              "w-0 border-[1.5px] border-dashed bg-transparent":
+                                indicator === "dashed",
+                              "my-0.5": nestLabel && indicator === "dashed",
+                            }
+                          )}
+                          style={
+                            {
+                              "--color-bg": indicatorColor,
+                              "--color-border": indicatorColor,
+                            } as React.CSSProperties
+                          }
+                        />
+                      )
                     )}
-                    style={
-                      {
-                        "--color-bg": indicatorColor,
-                        "--color-border": indicatorColor,
-                      } as React.CSSProperties
-                    }
-                  />
+                    <div
+                      className={cn(
+                        "flex flex-1 justify-between leading-none gap-1",
+                        nestLabel ? "items-end" : "items-center"
+                      )}
+                    >
+                      <div className="grid gap-1.5">
+                        {nestLabel ? tooltipLabel : null}
+                        <span className="text-muted-foreground">
+                          {itemConfig?.label || item.name}
+                        </span>
+                      </div>
+                      {item.value && (
+                        <span className="font-mono font-medium tabular-nums text-foreground">
+                          {item.value.toLocaleString()}
+                        </span>
+                      )}
+                    </div>
+                  </>
                 )}
-                <div
-                  className={cn(
-                    "flex flex-1 justify-between leading-none",
-                    nestLabel ? "items-end" : "items-center"
-                  )}
-                >
-                  <div className="grid gap-1.5">
-                    {nestLabel ? tooltipLabel : null}
-                    <span className="text-muted-foreground">
-                      {itemConfig?.label || item?.name}
-                    </span>
-                  </div>
-                  {typeof item?.value === "number" &&
-                  !isNaN(Number(item?.value)) ? (
-                    <span className="font-mono font-medium tabular-nums text-foreground">
-                      {valueFormatter
-                        ? valueFormatter(item.value as number)
-                        : defaultFormatter(item.value as number)}
-                    </span>
-                  ) : (
-                    <span className="font-mono font-medium tabular-nums text-foreground">
-                      N/A
-                    </span>
-                  )}
-                </div>
               </div>
             );
           })}
@@ -430,6 +256,67 @@ const ChartTooltipContent = React.forwardRef<
 );
 ChartTooltipContent.displayName = "ChartTooltip";
 
+const ChartLegend = RechartsPrimitive.Legend;
+
+const ChartLegendContent = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div"> &
+    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
+      hideIcon?: boolean;
+      nameKey?: string;
+    }
+>(
+  (
+    { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey },
+    ref
+  ) => {
+    const { config } = useChart();
+
+    if (!payload?.length) {
+      return null;
+    }
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "flex items-center justify-center gap-4",
+          verticalAlign === "top" ? "pb-3" : "pt-3",
+          className
+        )}
+      >
+        {payload.map((item) => {
+          const key = `${nameKey || item.dataKey || "value"}`;
+          const itemConfig = getPayloadConfigFromPayload(config, item, key);
+
+          return (
+            <div
+              key={item.value}
+              className={cn(
+                "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground"
+              )}
+            >
+              {itemConfig?.icon && !hideIcon ? (
+                <itemConfig.icon />
+              ) : (
+                <div
+                  className="h-2 w-2 shrink-0 rounded-[2px]"
+                  style={{
+                    backgroundColor: item.color,
+                  }}
+                />
+              )}
+              {itemConfig?.label}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+);
+ChartLegendContent.displayName = "ChartLegend";
+
+// Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(
   config: ChartConfig,
   payload: unknown,
@@ -468,4 +355,11 @@ function getPayloadConfigFromPayload(
     : config[key as keyof typeof config];
 }
 
-export { ChartContainer, ChartStyle, ChartTooltip, ChartTooltipContent };
+export {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartStyle,
+  ChartTooltip,
+  ChartTooltipContent,
+};

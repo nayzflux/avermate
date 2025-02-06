@@ -9,8 +9,16 @@ import {
 import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
 import { averageOverTime, getChildren } from "@/utils/average";
-import React, { useState } from "react";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import React from "react";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ReferenceDot,
+  XAxis,
+  YAxis,
+  useActiveTooltipLabel,
+} from "recharts";
 import { useTranslations } from "next-intl";
 import { useFormatDates } from "@/utils/format";
 import { useFormatter } from "next-intl";
@@ -51,6 +59,103 @@ const predefinedColors = [
   "#b33dc6",
 ];
 
+function findNearestDatum(
+  data: Array<{ date: string; [key: string]: any }>,
+  targetDate: string,
+  dataKey: string
+) {
+  let nearestDatum: (typeof data)[number] | null = null;
+  let minDiff = Infinity;
+  const targetTime = new Date(targetDate).getTime();
+
+  data.forEach((datum) => {
+    const value = datum[dataKey];
+    if (value !== undefined && value !== null) {
+      const datumTime = new Date(datum.date).getTime();
+      const diff = Math.abs(datumTime - targetTime);
+      if (diff < minDiff) {
+        minDiff = diff;
+        nearestDatum = datum;
+      }
+    }
+  });
+
+  return nearestDatum;
+}
+
+function SubjectActiveDot({
+  dataKey,
+  fill,
+  chartData,
+}: {
+  dataKey: string;
+  fill: string;
+  chartData: Array<{ date: string; [key: string]: any }>;
+}) {
+  const activeLabel = useActiveTooltipLabel();
+  if (!activeLabel) return null;
+
+  const nearestDatum = findNearestDatum(chartData, activeLabel, dataKey);
+  if (!nearestDatum || nearestDatum[dataKey] === undefined) return null;
+
+  return (
+    <ReferenceDot
+      x={nearestDatum.date}
+      y={nearestDatum[dataKey]}
+      r={4}
+      fill={fill}
+      strokeWidth={0}
+      opacity={0.8}
+    />
+  );
+}
+
+function CustomTooltipContent({
+  active,
+  label,
+  chartData,
+  chartConfig,
+  formatDates,
+}: {
+  active: boolean;
+  label: string;
+  chartData: Array<{ date: string; [key: string]: any }>;
+  chartConfig: any;
+  formatDates: ReturnType<typeof useFormatDates>;
+}) {
+  if (!active || !label) return null;
+
+  const labelTime = new Date(label).getTime();
+  const payload = Object.entries(chartConfig).map(
+    ([dataKey, config]: [string, any]) => {
+      const nearestDatum = findNearestDatum(chartData, label, dataKey);
+      return {
+        dataKey,
+        value: nearestDatum?.[dataKey] ?? null,
+        color: config.color,
+        name: config.label,
+        payload: nearestDatum,
+      };
+    }
+  );
+
+  // Filter out entries with null values
+  const validEntries = payload.filter((entry) => entry.value !== null);
+
+  return (
+    <ChartTooltipContent
+      active={active}
+      label={formatDates.formatShort(new Date(label))}
+      payload={validEntries.map((entry) => ({
+        name: entry.name,
+        value: entry.value?.toFixed(2) ?? "N/A",
+        color: entry.color,
+        payload: entry.payload,
+      }))}
+    />
+  );
+}
+
 export default function SubjectAverageChart({
   subjectId,
   period,
@@ -65,17 +170,6 @@ export default function SubjectAverageChart({
   const formatter = useFormatter();
   const t = useTranslations("Dashboard.Charts.SubjectAverageChart");
   const formatDates = useFormatDates(formatter);
-
-  const [activeTooltipIndices, setActiveTooltipIndices] = useState<{
-    [key: string]: number | null;
-  }>({});
-
-  const handleActiveTooltipIndicesChange = React.useCallback(
-    (indices: { [key: string]: number | null }) => {
-      setActiveTooltipIndices(indices);
-    },
-    []
-  );
 
   const { childrenAverage, chartData, chartConfig } = (() => {
     const childrenIds = getChildren(subjects, subjectId);
@@ -136,14 +230,6 @@ export default function SubjectAverageChart({
     return { childrenAverage, chartData, chartConfig };
   })();
 
-  const CustomDot = (props: any) => {
-    const { cx, cy, index, stroke, activeTooltipIndex } = props;
-    if (activeTooltipIndex !== null && index === activeTooltipIndex) {
-      return <circle cx={cx} cy={cy} r={4} fill={stroke} opacity={0.8} />;
-    }
-    return null;
-  };
-
   return (
     <Card className="p-4">
       <ChartContainer config={chartConfig} className="h-[400px] w-[100%]">
@@ -166,16 +252,15 @@ export default function SubjectAverageChart({
           <ChartTooltip
             filterNull={false}
             cursor={false}
-            content={
-              <ChartTooltipContent
+            content={({ active, label }) => (
+              <CustomTooltipContent
+                active={active}
+                label={label}
                 chartData={chartData}
-                findNearestNonNull={true}
-                labelFormatter={(value) => value}
-                valueFormatter={(val) => val.toFixed(2)}
-                onUpdateActiveTooltipIndices={handleActiveTooltipIndicesChange}
+                chartConfig={chartConfig}
+                formatDates={formatDates}
               />
-            }
-            labelFormatter={(value) => formatDates.formatShort(new Date(value))}
+            )}
           />
 
           {childrenAverage?.map((child) => (
@@ -183,42 +268,35 @@ export default function SubjectAverageChart({
               key={child.id}
               dataKey={child.id}
               type="monotone"
-              fill={child.color}
               stroke={child.color}
               connectNulls={true}
+              dot={false}
               activeDot={false}
-              dot={(props) => {
-                const { key, ...rest } = props;
-                return (
-                  <CustomDot
-                    key={key}
-                    {...rest}
-                    dataKey={child.id}
-                    activeTooltipIndex={activeTooltipIndices[child.id]}
-                  />
-                );
-              }}
             />
           ))}
 
           <Line
             dataKey="average"
             type="monotone"
-            fill="url(#fillAverage)"
             stroke="#2662d9"
             strokeWidth={3}
             connectNulls={true}
+            dot={false}
             activeDot={false}
-            dot={(props) => {
-              const { key, ...restProps } = props;
-              return (
-                <CustomDot
-                  key={key}
-                  {...restProps}
-                  activeTooltipIndex={activeTooltipIndices["average"]}
-                />
-              );
-            }}
+          />
+
+          {childrenAverage?.map((child) => (
+            <SubjectActiveDot
+              key={child.id}
+              dataKey={child.id}
+              fill={child.color}
+              chartData={chartData}
+            />
+          ))}
+          <SubjectActiveDot
+            dataKey="average"
+            fill="#2662d9"
+            chartData={chartData}
           />
         </LineChart>
       </ChartContainer>
