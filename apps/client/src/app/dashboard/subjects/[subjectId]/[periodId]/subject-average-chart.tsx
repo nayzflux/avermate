@@ -18,6 +18,7 @@ import {
   XAxis,
   YAxis,
   useActiveTooltipLabel,
+  ResponsiveContainer,
 } from "recharts";
 import { useTranslations } from "next-intl";
 import { useFormatDates } from "@/utils/format";
@@ -59,12 +60,33 @@ const predefinedColors = [
   "#b33dc6",
 ];
 
+interface ChartDataPoint {
+  date: string;
+  average: number | null;
+  [key: string]: number | string | null; // For dynamic subject data
+}
+
+interface ChartConfig {
+  [key: string]: {
+    label: string;
+    color: string;
+  };
+}
+
+interface CustomTooltipContentProps {
+  active?: boolean;
+  label?: string;
+  chartData: ChartDataPoint[];
+  chartConfig: ChartConfig;
+  formatDates: ReturnType<typeof useFormatDates>;
+}
+
 function findNearestDatum(
-  data: Array<{ date: string; [key: string]: any }>,
+  data: ChartDataPoint[],
   targetDate: string,
   dataKey: string
-) {
-  let nearestDatum: (typeof data)[number] | null = null;
+): ChartDataPoint | null {
+  let nearestDatum: ChartDataPoint | null = null;
   let minDiff = Infinity;
   const targetTime = new Date(targetDate).getTime();
 
@@ -90,7 +112,7 @@ function SubjectActiveDot({
 }: {
   dataKey: string;
   fill: string;
-  chartData: Array<{ date: string; [key: string]: any }>;
+  chartData: ChartDataPoint[];
 }) {
   const activeLabel = useActiveTooltipLabel();
   if (!activeLabel) return null;
@@ -98,10 +120,13 @@ function SubjectActiveDot({
   const nearestDatum = findNearestDatum(chartData, activeLabel, dataKey);
   if (!nearestDatum || nearestDatum[dataKey] === undefined) return null;
 
+  const value = nearestDatum[dataKey];
+  if (value === null) return null;
+
   return (
     <ReferenceDot
       x={nearestDatum.date}
-      y={nearestDatum[dataKey]}
+      y={typeof value === 'number' ? value : undefined}
       r={4}
       fill={fill}
       strokeWidth={0}
@@ -116,41 +141,32 @@ function CustomTooltipContent({
   chartData,
   chartConfig,
   formatDates,
-}: {
-  active: boolean;
-  label: string;
-  chartData: Array<{ date: string; [key: string]: any }>;
-  chartConfig: any;
-  formatDates: ReturnType<typeof useFormatDates>;
-}) {
+}: CustomTooltipContentProps) {
   if (!active || !label) return null;
 
-  const labelTime = new Date(label).getTime();
-  const payload = Object.entries(chartConfig).map(
-    ([dataKey, config]: [string, any]) => {
-      const nearestDatum = findNearestDatum(chartData, label, dataKey);
-      return {
-        dataKey,
-        value: nearestDatum?.[dataKey] ?? null,
-        color: config.color,
-        name: config.label,
-        payload: nearestDatum,
-      };
-    }
-  );
+  const payload = Object.entries(chartConfig).map(([dataKey, config]) => {
+    const nearestDatum = findNearestDatum(chartData, label, dataKey);
+    const value = nearestDatum?.[dataKey];
+    return {
+      dataKey,
+      value: value,
+      color: config.color,
+      name: config.label,
+      payload: nearestDatum,
+    };
+  });
 
-  // Filter out entries with null values
-  const validEntries = payload.filter((entry) => entry.value !== null);
+  const validEntries = payload.filter((entry) => entry.value !== null && entry.value !== undefined);
 
   return (
     <ChartTooltipContent
-      active={active}
+      active={true}
       label={formatDates.formatShort(new Date(label))}
       payload={validEntries.map((entry) => ({
         name: entry.name,
-        value: entry.value?.toFixed(2) ?? "N/A",
+        value: typeof entry.value === 'number' ? entry.value.toFixed(2) : 'N/A',
         color: entry.color,
-        payload: entry.payload,
+        payload: null,
       }))}
     />
   );
@@ -233,72 +249,74 @@ export default function SubjectAverageChart({
   return (
     <Card className="p-4">
       <ChartContainer config={chartConfig} className="h-[400px] w-[100%]">
-        <LineChart data={chartData} margin={{ left: -30 }}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="date"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            tickFormatter={(value) => formatDates.formatShort(new Date(value))}
-          />
-          <YAxis
-            tickLine={false}
-            axisLine={false}
-            domain={[0, 20]}
-            tickMargin={8}
-            tickCount={5}
-          />
-          <ChartTooltip
-            filterNull={false}
-            cursor={false}
-            content={({ active, label }) => (
-              <CustomTooltipContent
-                active={active}
-                label={label}
-                chartData={chartData}
-                chartConfig={chartConfig}
-                formatDates={formatDates}
-              />
-            )}
-          />
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={chartData} margin={{ left: -30 }}>
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => formatDates.formatShort(new Date(value))}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              domain={[0, 20]}
+              tickMargin={8}
+              tickCount={5}
+            />
+            <ChartTooltip
+              filterNull={false}
+              cursor={false}
+              content={({ active, label }) => (
+                <CustomTooltipContent
+                  active={active}
+                  label={label}
+                  chartData={chartData}
+                  chartConfig={chartConfig}
+                  formatDates={formatDates}
+                />
+              )}
+            />
 
-          {childrenAverage?.map((child) => (
+            {childrenAverage?.map((child) => (
+              <Line
+                key={child.id}
+                dataKey={child.id}
+                type="monotone"
+                stroke={child.color}
+                connectNulls={true}
+                dot={false}
+                activeDot={false}
+              />
+            ))}
+
             <Line
-              key={child.id}
-              dataKey={child.id}
+              dataKey="average"
               type="monotone"
-              stroke={child.color}
+              stroke="#2662d9"
+              strokeWidth={3}
               connectNulls={true}
               dot={false}
               activeDot={false}
             />
-          ))}
 
-          <Line
-            dataKey="average"
-            type="monotone"
-            stroke="#2662d9"
-            strokeWidth={3}
-            connectNulls={true}
-            dot={false}
-            activeDot={false}
-          />
-
-          {childrenAverage?.map((child) => (
+            {childrenAverage?.map((child) => (
+              <SubjectActiveDot
+                key={child.id}
+                dataKey={child.id}
+                fill={child.color}
+                chartData={chartData}
+              />
+            ))}
             <SubjectActiveDot
-              key={child.id}
-              dataKey={child.id}
-              fill={child.color}
+              dataKey="average"
+              fill="#2662d9"
               chartData={chartData}
             />
-          ))}
-          <SubjectActiveDot
-            dataKey="average"
-            fill="#2662d9"
-            chartData={chartData}
-          />
-        </LineChart>
+          </LineChart>
+        </ResponsiveContainer>
       </ChartContainer>
     </Card>
   );
