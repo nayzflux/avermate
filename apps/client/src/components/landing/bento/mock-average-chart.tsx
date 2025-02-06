@@ -29,8 +29,7 @@ import {
   Radar,
   RadarChart,
   XAxis,
-  YAxis,
-  ResponsiveContainer,
+  YAxis
 } from "recharts";
 import { useTranslations } from "next-intl";
 import { useFormatDates } from "@/utils/format";
