@@ -23,6 +23,8 @@ RUN rm -rf /root/.bun/install/cache/@T@aad4350a3a656adb@@@1
 
 # install 
 RUN bun i https://pkg.pr.new/pingdotgg/uploadthing@1099
+# "recharts": "^3.0.0-alpha.6",
+RUN bun i recharts@alpha
 
 RUN bun run patch-package
 
