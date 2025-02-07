@@ -13,21 +13,15 @@ const nextConfig = {
       },
     ],
   },
-  webpack: (config) => {
-    // This ensures recharts alpha works in production
-    config.resolve = {
-      ...config.resolve,
-      fallback: {
-        ...config.resolve.fallback,
-        util: false,
-        crypto: false,
-        assert: false,
-        stream: false,
-        fs: false,
-        os: false,
-        path: false,
-      },
-    };
+  transpilePackages: ['recharts', '@types/d3-scale', '@types/d3-array', '@types/d3-shape'],
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        // Force using ESM version
+        'recharts': 'recharts/es6'
+      };
+    }
     return config;
   },
 };
