@@ -40,19 +40,19 @@ export const FeaturesGrid = () => {
         </BentoBackground>
       ),
     },
-    // {
-    //   Icon: PresentationChartLineIcon,
-    //   name: t("realTimeProgress"),
-    //   description: t("realTimeProgressDescription"),
-    //   href: "#",
-    //   cta: t("use"),
-    //   className: "col-span-3 md:col-span-2 row-span-2 md:row-span-1",
-    //   background: (
-    //     <BentoBackground>
-    //       <MockAverageChart />
-    //     </BentoBackground>
-    //   ),
-    // },
+    {
+      Icon: PresentationChartLineIcon,
+      name: t("realTimeProgress"),
+      description: t("realTimeProgressDescription"),
+      href: "#",
+      cta: t("use"),
+      className: "col-span-3 md:col-span-2 row-span-2 md:row-span-1",
+      background: (
+        <BentoBackground>
+          <MockAverageChart />
+        </BentoBackground>
+      ),
+    },
   ];
 
   return (
