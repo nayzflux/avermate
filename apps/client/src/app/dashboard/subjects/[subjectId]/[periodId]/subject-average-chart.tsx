@@ -24,30 +24,6 @@ import { useTranslations } from "next-intl";
 import { useFormatDates } from "@/utils/format";
 import { useFormatter } from "next-intl";
 
-function getCumulativeStartDate(
-  periods: Period[],
-  currentPeriod: Period
-): Date {
-  if (currentPeriod.id === "full-year") {
-    return new Date(currentPeriod.startAt);
-  }
-
-  const sorted = [...periods].sort(
-    (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
-  );
-
-  const currentIndex = sorted.findIndex((p) => p.id === currentPeriod.id);
-  if (currentIndex === -1) {
-    return new Date(currentPeriod.startAt);
-  }
-
-  if (currentPeriod.isCumulative) {
-    return new Date(sorted[0].startAt);
-  }
-
-  return new Date(currentPeriod.startAt);
-}
-
 const predefinedColors = [
   "#ea5545",
   "#f46a9b",
@@ -63,7 +39,7 @@ const predefinedColors = [
 interface ChartDataPoint {
   date: string;
   average: number | null;
-  [key: string]: number | string | null; // For dynamic subject data
+  [key: string]: number | string | null;
 }
 
 interface ChartConfig {
@@ -190,42 +166,33 @@ export default function SubjectAverageChart({
   const { childrenAverage, chartData, chartConfig } = (() => {
     const childrenIds = getChildren(subjects, subjectId);
     const endDate = new Date(period.endAt);
-    const startDate = getCumulativeStartDate(periods, period);
+    const startDate = new Date(period.startAt);
 
-    const dates: Date[] = [];
-    for (
-      let dt = new Date(startDate);
-      dt <= endDate;
-      dt.setDate(dt.getDate() + 1)
-    ) {
+    const dates = [];
+    for (let dt = new Date(startDate); dt <= endDate; dt.setDate(dt.getDate() + 1)) {
       dates.push(new Date(dt));
     }
 
-    const mainSubject = subjects.find((s) => s.id === subjectId);
-    let childrenObjects = subjects.filter((subj) =>
-      childrenIds.includes(subj.id)
-    );
-
-    childrenObjects = childrenObjects.filter(
-      (child) => child.depth === (mainSubject?.depth ?? 0) + 1
-    );
-
-    const childrenAverage = childrenObjects.map((child, index) => ({
-      id: child.id,
-      name: child.name,
-      average: averageOverTime(subjects, child.id, period, periods),
+    const mainAverage = averageOverTime(subjects, subjectId, period, periods);
+    const childrenAverage = childrenIds.map((childId, index) => ({
+      id: childId,
+      name: subjects.find((s) => s.id === childId)?.name || childId,
       color: predefinedColors[index % predefinedColors.length],
+      data: averageOverTime(subjects, childId, period, periods),
     }));
 
-    const mainAverages = averageOverTime(subjects, subjectId, period, periods);
+    const chartData = dates.map((date, index) => {
+      const data: ChartDataPoint = {
+        date: date.toISOString(),
+        average: mainAverage[index],
+      };
 
-    const chartData = dates.map((date, index) => ({
-      date: date.toISOString(),
-      average: mainAverages[index],
-      ...Object.fromEntries(
-        childrenAverage.map((child) => [child.id, child.average[index]])
-      ),
-    }));
+      childrenAverage.forEach((child) => {
+        data[child.id] = child.data[index];
+      });
+
+      return data;
+    });
 
     const chartConfig = {
       average: {

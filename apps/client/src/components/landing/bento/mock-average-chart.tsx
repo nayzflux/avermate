@@ -80,7 +80,8 @@ const renderPolarAngleAxis = (props: TickProps) => {
   const y = Number(props.y ?? 0);
   const cx = Number(props.cx ?? 0);
   const cy = Number(props.cy ?? 0);
-  
+  const value = props.payload?.value ?? '';
+
   const radius = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
   const angle = Math.atan2(y - cy, x - cx);
 
@@ -95,7 +96,6 @@ const renderPolarAngleAxis = (props: TickProps) => {
       ? 9
       : 12;
 
-  const value = props.payload?.value ?? '';
   const truncatedLabel = value.length > truncateLength
     ? `${value.slice(0, truncateLength)}...`
     : value;
@@ -136,7 +136,7 @@ export const MockAverageChart = () => {
     name: t("fullYear"),
     startAt: new Date(new Date().getFullYear(), 8, 1).toISOString(),
     endAt: new Date(new Date().getFullYear() + 1, 5, 30).toISOString(),
-    userId: "",
+userId: "",
     createdAt: "",
     isCumulative: true,
   };
@@ -183,41 +183,19 @@ export const MockAverageChart = () => {
       };
     });
 
-  const radarData = subjectAverages;
-
-  // Custom dot component
-  const CustomDot = ({
-    cx,
-    cy,
-    index,
-    stroke,
-    activeTooltipIndex,
-  }: {
-    cx?: number;
-    cy?: number;
-    index?: number;
-    stroke?: string;
-    activeTooltipIndex?: number | null;
-  }) => {
-    if (activeTooltipIndex !== null && index === activeTooltipIndex) {
-      return <circle cx={cx} cy={cy} r={4} fill={stroke} opacity={0.8} />;
-    }
-    return null;
-  };
-
   // handle if there are no subjects
   if (localizedSubjects.length === 0) {
     return <SubjectEmptyState />;
   }
 
   // if all the averages are null
-  if (chartData.every((data) => data.average === null)) {
+  if (averages.every((avg) => avg === null)) {
     return (
       <Card className="lg:col-span-5 flex flex-col justify-center items-center p-6 gap-8 w-full h-full">
         <BookOpenIcon className="w-12 h-12" />
         <div className="flex flex-col items-center gap-1">
           <h2 className="text-xl font-semibold text-center">
-            {t("noGradesYet")}
+          {t("noGradesYet")}
           </h2>
           <p className="text-center">{t("addGradeToStartTracking")}</p>
         </div>
@@ -232,10 +210,11 @@ export const MockAverageChart = () => {
   }
 
   return (
-    <Card className="lg:col-span-5">
+    <Card>
       <CardHeader>
         <CardTitle>{t("overallAverage")}</CardTitle>
       </CardHeader>
+
       <CardContent>
         <div className="flex items-start lg:space-x-4 text-sm flex-wrap lg:flex-nowrap h-fit justify-center gap-[10px] flex-col lg:flex-row pt-2">
           <div className="flex flex-col items-center lg:items-start grow min-w-0 my-0 mx-auto w-[100%] lg:w-[60%]">
@@ -243,49 +222,48 @@ export const MockAverageChart = () => {
               {t("visualizeOverallAverage")}
             </CardDescription>
             <ChartContainer config={chartConfig} className="h-[302px] w-[100%]">
-              <AreaChart data={chartData} margin={{ left: -30 }}>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="date"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  tickFormatter={(value) =>
-                    formatDates.formatShort(new Date(value))
-                  }
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  domain={[0, 20]}
-                  tickMargin={8}
-                  tickCount={5}
-                />
-                <ChartTooltip
-                  filterNull={false}
-                  cursor={false}
-                  content={(props) => (
-                    <CustomTooltipContent
-                      {...props}
-                      valueFormatter={(value) => value.toFixed(2)}
-                    />
-                  )}
-                />
-                <defs>
-                  <linearGradient id="fillAverage" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2662d9" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#2662d9" stopOpacity={0.1} />
-                  </linearGradient>
-                </defs>
-                <Area
-                  dataKey="average"
-                  type="monotone"
-                  fill="url(#fillAverage)"
-                  stroke="#2662d9"
-                  connectNulls={true}
-                  activeDot={false}
-                />
-              </AreaChart>
+              <ResponsiveContainer>
+                <AreaChart data={chartData} margin={{ left: -30 }}>
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="date"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tickFormatter={(value) =>
+                      formatDates.formatShort(new Date(value))
+                    }
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    domain={[0, 20]}
+                    tickMargin={8}
+                    tickCount={5}
+                  />
+                  <ChartTooltip
+                    filterNull={false}
+                    cursor={false}
+                    content={(props) => (
+                      <CustomTooltipContent
+                        {...props}
+                        valueFormatter={(value) => value.toFixed(2)}
+                      />
+                    )}
+                  />
+                  <Area
+                    dataKey="average"
+                    type="monotone"
+                    fill="#2662d9"
+                    stroke="#2662d9"
+                    fillOpacity={0.1}
+                    strokeWidth={3}
+                    connectNulls={true}
+                    dot={false}
+                    activeDot={false}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </ChartContainer>
           </div>
 
@@ -300,14 +278,15 @@ export const MockAverageChart = () => {
               config={chartConfig}
               className="h-[332px] w-[100%] m-auto !aspect-auto"
             >
-              <RadarChart data={radarData} outerRadius="90%">
+              <RadarChart data={subjectAverages} outerRadius="90%">
                 <PolarGrid />
                 <PolarAngleAxis dataKey="subject" tick={renderPolarAngleAxis} />
                 <Radar
                   dataKey="average"
+                  fillOpacity={0.1}
                   stroke="#2662d9"
                   fill="#2662d9"
-                  fillOpacity={0.6}
+                  strokeWidth={3}
                 />
                 <ChartTooltip
                   cursor={false}
