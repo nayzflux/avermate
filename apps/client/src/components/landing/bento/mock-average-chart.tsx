@@ -242,9 +242,9 @@ export const MockAverageChart = () => {
             <CardDescription className="pb-8">
               {t("visualizeOverallAverage")}
             </CardDescription>
-            {/* <ChartContainer config={chartConfig} className="h-[302px] w-[100%]">
+            {/* <ChartContainer config={chartConfig} className="h-[302px] w-[100%]"> */}
               <AreaChart data={chartData} margin={{ left: -30 }}>
-                <CartesianGrid vertical={false} />
+                {/* <CartesianGrid vertical={false} /> */}
                 <XAxis
                   dataKey="date"
                   tickLine={false}
@@ -261,7 +261,7 @@ export const MockAverageChart = () => {
                   tickMargin={8}
                   tickCount={5}
                 />
-                <ChartTooltip
+                {/* <ChartTooltip
                   filterNull={false}
                   cursor={false}
                   content={(props) => (
@@ -276,7 +276,7 @@ export const MockAverageChart = () => {
                     <stop offset="5%" stopColor="#2662d9" stopOpacity={0.8} />
                     <stop offset="95%" stopColor="#2662d9" stopOpacity={0.1} />
                   </linearGradient>
-                </defs>
+                </defs> */}
                 <Area
                   dataKey="average"
                   type="monotone"
@@ -286,7 +286,7 @@ export const MockAverageChart = () => {
                   activeDot={false}
                 />
               </AreaChart>
-            </ChartContainer> */}
+            {/* </ChartContainer> */}
           </div>
 
           <Separator
