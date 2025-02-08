@@ -50,30 +50,30 @@ interface CustomTooltipProps {
   valueFormatter?: (value: number) => string;
 }
 
-const CustomTooltipContent: React.FC<CustomTooltipProps> = ({
-  active,
-  payload,
-  label,
-  className,
-  valueFormatter = (value) => value.toString()
-}) => {
-  if (!active || !payload?.length) {
-    return null;
-  }
+// const CustomTooltipContent: React.FC<CustomTooltipProps> = ({
+//   active,
+//   payload,
+//   label,
+//   className,
+//   valueFormatter = (value) => value.toString()
+// }) => {
+//   if (!active || !payload?.length) {
+//     return null;
+//   }
 
-  return (
-    <BaseChartTooltipContent
-      active={active}
-      payload={payload.map(item => ({
-        name: item.name,
-        value: typeof item.value === 'number' ? valueFormatter(item.value) : item.value,
-        color: item.color,
-      }))}
-      label={label}
-      className={className}
-    />
-  );
-};
+//   return (
+//     <BaseChartTooltipContent
+//       active={active}
+//       payload={payload.map(item => ({
+//         name: item.name,
+//         value: typeof item.value === 'number' ? valueFormatter(item.value) : item.value,
+//         color: item.color,
+//       }))}
+//       label={label}
+//       className={className}
+//     />
+//   );
+// };
 
 const renderPolarAngleAxis = (props: TickProps) => {
   const x = Number(props.x ?? 0);
