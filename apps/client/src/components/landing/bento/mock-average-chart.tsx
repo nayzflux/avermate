@@ -11,11 +11,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent as BaseChartTooltipContent,
-} from "@/components/ui/chart";
+// import {
+//   ChartContainer,
+//   ChartTooltip,
+//   ChartTooltipContent as BaseChartTooltipContent,
+// } from "@/components/ui/chart";
 import { Separator } from "@/components/ui/separator";
 import { useLocalizedSubjects } from "@/data/mock";
 import { average, averageOverTime } from "@/utils/average";
@@ -50,30 +50,30 @@ interface CustomTooltipProps {
   valueFormatter?: (value: number) => string;
 }
 
-const CustomTooltipContent: React.FC<CustomTooltipProps> = ({
-  active,
-  payload,
-  label,
-  className,
-  valueFormatter = (value) => value.toString()
-}) => {
-  if (!active || !payload?.length) {
-    return null;
-  }
+// const CustomTooltipContent: React.FC<CustomTooltipProps> = ({
+//   active,
+//   payload,
+//   label,
+//   className,
+//   valueFormatter = (value) => value.toString()
+// }) => {
+//   if (!active || !payload?.length) {
+//     return null;
+//   }
 
-  return (
-    <BaseChartTooltipContent
-      active={active}
-      payload={payload.map(item => ({
-        name: item.name,
-        value: typeof item.value === 'number' ? valueFormatter(item.value) : item.value,
-        color: item.color,
-      }))}
-      label={label}
-      className={className}
-    />
-  );
-};
+//   return (
+//     <BaseChartTooltipContent
+//       active={active}
+//       payload={payload.map(item => ({
+//         name: item.name,
+//         value: typeof item.value === 'number' ? valueFormatter(item.value) : item.value,
+//         color: item.color,
+//       }))}
+//       label={label}
+//       className={className}
+//     />
+//   );
+// };
 
 const renderPolarAngleAxis = (props: TickProps) => {
   const x = Number(props.x ?? 0);
@@ -242,7 +242,7 @@ export const MockAverageChart = () => {
             <CardDescription className="pb-8">
               {t("visualizeOverallAverage")}
             </CardDescription>
-            <ChartContainer config={chartConfig} className="h-[302px] w-[100%]">
+            {/* <ChartContainer config={chartConfig} className="h-[302px] w-[100%]"> */}
               <AreaChart data={chartData} margin={{ left: -30 }}>
                 <CartesianGrid vertical={false} />
                 <XAxis
@@ -261,7 +261,7 @@ export const MockAverageChart = () => {
                   tickMargin={8}
                   tickCount={5}
                 />
-                <ChartTooltip
+                {/* <ChartTooltip
                   filterNull={false}
                   cursor={false}
                   content={(props) => (
@@ -270,7 +270,7 @@ export const MockAverageChart = () => {
                       valueFormatter={(value) => value.toFixed(2)}
                     />
                   )}
-                />
+                /> */}
                 <defs>
                   <linearGradient id="fillAverage" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#2662d9" stopOpacity={0.8} />
@@ -286,7 +286,7 @@ export const MockAverageChart = () => {
                   activeDot={false}
                 />
               </AreaChart>
-            </ChartContainer>
+            {/* </ChartContainer> */}
           </div>
 
           <Separator
@@ -296,10 +296,10 @@ export const MockAverageChart = () => {
 
           <div className="flex flex-col items-center lg:space-y-2 lg:w-[40%] m-auto lg:pt-0 pt-8 w-[100%]">
             <CardDescription>{t("visualizeAverageBySubject")}</CardDescription>
-            <ChartContainer
+            {/* <ChartContainer
               config={chartConfig}
               className="h-[332px] w-[100%] m-auto !aspect-auto"
-            >
+            > */}
               <RadarChart data={radarData} outerRadius="90%">
                 <PolarGrid />
                 <PolarAngleAxis dataKey="subject" tick={renderPolarAngleAxis} />
@@ -309,7 +309,7 @@ export const MockAverageChart = () => {
                   fill="#2662d9"
                   fillOpacity={0.6}
                 />
-                <ChartTooltip
+                {/* <ChartTooltip
                   cursor={false}
                   content={(props) => (
                     <CustomTooltipContent
@@ -317,9 +317,9 @@ export const MockAverageChart = () => {
                       valueFormatter={(value) => value.toFixed(2)}
                     />
                   )}
-                />
+                /> */}
               </RadarChart>
-            </ChartContainer>
+            {/* </ChartContainer> */}
           </div>
         </div>
       </CardContent>
