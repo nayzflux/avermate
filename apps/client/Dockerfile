@@ -16,6 +16,11 @@ COPY ./apps/client/package.json ./apps/client/package.json
 
 COPY . .  
 
+# Clear all caches
+RUN rm -rf /root/.bun/install/cache/* && \
+    rm -rf /app/.next && \
+    rm -rf /github/home/.cache
+
 RUN bun install --force
 
 # remove @T@aad4350a3a656adb@@@1 in the bun install cache folder
