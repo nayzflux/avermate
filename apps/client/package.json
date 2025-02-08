@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "next build --verbose",
+    "build": "next build --debug",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "patch-package"
