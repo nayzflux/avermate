@@ -296,7 +296,7 @@ export const MockAverageChart = () => {
 
           <div className="flex flex-col items-center lg:space-y-2 lg:w-[40%] m-auto lg:pt-0 pt-8 w-[100%]">
             <CardDescription>{t("visualizeAverageBySubject")}</CardDescription>
-            <ChartContainer
+            {/* <ChartContainer
               config={chartConfig}
               className="h-[332px] w-[100%] m-auto !aspect-auto"
             >
@@ -319,7 +319,7 @@ export const MockAverageChart = () => {
                   )}
                 />
               </RadarChart>
-            </ChartContainer>
+            </ChartContainer> */}
           </div>
         </div>
       </CardContent>
