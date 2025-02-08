@@ -245,7 +245,7 @@ export const MockAverageChart = () => {
             {/* <ChartContainer config={chartConfig} className="h-[302px] w-[100%]"> */}
               <AreaChart data={chartData} margin={{ left: -30 }}>
                 {/* <CartesianGrid vertical={false} /> */}
-                <XAxis
+                {/* <XAxis
                   dataKey="date"
                   tickLine={false}
                   axisLine={false}
@@ -260,7 +260,7 @@ export const MockAverageChart = () => {
                   domain={[0, 20]}
                   tickMargin={8}
                   tickCount={5}
-                />
+                /> */}
                 {/* <ChartTooltip
                   filterNull={false}
                   cursor={false}
@@ -277,14 +277,14 @@ export const MockAverageChart = () => {
                     <stop offset="95%" stopColor="#2662d9" stopOpacity={0.1} />
                   </linearGradient>
                 </defs> */}
-                <Area
+                {/* <Area
                   dataKey="average"
                   type="monotone"
                   fill="url(#fillAverage)"
                   stroke="#2662d9"
                   connectNulls={true}
                   activeDot={false}
-                />
+                /> */}
               </AreaChart>
             {/* </ChartContainer> */}
           </div>
