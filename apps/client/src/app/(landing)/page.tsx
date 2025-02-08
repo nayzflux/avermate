@@ -1,3 +1,5 @@
+"use client";
+
 import { Benefits } from "@/components/landing/benefits";
 import { CTA } from "@/components/landing/cta";
 import { FAQ } from "@/components/landing/faq";
