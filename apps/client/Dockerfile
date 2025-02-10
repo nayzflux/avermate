@@ -21,6 +21,9 @@ RUN rm -rf /root/.bun/install/cache/* && \
     rm -rf /app/.next && \
     rm -rf /github/home/.cache
 
+# display bun version
+RUN bun --version
+
 RUN bun install --force
 
 # remove @T@aad4350a3a656adb@@@1 in the bun install cache folder
