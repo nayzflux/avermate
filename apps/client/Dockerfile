@@ -9,9 +9,9 @@ RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files and lockfiles
 COPY package.json ./
-COPY ./apps/client/package.json ./apps/client/package.json
+COPY ./apps/client/package.json ./apps/client/
 COPY patches/ ./patches/
 
 # Install dependencies
@@ -27,9 +27,12 @@ WORKDIR /app
 # Install pnpm in builder stage
 RUN npm install -g pnpm@8.9.0
 
+# Copy necessary files
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/patches ./patches
+COPY --from=deps /app/apps/client/node_modules ./apps/client/node_modules
 COPY ./apps/client ./apps/client
+COPY package.json ./
 
 # Next.js collects completely anonymous telemetry data about general usage.
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -37,7 +40,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NEXT_PUBLIC_API_URL=https://api.avermate.fr
 ENV NEXT_PUBLIC_CLIENT_URL=https://avermate.fr
 
-RUN cd ./apps/client/ && pnpm run build
+# Install and build
+RUN cd ./apps/client/ && pnpm install && pnpm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -49,10 +53,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder /app/apps/client/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/apps/client/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/client/.next/static ./.next/static
+COPY --from=builder /app/apps/client/.next/standalone ./
+COPY --from=builder /app/apps/client/.next/static ./.next/static
 
 USER nextjs
 
