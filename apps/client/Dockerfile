@@ -9,14 +9,15 @@ RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-COPY package.json package.json
+# Copy package files
+COPY package.json ./
 COPY ./apps/client/package.json ./apps/client/package.json
 COPY patches/ ./patches/
 
 # Install dependencies
-RUN npm install -g pnpm
-RUN pnpm install --frozen-lockfile
-RUN cd ./apps/client/ && pnpm install --frozen-lockfile
+RUN npm install -g pnpm@8.9.0
+RUN pnpm install
+RUN cd ./apps/client/ && pnpm install
 
 # Rebuild the source code only when needed
 FROM base AS builder
