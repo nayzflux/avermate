@@ -24,11 +24,14 @@ FROM base AS builder
 
 WORKDIR /app
 
+# Install pnpm in builder stage
+RUN npm install -g pnpm@8.9.0
+
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/patches ./patches
 COPY ./apps/client ./apps/client
 
 # Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
 ENV NEXT_TELEMETRY_DISABLED=1
 
 ENV NEXT_PUBLIC_API_URL=https://api.avermate.fr
