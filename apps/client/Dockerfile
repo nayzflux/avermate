@@ -52,7 +52,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NEXT_PUBLIC_API_URL=https://api.avermate.fr
 ENV NEXT_PUBLIC_CLIENT_URL=https://avermate.fr
 
-RUN cd ./apps/client/ && bun run build
+RUN cd ./apps/client/ && bun --bun run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
