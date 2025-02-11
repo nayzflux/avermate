@@ -55,7 +55,7 @@ ENV NEXT_PUBLIC_CLIENT_URL=https://avermate.fr
 RUN cd ./apps/client/ && npm run build
 
 # Production image, copy all the files and run next
-FROM base AS runner
+FROM node:18-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -68,17 +68,7 @@ RUN adduser --system --uid 1001 nextjs
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
-# COPY --from=builder --chown=nextjs:nodejs /app/apps/client/public ./apps/client/public
-# COPY --from=builder --chown=nextjs:nodejs /app/apps/client/.next/standalone ./apps/client/.next/standalone
-# COPY --from=builder --chown=nextjs:nodejs /app/apps/client/.next/static ./apps/client/.next/static
-
-# COPY --from=builder --chown=nextjs:nodejs /app/apps/client/public ./apps/client/.next/standalone/public
-# COPY --from=builder --chown=nextjs:nodejs /app/apps/client/.next/static ./apps/client/.next/standalone/static
-
-# COPY --from=builder --chown=nextjs:nodejs /app/apps/client/public ./apps/client/.next/standalone/.next/public
-# COPY --from=builder --chown=nextjs:nodejs /app/apps/client/.next/static ./apps/client/.next/standalone/.next/static
-
-COPY --from=builder /app/apps/client/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/client/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/apps/client/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/client/.next/static ./.next/static
 
@@ -87,7 +77,6 @@ USER nextjs
 EXPOSE 3000
 
 ENV PORT=3000
-
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
