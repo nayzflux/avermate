@@ -37,7 +37,7 @@ RUN bun run patch-package
 RUN cd ./apps/client/ && bun install && bun run patch-package
 
 # Rebuild the source code only when needed
-FROM base AS builder
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
@@ -52,7 +52,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NEXT_PUBLIC_API_URL=https://api.avermate.fr
 ENV NEXT_PUBLIC_CLIENT_URL=https://avermate.fr
 
-RUN cd ./apps/client/ && bun --bun run build
+RUN cd ./apps/client/ && npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
