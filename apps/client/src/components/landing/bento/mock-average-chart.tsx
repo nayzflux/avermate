@@ -280,9 +280,12 @@ export const MockAverageChart = () => {
                 <Area
                   dataKey="average"
                   type="monotone"
-                  fill="url(#fillAverage)"
+                  fill="#2662d9"
                   stroke="#2662d9"
+                  fillOpacity={0.1}
+                  strokeWidth={2}
                   connectNulls={true}
+                  dot={false}
                   activeDot={false}
                 />
               </AreaChart>
@@ -305,9 +308,9 @@ export const MockAverageChart = () => {
                 <PolarAngleAxis dataKey="subject" tick={renderPolarAngleAxis} />
                 <Radar
                   dataKey="average"
+                  fillOpacity={0.1}
                   stroke="#2662d9"
                   fill="#2662d9"
-                  fillOpacity={0.6}
                 />
                 <ChartTooltip
                   cursor={false}

@@ -335,7 +335,7 @@ export default function GlobalAverageChart({
                   fill="#2662d9"
                   stroke="#2662d9"
                   fillOpacity={0.1}
-                  strokeWidth={3}
+                  strokeWidth={2}
                   connectNulls={true}
                   dot={false}
                   activeDot={false}
@@ -364,7 +364,7 @@ export default function GlobalAverageChart({
                   fillOpacity={0.1}
                   stroke="#2662d9"
                   fill="#2662d9"
-                  strokeWidth={3}
+                  strokeWidth={2}
                 />
                 <PolarRadiusAxis domain={[0, 20]} stroke="#a1a1aa" />
                 <ChartTooltip content={<ChartTooltipContent />} />
