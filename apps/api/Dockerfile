@@ -1,4 +1,4 @@
-FROM oven/bun:1 AS build
+FROM node:18-alpine AS build
 
 WORKDIR /app
 
@@ -6,11 +6,11 @@ COPY package.json package.json
 COPY bun.lockb bun.lockb
 COPY ./apps/api/package.json ./apps/api/package.json
 
-RUN cd ./apps/api/ && bun install
+RUN cd ./apps/api/ && npm install
 
 COPY ./apps/api ./apps/api
 
-FROM oven/bun:alpine AS release
+FROM node:18-alpine AS release
 
 WORKDIR /app
 
@@ -21,8 +21,8 @@ COPY --from=build /app/apps/api apps/api
 
 WORKDIR /app/apps/api
 
-USER bun
+USER node
 
 EXPOSE 5000/tcp
 
-ENTRYPOINT [ "bun", "run", "start" ]
+CMD ["npm", "start"]
