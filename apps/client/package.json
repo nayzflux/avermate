@@ -81,9 +81,5 @@
     "tailwindcss": "^3.4.16",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.2.14"
-  },
-  "overrides": {
-    "@reduxjs/toolkit": "2.2.6",
-    "react-redux": "9.1.2"
   }
 }
