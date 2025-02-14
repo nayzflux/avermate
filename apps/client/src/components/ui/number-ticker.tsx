@@ -11,7 +11,10 @@ interface NumberTickerProps {
   delay?: number; // delay in seconds
   decimalPlaces?: number;
   duration?: number; // duration in seconds
-  onValueChange?: (val: number) => void;
+  /**
+   * Fires whenever the ticker's current value changes.
+   */
+  onChange?: (currentValue: number) => void;
 }
 
 export default function NumberTicker({
@@ -21,59 +24,58 @@ export default function NumberTicker({
   className,
   decimalPlaces = 0,
   duration,
-  onValueChange,
+  onChange,
 }: NumberTickerProps) {
   const ref = useRef<HTMLSpanElement>(null);
 
-  // Starting/ending values for the motion
-  const startValue = 0; // always start from 0
-  const endValue = value; // end at the final "value"
+  // Start at 0 if going "up", or at 'value' if going "down"
+  const startValue = direction === "down" ? value : 0;
+  const endValue = direction === "down" ? 0 : value;
 
-  // The raw motion value
   const motionValue = useMotionValue(startValue);
 
-  // Fallback to a spring if no fixed duration is provided
+  // If no duration => fallback to a spring
   const springValue = useSpring(motionValue, {
     damping: 20,
     stiffness: 200,
   });
 
-  // Only animate once the element is in view (customize margin if needed)
   const isInView = useInView(ref, { once: true, margin: "0px" });
 
-  // Format the displayed number to X decimals
+  // For consistent decimal formatting
   const formatter = new Intl.NumberFormat("fr-FR", {
     minimumFractionDigits: decimalPlaces,
     maximumFractionDigits: decimalPlaces,
   });
 
-  // Helper to immediately update the DOM
   const updateDom = useCallback(
     (latest: number) => {
       if (ref.current) {
-        // Round to specified decimal places before formatting
-        const rounded = Number(latest.toFixed(decimalPlaces));
-        ref.current.textContent = formatter.format(rounded);
+        // Update text
+        ref.current.textContent = formatter.format(
+          Number(latest.toFixed(decimalPlaces))
+        );
       }
+      // Fire onChange callback if provided
+      onChange?.(latest);
     },
-    [formatter, decimalPlaces]
+    [formatter, decimalPlaces, onChange]
   );
 
-  // Trigger the actual animation when in view + after the given delay
+  // Trigger the animation once in view, after any delay
   useEffect(() => {
     if (!isInView) return;
 
     const timeoutId = setTimeout(() => {
       if (duration === undefined) {
-        // If no duration, just set the final value and let spring handle it
+        // Use the spring for open-ended timing
         motionValue.set(endValue);
       } else {
-        // If duration is provided, animate with a fixed time
+        // Animate with a fixed duration
         const controls = animate(motionValue, endValue, {
           duration,
           ease: [0.16, 1, 0.3, 1],
         });
-        // Clean up if unmounted mid-animation
         return () => controls.stop();
       }
     }, delay * 1000);
@@ -81,22 +83,22 @@ export default function NumberTicker({
     return () => clearTimeout(timeoutId);
   }, [isInView, endValue, duration, delay, motionValue]);
 
-  // Subscribe to motionValue changes and update DOM + trigger onValueChange
+  // Subscribe to value changes from either the spring or direct motionValue
   useEffect(() => {
     const activeValue = duration === undefined ? springValue : motionValue;
-    const unsubscribe = activeValue.on("change", (latest) => {
-      updateDom(latest);
-      if (onValueChange) {
-        onValueChange(latest);
-      }
-    });
+    const unsubscribe = activeValue.on("change", updateDom);
     return unsubscribe;
-  }, [duration, springValue, motionValue, updateDom, onValueChange]);
+  }, [duration, springValue, motionValue, updateDom]);
 
-  // On mount, render the starting value immediately
+  // Initialize text on first render
   useEffect(() => {
     updateDom(motionValue.get());
   }, [updateDom, motionValue]);
 
-  return <span className={cn("inline-block", className)} ref={ref} />;
+  return (
+    <span
+      className={cn("inline-block", className)}
+      ref={ref}
+    />
+  );
 }

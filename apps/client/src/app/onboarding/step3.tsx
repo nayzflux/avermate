@@ -111,6 +111,7 @@ export default function Step3() {
                 coefficient={grade.coefficient}
                 id={grade.id}
                 periodId={grade.periodId}
+                subjectId={grade.subjectId}
               />
             ))}
           </div>

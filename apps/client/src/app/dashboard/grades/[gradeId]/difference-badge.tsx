@@ -1,71 +1,88 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import { useState } from "react";
 import NumberTicker from "@/components/ui/number-ticker";
 import { cn } from "@/lib/utils";
 
-export const DifferenceBadge = ({ diff }: { diff: number }) => {
-  // Track the *animated* (displayed) value coming from NumberTicker
-  const [displayedValue, setDisplayedValue] = useState(0);
+interface GradientStop {
+  stop: number;
+  color: [number, number, number];
+}
 
-  // We'll get called on each frame by NumberTicker
-  const handleValueChange = useCallback((val: number) => {
-    setDisplayedValue(val);
-  }, []);
+const TEXT_GRADIENT_STOPS: GradientStop[] = [
+  { stop: 0,   color: [255, 0, 0] },
+  { stop: 25,  color: [255, 181, 0] },
+  { stop: 50,  color: [145, 145, 145] },
+  { stop: 75,  color: [0, 255, 241] },
+  { stop: 100, color: [0, 255, 6] },
+];
 
-  // Decide sign: only show "+" if > 0, only show "–" if < 0, else ""
-  let sign = "";
-  if (displayedValue > 0) {
-    sign = "+";
-  } else if (displayedValue < 0) {
-    sign = "";
-  }
+const BACKGROUND_GRADIENT_STOPS: GradientStop[] = [
+  { stop: 0,   color: [68, 0, 0] },
+  { stop: 25,  color: [119, 84, 0] },
+  { stop: 50,  color: [55, 55, 55] },
+  { stop: 75,  color: [0, 105, 99] },
+  { stop: 100, color: [0, 111, 3] },
+];
 
-  // Fade background from greyish -> red/green as abs(value) increases
-  const absVal = Math.abs(displayedValue);
+function interpolateColorFromStops(
+  stops: GradientStop[],
+  ratio01: number
+): string {
+  const t = ratio01 * 100;
 
-  // Default grey color
-  let backgroundColor = "rgba(128,128,128,0.3)";
-  let textColor = "rgba(128,128,128,1)";
-
-  // Only if the displayed value is large enough to not be ~0.000
-  if (absVal > 0.0005) {
-    // Adjust maxImpact to tune how quickly color saturates
-    const maxImpact = 7;
-    // ratio from 0..1
-    const ratio = Math.min(absVal / maxImpact, 1);
-
-    if (displayedValue > 0) {
-      // Green color. Tailwind's 'green-500' is #10B981 (16,185,129)
-      backgroundColor = `rgba(16,185,129, ${0.2 + 0.8 * ratio})`;
-      textColor = `rgb(16,185,129)`;
-    } else {
-      // Red color. Tailwind's 'red-500' is #EF4444 (239,68,68)
-      backgroundColor = `rgba(239,68,68, ${0.2 + 0.8 * ratio})`;
-      textColor = `rgb(239,68,68)`;
+  for (let i = 0; i < stops.length - 1; i++) {
+    const current = stops[i];
+    const next = stops[i + 1];
+    if (t >= current.stop && t <= next.stop) {
+      const range = next.stop - current.stop;
+      const localT = (t - current.stop) / range;
+      const r = Math.round(current.color[0] + (next.color[0] - current.color[0]) * localT);
+      const g = Math.round(current.color[1] + (next.color[1] - current.color[1]) * localT);
+      const b = Math.round(current.color[2] + (next.color[2] - current.color[2]) * localT);
+      return `rgb(${r}, ${g}, ${b})`;
     }
   }
+
+  // Edge cases: if t < first stop or > last stop
+  if (t <= stops[0].stop) {
+    const [r, g, b] = stops[0].color;
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+  const [r, g, b] = stops[stops.length - 1].color;
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+function getRatioFromDiff(diff: number, maxRange = 1): number {
+  const clamped = Math.max(-maxRange, Math.min(diff, maxRange));
+  return (clamped + maxRange) / (2 * maxRange);
+}
+
+export function DifferenceBadge({ diff }: { diff: number }) {
+  const [animatedDiff, setAnimatedDiff] = useState(diff);
+
+  const ratio = getRatioFromDiff(animatedDiff, 1);
+
+  const textColor = interpolateColorFromStops(TEXT_GRADIENT_STOPS, ratio);
+  const backgroundColor = interpolateColorFromStops(BACKGROUND_GRADIENT_STOPS, ratio);
 
   return (
     <div className="py-2">
       <span
-        // Inline style for the dynamic colors
+        className={cn("px-2 py-1 rounded-lg text-xl md:text-3xl")}
         style={{
-          backgroundColor,
           color: textColor,
+          backgroundColor,
         }}
-        // Basic styling classes (non-dynamic Tailwind only)
-        className={cn("bg-opacity-30 rounded-lg text-xl md:text-3xl px-2 py-1")}
       >
-        {sign}
-        {/* Increase decimals to 3, fixed duration = 2s */}
+        {animatedDiff > 0 && "+"}
         <NumberTicker
           decimalPlaces={3}
           value={diff}
           duration={2}
-          onValueChange={handleValueChange}
+          onChange={(val) => setAnimatedDiff(val)}
         />
       </span>
     </div>
   );
-};
+}

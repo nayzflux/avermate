@@ -26,6 +26,7 @@ import ErrorStateCard from "../skeleton/error-card";
 import { Skeleton } from "../ui/skeleton";
 import GradeBadge from "./grade-badge";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
 
 export default function GradesTable({
   subjects,
@@ -52,6 +53,14 @@ export default function GradesTable({
       return data;
     },
   });
+
+  useEffect(() => {
+    if (window.location.hash) {
+      const id = window.location.hash.slice(1);
+      const el = document.getElementById(id);
+      el?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
 
   // Fetch all custom averages
   const {
@@ -101,7 +110,7 @@ export default function GradesTable({
 
       <TableFooter>
         {/* Main Average */}
-        <TableRow className="hidden md:table-row">
+        <TableRow className="hidden md:table-row" id="general-average">
           <TableCell className="font-semibold" colSpan={2}>
             <Link
               href={`/dashboard/subjects/general-average/${periodId}`}
@@ -111,7 +120,7 @@ export default function GradesTable({
                   pathname + window.location.search || "/dashboard";
                 localStorage.setItem(
                   "backFromGradeOrSubject",
-                  currentPath
+                  `${currentPath}#general-average`
                 );
               }}
             >
@@ -122,7 +131,7 @@ export default function GradesTable({
             {overallAverage}
           </TableCell>
         </TableRow>
-        <TableRow className="md:hidden">
+        <TableRow className="md:hidden" id="general-average-mobile">
           <TableCell className="font-semibold text-center" colSpan={3}>
             <Link
               href={`/dashboard/subjects/general-average/${periodId}`}
@@ -132,7 +141,7 @@ export default function GradesTable({
                   pathname + window.location.search || "/dashboard";
                 localStorage.setItem(
                   "backFromGradeOrSubject",
-                  currentPath
+                  `${currentPath}#general-average-mobile`
                 );
               }}
             >
@@ -151,7 +160,7 @@ export default function GradesTable({
 
               return (
                 <React.Fragment key={ca.id}>
-                  <TableRow className="hidden md:table-row">
+                  <TableRow className="hidden md:table-row" id={ca.id}>
                     <TableCell className="font-semibold" colSpan={2}>
                       <Link
                         href={`/dashboard/subjects/${ca.id}/${periodId}`}
@@ -160,7 +169,7 @@ export default function GradesTable({
                             pathname + window.location.search || "/dashboard";
                           localStorage.setItem(
                             "backFromGradeOrSubject",
-                            currentPath
+                            `${currentPath}#${ca.id}`
                           );
                         }}
                         className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
@@ -172,7 +181,7 @@ export default function GradesTable({
                       {customAvg}
                     </TableCell>
                   </TableRow>
-                  <TableRow className="md:hidden">
+                  <TableRow className="md:hidden" id={`${ca.id}-mobile`}>
                     <TableCell
                       className="font-semibold text-center"
                       colSpan={3}
@@ -184,7 +193,7 @@ export default function GradesTable({
                             pathname + window.location.search || "/dashboard";
                           localStorage.setItem(
                             "backFromGradeOrSubject",
-                            currentPath
+                            `${currentPath}#${ca.id}-mobile`
                           );
                         }}
                         className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
@@ -270,7 +279,7 @@ function renderSubjects(
 
       return (
         <React.Fragment key={subject.id}>
-          <TableRow className="border-b">
+          <TableRow className="border-b" id={subject.id}>
             <TableCell
               style={getIndentationLinesStyle(subject.depth)}
               className={cn(
@@ -283,7 +292,7 @@ function renderSubjects(
                 onClick={() => {
                   const currentPath =
                     pathname + window.location.search || "/dashboard";
-                  localStorage.setItem("backFromGradeOrSubject", currentPath);
+                  localStorage.setItem("backFromGradeOrSubject", `${currentPath}#${subject.id}`);
                 }}
                 className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
               >
@@ -295,7 +304,7 @@ function renderSubjects(
 
               {/* Mobile-only average display */}
               <div className="md:hidden mt-1 text-sm text-muted-foreground">
-                {t("average")}:{" "}
+                {t("average")}: {" "}
                 <span className="font-bold text-foreground">{subjAverage}</span>
               </div>
             </TableCell>
@@ -314,6 +323,7 @@ function renderSubjects(
                     coefficient={grade.coefficient}
                     id={grade.id}
                     periodId={periodId}
+                    subjectId={grade.subjectId}
                   />
                 ))}
               </div>
@@ -336,6 +346,7 @@ function renderSubjects(
                       coefficient={grade.coefficient}
                       id={grade.id}
                       periodId={periodId}
+                      subjectId={grade.subjectId}
                     />
                   ))}
                 </div>
