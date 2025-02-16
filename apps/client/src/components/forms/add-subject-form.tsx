@@ -1,25 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { apiClient } from "@/lib/api";
 import { Subject } from "@/types/subject";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckIcon, ChevronsUpDownIcon, Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Badge } from "../ui/badge";
+
+import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { useState, useRef, useEffect } from "react";
 import {
@@ -42,22 +31,60 @@ import { handleError } from "@/utils/error-utils";
 import { useSubjects } from "@/hooks/use-subjects";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { apiClient } from "@/lib/api";
+import { isEqual } from "lodash";
+import React from "react";
+
+interface AddSubjectFormProps {
+  close: () => void;
+  parentId?: string;
+  formData: {
+    name: string;
+    coefficient?: number;
+    parentId?: string | null;
+    isMainSubject?: boolean;
+    isDisplaySubject?: boolean;
+  };
+  setFormData: React.Dispatch<
+    React.SetStateAction<{
+      name: string;
+      coefficient?: number;
+      parentId?: string | null;
+      isMainSubject?: boolean;
+      isDisplaySubject?: boolean;
+    }>
+  >;
+}
 
 export const AddSubjectForm = ({
   close,
   parentId,
-}: {
-  close: () => void;
-  parentId?: string;
-}) => {
+  formData,
+  setFormData,
+}: AddSubjectFormProps) => {
   const errorTranslations = useTranslations("Errors");
   const t = useTranslations("Dashboard.Forms.AddSubject");
+  const toaster = useToast();
+  const queryClient = useQueryClient();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const { data: subjects } = useSubjects();
+
   const addSubjectSchema = z.object({
     name: z.string().min(1, t("nameRequired")).max(64, t("nameTooLong")),
-    coefficient: z.coerce
-      .number()
-      .min(0, t("coefficientMin"))
-      .max(1000, t("coefficientMax")),
+    coefficient: z.coerce.number({
+      invalid_type_error: t("coefficientRequired"),
+    }).min(0, t("coefficientMin")).max(1000, t("coefficientMax")),
     parentId: z
       .string()
       .max(64, t("parentIdMax"))
@@ -66,39 +93,15 @@ export const AddSubjectForm = ({
     isMainSubject: z.boolean().optional(),
     isDisplaySubject: z.boolean().optional(),
   });
-
   type AddSubjectSchema = z.infer<typeof addSubjectSchema>;
-
-  const toaster = useToast();
-  const queryClient = useQueryClient();
-  const isDesktop = useMediaQuery("(min-width: 768px)");
-
-  const [openParent, setOpenParent] = useState(false);
-
-  const parentInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (!isDesktop && openParent) {
-      setTimeout(() => parentInputRef.current?.focus(), 350);
-    }
-  }, [openParent, isDesktop]);
-
-  const { data: subjects } = useSubjects();
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["create-subject"],
-    mutationFn: async ({
-      name,
-      coefficient,
-      parentId,
-      isMainSubject,
-      isDisplaySubject,
-    }: AddSubjectSchema) => {
+    mutationFn: async (vals: AddSubjectSchema) => {
       const res = await apiClient.post("subjects", {
-        json: { name, coefficient, parentId, isMainSubject, isDisplaySubject },
+        json: vals,
       });
-      const data = await res.json();
-      return data;
+      return await res.json();
     },
     onSuccess: () => {
       toaster.toast({
@@ -113,6 +116,7 @@ export const AddSubjectForm = ({
     },
   });
 
+  // Keep original form default
   const form = useForm<AddSubjectSchema>({
     resolver: zodResolver(addSubjectSchema),
     defaultValues: {
@@ -124,17 +128,44 @@ export const AddSubjectForm = ({
     },
   });
 
-  const isDisplaySubject = form.watch("isDisplaySubject");
-
+  // Sync with parent's data
   useEffect(() => {
-    if (isDisplaySubject) {
+    form.reset(formData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const watchedValues = form.watch();
+  useEffect(() => {
+    if (!isEqual(watchedValues, formData)) {
+      setFormData(watchedValues);
+    }
+  }, [watchedValues, formData, setFormData]);
+
+  // inside your AddSubjectForm or wherever you watch isDisplaySubject
+  const isDisplaySubject = form.watch("isDisplaySubject");
+  const coefficient = form.watch("coefficient");
+
+  // Use an effect to set the coefficient to 1 *only* if it isn’t already 1
+  useEffect(() => {
+    if (isDisplaySubject && coefficient !== 1) {
       form.setValue("coefficient", 1);
     }
-  }, [isDisplaySubject, form]);
+  }, [isDisplaySubject, coefficient, form]);
+
 
   const onSubmit = (values: AddSubjectSchema) => {
     mutate(values);
   };
+
+  // Subject selection logic for parent
+  const [openParent, setOpenParent] = useState(false);
+  const parentInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!isDesktop && openParent) {
+      setTimeout(() => parentInputRef.current?.focus(), 350);
+    }
+  }, [openParent, isDesktop]);
 
   return (
     <div>
@@ -196,7 +227,7 @@ export const AddSubjectForm = ({
                 <div className="col-span-2 flex flex-row gap-4 items-center">
                   <FormLabel>{t("isMainSubject")}</FormLabel>
                   <Switch
-                    checked={field.value}
+                    checked={field.value ?? false}
                     onCheckedChange={field.onChange}
                   />
                 </div>
@@ -216,7 +247,7 @@ export const AddSubjectForm = ({
                 <div className="col-span-2 flex flex-row gap-4 items-center">
                   <FormLabel>{t("isDisplaySubject")}</FormLabel>
                   <Switch
-                    checked={field.value}
+                    checked={field.value ?? false}
                     onCheckedChange={field.onChange}
                   />
                 </div>
@@ -242,7 +273,7 @@ export const AddSubjectForm = ({
                   <Popover
                     modal
                     open={openParent}
-                    onOpenChange={(isOpen) => setOpenParent(isOpen)}
+                    onOpenChange={setOpenParent}
                   >
                     <FormControl>
                       <PopoverTrigger asChild>
@@ -252,10 +283,13 @@ export const AddSubjectForm = ({
                           aria-expanded={openParent ? "true" : "false"}
                           className="justify-between"
                           onClick={() => setOpenParent(!openParent)}
+                          disabled={isPending}
                         >
-                          {field.value
-                            ? subjects?.find((s) => s.id === field.value)?.name
-                            : t("chooseParentSubject")}
+                          {field.value === "none"
+                            ? t("noParent")
+                            : field.value
+                              ? subjects?.find((s) => s.id === field.value)?.name
+                              : t("chooseParentSubject")}
                           <ChevronsUpDownIcon className="opacity-50" />
                         </Button>
                       </PopoverTrigger>
@@ -271,6 +305,21 @@ export const AddSubjectForm = ({
                             {t("noParentSubjectFound")}
                           </CommandEmpty>
                           <CommandGroup>
+                            {/* No parent */}
+                            <CommandItem
+                              value="none"
+                              onSelect={() => {
+                                form.setValue("parentId", "none", {
+                                  shouldValidate: true,
+                                });
+                                setOpenParent(false);
+                              }}
+                            >
+                              <span>{t("noParent")}</span>
+                              {field.value === "none" && (
+                                <CheckIcon className="ml-auto h-4 w-4" />
+                              )}
+                            </CommandItem>
                             {subjects
                               ?.slice()
                               .sort((a, b) => a.name.localeCompare(b.name))
@@ -286,8 +335,7 @@ export const AddSubjectForm = ({
                                   }}
                                 >
                                   <span>{subject.name}</span>
-                                  {form.getValues("parentId") ===
-                                    subject.id && (
+                                  {field.value === subject.id && (
                                     <CheckIcon className="ml-auto h-4 w-4" />
                                   )}
                                 </CommandItem>
@@ -307,10 +355,13 @@ export const AddSubjectForm = ({
                           aria-expanded={openParent ? "true" : "false"}
                           className="justify-between"
                           onClick={() => setOpenParent(!openParent)}
+                          disabled={isPending}
                         >
-                          {field.value
-                            ? subjects?.find((s) => s.id === field.value)?.name
-                            : t("chooseParentSubject")}
+                          {field.value === "none"
+                            ? t("noParent")
+                            : field.value
+                              ? subjects?.find((s) => s.id === field.value)?.name
+                              : t("chooseParentSubject")}
                           <ChevronsUpDownIcon className="opacity-50" />
                         </Button>
                       </FormControl>
@@ -319,18 +370,34 @@ export const AddSubjectForm = ({
                       <VisuallyHidden>
                         <DrawerTitle>{t("chooseParentSubject")}</DrawerTitle>
                       </VisuallyHidden>
-                      <div className="mt-4 border-t p-4">
+                      <div className="mt-4 border-t p-4 overflow-scroll">
                         <Command>
                           <CommandInput
                             ref={parentInputRef}
                             placeholder={t("chooseParentSubjectPlaceholder")}
                             className="h-9"
+                            autoFocus
                           />
                           <CommandList>
                             <CommandEmpty>
                               {t("noParentSubjectFound")}
                             </CommandEmpty>
                             <CommandGroup>
+                              {/* No parent */}
+                              <CommandItem
+                                value="none"
+                                onSelect={() => {
+                                  form.setValue("parentId", "none", {
+                                    shouldValidate: true,
+                                  });
+                                  setOpenParent(false);
+                                }}
+                              >
+                                <span>{t("noParent")}</span>
+                                {field.value === "none" && (
+                                  <CheckIcon className="ml-auto h-4 w-4" />
+                                )}
+                              </CommandItem>
                               {subjects
                                 ?.slice()
                                 .sort((a, b) => a.name.localeCompare(b.name))
@@ -346,9 +413,8 @@ export const AddSubjectForm = ({
                                     }}
                                   >
                                     <span>{subject.name}</span>
-                                    {form.getValues("parentId") ===
-                                      subject.id && (
-                                      <CheckIcon className="w-4 h-4 ml-auto" />
+                                    {field.value === subject.id && (
+                                      <CheckIcon className="ml-auto h-4 w-4" />
                                     )}
                                   </CommandItem>
                                 ))}

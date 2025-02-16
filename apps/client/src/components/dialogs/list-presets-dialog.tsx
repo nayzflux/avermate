@@ -17,6 +17,14 @@ import { Preset } from "@/types/get-preset-response";
 import { GetPresetResponse } from "@/types/get-preset-response";
 import { useTranslations } from "next-intl";
 
+interface PresetListState {
+  searchTerm: string;
+}
+
+const EMPTY_STATE: PresetListState = {
+  searchTerm: ""
+};
+
 export default function ListPresetsDialog({
   children,
 }: {
@@ -24,6 +32,7 @@ export default function ListPresetsDialog({
 }) {
   const t = useTranslations("Dashboard.Dialogs.ListPresets");
   const [open, setOpen] = useState(false);
+  const [state, setState] = useState<PresetListState>(EMPTY_STATE);
 
   const {
     data: presets,
@@ -39,7 +48,15 @@ export default function ListPresetsDialog({
   });
 
   return (
-    <Credenza open={open} onOpenChange={setOpen}>
+    <Credenza
+      open={open}
+      onOpenChange={(newOpen) => {
+        setOpen(newOpen);
+        if (!newOpen) {
+          setState(EMPTY_STATE);
+        }
+      }}
+    >
       <CredenzaTrigger asChild>{children}</CredenzaTrigger>
       <CredenzaContent>
         <CredenzaHeader>
@@ -48,7 +65,12 @@ export default function ListPresetsDialog({
         </CredenzaHeader>
         <CredenzaBody className="px-4 py-6 max-h-[100%] overflow-auto">
           {!isLoading && !isError && presets && (
-            <PresetList presets={presets} close={() => setOpen(false)} />
+            <PresetList
+              presets={presets}
+              close={() => setOpen(false)}
+              state={state}
+              setState={setState}
+            />
           )}
         </CredenzaBody>
       </CredenzaContent>

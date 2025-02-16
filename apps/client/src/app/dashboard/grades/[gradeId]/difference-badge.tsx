@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTheme } from "next-themes";
 import NumberTicker from "@/components/ui/number-ticker";
 import { cn } from "@/lib/utils";
 
@@ -9,7 +10,7 @@ interface GradientStop {
   color: [number, number, number];
 }
 
-const TEXT_GRADIENT_STOPS: GradientStop[] = [
+const DARK_TEXT_GRADIENT_STOPS: GradientStop[] = [
   { stop: 0,   color: [255, 0, 0] },
   { stop: 25,  color: [255, 181, 0] },
   { stop: 50,  color: [145, 145, 145] },
@@ -17,12 +18,28 @@ const TEXT_GRADIENT_STOPS: GradientStop[] = [
   { stop: 100, color: [0, 255, 6] },
 ];
 
-const BACKGROUND_GRADIENT_STOPS: GradientStop[] = [
+const DARK_BACKGROUND_GRADIENT_STOPS: GradientStop[] = [
   { stop: 0,   color: [68, 0, 0] },
   { stop: 25,  color: [119, 84, 0] },
   { stop: 50,  color: [55, 55, 55] },
   { stop: 75,  color: [0, 105, 99] },
   { stop: 100, color: [0, 111, 3] },
+];
+
+const LIGHT_TEXT_GRADIENT_STOPS: GradientStop[] = [
+  { stop: 0,   color: [220, 0, 0] },
+  { stop: 25,  color: [230, 140, 0] },
+  { stop: 50,  color: [100, 100, 100] },
+  { stop: 75,  color: [0, 170, 200] },
+  { stop: 100, color: [0, 180, 0] },
+];
+
+const LIGHT_BACKGROUND_GRADIENT_STOPS: GradientStop[] = [
+  { stop: 0,   color: [255, 220, 220] },
+  { stop: 25,  color: [255, 240, 200] },
+  { stop: 50,  color: [240, 240, 240] },
+  { stop: 75,  color: [220, 255, 255] },
+  { stop: 100, color: [220, 255, 220] },
 ];
 
 function interpolateColorFromStops(
@@ -60,11 +77,16 @@ function getRatioFromDiff(diff: number, maxRange = 1): number {
 
 export function DifferenceBadge({ diff }: { diff: number }) {
   const [animatedDiff, setAnimatedDiff] = useState(diff);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
 
   const ratio = getRatioFromDiff(animatedDiff, 1);
 
-  const textColor = interpolateColorFromStops(TEXT_GRADIENT_STOPS, ratio);
-  const backgroundColor = interpolateColorFromStops(BACKGROUND_GRADIENT_STOPS, ratio);
+  const textGradientStops = isDark ? DARK_TEXT_GRADIENT_STOPS : LIGHT_TEXT_GRADIENT_STOPS;
+  const backgroundGradientStops = isDark ? DARK_BACKGROUND_GRADIENT_STOPS : LIGHT_BACKGROUND_GRADIENT_STOPS;
+
+  const textColor = interpolateColorFromStops(textGradientStops, ratio);
+  const backgroundColor = interpolateColorFromStops(backgroundGradientStops, ratio);
 
   return (
     <div className="py-2">

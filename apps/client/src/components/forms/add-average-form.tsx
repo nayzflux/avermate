@@ -11,7 +11,7 @@ import {
   PlusCircle,
   Trash2,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -54,22 +54,30 @@ import { apiClient } from "@/lib/api";
 import { handleError } from "@/utils/error-utils";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useTranslations } from "next-intl";
+import { isEqual } from "lodash";
 
 dayjs.locale("fr");
 
-export const AddAverageForm = ({ close }: { close: () => void }) => {
-  const errorTranslations = useTranslations("Errors");
-  const t = useTranslations("Dashboard.Forms.AddAverage");
-  const toaster = useToast();
-  const queryClient = useQueryClient();
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+export const baseAddCustomAverageSchema = z.object({
+  name: z.string().min(1).max(64),
+  subjects: z.array(
+    z.object({
+      id: z.string().min(1),
+      customCoefficient: z.number().min(1).max(1000).nullable().optional(),
+      includeChildren: z.boolean().optional(),
+    })
+  ),
+  isMainAverage: z.boolean().default(false).optional(),
+});
 
-  const [openSubjectIndex, setOpenSubjectIndex] = useState<number | null>(null);
+export type AddCustomAverageSchema = z.infer<typeof baseAddCustomAverageSchema>;
 
-  const { data: subjects } = useSubjects();
-
-  const addCustomAverageSchema = z.object({
-    name: z.string().min(1, t("nameRequired")).max(64, t("nameTooLong")),
+function getLocalizedSchema(t: ReturnType<typeof useTranslations>) {
+  return z.object({
+    name: z
+      .string()
+      .min(1, t("nameRequired"))
+      .max(64, t("nameTooLong")),
     subjects: z
       .array(
         z.object({
@@ -84,23 +92,61 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
         })
       )
       .min(1, t("atLeastOneSubject")),
-    isMainAverage: z.boolean().optional().default(false),
+    isMainAverage: z.boolean().default(false).optional(),
+  });
+}
+
+interface AddAverageFormProps {
+  close: () => void;
+  formData: AddCustomAverageSchema;
+  setFormData: React.Dispatch<React.SetStateAction<AddCustomAverageSchema>>;
+}
+
+export const AddAverageForm: React.FC<AddAverageFormProps> = ({
+  close,
+  formData,
+  setFormData,
+}) => {
+  const t = useTranslations("Dashboard.Forms.AddAverage");
+  const errorTranslations = useTranslations("Errors");
+  const toaster = useToast();
+  const queryClient = useQueryClient();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const { data: subjects } = useSubjects();
+  const localizedSchema = getLocalizedSchema(t);
+
+  const form = useForm<AddCustomAverageSchema>({
+    resolver: zodResolver(localizedSchema),
+    defaultValues: formData, 
   });
 
-  type AddCustomAverageSchema = z.infer<typeof addCustomAverageSchema>;
+  useEffect(() => {
+    form.reset(formData);
+  }, []);
+
+  const watchedValues = form.watch();
+  useEffect(() => {
+    if (!isEqual(watchedValues, formData)) {
+      setFormData(watchedValues);
+    }
+  }, [watchedValues, formData, setFormData]);
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "subjects",
+  });
 
   const { mutate, isPending: isSubmitting } = useMutation({
     mutationKey: ["create-custom-average"],
-    mutationFn: async (formData: AddCustomAverageSchema) => {
+    mutationFn: async (vals: AddCustomAverageSchema) => {
       const res = await apiClient.post("averages", {
         json: {
-          name: formData.name,
-          subjects: formData.subjects,
-          isMainAverage: formData.isMainAverage,
+          name: vals.name,
+          subjects: vals.subjects,
+          isMainAverage: vals.isMainAverage,
         },
       });
-      const data = await res.json();
-      return data;
+      return await res.json();
     },
     onSuccess: () => {
       toaster.toast({
@@ -115,23 +161,9 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
     },
   });
 
-  const form = useForm<AddCustomAverageSchema>({
-    resolver: zodResolver(addCustomAverageSchema),
-    defaultValues: {
-      name: "",
-      subjects: [{ id: "", customCoefficient: null, includeChildren: false }],
-      isMainAverage: false,
-    },
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "subjects",
-  });
-
-  const onSubmit = (values: AddCustomAverageSchema) => {
-    const filteredSubjects = values.subjects.filter((s) => s.id !== "");
-    if (filteredSubjects.length === 0) {
+  const onSubmit = (vals: AddCustomAverageSchema) => {
+    const filtered = vals.subjects.filter((s) => s.id !== "");
+    if (!filtered.length) {
       toaster.toast({
         title: t("error"),
         description: t("selectAtLeastOneSubject"),
@@ -139,11 +171,11 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
       });
       return;
     }
-    mutate({ ...values, subjects: filteredSubjects });
+    mutate({ ...vals, subjects: filtered });
   };
 
-  // Subject selection logic
   const subjectInputRef = useRef<HTMLInputElement>(null);
+  const [openSubjectIndex, setOpenSubjectIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (!isDesktop && openSubjectIndex !== null) {
@@ -255,7 +287,7 @@ export const AddAverageForm = ({ close }: { close: () => void }) => {
                       <VisuallyHidden>
                         <DrawerTitle>{t("chooseSubject")}</DrawerTitle>
                       </VisuallyHidden>
-                      <div className="mt-4 border-t p-4">
+                      <div className="mt-4 border-t p-4 overflow-scroll">
                         <Command>
                           <CommandInput
                             ref={subjectInputRef}

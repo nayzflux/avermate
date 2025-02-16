@@ -32,23 +32,45 @@ import { Switch } from "@/components/ui/switch";
 import { useTranslations } from "next-intl";
 import { useFormatDates } from "@/utils/format";
 import { useFormatter } from "next-intl";
+import { isEqual } from "lodash";
+import React, { useEffect } from "react";
 
-export const UpdatePeriodForm = ({
-  close,
-  period,
-  periods,
-}: {
+const updatePeriodSchema = z.object({
+  name: z.string().min(1).max(64),
+  dateRange: z
+    .object({
+      from: z.date(),
+      to: z.date(),
+    })
+    .refine(
+      (data) => isBefore(data.from, data.to) || data.from.getTime() === data.to.getTime(),
+      { message: "Start date must be before end date", path: ["to"] }
+    ),
+  isCumulative: z.boolean().optional(),
+});
+type UpdatePeriodSchema = z.infer<typeof updatePeriodSchema>;
+
+interface UpdatePeriodFormProps {
   close: () => void;
-  period: Period;
+  periodId: string;
   periods: Period[];
-}) => {
-  const formatter = useFormatter();
-  const formatDates = useFormatDates(formatter);
+  formData: UpdatePeriodSchema;
+  setFormData: React.Dispatch<React.SetStateAction<UpdatePeriodSchema>>;
+}
 
+export const UpdatePeriodForm: React.FC<UpdatePeriodFormProps> = ({
+  close,
+  periodId,
+  periods,
+  formData,
+  setFormData,
+}) => {
   const errorTranslations = useTranslations("Errors");
   const t = useTranslations("Dashboard.Forms.UpdatePeriod");
   const toaster = useToast();
   const queryClient = useQueryClient();
+  const formatDates = useFormatDates(useFormatter());
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   const updatePeriodSchema = z.object({
     name: z.string().min(1, t("nameRequired")).max(64, t("nameTooLong")),
@@ -76,21 +98,16 @@ export const UpdatePeriodForm = ({
   type UpdatePeriodSchema = z.infer<typeof updatePeriodSchema>;
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ["update-Period"],
-    mutationFn: async ({
-      name,
-      dateRange,
-      isCumulative,
-    }: UpdatePeriodSchema) => {
-      const res = await apiClient.patch(`periods/${period.id}`, {
+    mutationKey: ["update-Period", periodId],
+    mutationFn: async (vals: UpdatePeriodSchema) => {
+      const res = await apiClient.patch(`periods/${periodId}`, {
         json: {
-          name,
-          startAt: dateRange.from,
-          endAt: dateRange.to,
-          isCumulative,
+          name: vals.name,
+          startAt: vals.dateRange.from,
+          endAt: vals.dateRange.to,
+          isCumulative: vals.isCumulative,
         },
       });
-
       return res.json();
     },
     onSuccess: () => {
@@ -98,13 +115,9 @@ export const UpdatePeriodForm = ({
         title: t("successTitle"),
         description: t("successDescription"),
       });
-
       queryClient.invalidateQueries({ queryKey: ["periods"] });
-      queryClient.invalidateQueries({ queryKey: ["period", period.id] });
-      queryClient.invalidateQueries({
-        queryKey: ["subjects", "organized-by-periods"],
-      });
-
+      queryClient.invalidateQueries({ queryKey: ["period", periodId] });
+      queryClient.invalidateQueries({ queryKey: ["subjects", "organized-by-periods"] });
       close();
     },
     onError: (error) => {
@@ -114,54 +127,48 @@ export const UpdatePeriodForm = ({
 
   const form = useForm<UpdatePeriodSchema>({
     resolver: zodResolver(updatePeriodSchema),
-    defaultValues: {
-      name: period.name,
-      dateRange: {
-        from: new Date(period.startAt),
-        to: new Date(period.endAt),
-      },
-      isCumulative: period.isCumulative || false,
-    },
+    defaultValues: formData,
   });
 
-  const numberOfMonths = useMediaQuery("(min-width: 1024px)") ? 2 : 1;
+  // On mount, reset
+  useEffect(() => {
+    form.reset(formData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const onSubmit = (values: UpdatePeriodSchema) => {
-    const { from: startAt, to: endAt } = values.dateRange;
+  // Watch => sync
+  const watchedValues = form.watch();
+  useEffect(() => {
+    if (!isEqual(watchedValues, formData)) {
+      setFormData(watchedValues);
+    }
+  }, [watchedValues, formData, setFormData]);
 
-    const normalizedStartAt = startOfDay(startAt);
-    const normalizedEndAt = startOfDay(endAt);
-
+  const onSubmit = (vals: UpdatePeriodSchema) => {
     // Overlap check
-    const overlappingPeriod = periods.find((p) => {
-      if (p.id === period.id) return false; // Skip current period
-      const normalizedPeriodStartAt = startOfDay(p.startAt);
-      const normalizedPeriodEndAt = startOfDay(p.endAt);
+    const from = startOfDay(vals.dateRange.from);
+    const to = startOfDay(vals.dateRange.to);
 
+    const overlapping = periods.find((p) => {
+      if (p.id === periodId) return false; // skip self
+      const pStart = startOfDay(p.startAt);
+      const pEnd = startOfDay(p.endAt);
       return (
-        isWithinInterval(normalizedStartAt, {
-          start: normalizedPeriodStartAt,
-          end: normalizedPeriodEndAt,
-        }) ||
-        isWithinInterval(normalizedEndAt, {
-          start: normalizedPeriodStartAt,
-          end: normalizedPeriodEndAt,
-        }) ||
-        (normalizedPeriodStartAt >= normalizedStartAt &&
-          normalizedPeriodEndAt <= normalizedEndAt)
+        isWithinInterval(from, { start: pStart, end: pEnd }) ||
+        isWithinInterval(to, { start: pStart, end: pEnd }) ||
+        (pStart >= from && pEnd <= to)
       );
     });
 
-    if (overlappingPeriod) {
-      toaster.toast({
-        title: t("overlapTitle"),
-        variant: "destructive",
-      });
+    if (overlapping) {
+      toaster.toast({ title: t("overlapTitle"), variant: "destructive" });
       return;
     }
 
-    mutate(values);
+    mutate(vals);
   };
+
+  const numberOfMonths = isDesktop ? 2 : 1;
 
   return (
     <div className="">
@@ -231,7 +238,7 @@ export const UpdatePeriodForm = ({
                           onSelect={field.onChange}
                           numberOfMonths={numberOfMonths}
                           disabled={periods
-                            .filter((p) => p.id !== period.id)
+                            .filter((p) => p.id !== periodId)
                             .map((p) => ({
                               from: startOfDay(p.startAt),
                               to: startOfDay(p.endAt),
@@ -257,7 +264,7 @@ export const UpdatePeriodForm = ({
                   <FormLabel>{t("isCumulative")}</FormLabel>
                   <FormControl>
                     <Switch
-                      checked={field.value}
+                      checked={field.value ?? false}
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>

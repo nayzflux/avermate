@@ -114,7 +114,7 @@ export default function GradesTable({
           <TableCell className="font-semibold" colSpan={2}>
             <Link
               href={`/dashboard/subjects/general-average/${periodId}`}
-              className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
+              className="border-b border-dotted border-foreground hover:opacity-80 text-primary transition-opacity"
               onClick={() => {
                 const currentPath =
                   pathname + window.location.search || "/dashboard";
@@ -135,7 +135,7 @@ export default function GradesTable({
           <TableCell className="font-semibold text-center" colSpan={3}>
             <Link
               href={`/dashboard/subjects/general-average/${periodId}`}
-              className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
+              className="border-b border-dotted border-foreground hover:opacity-80 text-primary transition-opacity"
               onClick={() => {
                 const currentPath =
                   pathname + window.location.search || "/dashboard";
@@ -172,7 +172,7 @@ export default function GradesTable({
                             `${currentPath}#${ca.id}`
                           );
                         }}
-                        className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
+                        className="border-b border-dotted border-foreground hover:opacity-80 text-primary transition-opacity"
                       >
                         {ca.name}
                       </Link>
@@ -196,7 +196,7 @@ export default function GradesTable({
                             `${currentPath}#${ca.id}-mobile`
                           );
                         }}
-                        className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
+                        className="border-b border-dotted border-foreground hover:opacity-80 text-primary transition-opacity"
                       >
                         {ca.name}
                       </Link>
@@ -294,7 +294,7 @@ function renderSubjects(
                     pathname + window.location.search || "/dashboard";
                   localStorage.setItem("backFromGradeOrSubject", `${currentPath}#${subject.id}`);
                 }}
-                className="border-b border-dotted border-white hover:opacity-80 text-primary transition-opacity"
+                className="border-b border-dotted border-foreground hover:opacity-80 text-primary transition-opacity"
               >
                 {subject.name +
                   (!subject.isDisplaySubject
