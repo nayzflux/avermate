@@ -36,7 +36,10 @@ import SubjectAverageChart from "./subject-average-chart";
 import { cn } from "@/lib/utils";
 import ErrorStateCard from "@/components/skeleton/error-card";
 import { useTranslations } from "next-intl";
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { EllipsisVerticalIcon, MinusIcon, PlusIcon } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import UpdateAverageDialog from "@/components/dialogs/update-average-dialog";
+import DeleteAverageDialog from "@/components/dialogs/delete-average-dialog";
 
 function getRelevantPeriodIds(period: Period, periods: Period[]): string[] {
   if (period.id === "full-year") {
@@ -225,16 +228,52 @@ function SubjectWrapper({
             : subject?.name}
         </p>
         {!isVirtualSubject && (
-          <div className="flex gap-4">
+          <div className="flex gap-2 md:gap-4">
             {!subject.isDisplaySubject && (
-              <AddGradeDialog parentId={subject.id}>
-                <Button className="hidden md:flex">
-                  <PlusCircleIcon className="size-4 mr-2" />
-                  {t("addGrade")}
-                </Button>
-              </AddGradeDialog>
+              <>
+                <AddGradeDialog parentId={subject.id}>
+                  <Button className="md:hidden" size={"icon"}>
+                    <PlusCircleIcon className="size-4" />
+                  </Button>
+                </AddGradeDialog>
+                <AddGradeDialog parentId={subject.id}>
+                  <Button className="hidden md:flex">
+                    <PlusCircleIcon className="size-4 mr-2" />
+                    {t("addGrade")}
+                  </Button>
+                </AddGradeDialog>
+              </>
             )}
             <SubjectMoreButton subject={subject} />
+          </div>
+        )}
+        {subject.id.startsWith("ca") && (
+          <div className="flex gap-2 md:gap-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="icon" variant="outline">
+                    <EllipsisVerticalIcon className="size-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent className="flex flex-col items-start">
+                  {/* Update grade */}
+                  <DropdownMenuItem
+                    asChild
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <UpdateAverageDialog averageId={subject.id} />
+                  </DropdownMenuItem>
+
+                  {/* Delete grade */}
+                  <DropdownMenuItem
+                    asChild
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <DeleteAverageDialog averageId={subject.id} averageName={subject.name} />
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
           </div>
         )}
       </div>
@@ -249,8 +288,8 @@ function SubjectWrapper({
             subject.id === "general-average"
               ? 3
               : subject.id.startsWith("ca")
-              ? 4
-              : 5 +
+                ? 4
+                : 5 +
                 customAverages.filter((ca) =>
                   isSubjectIncludedInCustomAverage(
                     subject,
@@ -330,10 +369,10 @@ function SubjectWrapper({
                   ? ArrowUpCircleIcon
                   : ArrowDownCircleIcon
                 : subjects
-                ? (subjectImpact(subject.id, undefined, subjects)?.difference ?? 0) >= 0
-                  ? ArrowUpCircleIcon 
-                  : ArrowDownCircleIcon
-                : ArrowUpCircleIcon
+                  ? (subjectImpact(subject.id, undefined, subjects)?.difference ?? 0) >= 0
+                    ? ArrowUpCircleIcon
+                    : ArrowDownCircleIcon
+                  : ArrowUpCircleIcon
             }
           >
             <DifferenceBadge
@@ -341,9 +380,9 @@ function SubjectWrapper({
                 subject.id.startsWith("ca")
                   ? customAverageImpact || 0
                   : subjects
-                  ? subjectImpact(subject.id, undefined, subjects)
+                    ? subjectImpact(subject.id, undefined, subjects)
                       ?.difference || 0
-                  : 0
+                    : 0
               }
             />
           </DataCard>
@@ -371,7 +410,7 @@ function SubjectWrapper({
               diff={
                 subjects
                   ? subjectImpact(subject.id, parent.id, subjects)
-                      ?.difference || 0
+                    ?.difference || 0
                   : 0
               }
             />
@@ -390,14 +429,14 @@ function SubjectWrapper({
           })()}
           icon={PlusIcon}
         >
-            {(() => {
-              const bestGradeObj = getBestGradeInSubject(subjects, subject.id);
-              return bestGradeObj?.grade !== undefined ? (
-                <GradeValue value={bestGradeObj.grade} outOf={bestGradeObj.outOf} />
-              ) : (
-                t("notAvailable")
-              );
-            })()}
+          {(() => {
+            const bestGradeObj = getBestGradeInSubject(subjects, subject.id);
+            return bestGradeObj?.grade !== undefined ? (
+              <GradeValue value={bestGradeObj.grade} outOf={bestGradeObj.outOf} />
+            ) : (
+              t("notAvailable")
+            );
+          })()}
         </DataCard>
 
         {/* Worst Grade */}
@@ -412,17 +451,17 @@ function SubjectWrapper({
           })()}
           icon={MinusIcon}
         >
-            {(() => {
-              const worstGradeObj = getWorstGradeInSubject(
-                subjects,
-                subject.id
-              );
-              return worstGradeObj?.grade !== undefined ? (
-                <GradeValue value={worstGradeObj.grade} outOf={worstGradeObj.outOf} />
-              ) : (
-                t("notAvailable")
-              );
-            })()}
+          {(() => {
+            const worstGradeObj = getWorstGradeInSubject(
+              subjects,
+              subject.id
+            );
+            return worstGradeObj?.grade !== undefined ? (
+              <GradeValue value={worstGradeObj.grade} outOf={worstGradeObj.outOf} />
+            ) : (
+              t("notAvailable")
+            );
+          })()}
         </DataCard>
       </div>
 

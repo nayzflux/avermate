@@ -27,6 +27,10 @@ import { Skeleton } from "../ui/skeleton";
 import GradeBadge from "./grade-badge";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
+import {
+  addGeneralAverageToSubjects,
+  buildGeneralAverageSubject,
+} from "@/utils/average";
 
 export default function GradesTable({
   subjects,
@@ -154,7 +158,22 @@ export default function GradesTable({
         {customAverages && customAverages.length > 0 && (
           <>
             {customAverages.map((ca) => {
-              const customAvgVal = average(undefined, subjects, ca);
+                const subjectsToGive = () => {
+                  const customAverageId = ca.id;
+                  const customAverage = customAverageId
+                    ? customAverages?.find((ca) => ca.id === customAverageId)
+                    : undefined;
+              
+
+                      return addGeneralAverageToSubjects(subjects, customAverage);
+                  }
+                    const subjectVirtual = () => {
+                      return (
+                        subjectsToGive().find((s) => s.id === ca.id) ||
+                        buildGeneralAverageSubject()
+                      );
+                    };
+              const customAvgVal = (average(subjectVirtual()?.id, subjectsToGive()));
               const customAvg =
                 customAvgVal !== null ? customAvgVal.toFixed(2) : "—";
 

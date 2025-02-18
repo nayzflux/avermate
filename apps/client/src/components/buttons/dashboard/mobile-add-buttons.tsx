@@ -27,14 +27,14 @@ export default function MobileAddButtons() {
 
       <DropdownMenuContent className="flex flex-col items-start">
         {/* Add grade */}
-        <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
+        {/* <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
           <AddGradeDialog>
             <Button variant="ghost" className="w-full justify-start">
               <PlusCircleIcon className="size-4 mr-2" />
               {t("addGrade")}
             </Button>
           </AddGradeDialog>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
 
         {/* Add subject */}
         <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>

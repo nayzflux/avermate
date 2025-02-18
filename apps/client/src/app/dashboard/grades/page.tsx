@@ -120,7 +120,12 @@ export default function GradesPage() {
             </Button>
           </AddPeriodDialog>
         </div>
-        <div className="flex lg:hidden">
+        <div className="flex lg:hidden gap-2">
+        <AddGradeDialog>
+            <Button size={"icon"}>
+              <PlusCircleIcon className="size-4" />
+            </Button>
+          </AddGradeDialog>
           <MobileAddButtons />
         </div>
       </div>
@@ -131,6 +136,8 @@ export default function GradesPage() {
       <Tabs
         value={selectedTab}
         onValueChange={(value) => {
+          //delete url anchor
+          window.history.replaceState(null, "", window.location.pathname);
           setSelectedTab(value);
           localStorage.setItem("selectedTab", value);
         }}
@@ -163,6 +170,8 @@ export default function GradesPage() {
           <Select
             value={selectedTab}
             onValueChange={(value) => {
+              //delete url anchor
+              window.history.replaceState(null, "", window.location.pathname);
               setSelectedTab(value);
               localStorage.setItem("selectedTab", value);
             }}
