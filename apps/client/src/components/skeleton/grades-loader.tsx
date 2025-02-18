@@ -42,7 +42,10 @@ export default function gradesLoader(t: any) {
             {t("addPeriod")}
           </Button>
         </div>
-        <div className="flex lg:hidden">
+        <div className="flex lg:hidden  gap-2">
+          <Button size={"icon"} disabled>
+            <PlusCircleIcon className="size-4" />
+          </Button>
           <Button size="icon" variant="outline" disabled>
             <EllipsisVerticalIcon className="size-4" />
           </Button>
