@@ -65,7 +65,7 @@
     "react-easy-crop": "^5.2.0",
     "react-hook-form": "^7.54.0",
     "react-icons": "^5.4.0",
-    "recharts": "^3.0.0-alpha.6",
+    "recharts": "^3.0.0-alpha.8",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "uploadthing": "https://pkg.pr.new/pingdotgg/uploadthing@1099",
