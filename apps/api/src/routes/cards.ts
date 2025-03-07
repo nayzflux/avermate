@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { cardLayouts, cardTemplates, customAverages } from "@/db/schema";
+import { dataCardsLayouts, dataCards, customAverages } from "@/db/schema";
 import { type Session, type User } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
 import { and, eq } from "drizzle-orm";
@@ -17,76 +17,54 @@ const app = new Hono<{
 }>();
 
 // Schema Definitions
-const cardConfigSchema = z.object({
+const dataCardConfigSchema = z.object({
   title: z.string(),
   description: z.object({
-    template: z.string(),
-    variables: z.record(z.object({
-      type: z.enum(['static', 'dynamic', 'timeRange']),
-      value: z.string(),
-      options: z.any().optional(),
-    })),
+    formatter: z.string(),
+    params: z.any().optional(),
   }),
   mainData: z.object({
-    type: z.enum(['grade', 'average', 'impact', 'text', 'custom']),
     calculator: z.string(),
     params: z.any().optional(),
   }),
   icon: z.string(),
 });
 
-const updateCardConfigSchema = z.object({
+const updateDataCardConfigSchema = z.object({
   title: z.string().optional(),
   description: z.object({
-    template: z.string().optional(),
-    variables: z.record(z.object({
-      type: z.enum(['static', 'dynamic', 'timeRange']).optional(),
-      value: z.string().optional(),
-      options: z.any().optional(),
-    })).optional(),
+    formatter: z.string().optional(),
+    params: z.any().optional(),
   }).optional(),
   mainData: z.object({
-    type: z.enum(['grade', 'average', 'impact', 'text', 'custom']).optional(),
     calculator: z.string().optional(),
     params: z.any().optional(),
   }).optional(),
   icon: z.string().optional(),
 });
 
-
-const createTemplateSchema = z.object({
-  type: z.enum(['built_in', 'custom']),
+const createDataCardSchema = z.object({
   identifier: z.string().min(1),
-  config: cardConfigSchema,
+  config: dataCardConfigSchema,
 });
 
-const updateLayoutSchema = z.object({
-  page: z.enum(['dashboard', 'grade', 'subject']),
-  cards: z.array(z.object({
-    templateId: z.string(),
-    position: z.number(),
-    customization: z.object({
-      title: z.string().optional(),
-      description: z.object({
-        template: z.string(),
-        variables: z.record(z.any()),
-      }).optional(),
-      mainData: z.object({
-        params: z.record(z.any()),
-      }).optional(),
-    }).optional(),
-  })),
-});
-
-const updateTemplateSchema = z.object({
+const updateDataCardSchema = z.object({
   id: z.string(),
   type: z.enum(['built_in', 'custom']),
   identifier: z.string().min(1),
-  config: updateCardConfigSchema,
+  config: updateDataCardConfigSchema,
 });
 
+const updateLayoutSchema = z.object({
+  cards: z.array(z.object({
+    cardId: z.string(),
+    position: z.number()
+  })),
+});
+
+
 // Routes
-app.get("/templates", async (c) => {
+app.get("/", async (c) => {
   const session = c.get("session");
   if (!session) throw new HTTPException(401);
   if (!session.user.emailVerified) {
@@ -96,16 +74,16 @@ app.get("/templates", async (c) => {
     );
   }
 
-  const templates = await db.query.cardTemplates.findMany({
-    where: eq(cardTemplates.userId, session.user.id),
+  const cards = await db.query.dataCards.findMany({
+    where: eq(dataCards.userId, session.user.id),
   });
 
-  return c.json({ templates });
+  return c.json({ cards });
 });
 
 app.post(
-  "/templates",
-  zValidator("json", createTemplateSchema),
+  "/",
+  zValidator("json", createDataCardSchema),
   async (c) => {
     const session = c.get("session");
     if (!session) throw new HTTPException(401);
@@ -118,22 +96,54 @@ app.post(
 
     const data = c.req.valid("json");
 
-    const template = await db
-      .insert(cardTemplates)
+    const card = await db
+      .insert(dataCards)
       .values({
         ...data,
         config: JSON.stringify(data.config),
         userId: session.user.id,
         createdAt: new Date(),
+        updatedAt: new Date(),
       })
       .returning()
       .get();
 
-    return c.json({ template }, 201);
+    return c.json({ card }, 201);
   }
 );
 
-app.get("/layouts/:page", async (c) => {
+app.patch("/:id", zValidator("json", updateDataCardSchema), async (c) => {
+  const session = c.get("session");
+  if (!session) throw new HTTPException(401);
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
+  const { id } = c.req.param();
+  const data = c.req.valid("json");
+
+  const card = await db
+    .update(dataCards)
+    .set({
+      ...data,
+      config: JSON.stringify(data.config),
+      updatedAt: new Date(),
+    })
+    .where(
+      and(
+        eq(dataCards.id, id),
+        eq(dataCards.userId, session.user.id)
+      )
+    )
+    .returning()
+    .get();
+
+  return c.json({ card });
+});
+
+app.delete("/:id", async (c) => {
   const session = c.get("session");
   if (!session) throw new HTTPException(401);
   if (!session.user.emailVerified) {
@@ -143,20 +153,41 @@ app.get("/layouts/:page", async (c) => {
     );
   }
 
-  const { page } = c.req.param();
+  const { id } = c.req.param();
 
-  const layout = await db.query.cardLayouts.findFirst({
-    where: and(
-      eq(cardLayouts.userId, session.user.id),
-      eq(cardLayouts.page, page)
-    ),
+  const card = await db
+    .delete(dataCards)
+    .where(
+      and(
+        eq(dataCards.id, id),
+        eq(dataCards.userId, session.user.id)
+      )
+    )
+    .returning()
+    .get();
+
+  return c.json({ card });
+});
+
+app.get("/layouts", async (c) => {
+  const session = c.get("session");
+  if (!session) throw new HTTPException(401);
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
+
+  const layout = await db.query.dataCardsLayouts.findFirst({
+    where: eq(dataCardsLayouts.userId, session.user.id)
   });
 
   return c.json({ layout });
 });
 
 app.patch(
-  "/layouts/:page",
+  "/layouts",
   zValidator("json", updateLayoutSchema),
   async (c) => {
     const session = c.get("session");
@@ -168,54 +199,25 @@ app.patch(
       );
     }
 
-    const { page } = c.req.param();
     const data = c.req.valid("json");
 
-    // // Delete existing layout
-    // await db
-    //   .delete(cardLayouts)
-    //   .where(
-    //     and(
-    //       eq(cardLayouts.userId, session.user.id),
-    //       eq(cardLayouts.page, page)
-    //     )
-    //   );
-
-    // // Create new layout
-    // const layout = await db
-    //   .insert(cardLayouts)
-    //   .values({
-    //     userId: session.user.id,
-    //     page,
-    //     cards: JSON.stringify(data.cards),
-    //     createdAt: new Date(),
-    //     updatedAt: new Date(),
-    //   })
-    //   .returning()
-    //   .get();
-
-    const layout = await db.update(cardLayouts).set({
+    const layout = await db.update(dataCardsLayouts).set({
       updatedAt: new Date(),
       cards: JSON.stringify(data.cards),
-    }).where(and(eq(cardLayouts.userId, session.user.id), eq(cardLayouts.page, page)))
+    }).where(eq(dataCardsLayouts.userId, session.user.id))
       .returning()
       .get();
-
-    // If this is the dashboard layout, sync isMainAverage field for custom averages
-    if (page === 'dashboard') {
-      // Get all custom average card templates
-      const customAverageTemplates = await db.query.cardTemplates.findMany({
-        where: and(
-          eq(cardTemplates.userId, session.user.id),
-          eq(cardTemplates.type, 'custom')
-        ),
+    
+    if (layout) {
+      const customAverageDataCards = await db.query.dataCards.findMany({
+        where: eq(dataCards.userId, session.user.id)
       });
 
       // For each template, check if it's in the layout and update isMainAverage accordingly
-      for (const template of customAverageTemplates) {
-        const config = JSON.parse(template.config);
+      for (const dataCard of customAverageDataCards) {
+        const config = JSON.parse(dataCard.config);
         if (config.mainData.calculator === 'customAverage') {
-          const isInLayout = data.cards.some((card: any) => card.templateId === template.id);
+          const isInLayout = data.cards.some((card: any) => card.cardId === dataCard.id);
           const customAverageId = config.mainData.params.customAverageId;
 
           await db
@@ -236,64 +238,5 @@ app.patch(
     return c.json({ layout });
   }
 );
-
-app.delete("/templates/:id", async (c) => {
-  const session = c.get("session");
-  if (!session) throw new HTTPException(401);
-  if (!session.user.emailVerified) {
-    return c.json(
-      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
-      403
-    );
-  }
-
-  const { id } = c.req.param();
-
-  const template = await db
-    .delete(cardTemplates)
-    .where(
-      and(
-        eq(cardTemplates.id, id),
-        eq(cardTemplates.userId, session.user.id),
-        eq(cardTemplates.type, "custom")
-      )
-    )
-    .returning()
-    .get();
-
-  return c.json({ template });
-});
-
-app.patch("/templates/:id", zValidator("json", updateTemplateSchema), async (c) => {
-  const session = c.get("session");
-  if (!session) throw new HTTPException(401);
-  if (!session.user.emailVerified) {
-    return c.json(
-      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
-      403
-    );
-  }
-  const { id } = c.req.param();
-  const data = c.req.valid("json");
-
-  console.log(data);
-
-  const template = await db
-    .update(cardTemplates)
-    .set({
-      ...data,
-      config: JSON.stringify(data.config),
-    })
-    .where(
-      and(
-        eq(cardTemplates.id, id),
-        eq(cardTemplates.userId, session.user.id)
-      )
-    )
-    .returning()
-    .get();
-
-  return c.json({ template });
-});
 
 export default app;

@@ -1,84 +1,119 @@
 import { apiClient } from "@/lib/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export interface CardTemplate {
+// Types
+
+export interface DataCard {
   id: string;
-  type: 'built_in' | 'custom';
   identifier: string;
   userId: string;
   config: {
     title: string;
     description: {
-      template: string;
-      variables: {
-        [key: string]: {
-          type: 'static' | 'dynamic' | 'timeRange';
-          value: string;
-          options?: any;
-        };
-      };
+      formatter: string;
+      params?: any;
     };
     mainData: {
-      type: 'grade' | 'average' | 'impact' | 'text' | 'custom';
       calculator: string;
       params?: any;
     };
     icon: string;
   };
   createdAt: string;
+  updatedAt: string;
 }
 
-export interface CardLayoutItem {
-  templateId: string;
-  position: number;
-  customization?: {
-    title?: string;
-    description?: {
-      template?: string;
-      variables?: {
-        [key: string]: any;
-      };
-    };
-    mainData?: {
-      params?: any;
-    };
-  };
-}
-
-export interface CardLayout {
+export interface DataCardLayout {
   id: string;
   userId: string;
-  page: 'dashboard' | 'grade' | 'subject';
-  cards: CardLayoutItem[];
+  cards: {
+    cardId: string;
+    position: number;
+  }
   createdAt: string;
   updatedAt: string;
 }
 
-export interface GetCardTemplatesResponse {
-  templates: CardTemplate[];
+export interface DataCardLayoutItem {
+    cardId: string;
+    position: number;
 }
 
-export interface GetCardLayoutResponse {
-  layout: CardLayout | null;
+export interface GetDataCardResponse {
+  cards: DataCard[];
 }
 
-export function useCardTemplates() {
+export interface GetDataCardLayoutResponse {
+  layout: DataCardLayout;
+}
+
+// Queries - Card
+
+export function useCard() {
   return useQuery({
-    queryKey: ["cardTemplates"],
+    queryKey: ["cards"],
     queryFn: async () => {
-      const res = await apiClient.get("cards/templates");
-      const data = await res.json<GetCardTemplatesResponse>();
-      return data.templates;
+      const res = await apiClient.get("cards");
+      const data = await res.json<GetDataCardResponse>();
+      return data.cards;
     },
   });
 }
 
-export function useCardLayout(page: 'dashboard' | 'grade' | 'subject') {
+export function useUpdateCard() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (card: DataCard) => {
+      const res = await apiClient.patch(`cards/${card.id}`, {
+        json: card,
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+    },
+  });
+}
+
+export function useCreateCard() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (card: Omit<DataCard, 'id' | 'userId' | 'createdAt'>) => {
+      const res = await apiClient.post(`cards`, {
+        json: card,
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+    },
+  });
+}
+
+export function useDeleteCard() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (cardId: string) => {
+      const res = await apiClient.delete(`cards/${cardId}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+    },
+  });
+}
+
+// Queries - Card Layout
+
+export function useCardLayout() {
   return useQuery({
-    queryKey: ["cardLayout", page],
+    queryKey: ["cardLayout"],
     queryFn: async () => {
-      const res = await apiClient.get(`cards/layouts/${page}`);
-      const data = await res.json<GetCardLayoutResponse>();
+      const res = await apiClient.get(`cards/layouts`);
+      const data = await res.json<GetDataCardLayoutResponse>();
       return data.layout;
     },
   });
@@ -88,66 +123,18 @@ export function useUpdateCardLayout() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ 
-      page, 
+    mutationFn: async ({
       cards 
     }: { 
-      page: 'dashboard' | 'grade' | 'subject'; 
-      cards: CardLayoutItem[] 
+      cards: DataCardLayoutItem[] 
     }) => {
-      const res = await apiClient.patch(`cards/layouts/${page}`, {
-        json: { page, cards },
-      });
-      return res.json();
-    },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["cardLayout", variables.page] });
-    },
-  });
-}
-
-export function useCreateCardTemplate() {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: async (template: Omit<CardTemplate, 'id' | 'userId' | 'createdAt'>) => {
-      const res = await apiClient.post("cards/templates", {
-        json: template,
+      const res = await apiClient.patch(`cards/layouts`, {
+        json: cards ,
       });
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cardTemplates"] });
-    },
-  });
-}
-
-export function useUpdateCardTemplate() {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: async (template: CardTemplate) => {
-      const res = await apiClient.patch(`cards/templates/${template.id}`, {
-        json: template,
-      });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cardTemplates"] });
-    },
-  });
-}
-
-export function useDeleteCardTemplate() {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: async (templateId: string) => {
-      const res = await apiClient.delete(`cards/templates/${templateId}`);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cardTemplates"] });
+      queryClient.invalidateQueries({ queryKey: ["cardLayout"] });
     },
   });
 }

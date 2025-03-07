@@ -5,7 +5,7 @@ import { and, eq, sql, inArray } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { customAverages, subjects, cardTemplates, cardLayouts } from "@/db/schema";
+import { customAverages, subjects, dataCards, dataCardsLayouts } from "@/db/schema";
 
 const app = new Hono<{
   Variables: {
@@ -86,20 +86,20 @@ app.post("/", zValidator("json", createCustomAverageSchema), async (c) => {
     .get();
 
   // Create a card template for this custom average
-  const cardTemplate = await db
-    .insert(cardTemplates)
+  const dataCard = await db
+    .insert(dataCards)
     .values({
-      type: "custom",
       identifier: `custom-average-${newAverage.id}`,
       userId: session.user.id,
       config: JSON.stringify({
         title: name,
         description: {
-          template: `Your custom average for ${name}`,
-          variables: {},
+          formatter: `customAverage`,
+          params: {
+            customAverageId: newAverage.id,
+          },
         },
         mainData: {
-          type: "average",
           calculator: "customAverage",
           params: {
             customAverageId: newAverage.id,
@@ -108,6 +108,7 @@ app.post("/", zValidator("json", createCustomAverageSchema), async (c) => {
         icon: "ChartBarIcon",
       }),
       createdAt: new Date(),
+      updatedAt: new Date(),
     })
     .returning()
     .get();
@@ -115,37 +116,31 @@ app.post("/", zValidator("json", createCustomAverageSchema), async (c) => {
   // If displayOnDashboard is true, add the card to the dashboard layout
   if (isMainAverage) {
     // Get current dashboard layout
-    const currentLayout = await db.query.cardLayouts.findFirst({
-      where: and(
-        eq(cardLayouts.userId, session.user.id),
-        eq(cardLayouts.page, "dashboard")
-      ),
+    const currentLayout = await db.query.dataCardsLayouts.findFirst({
+      where: 
+        eq(dataCardsLayouts.userId, session.user.id)
     });
 
     let cards = [];
     if (currentLayout) {
       cards = JSON.parse(currentLayout.cards);
       await db
-        .update(cardLayouts)
+        .update(dataCardsLayouts)
         .set({
           cards: JSON.stringify([
             ...cards,
-            { templateId: cardTemplate.id, position: cards.length },
+            { cardId: dataCard.id, position: cards.length },
           ]),
           updatedAt: new Date(),
         })
         .where(
-          and(
-            eq(cardLayouts.userId, session.user.id),
-            eq(cardLayouts.page, "dashboard")
-          )
+            eq(dataCardsLayouts.userId, session.user.id)
         );
     } else {
       // Create new layout if it doesn't exist
-      await db.insert(cardLayouts).values({
+      await db.insert(dataCardsLayouts).values({
         userId: session.user.id,
-        page: "dashboard",
-        cards: JSON.stringify([{ templateId: cardTemplate.id, position: 0 }]),
+        cards: JSON.stringify([{ cardId: dataCard.id, position: 0 }]),
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -154,7 +149,7 @@ app.post("/", zValidator("json", createCustomAverageSchema), async (c) => {
 
   return c.json({ 
     customAverage: newAverage,
-    cardTemplate,
+    dataCard,
   }, 201);
 });
 
@@ -315,16 +310,17 @@ app.patch(
     // Update the card template name if average name changed
     if (updateData.name) {
       await db
-        .update(cardTemplates)
+        .update(dataCards)
         .set({
           config: JSON.stringify({
             title: updateData.name,
             description: {
-              template: `Your custom average for ${updateData.name}`,
-              variables: {},
+              formatter: "customAverage",
+              params: {
+                customAverageId: averageId,
+              },
             },
             mainData: {
-              type: "average",
               calculator: "customAverage",
               params: {
                 customAverageId: averageId,
@@ -335,30 +331,27 @@ app.patch(
         })
         .where(
           and(
-            eq(cardTemplates.userId, session.user.id),
-            eq(cardTemplates.identifier, `custom-average-${averageId}`)
+            eq(dataCards.userId, session.user.id),
+            eq(dataCards.identifier, `custom-average-${averageId}`)
           )
         );
     }
 
     // Update dashboard layout based on isMainAverage
     if (typeof updateData.isMainAverage !== 'undefined') {
-      const layout = await db.query.cardLayouts.findFirst({
-        where: and(
-          eq(cardLayouts.userId, session.user.id),
-          eq(cardLayouts.page, 'dashboard')
-        ),
+      const layout = await db.query.dataCardsLayouts.findFirst({
+        where: eq(dataCardsLayouts.userId, session.user.id)
       });
 
       // Get the card template
-      const cardTemplate = await db.query.cardTemplates.findFirst({
+      const dataCard = await db.query.dataCards.findFirst({
         where: and(
-          eq(cardTemplates.userId, session.user.id),
-          eq(cardTemplates.identifier, `custom-average-${averageId}`)
+          eq(dataCards.userId, session.user.id),
+          eq(dataCards.identifier, `custom-average-${averageId}`)
         ),
       });
 
-      if (!cardTemplate) {
+      if (!dataCard) {
         throw new Error('Card template not found');
       }
 
@@ -367,15 +360,15 @@ app.patch(
         
         if (updateData.isMainAverage) {
           // Add card if not present
-          if (!cards.some((card: any) => card.templateId === cardTemplate.id)) {
+          if (!cards.some((card: any) => card.cardId === dataCard.id)) {
             cards.push({
-              templateId: cardTemplate.id,
+              cardId: dataCard.id,
               position: cards.length,
             });
           }
         } else {
           // Remove card if present
-          cards = cards.filter((card: any) => card.templateId !== cardTemplate.id);
+          cards = cards.filter((card: any) => card.cardId !== dataCard.id);
           // Reorder remaining cards
           cards = cards.map((card: any, index: number) => ({
             ...card,
@@ -384,15 +377,12 @@ app.patch(
         }
 
         await db
-          .update(cardLayouts)
+          .update(dataCardsLayouts)
           .set({
             cards: JSON.stringify(cards),
           })
           .where(
-            and(
-              eq(cardLayouts.userId, session.user.id),
-              eq(cardLayouts.page, 'dashboard')
-            )
+            eq(dataCardsLayouts.userId, session.user.id)
           );
       }
     }
@@ -435,37 +425,34 @@ app.delete(
     if (!deletedAverage) throw new HTTPException(404);
 
     // Get the card template before deleting it
-    const cardTemplate = await db.query.cardTemplates.findFirst({
+    const dataCard = await db.query.dataCards.findFirst({
       where: and(
-        eq(cardTemplates.identifier, `custom-average-${averageId}`),
-        eq(cardTemplates.userId, session.user.id)
+        eq(dataCards.identifier, `custom-average-${averageId}`),
+        eq(dataCards.userId, session.user.id)
       ),
     });
 
-    if (cardTemplate) {
+    if (dataCard) {
       // Delete the card template
       await db
-        .delete(cardTemplates)
+        .delete(dataCards)
         .where(
           and(
-            eq(cardTemplates.identifier, `custom-average-${averageId}`),
-            eq(cardTemplates.userId, session.user.id)
+            eq(dataCards.identifier, `custom-average-${averageId}`),
+            eq(dataCards.userId, session.user.id)
           )
         );
 
       // Update layout to remove the card
-      const layout = await db.query.cardLayouts.findFirst({
-        where: and(
-          eq(cardLayouts.userId, session.user.id),
-          eq(cardLayouts.page, "dashboard")
-        ),
+      const layout = await db.query.dataCardsLayouts.findFirst({
+        where: eq(dataCardsLayouts.userId, session.user.id)
       });
 
       if (layout) {
         let cards = layout.cards ? JSON.parse(layout.cards) : [];
         
         // Remove card if present using the actual template ID
-        cards = cards.filter((card: any) => card.templateId !== cardTemplate.id);
+        cards = cards.filter((card: any) => card.cardId !== dataCard.id);
         // Reorder remaining cards
         cards = cards.map((card: any, index: number) => ({
           ...card,
@@ -473,15 +460,12 @@ app.delete(
         }));
 
         await db
-          .update(cardLayouts)
+          .update(dataCardsLayouts)
           .set({
             cards: JSON.stringify(cards),
           })
           .where(
-            and(
-              eq(cardLayouts.userId, session.user.id),
-              eq(cardLayouts.page, "dashboard")
-            )
+              eq(dataCardsLayouts.userId, session.user.id)
           );
       }
     }

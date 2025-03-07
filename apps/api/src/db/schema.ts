@@ -144,8 +144,8 @@ export const usersRelations = relations(users, ({ many }) => ({
   grades: many(grades),
   sessions: many(sessions),
   accounts: many(accounts),
-  cardTemplates: many(cardTemplates),
-  cardLayouts: many(cardLayouts),
+  cardTemplates: many(dataCards),
+  cardLayouts: many(dataCardsLayouts),
 }));
 
 export const sessions = sqliteTable("sessions", {
@@ -241,13 +241,12 @@ export const customAverages = sqliteTable("custom_averages", {
   createdAt: integer({ mode: "timestamp" }).notNull(),
 });
 
-export const cardTemplates = sqliteTable("card_templates", {
+export const dataCards = sqliteTable("data_cards", {
   id: text()
     .notNull()
     .primaryKey()
-    .$defaultFn(() => generateId("ct")),
+    .$defaultFn(() => generateId("dc")),
 
-  type: text().notNull(), // 'built_in' or 'custom'
   identifier: text().notNull(),
 
   config: text().notNull(), // JSON string containing title, description template, etc.
@@ -256,40 +255,37 @@ export const cardTemplates = sqliteTable("card_templates", {
     .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
 
   createdAt: integer({ mode: "timestamp" }).notNull(),
+  updatedAt: integer({ mode: "timestamp" }).notNull(),
 }, (t) => ({
   userIdIdx: index("user_id_idx").on(t.userId)
 }));
 
-export const cardTemplatesRelations = relations(cardTemplates, ({ one }) => ({
+export const dataCardsRelations = relations(dataCards, ({ one }) => ({
   user: one(users, {
-    fields: [cardTemplates.userId],
+    fields: [dataCards.userId],
     references: [users.id],
   }),
 }));
 
-export const cardLayouts = sqliteTable("card_layouts", {
+export const dataCardsLayouts = sqliteTable("data_card_layouts", {
   id: text()
     .notNull()
     .primaryKey()
-    .$defaultFn(() => generateId("cl")),
+    .$defaultFn(() => generateId("dcl")),
 
   userId: text()
     .notNull()
     .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
 
-  page: text().notNull(), // 'dashboard', 'grade', or 'subject'
-
   cards: text().notNull(), // JSON array of card positions and customizations
 
   createdAt: integer({ mode: "timestamp" }).notNull(),
   updatedAt: integer({ mode: "timestamp" }).notNull(),
-}, (t) => ({
-  userIdPageIdx: index("user_id_page_idx").on(t.userId, t.page)
-}));
+});
 
-export const cardLayoutsRelations = relations(cardLayouts, ({ one }) => ({
+export const dataCardsLayoutsRelations = relations(dataCardsLayouts, ({ one }) => ({
   user: one(users, {
-    fields: [cardLayouts.userId],
+    fields: [dataCardsLayouts.userId],
     references: [users.id],
   }),
 }));
