@@ -3,6 +3,43 @@ import { env } from "@/lib/env";
 import { resend } from "@/lib/resend";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { createAuthMiddleware } from "better-auth/api";
+import { dataCards, dataCardsLayouts } from "@/db/schema";
+import { customAlphabet } from "nanoid";
+import { eq, and } from "drizzle-orm";
+
+// Exemple de petite fonction pour générer un ID custom
+const ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyz";
+const nanoid = customAlphabet(ALPHABET, 12);
+
+function generateId(prefix: "dc" | "dcl") {
+  return `${prefix}_${nanoid()}`;
+}
+
+// Cartes par défaut (best-grade, etc.)
+const DEFAULT_BUILTIN_CARDS = [
+  {
+    identifier: "best-grade",
+    config: `{"title":"Best Grade","description":{"formatter":"bestGrade","params":{}},"mainData":{"calculator":"bestGrade","params":{}},"icon":"StarIcon"}`
+  },
+  {
+    identifier: "best-subject",
+    config: `{"title":"Best Subject","description":{"formatter":"bestSubject","params":{}},"mainData":{"calculator":"bestSubject","params":{}},"icon":"TrophyIcon"}`
+  },
+  {
+    identifier: "global-average",
+    config: `{"title":"Global Average","description":{"formatter":"globalAverage","params":{}},"mainData":{"calculator":"globalAverage","params":{}},"icon":"CalculatorIcon"}`
+  },
+  {
+    identifier: "worst-grade",
+    config: `{"title":"Worst Grade","description":{"formatter":"worstGrade","params":{}},"mainData":{"calculator":"worstGrade","params":{}},"icon":"XCircleIcon"}`
+  },
+  {
+    identifier: "worst-subject",
+    config: `{"title":"Worst Subject","description":{"formatter":"worstSubject","params":{}},"mainData":{"calculator":"worstSubject","params":{}},"icon":"ExclamationTriangleIcon"}`
+  },
+];
+
 
 export const auth = betterAuth({
   appName: "Avermate",
@@ -12,6 +49,79 @@ export const auth = betterAuth({
     provider: "sqlite",
     usePlural: true,
   }),
+
+  hooks: {
+    after: createAuthMiddleware(async (ctx) => {
+      // Vérifie si on est bien dans le processus de sign-up
+      if (ctx.path.startsWith("/sign-up")) {
+        const newSession = ctx.context.newSession;
+        if (newSession) {
+          const { user } = newSession;
+
+          // =============================
+          // 1) Insérer les cartes par défaut
+          // =============================
+          const createdAt = Math.floor(Date.now() / 1000);
+          const updatedAt = createdAt;
+
+          const insertedCardIds: string[] = [];
+
+          for (const cardInfo of DEFAULT_BUILTIN_CARDS) {
+            // On n'envoie PAS 'id' --> la DB le génère via $defaultFn(...)
+            await db.insert(dataCards).values({
+              identifier: cardInfo.identifier,
+              config: cardInfo.config,
+              userId: user.id,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+
+            // Sur SQLite, on ne peut pas faire .returning(...) simplement ;
+            // on refait donc un SELECT pour retrouver l'ID fraîchement créé
+            // => on se base sur (userId + identifier) pour l'identifier.
+            const [row] = await db
+              .select({ id: dataCards.id })
+              .from(dataCards)
+              .where(
+                and(
+                  eq(dataCards.userId, user.id),
+                  eq(dataCards.identifier, cardInfo.identifier)
+                )
+              )
+              // On trie pour prendre la plus récente (au cas où double insert)
+              // et on ne récupère qu'une ligne
+              // .orderBy(desc(dataCards.createdAt)) // (optionnel)
+              .limit(1);
+
+            if (row) {
+              insertedCardIds.push(row.id);
+            }
+          }
+
+          // =============================
+          // 2) Créer le layout par défaut
+          // =============================
+          // Positions [0..4] pour nos 5 cartes
+          const defaultLayoutCards = insertedCardIds.map((cardId, index) => ({
+            cardId,
+            position: index,
+          }));
+
+          // Ici aussi, on n'envoie PAS 'id' => la DB le génère
+          await db.insert(dataCardsLayouts).values({
+            userId: user.id,
+            cards: JSON.stringify(defaultLayoutCards),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+
+          // Optionnel : si tu veux relire l'ID du layout nouvellement créé,
+          // tu peux faire un SELECT similaire, en te basant sur userId + 'cards' ?
+          // ou sur createdAt. C'est à toi de voir si tu en as besoin.
+        }
+      }
+    }),
+  },
 
   // Client URL
   trustedOrigins: [env.CLIENT_URL],
