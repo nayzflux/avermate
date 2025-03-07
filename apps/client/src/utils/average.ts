@@ -858,7 +858,8 @@ export function averageOverTime(
   subjects: Subject[],
   subjectId: string | undefined,
   period: Period,
-  periods: Period[]
+  periods: Period[],
+  computeAllDates: boolean = false
 ): (number | null)[] {
   const isFullYear = period.id === "full-year";
   const isCumulative = !!period.isCumulative;
@@ -940,7 +941,7 @@ export function averageOverTime(
       uniqueGradeDates.some((gd) => gd.getTime() === date.getTime()) ||
       index === dates.length - 1;
 
-    if (!isRelevantDate) {
+    if (!isRelevantDate && !computeAllDates) {
       return null;
     }
 

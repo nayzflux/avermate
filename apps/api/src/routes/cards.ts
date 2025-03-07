@@ -35,6 +35,25 @@ const cardConfigSchema = z.object({
   icon: z.string(),
 });
 
+const updateCardConfigSchema = z.object({
+  title: z.string().optional(),
+  description: z.object({
+    template: z.string().optional(),
+    variables: z.record(z.object({
+      type: z.enum(['static', 'dynamic', 'timeRange']).optional(),
+      value: z.string().optional(),
+      options: z.any().optional(),
+    })).optional(),
+  }).optional(),
+  mainData: z.object({
+    type: z.enum(['grade', 'average', 'impact', 'text', 'custom']).optional(),
+    calculator: z.string().optional(),
+    params: z.any().optional(),
+  }).optional(),
+  icon: z.string().optional(),
+});
+
+
 const createTemplateSchema = z.object({
   type: z.enum(['built_in', 'custom']),
   identifier: z.string().min(1),
@@ -57,6 +76,13 @@ const updateLayoutSchema = z.object({
       }).optional(),
     }).optional(),
   })),
+});
+
+const updateTemplateSchema = z.object({
+  id: z.string(),
+  type: z.enum(['built_in', 'custom']),
+  identifier: z.string().min(1),
+  config: updateCardConfigSchema,
 });
 
 // Routes
@@ -223,6 +249,38 @@ app.delete("/templates/:id", async (c) => {
         eq(cardTemplates.id, id),
         eq(cardTemplates.userId, session.user.id),
         eq(cardTemplates.type, "custom")
+      )
+    )
+    .returning()
+    .get();
+
+  return c.json({ template });
+});
+
+app.patch("/templates/:id", zValidator("json", updateTemplateSchema), async (c) => {
+  const session = c.get("session");
+  if (!session) throw new HTTPException(401);
+  if (!session.user.emailVerified) {
+    return c.json(
+      { code: "EMAIL_NOT_VERIFIED", message: "Email verification is required" },
+      403
+    );
+  }
+  const { id } = c.req.param();
+  const data = c.req.valid("json");
+
+  console.log(data);
+
+  const template = await db
+    .update(cardTemplates)
+    .set({
+      ...data,
+      config: JSON.stringify(data.config),
+    })
+    .where(
+      and(
+        eq(cardTemplates.id, id),
+        eq(cardTemplates.userId, session.user.id)
       )
     )
     .returning()

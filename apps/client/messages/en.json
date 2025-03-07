@@ -934,6 +934,9 @@
       "DataCards": {
         "generalAverage": "General Average",
         "sinceStart": "since the beginning",
+        "thisWeek": "this week",
+        "thisMonth": "this month",
+        "thisYear": "this year",
         "noChangeSinceStart": "No change since the beginning",
         "comparedToGeneralAverage": "compared to the general average",
         "noComparison": "No comparison",
@@ -1030,7 +1033,13 @@
         "customAverageIdPlaceholder": "Enter custom average ID",
         "timeRange": "Time Range",
         "selectIcon": "Select Icon",
-        "icon": "Icons"
+        "icon": "Icons",
+        "timeRanges": {
+          "sinceStart": "Since Start",
+          "thisWeek": "This Week",
+          "thisMonth": "This Month",
+          "thisYear": "This Year"
+        }
       }
     },
     "Pages": {

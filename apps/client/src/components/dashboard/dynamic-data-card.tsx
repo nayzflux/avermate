@@ -110,20 +110,31 @@ const calculators: Record<string, CalculatorFunction> = {
       subjects,
       undefined,
       period,
-      periods
+      periods,
+      true
     );
+    
+    type TimeRangeKeys = "sinceStart" | "thisWeek" | "thisMonth" | "thisYear";
+
+    const timeRange = (params?.timeRange ?? "sinceStart") as TimeRangeKeys;
 
     let growthValue = 0;
 
     if (averagesOverTime && averagesOverTime.length > 0) {
       const lastValue = averagesOverTime[averagesOverTime.length - 1];
-      const firstValue = averagesOverTime.find((value) => value !== null);
+      const firstValue = {
+        "sinceStart": averagesOverTime.find((v) => v !== null),
+        "thisWeek": averagesOverTime.find((v, i) => i >= averagesOverTime.length - 7 && v !== null),
+        "thisMonth": averagesOverTime.find((v, i) => i >= averagesOverTime.length - 30 && v !== null),
+        "thisYear": averagesOverTime.find((v, i) => i >= averagesOverTime.length - 365 && v !== null),
+      };
+      const firstValueTimeRange = firstValue[timeRange];
       if (
-        firstValue !== undefined &&
+        firstValueTimeRange !== undefined &&
         lastValue !== null &&
-        firstValue !== null
+        firstValueTimeRange !== null
       ) {
-        growthValue = ((lastValue - firstValue) / firstValue) * 100;
+        growthValue = ((lastValue - firstValueTimeRange) / firstValueTimeRange) * 100;
       }
     }
 

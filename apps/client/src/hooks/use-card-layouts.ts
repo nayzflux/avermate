@@ -122,6 +122,22 @@ export function useCreateCardTemplate() {
   });
 }
 
+export function useUpdateCardTemplate() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (template: CardTemplate) => {
+      const res = await apiClient.patch(`cards/templates/${template.id}`, {
+        json: template,
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cardTemplates"] });
+    },
+  });
+}
+
 export function useDeleteCardTemplate() {
   const queryClient = useQueryClient();
   

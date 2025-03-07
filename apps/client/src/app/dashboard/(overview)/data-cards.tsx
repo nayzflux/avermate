@@ -26,6 +26,16 @@ import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import ManageCardsButton from "@/components/dashboard/manage-cards-button";
 import CardLayout from "@/components/dashboard/card-layout";
+import { CardTemplate, CardLayout as CardLayoutType } from "@/hooks/use-card-layouts";
+
+interface DataCardsProps {
+  subjects: Subject[];
+  period: Period;
+  periods: Period[];
+  customAverages?: Average[];
+  templates?: CardTemplate[];
+  layout?: CardLayoutType | null;
+}
 
 export default function DataCards({
   subjects,

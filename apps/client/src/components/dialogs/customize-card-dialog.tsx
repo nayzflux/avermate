@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -16,22 +18,41 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CardTemplate, CardLayoutItem } from "@/hooks/use-card-layouts";
-import { useTranslations } from "next-intl";
 import * as HeroIcons from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
+
 import { builtInCardConfigs } from "@/components/dashboard/dynamic-data-card";
 import { TimeRangeSelect } from "../dashboard/time-range-select";
+
+// Replace with your own types/hooks:
+import type { CardTemplate, CardLayoutItem } from "@/hooks/use-card-layouts";
+import { useUpdateCardTemplate } from "@/hooks/use-card-layouts";
 
 interface CustomizeCardDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+
+  /** The DB row for this card. We'll update template.config on save. */
   template: CardTemplate;
+
+  /** Layout item referencing this card, only if you still need it for some reason. */
   layoutItem: CardLayoutItem;
+
+  /** Which page we’re on, e.g. “dashboard” | “grade” | “subject” */
   page: "dashboard" | "grade" | "subject";
+
+  /** All items in the layout, if you still need them. */
   allCards: CardLayoutItem[];
+
+  /** Callback if you want to do anything after a successful save. */
   onSave: (updatedLayoutItem: CardLayoutItem) => void;
 }
 
+/**
+ * A dialog that:
+ * - Honors built-in-card restrictions (title/icon/timeRange, etc.)
+ * - Edits `template.config` in the DB (rather than storing overrides in `layoutItem.customization`).
+ */
 export default function CustomizeCardDialog({
   open,
   onOpenChange,
@@ -42,174 +63,120 @@ export default function CustomizeCardDialog({
   onSave,
 }: CustomizeCardDialogProps) {
   const t = useTranslations("Dashboard.Components.CustomizeCard");
+  const { mutate: updateCardTemplate } = useUpdateCardTemplate();
 
-  // Update the type definition for CardLayoutItem to include customization properties
-  interface CardLayoutItem {
-    templateId: string;
-    position: number;
-    customization?: {
-      title?: string | null;
-      icon?: string | null;
-      description?: {
-        template?: string | null;
-        variables?: Record<string, any>;
-      };
-      mainData?: {
-        params?: Record<string, any>;
-        calculator?: string | null;
-      };
-    };
-  }
-
-  // State for customization values
-  const [customization, setCustomization] = useState<{
-    title?: string | null;
-    icon?: string | null;
-    description: {
-      template?: string | null;
-      variables: Record<string, any>;
-    };
-    mainData: {
-      params: Record<string, any>;
-      calculator?: string | null;
-    };
-  }>({
-    title: layoutItem.customization?.title || null,
-    icon: layoutItem.customization?.icon || null,
-    description: {
-      template: layoutItem.customization?.description?.template || null,
-      variables: layoutItem.customization?.description?.variables || {},
-    },
-    mainData: {
-      params: layoutItem.customization?.mainData?.params || {},
-      calculator: layoutItem.customization?.mainData?.calculator || null,
-    },
-  });
-
-  // Check if this is a built-in card
+  // 1) Determine if this is a built-in or custom card,
+  //    then get the built-in config if applicable
   const isBuiltInCard = template.id in builtInCardConfigs;
   const builtInConfig = isBuiltInCard
     ? builtInCardConfigs[template.id]
     : undefined;
+
+  // 2) Also check if it’s a customAverage card
+  //    so we can show the “customAverageId” field
+  //    (assuming template.config is an object!)
+  const parsedTemplateConfig =
+    typeof template.config === "string"
+      ? JSON.parse(template.config)
+      : template.config;
+
   const isCustomAverageCard =
-    template.config?.mainData?.calculator === "customAverage";
+    parsedTemplateConfig?.mainData?.calculator === "customAverage";
 
-  // Reset customization when template changes
+  // 3) Local state. We’re effectively letting the user
+  //    override some fields from the template config.
+  //    If the card is built-in, we only let them edit
+  //    the fields that builtInConfig says are allowed.
+  const [title, setTitle] = useState<string>(parsedTemplateConfig.title || "");
+  const [icon, setIcon] = useState<string>(
+    parsedTemplateConfig.icon || "ChartBarIcon"
+  );
+  const [timeRange, setTimeRange] = useState<string>(
+    parsedTemplateConfig.mainData?.params?.timeRange || "sinceStart"
+  );
+  const [customAverageId, setCustomAverageId] = useState<string>(
+    parsedTemplateConfig.mainData?.params?.customAverageId || ""
+  );
+
+  // Reset local state each time this dialog re-opens with a new template
   useEffect(() => {
-    setCustomization({
-      title: layoutItem.customization?.title || null,
-      icon: layoutItem.customization?.icon || null,
-      description: {
-        template: layoutItem.customization?.description?.template || null,
-        variables: layoutItem.customization?.description?.variables || {},
-      },
-      mainData: {
-        params: layoutItem.customization?.mainData?.params || {},
-        calculator: layoutItem.customization?.mainData?.calculator || null,
-      },
-    });
-  }, [layoutItem, template]);
+    if (open) {
+      const cfg =
+        typeof template.config === "string"
+          ? JSON.parse(template.config)
+          : template.config;
 
-  // Handle save
+      setTitle(cfg.title || "");
+      setIcon(cfg.icon || "ChartBarIcon");
+      setTimeRange(cfg.mainData?.params?.timeRange || "sinceStart");
+      setCustomAverageId(cfg.mainData?.params?.customAverageId || "");
+    }
+  }, [open, template]);
+
+  // 4) Save logic. We only save changes to `template.config` in the DB
   const handleSave = () => {
-    // Remove null values to avoid unnecessary customization entries
-    const cleanedCustomization: any = {};
+    // Merge old config with new user-entered fields
+    const oldConfig = parsedTemplateConfig;
 
-    if (customization.title) {
-      cleanedCustomization.title = customization.title;
-    }
+    // Build the new config object:
+    const newConfig = {
+      ...oldConfig,
+      // Only override title if builtIn card + allowed, or it’s custom
+      title:
+        !isBuiltInCard ||
+        (builtInConfig && builtInConfig.allowTitleCustomization)
+          ? title
+          : oldConfig.title,
+      // Same approach for icon
+      icon:
+        !isBuiltInCard ||
+        (builtInConfig && builtInConfig.allowIconCustomization)
+          ? icon
+          : oldConfig.icon,
+      mainData: {
+        ...oldConfig.mainData,
+        params: {
+          ...oldConfig.mainData?.params,
+          // If builtIn says “timeRange” is customizable, store it;
+          // otherwise keep the old timeRange
+          timeRange:
+            isBuiltInCard &&
+            builtInConfig?.customizableParams?.includes("timeRange")
+              ? timeRange
+              : oldConfig.mainData?.params?.timeRange,
 
-    if (customization.icon) {
-      cleanedCustomization.icon = customization.icon;
-    }
-
-    if (
-      customization.description.template ||
-      Object.keys(customization.description.variables).length > 0
-    ) {
-      cleanedCustomization.description = {
-        ...(customization.description.template
-          ? { template: customization.description.template }
-          : {}),
-        ...(Object.keys(customization.description.variables).length > 0
-          ? { variables: customization.description.variables }
-          : {}),
-      };
-    }
-
-    if (
-      customization.mainData.calculator ||
-      Object.keys(customization.mainData.params).length > 0
-    ) {
-      cleanedCustomization.mainData = {
-        ...(customization.mainData.calculator
-          ? { calculator: customization.mainData.calculator }
-          : {}),
-        ...(Object.keys(customization.mainData.params).length > 0
-          ? { params: customization.mainData.params }
-          : {}),
-      };
-    }
-
-    // Create updated layout item
-    const updatedLayoutItem = {
-      ...layoutItem,
-      ...(Object.keys(cleanedCustomization).length > 0
-        ? { customization: cleanedCustomization }
-        : {}),
+          // If it’s a customAverage card, store the customAverageId
+          // (only if that’s indeed how you want it).
+          ...(isCustomAverageCard ? { customAverageId } : {}),
+        },
+      },
     };
 
-    onSave(updatedLayoutItem);
+    // 5) Call your mutation hook to push this updated config to the DB
+    updateCardTemplate({
+      ...template,
+      config: newConfig,
+    });
+
+    // If you still want to do some layout-based callback:
+    // your old code had "updatedLayoutItem" – we can just re-pass
+    // the same item or omit it. For now we’ll keep it minimal:
+    onSave(layoutItem);
+
+    // Close the dialog
     onOpenChange(false);
   };
 
-  // Handle title change
-  const updateTitle = (title: string) => {
-    setCustomization({
-      ...customization,
-      title: title || null,
-    });
-  };
+  // 6) Helper for built-in time ranges
+  const getAvailableTimeRanges = () =>
+    builtInConfig?.allowedTimeRanges || [
+      "sinceStart",
+      "thisWeek",
+      "thisMonth",
+      "thisYear",
+    ];
 
-  // Handle icon change
-  const updateIcon = (icon: string) => {
-    setCustomization({
-      ...customization,
-      icon: icon || null,
-    });
-  };
-
-  // Handle time range change
-  const updateTimeRange = (timeRange: string) => {
-    setCustomization({
-      ...customization,
-      mainData: {
-        ...customization.mainData,
-        params: {
-          ...customization.mainData.params,
-          timeRange,
-        },
-      },
-    });
-  };
-
-  // Get available time ranges
-  const getAvailableTimeRanges = () => {
-    if (builtInConfig?.allowedTimeRanges) {
-      return builtInConfig.allowedTimeRanges;
-    }
-    return ["sinceStart", "thisWeek", "thisMonth", "thisYear"];
-  };
-
-  // Get current time range
-  const getCurrentTimeRange = () => {
-    return (
-      customization.mainData.params.timeRange ||
-      builtInConfig?.defaultTimeRange ||
-      "sinceStart"
-    );
-  };
-
+  // 7) Rendering:
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[525px]">
@@ -218,7 +185,7 @@ export default function CustomizeCardDialog({
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          {/* Title customization - only if allowed */}
+          {/* Title input – only if custom or if builtIn allows it */}
           {(!isBuiltInCard ||
             (builtInConfig && builtInConfig.allowTitleCustomization)) && (
             <div className="grid grid-cols-4 items-center gap-4">
@@ -227,41 +194,44 @@ export default function CustomizeCardDialog({
               </Label>
               <Input
                 id="title"
-                value={customization.title || template.config.title}
-                onChange={(e) => updateTitle(e.target.value)}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 className="col-span-3"
               />
             </div>
           )}
 
-          {/* Icon customization - only if allowed */}
+          {/* Icon select – only if custom or if builtIn allows it */}
           {(!isBuiltInCard ||
             (builtInConfig && builtInConfig.allowIconCustomization)) && (
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="icon" className="text-right">
                 {t("icon")}
               </Label>
-              <Select
-                value={customization.icon || template.config.icon}
-                onValueChange={updateIcon}
-              >
+              <Select value={icon} onValueChange={(value) => setIcon(value)}>
                 <SelectTrigger id="icon" className="col-span-3">
                   <SelectValue placeholder={t("selectIcon")} />
                 </SelectTrigger>
                 <SelectContent>
                   {Object.keys(HeroIcons)
-                    .filter((key) => key.endsWith("Icon"))
-                    .map((iconName) => (
-                      <SelectItem key={iconName} value={iconName}>
-                        {iconName.replace("Icon", "")}
-                      </SelectItem>
-                    ))}
+                    .filter((k) => k.endsWith("Icon"))
+                    .map((iconName) => {
+                      const IconComp = (HeroIcons as any)[iconName];
+                      return (
+                        <SelectItem key={iconName} value={iconName}>
+                          <div className="flex items-center gap-2">
+                            <IconComp className="h-5 w-5" />
+                            <span>{iconName.replace("Icon", "")}</span>
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
                 </SelectContent>
               </Select>
             </div>
           )}
 
-          {/* Time range customization for global average */}
+          {/* Time range – only if builtIn config says it’s customizable */}
           {isBuiltInCard &&
             builtInConfig?.customizableParams?.includes("timeRange") && (
               <div className="grid grid-cols-4 items-center gap-4">
@@ -269,17 +239,16 @@ export default function CustomizeCardDialog({
                   {t("timeRange")}
                 </Label>
                 <TimeRangeSelect
-                  value={getCurrentTimeRange()}
+                  value={timeRange}
                   options={getAvailableTimeRanges()}
-                  onValueChange={updateTimeRange}
+                  onValueChange={(val) => setTimeRange(val)}
                   translations={t}
                   className="col-span-3"
                 />
               </div>
             )}
 
-          {/* Add more customization options based on card type */}
-          {/* For example, custom average ID selector for custom average cards */}
+          {/* If it's a customAverage card, show a customAverageId input */}
           {isCustomAverageCard && (
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="customAverageId" className="text-right">
@@ -287,19 +256,8 @@ export default function CustomizeCardDialog({
               </Label>
               <Input
                 id="customAverageId"
-                value={customization.mainData.params.customAverageId || ""}
-                onChange={(e) => {
-                  setCustomization({
-                    ...customization,
-                    mainData: {
-                      ...customization.mainData,
-                      params: {
-                        ...customization.mainData.params,
-                        customAverageId: e.target.value,
-                      },
-                    },
-                  });
-                }}
+                value={customAverageId}
+                onChange={(e) => setCustomAverageId(e.target.value)}
                 className="col-span-3"
                 placeholder={t("customAverageIdPlaceholder")}
               />
