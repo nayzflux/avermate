@@ -1,13 +1,11 @@
 import { db } from "@/db";
 import { type Session, type User } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, sql, inArray } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { customAverages, subjects } from "@/db/schema";
-import { inArray } from "drizzle-orm";
-
+import { customAverages, subjects, cardTemplates, cardLayouts } from "@/db/schema";
 
 const app = new Hono<{
   Variables: {
@@ -60,17 +58,12 @@ app.post("/", zValidator("json", createCustomAverageSchema), async (c) => {
   const subjectIds = subjectArray.map((s) => s.id);
 
   // Validate subject ownership
-
-const userSubjects = await db.query.subjects.findMany({
-  where: and(
-    eq(subjects.userId, session.user.id),
-    inArray(subjects.id, subjectIds)
-  ),
-});
-
-
-  console.log(userSubjects);
-  console.log(subjectIds);
+  const userSubjects = await db.query.subjects.findMany({
+    where: and(
+      eq(subjects.userId, session.user.id),
+      inArray(subjects.id, subjectIds)
+    ),
+  });
 
   if (userSubjects.length !== subjectIds.length) {
     return c.json(
@@ -92,7 +85,77 @@ const userSubjects = await db.query.subjects.findMany({
     .returning()
     .get();
 
-  return c.json({ customAverage: newAverage }, 201);
+  // Create a card template for this custom average
+  const cardTemplate = await db
+    .insert(cardTemplates)
+    .values({
+      type: "custom",
+      identifier: `custom-average-${newAverage.id}`,
+      userId: session.user.id,
+      config: JSON.stringify({
+        title: name,
+        description: {
+          template: `Your custom average for ${name}`,
+          variables: {},
+        },
+        mainData: {
+          type: "average",
+          calculator: "customAverage",
+          params: {
+            customAverageId: newAverage.id,
+          },
+        },
+        icon: "ChartBarIcon",
+      }),
+      createdAt: new Date(),
+    })
+    .returning()
+    .get();
+
+  // If displayOnDashboard is true, add the card to the dashboard layout
+  if (isMainAverage) {
+    // Get current dashboard layout
+    const currentLayout = await db.query.cardLayouts.findFirst({
+      where: and(
+        eq(cardLayouts.userId, session.user.id),
+        eq(cardLayouts.page, "dashboard")
+      ),
+    });
+
+    let cards = [];
+    if (currentLayout) {
+      cards = JSON.parse(currentLayout.cards);
+      await db
+        .update(cardLayouts)
+        .set({
+          cards: JSON.stringify([
+            ...cards,
+            { templateId: cardTemplate.id, position: cards.length },
+          ]),
+          updatedAt: new Date(),
+        })
+        .where(
+          and(
+            eq(cardLayouts.userId, session.user.id),
+            eq(cardLayouts.page, "dashboard")
+          )
+        );
+    } else {
+      // Create new layout if it doesn't exist
+      await db.insert(cardLayouts).values({
+        userId: session.user.id,
+        page: "dashboard",
+        cards: JSON.stringify([{ templateId: cardTemplate.id, position: 0 }]),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    }
+  }
+
+  return c.json({ 
+    customAverage: newAverage,
+    cardTemplate,
+  }, 201);
 });
 
 /**
@@ -249,6 +312,91 @@ app.patch(
       .returning()
       .get();
 
+    // Update the card template name if average name changed
+    if (updateData.name) {
+      await db
+        .update(cardTemplates)
+        .set({
+          config: JSON.stringify({
+            title: updateData.name,
+            description: {
+              template: `Your custom average for ${updateData.name}`,
+              variables: {},
+            },
+            mainData: {
+              type: "average",
+              calculator: "customAverage",
+              params: {
+                customAverageId: averageId,
+              },
+            },
+            icon: "ChartBarIcon",
+          }),
+        })
+        .where(
+          and(
+            eq(cardTemplates.userId, session.user.id),
+            eq(cardTemplates.identifier, `custom-average-${averageId}`)
+          )
+        );
+    }
+
+    // Update dashboard layout based on isMainAverage
+    if (typeof updateData.isMainAverage !== 'undefined') {
+      const layout = await db.query.cardLayouts.findFirst({
+        where: and(
+          eq(cardLayouts.userId, session.user.id),
+          eq(cardLayouts.page, 'dashboard')
+        ),
+      });
+
+      // Get the card template
+      const cardTemplate = await db.query.cardTemplates.findFirst({
+        where: and(
+          eq(cardTemplates.userId, session.user.id),
+          eq(cardTemplates.identifier, `custom-average-${averageId}`)
+        ),
+      });
+
+      if (!cardTemplate) {
+        throw new Error('Card template not found');
+      }
+
+      if (layout) {
+        let cards = layout.cards ? JSON.parse(layout.cards) : [];
+        
+        if (updateData.isMainAverage) {
+          // Add card if not present
+          if (!cards.some((card: any) => card.templateId === cardTemplate.id)) {
+            cards.push({
+              templateId: cardTemplate.id,
+              position: cards.length,
+            });
+          }
+        } else {
+          // Remove card if present
+          cards = cards.filter((card: any) => card.templateId !== cardTemplate.id);
+          // Reorder remaining cards
+          cards = cards.map((card: any, index: number) => ({
+            ...card,
+            position: index,
+          }));
+        }
+
+        await db
+          .update(cardLayouts)
+          .set({
+            cards: JSON.stringify(cards),
+          })
+          .where(
+            and(
+              eq(cardLayouts.userId, session.user.id),
+              eq(cardLayouts.page, 'dashboard')
+            )
+          );
+      }
+    }
+
     return c.json({ customAverage: updatedAverage });
   }
 );
@@ -285,6 +433,58 @@ app.delete(
       .get();
 
     if (!deletedAverage) throw new HTTPException(404);
+
+    // Get the card template before deleting it
+    const cardTemplate = await db.query.cardTemplates.findFirst({
+      where: and(
+        eq(cardTemplates.identifier, `custom-average-${averageId}`),
+        eq(cardTemplates.userId, session.user.id)
+      ),
+    });
+
+    if (cardTemplate) {
+      // Delete the card template
+      await db
+        .delete(cardTemplates)
+        .where(
+          and(
+            eq(cardTemplates.identifier, `custom-average-${averageId}`),
+            eq(cardTemplates.userId, session.user.id)
+          )
+        );
+
+      // Update layout to remove the card
+      const layout = await db.query.cardLayouts.findFirst({
+        where: and(
+          eq(cardLayouts.userId, session.user.id),
+          eq(cardLayouts.page, "dashboard")
+        ),
+      });
+
+      if (layout) {
+        let cards = layout.cards ? JSON.parse(layout.cards) : [];
+        
+        // Remove card if present using the actual template ID
+        cards = cards.filter((card: any) => card.templateId !== cardTemplate.id);
+        // Reorder remaining cards
+        cards = cards.map((card: any, index: number) => ({
+          ...card,
+          position: index,
+        }));
+
+        await db
+          .update(cardLayouts)
+          .set({
+            cards: JSON.stringify(cards),
+          })
+          .where(
+            and(
+              eq(cardLayouts.userId, session.user.id),
+              eq(cardLayouts.page, "dashboard")
+            )
+          );
+      }
+    }
 
     return c.json({ customAverage: deletedAverage });
   }

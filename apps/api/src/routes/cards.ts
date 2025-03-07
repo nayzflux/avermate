@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { cardTemplates, cardLayouts } from "@/db/schema";
+import { cardTemplates, cardLayouts, customAverages } from "@/db/schema";
 import { type Session, type User } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
 import { and, eq } from "drizzle-orm";
@@ -71,10 +71,7 @@ app.get("/templates", async (c) => {
   }
 
   const templates = await db.query.cardTemplates.findMany({
-    where: and(
-      eq(cardTemplates.type, "built_in"),
-      eq(cardTemplates.userId, session.user.id)
-    ),
+    where: eq(cardTemplates.userId, session.user.id),
   });
 
   return c.json({ templates });
@@ -170,6 +167,38 @@ app.put(
       })
       .returning()
       .get();
+
+    // If this is the dashboard layout, sync isMainAverage field for custom averages
+    if (page === 'dashboard') {
+      // Get all custom average card templates
+      const customAverageTemplates = await db.query.cardTemplates.findMany({
+        where: and(
+          eq(cardTemplates.userId, session.user.id),
+          eq(cardTemplates.type, 'custom')
+        ),
+      });
+
+      // For each template, check if it's in the layout and update isMainAverage accordingly
+      for (const template of customAverageTemplates) {
+        const config = JSON.parse(template.config);
+        if (config.mainData.calculator === 'customAverage') {
+          const isInLayout = data.cards.some((card: any) => card.templateId === template.id);
+          const customAverageId = config.mainData.params.customAverageId;
+
+          await db
+            .update(customAverages)
+            .set({
+              isMainAverage: isInLayout,
+            })
+            .where(
+              and(
+                eq(customAverages.id, customAverageId),
+                eq(customAverages.userId, session.user.id)
+              )
+            );
+        }
+      }
+    }
 
     return c.json({ layout });
   }

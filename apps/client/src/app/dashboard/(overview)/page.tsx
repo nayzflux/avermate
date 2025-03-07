@@ -27,13 +27,20 @@ import { Session, User } from "better-auth/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
-import { useTranslations } from "next-intl"; // Import useTranslations
+import { useTranslations } from "next-intl";
+import { useCardLayout, useCardTemplates } from "@/hooks/use-card-layouts";
+import ManageCardsButton from "@/components/dashboard/manage-cards-button";
+import { Button } from "@/components/ui/button";
+import { LayoutGrid } from "lucide-react";
 
 /**
  * Vue d'ensemble des notes
  */
 export default function OverviewPage() {
   const t = useTranslations("Dashboard.Pages.OverviewPage"); // Initialize t
+  const tManageCards = useTranslations(
+    "Dashboard.Components.ManageCardsButton"
+  );
   const { data: session } = authClient.useSession() as unknown as {
     data: { session: Session; user: User };
   };
@@ -46,6 +53,7 @@ export default function OverviewPage() {
   const router = useRouter();
 
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
+  const [isManageCardsOpen, setIsManageCardsOpen] = useState(false);
 
   // Fetch subjects lists with grades from API
   const { data: subjects, isError, isPending } = useSubjects();
@@ -95,6 +103,18 @@ export default function OverviewPage() {
     isPending: isCustomAveragesPending,
   } = useCustomAverages();
 
+  const {
+    data: templates,
+    isLoading: isLoadingTemplates,
+    isError: isErrorTemplates,
+  } = useCardTemplates();
+
+  const {
+    data: layout,
+    isLoading: isLoadingLayout,
+    isError: isErrorLayout,
+  } = useCardLayout("dashboard");
+
   useEffect(() => {
     if (!periods) return;
 
@@ -120,7 +140,9 @@ export default function OverviewPage() {
     organizedSubjectsIsError ||
     isErrorRecentGrades ||
     isErrorAccount ||
-    isCustomAveragesError
+    isCustomAveragesError ||
+    isErrorTemplates ||
+    isErrorLayout
   ) {
     return (
       <div>
@@ -137,6 +159,8 @@ export default function OverviewPage() {
     isPendingRecentGrades ||
     isPendingAccount ||
     isCustomAveragesPending ||
+    isLoadingTemplates ||
+    isLoadingLayout ||
     selectedTab === null
   ) {
     return (
@@ -196,7 +220,7 @@ export default function OverviewPage() {
         }}
       >
         <div className="flex flex-col gap-2 md:gap-4">
-          <div className="hidden md:flex gap-4">
+          <div className="hidden md:flex gap-4 justify-between items-center">
             <ScrollArea>
               <div className="flex w-full">
                 <TabsList className="flex">
@@ -212,9 +236,21 @@ export default function OverviewPage() {
 
               <ScrollBar orientation="horizontal" />
             </ScrollArea>
+            <Button
+              variant="outline"
+              onClick={() => setIsManageCardsOpen(true)}
+            >
+              <LayoutGrid className="h-4 w-4 mr-2" />
+              {tManageCards("customizeCards")}
+            </Button>
+            <ManageCardsButton
+              page="dashboard"
+              open={isManageCardsOpen}
+              onOpenChange={setIsManageCardsOpen}
+            />
           </div>
 
-          <div className="flex md:hidden">
+          <div className="flex md:hidden gap-2 justify-between items-center">
             <Select
               value={selectedTab}
               onValueChange={(value) => {
@@ -237,6 +273,19 @@ export default function OverviewPage() {
                 <SelectItem value="full-year">{t("fullYear")}</SelectItem>
               </SelectContent>
             </Select>
+
+            <Button
+              variant="outline"
+              className="h-9 w-9"
+              onClick={() => setIsManageCardsOpen(true)}
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </Button>
+            <ManageCardsButton
+              page="dashboard"
+              open={isManageCardsOpen}
+              onOpenChange={setIsManageCardsOpen}
+            />
           </div>
 
           {periods &&
@@ -256,6 +305,8 @@ export default function OverviewPage() {
                     }
                     customAverages={customAverages}
                     periods={periods}
+                    templates={templates}
+                    layout={layout}
                   />
 
                   <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
@@ -276,7 +327,10 @@ export default function OverviewPage() {
 
                     {/* Dernières notes */}
                     {subjects.length > 0 && (
-                      <RecentGradesCard recentGrades={recentGrades} period={period} />
+                      <RecentGradesCard
+                        recentGrades={recentGrades}
+                        period={period}
+                      />
                     )}
                   </div>
                 </TabsContent>
@@ -287,6 +341,8 @@ export default function OverviewPage() {
               period={fullYearPeriod(subjects)}
               customAverages={customAverages}
               periods={periods}
+              templates={templates}
+              layout={layout}
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
@@ -297,7 +353,10 @@ export default function OverviewPage() {
               />
 
               {subjects.length > 0 && (
-                <RecentGradesCard recentGrades={recentGrades} period={fullYearPeriod(subjects)} />
+                <RecentGradesCard
+                  recentGrades={recentGrades}
+                  period={fullYearPeriod(subjects)}
+                />
               )}
             </div>
           </TabsContent>
