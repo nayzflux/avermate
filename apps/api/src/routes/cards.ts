@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { cardTemplates, cardLayouts, customAverages } from "@/db/schema";
+import { cardLayouts, cardTemplates, customAverages } from "@/db/schema";
 import { type Session, type User } from "@/lib/auth";
 import { zValidator } from "@hono/zod-validator";
 import { and, eq } from "drizzle-orm";
@@ -155,7 +155,7 @@ app.get("/layouts/:page", async (c) => {
   return c.json({ layout });
 });
 
-app.put(
+app.patch(
   "/layouts/:page",
   zValidator("json", updateLayoutSchema),
   async (c) => {
@@ -171,26 +171,33 @@ app.put(
     const { page } = c.req.param();
     const data = c.req.valid("json");
 
-    // Delete existing layout
-    await db
-      .delete(cardLayouts)
-      .where(
-        and(
-          eq(cardLayouts.userId, session.user.id),
-          eq(cardLayouts.page, page)
-        )
-      );
+    // // Delete existing layout
+    // await db
+    //   .delete(cardLayouts)
+    //   .where(
+    //     and(
+    //       eq(cardLayouts.userId, session.user.id),
+    //       eq(cardLayouts.page, page)
+    //     )
+    //   );
 
-    // Create new layout
-    const layout = await db
-      .insert(cardLayouts)
-      .values({
-        userId: session.user.id,
-        page,
-        cards: JSON.stringify(data.cards),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
+    // // Create new layout
+    // const layout = await db
+    //   .insert(cardLayouts)
+    //   .values({
+    //     userId: session.user.id,
+    //     page,
+    //     cards: JSON.stringify(data.cards),
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //   })
+    //   .returning()
+    //   .get();
+
+    const layout = await db.update(cardLayouts).set({
+      updatedAt: new Date(),
+      cards: JSON.stringify(data.cards),
+    }).where(and(eq(cardLayouts.userId, session.user.id), eq(cardLayouts.page, page)))
       .returning()
       .get();
 

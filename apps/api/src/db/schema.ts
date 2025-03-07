@@ -2,6 +2,7 @@ import { generateId } from "@/lib/nanoid";
 import { relations } from "drizzle-orm";
 import {
   foreignKey,
+  index,
   integer,
   sqliteTable,
   text,
@@ -248,14 +249,16 @@ export const cardTemplates = sqliteTable("card_templates", {
 
   type: text().notNull(), // 'built_in' or 'custom'
   identifier: text().notNull(),
-  
+
   config: text().notNull(), // JSON string containing title, description template, etc.
-  
+
   userId: text() // Only for custom templates
     .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
 
   createdAt: integer({ mode: "timestamp" }).notNull(),
-});
+}, (t) => ({
+  userIdIdx: index("user_id_idx").on(t.userId)
+}));
 
 export const cardTemplatesRelations = relations(cardTemplates, ({ one }) => ({
   user: one(users, {
@@ -273,14 +276,16 @@ export const cardLayouts = sqliteTable("card_layouts", {
   userId: text()
     .notNull()
     .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
-    
+
   page: text().notNull(), // 'dashboard', 'grade', or 'subject'
-  
+
   cards: text().notNull(), // JSON array of card positions and customizations
-  
+
   createdAt: integer({ mode: "timestamp" }).notNull(),
   updatedAt: integer({ mode: "timestamp" }).notNull(),
-});
+}, (t) => ({
+  userIdPageIdx: index("user_id_page_idx").on(t.userId, t.page)
+}));
 
 export const cardLayoutsRelations = relations(cardLayouts, ({ one }) => ({
   user: one(users, {

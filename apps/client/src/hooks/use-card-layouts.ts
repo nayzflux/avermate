@@ -95,7 +95,7 @@ export function useUpdateCardLayout() {
       page: 'dashboard' | 'grade' | 'subject'; 
       cards: CardLayoutItem[] 
     }) => {
-      const res = await apiClient.put(`cards/layouts/${page}`, {
+      const res = await apiClient.patch(`cards/layouts/${page}`, {
         json: { page, cards },
       });
       return res.json();
