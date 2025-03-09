@@ -1,4 +1,4 @@
-import DataCard from "@/components/dashboard/data-card";
+//import DataCard from "@/components/dashboard/data-card";
 import GradeValue from "@/components/dashboard/grade-value";
 import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
@@ -26,14 +26,17 @@ import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import ManageCardsButton from "@/components/dashboard/manage-cards-button";
 import CardLayout from "@/components/dashboard/card-layout";
-import { CardTemplate, CardLayout as CardLayoutType } from "@/hooks/use-card-layouts";
+import {
+  DataCard,
+  DataCardLayout as CardLayoutType,
+} from "@/hooks/use-card-layouts";
 
 interface DataCardsProps {
   subjects: Subject[];
   period: Period;
   periods: Period[];
   customAverages?: Average[];
-  templates?: CardTemplate[];
+  templates?: DataCard[];
   layout?: CardLayoutType | null;
 }
 

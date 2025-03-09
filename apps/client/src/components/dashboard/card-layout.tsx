@@ -85,7 +85,7 @@ export default function CardLayout({
     >
       {sortedCards.map((item) => {
         const template = templates.find(
-          (t: { id: any }) => t.id === item.templateId
+          (t: { id: any }) => t.id === item.cardId
         );
         if (!template) return null;
 

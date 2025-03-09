@@ -20,7 +20,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   CardTemplate,
   CardLayoutItem,
-  useCardTemplates,
+  useCard,
   useCardLayout,
   useUpdateCardLayout,
 } from "@/hooks/use-card-layouts";
@@ -73,7 +73,7 @@ export default function ManageCards({
   // A second set of translations for built-in data card titles (like "Best Grade", etc.)
   const dataCardsT = useTranslations("Dashboard.Components.DataCards");
 
-  const { data: templates } = useCardTemplates();
+  const { data: templates } = useCard();
   const { data: layout } = useCardLayout(page);
   const { mutate: updateLayout } = useUpdateCardLayout();
 

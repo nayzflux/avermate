@@ -50,47 +50,31 @@ export const auth = betterAuth({
     usePlural: true,
   }),
 
-  hooks: {
-    after: createAuthMiddleware(async (ctx) => {
-      // Vérifie si on est bien dans le processus de sign-up
-      if (ctx.path.startsWith("/sign-up")) {
-        const newSession = ctx.context.newSession;
-        if (newSession) {
-          const { user } = newSession;
-
-          // =============================
-          // 1) Insérer les cartes par défaut
-          // =============================
-          const createdAt = Math.floor(Date.now() / 1000);
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (createdUser) => {
+          const createdAt = new Date();
           const updatedAt = createdAt;
 
           const insertedCardIds: string[] = [];
 
-          for (const cardInfo of DEFAULT_BUILTIN_CARDS) {
-            // On n'envoie PAS 'id' --> la DB le génère via $defaultFn(...)
+          for (const card of DEFAULT_BUILTIN_CARDS) {
             await db.insert(dataCards).values({
-              identifier: cardInfo.identifier,
-              config: cardInfo.config,
-              userId: user.id,
-              createdAt: new Date(),
-              updatedAt: new Date(),
+              identifier: card.identifier,
+              config: card.config,
+              userId: createdUser.id,
+              createdAt,
+              updatedAt,
             });
 
-            // Sur SQLite, on ne peut pas faire .returning(...) simplement ;
-            // on refait donc un SELECT pour retrouver l'ID fraîchement créé
-            // => on se base sur (userId + identifier) pour l'identifier.
             const [row] = await db
               .select({ id: dataCards.id })
               .from(dataCards)
               .where(
-                and(
-                  eq(dataCards.userId, user.id),
-                  eq(dataCards.identifier, cardInfo.identifier)
-                )
+                and(eq(dataCards.identifier, card.identifier), eq(dataCards.userId, createdUser.id))
               )
-              // On trie pour prendre la plus récente (au cas où double insert)
-              // et on ne récupère qu'une ligne
-              // .orderBy(desc(dataCards.createdAt)) // (optionnel)
+              .orderBy()
               .limit(1);
 
             if (row) {
@@ -98,29 +82,22 @@ export const auth = betterAuth({
             }
           }
 
-          // =============================
-          // 2) Créer le layout par défaut
-          // =============================
-          // Positions [0..4] pour nos 5 cartes
           const defaultLayoutCards = insertedCardIds.map((cardId, index) => ({
             cardId,
             position: index,
           }));
 
-          // Ici aussi, on n'envoie PAS 'id' => la DB le génère
           await db.insert(dataCardsLayouts).values({
-            userId: user.id,
+            userId: createdUser.id,
             cards: JSON.stringify(defaultLayoutCards),
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt,
+            updatedAt,
           });
+        },
 
-          // Optionnel : si tu veux relire l'ID du layout nouvellement créé,
-          // tu peux faire un SELECT similaire, en te basant sur userId + 'cards' ?
-          // ou sur createdAt. C'est à toi de voir si tu en as besoin.
-        }
-      }
-    }),
+        // DANS LE FUTUR ON POURRA GERER ICI LES FIELDS SUPPLEMENTAIRES CUSTOM COMME NOM/PRENOM, IS CPE, ONBOARDED, ETC.
+      },
+    },
   },
 
   // Client URL

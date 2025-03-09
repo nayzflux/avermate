@@ -26,7 +26,7 @@ import { TimeRangeSelect } from "../dashboard/time-range-select";
 
 // Replace with your own types/hooks:
 import type { CardTemplate, CardLayoutItem } from "@/hooks/use-card-layouts";
-import { useUpdateCardTemplate } from "@/hooks/use-card-layouts";
+import { useUpdateCard } from "@/hooks/use-card-layouts";
 
 interface CustomizeCardDialogProps {
   open: boolean;
@@ -63,7 +63,7 @@ export default function CustomizeCardDialog({
   onSave,
 }: CustomizeCardDialogProps) {
   const t = useTranslations("Dashboard.Components.CustomizeCard");
-  const { mutate: updateCardTemplate } = useUpdateCardTemplate();
+  const { mutate: updateCardTemplate } = useUpdateCard();
 
   // 1) Determine if this is a built-in or custom card,
   //    then get the built-in config if applicable

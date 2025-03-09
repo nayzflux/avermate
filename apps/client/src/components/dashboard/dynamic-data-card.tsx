@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Card } from "../ui/card";
 import { cn } from "@/lib/utils";
-import { CardTemplate, CardLayoutItem } from "@/hooks/use-card-layouts";
+import { DataCard, DataCardLayoutItem } from "@/hooks/use-card-layouts";
 import GradeValue from "./grade-value";
 import { Subject } from "@/types/subject";
 import { Period } from "@/types/period";
@@ -546,18 +546,18 @@ function getIconComponent(iconName: string): React.ComponentType<any> {
 }
 
 // Check if a card is a custom average card
-const isCustomAverageCard = (template: CardTemplate) =>
+const isCustomAverageCard = (template: DataCard) =>
   template.config.mainData.calculator === "customAverage";
 
 // Check if a card is a built-in card
 const isBuiltInCard = (
-  template: CardTemplate,
+  template: DataCard,
   builtInCards: Record<string, BuiltInCardConfig>
 ) => template.id in builtInCards;
 
 // ===== Component Props =====
 
-interface ExtendedCardLayoutItem extends CardLayoutItem {
+interface ExtendedDataCardLayoutItem extends DataCardLayoutItem {
   customization?: {
     title?: string;
     description?: {
@@ -575,8 +575,8 @@ interface ExtendedCardLayoutItem extends CardLayoutItem {
 }
 
 interface DynamicDataCardProps {
-  template: CardTemplate;
-  layoutItem?: ExtendedCardLayoutItem;
+  template: DataCard;
+  layoutItem?: ExtendedDataCardLayoutItem;
   subjects: Subject[];
   period: Period;
   periods: Period[];
