@@ -161,8 +161,55 @@ function SubjectWrapper({
               : subject?.name}
           </p>
           {subject && !isVirtualSubject && (
+        {!isVirtualSubject && (
+          <div className="flex gap-2 md:gap-4">
+            {!subject.isDisplaySubject && (
+              <>
+                <AddGradeDialog parentId={subject.id}>
+                  <Button className="md:hidden" size={"icon"}>
+                    <PlusCircleIcon className="size-4" />
+                  </Button>
+                </AddGradeDialog>
+                <AddGradeDialog parentId={subject.id}>
+                  <Button className="hidden md:flex">
+                    <PlusCircleIcon className="size-4 mr-2" />
+                    {t("addGrade")}
+                  </Button>
+                </AddGradeDialog>
+              </>
+            )}
             <SubjectMoreButton subject={subject} />
-          )}
+          </div>
+        )}
+        {subject.id.startsWith("ca") && (
+          <div className="flex gap-2 md:gap-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="icon" variant="outline">
+                    <EllipsisVerticalIcon className="size-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent className="flex flex-col items-start">
+                  {/* Update grade */}
+                  <DropdownMenuItem
+                    asChild
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <UpdateAverageDialog averageId={subject.id} />
+                  </DropdownMenuItem>
+
+                  {/* Delete grade */}
+                  <DropdownMenuItem
+                    asChild
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <DeleteAverageDialog averageId={subject.id} averageName={subject.name} />
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+          </div>
+        )}
         </div>
 
         <Separator />
