@@ -25,6 +25,7 @@ import { Period } from "@/types/period";
 import { Subject } from "@/types/subject";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
+import { useOrganizedSubjects } from "@/hooks/use-get-oragnized-subjects";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
@@ -43,16 +44,18 @@ export default function GradesPage() {
     data: organizedSubjects,
     isError: organizedSubjectsIsError,
     isPending: organizedSubjectsIsPending,
-  } = useQuery({
-    queryKey: ["subjects", "organized-by-periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects/organized-by-periods");
-      const data = await res.json<{
-        periods: { period: Period; subjects: Subject[] }[];
-      }>();
-      return data.periods;
-    },
-  });
+  } = useOrganizedSubjects();
+  
+  // useQuery({
+  //   queryKey: ["subjects", "organized-by-periods"],
+  //   queryFn: async () => {
+  //     const res = await apiClient.get("subjects/organized-by-periods");
+  //     const data = await res.json<{
+  //       periods: { period: Period; subjects: Subject[] }[];
+  //     }>();
+  //     return data.periods;
+  //   },
+  // });
 
   const {
     data: subjects,

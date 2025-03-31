@@ -7,6 +7,7 @@ import { usePeriods } from "@/hooks/use-periods";
 import { useSubjects } from "@/hooks/use-subjects";
 import { apiClient } from "@/lib/api";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
+import { useOrganizedSubjects, useOrganizedSpecificSubject } from "@/hooks/use-get-oragnized-subjects";
 import { Subject } from "@/types/subject";
 import {
   addGeneralAverageToSubjects,
@@ -53,30 +54,33 @@ export default function SubjectPage() {
     data: organizedSubjects,
     isError: organizedSubjectsIsError,
     isPending: organizedSubjectsIsPending,
-  } = useQuery({
-    queryKey: ["subjects", "organized-by-periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects/organized-by-periods");
-      const data = await res.json<GetOrganizedSubjectsResponse>();
-      return data.periods;
-    },
-  });
+  } = useOrganizedSubjects();
+  // useQuery({
+  //   queryKey: ["subjects", "organized-by-periods"],
+  //   queryFn: async () => {
+  //     const res = await apiClient.get("subjects/organized-by-periods");
+  //     const data = await res.json<GetOrganizedSubjectsResponse>();
+  //     return data.periods;
+  //   },
+  // });
 
   const {
     data: organizedSubject,
     isError: organizedSubjectIsError,
     isPending: organizedSubjectIsPending,
-  } = useQuery({
-    queryKey: ["subject", "organized-by-periods", subjectId],
-    queryFn: async () => {
-      const res = await apiClient.get(
-        `subjects/organized-by-periods/${subjectId}`
-      );
-      const data = await res.json<{ subject: Subject }>();
-      return data.subject;
-    },
-    enabled: !isVirtualSubject,
-  });
+  } = useOrganizedSpecificSubject(subjectId);
+  
+  // useQuery({
+  //   queryKey: ["subject", "organized-by-periods", subjectId],
+  //   queryFn: async () => {
+  //     const res = await apiClient.get(
+  //       `subjects/organized-by-periods/${subjectId}`
+  //     );
+  //     const data = await res.json<{ subject: Subject }>();
+  //     return data.subject;
+  //   },
+  //   enabled: !isVirtualSubject,
+  // });
 
   // Fetch period data
   const {

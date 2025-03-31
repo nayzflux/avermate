@@ -11,6 +11,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { Gabarito } from "next/font/google";
 import Script from "next/script";
+import { AprilFools } from "@/components/april-fools";
 
 const gabarito = Gabarito({
   subsets: ["latin"],
@@ -55,6 +56,7 @@ export default async function RootLayout({
           <ThemeProvider>
             <ThemeColorMetaTag />
             <NextIntlClientProvider locale={locale} messages={messages}>
+              <AprilFools />
               <div data-vaul-drawer-wrapper="" className="bg-background">
                 {children}
               </div>

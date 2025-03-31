@@ -6,6 +6,7 @@ import { useCustomAverages } from "@/hooks/use-custom-averages";
 import { useGrade } from "@/hooks/use-grade";
 import { apiClient } from "@/lib/api";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
+import { useOrganizedSubjects } from "@/hooks/use-get-oragnized-subjects";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -53,14 +54,16 @@ export default function GradePage() {
     data: organizedSubjects,
     isError: organizedSubjectsIsError,
     isPending: organizedSubjectsIsPending,
-  } = useQuery({
-    queryKey: ["subjects", "organized-by-periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects/organized-by-periods");
-      const data = await res.json<GetOrganizedSubjectsResponse>();
-      return data.periods;
-    },
-  });
+  } = useOrganizedSubjects();
+  
+  // useQuery({
+  //   queryKey: ["subjects", "organized-by-periods"],
+  //   queryFn: async () => {
+  //     const res = await apiClient.get("subjects/organized-by-periods");
+  //     const data = await res.json<GetOrganizedSubjectsResponse>();
+  //     return data.periods;
+  //   },
+  // });
 
   const { data: grade, isPending, isError } = useGrade(gradeId);
 

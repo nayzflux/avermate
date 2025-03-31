@@ -18,6 +18,7 @@ import { useCustomAverages } from "@/hooks/use-custom-averages";
 import { usePeriods } from "@/hooks/use-periods";
 import { useRecentGrades } from "@/hooks/use-recent-grades";
 import { useSubjects } from "@/hooks/use-subjects";
+import { useOrganizedSubjects } from "@/hooks/use-get-oragnized-subjects";
 import { apiClient } from "@/lib/api";
 import { authClient } from "@/lib/auth";
 import { GetOrganizedSubjectsResponse } from "@/types/get-organized-subjects-response";
@@ -62,14 +63,17 @@ export default function OverviewPage() {
     data: organizedSubjects,
     isError: organizedSubjectsIsError,
     isPending: organizedSubjectsIsPending,
-  } = useQuery({
-    queryKey: ["subjects", "organized-by-periods"],
-    queryFn: async () => {
-      const res = await apiClient.get("subjects/organized-by-periods");
-      const data = await res.json<GetOrganizedSubjectsResponse>();
-      return data.periods;
-    },
-  });
+  } = useOrganizedSubjects();
+  
+  // 
+  // = useQuery({
+  //   queryKey: ["subjects", "organized-by-periods"],
+  //   queryFn: async () => {
+  //     const res = await apiClient.get("subjects/organized-by-periods");
+  //     const data = await res.json<GetOrganizedSubjectsResponse>();
+  //     return data.periods;
+  //   },
+  // });
 
   const {
     data: recentGrades,
