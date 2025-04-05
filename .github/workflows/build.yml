@@ -28,7 +28,9 @@ jobs:
           context: .
           file: ./apps/api/Dockerfile
           push: true
-          tags: nayzbysodium/avermate-api:latest
+          tags: 
+            - nayzbysodium/avermate-api:latest
+            - nayzbysodium/avermate-api:${{github.sha}}
 
       - name: Build and Push Web Docker image
         uses: docker/build-push-action@v2
@@ -36,4 +38,6 @@ jobs:
           context: .
           file: ./apps/client/Dockerfile
           push: true
-          tags: nayzbysodium/avermate-web:latest
+          tags:
+            - nayzbysodium/avermate-web:latest
+            - nayzbysodium/avermate-web:${{github.sha}}
