@@ -25,15 +25,31 @@ import {
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import { PlusCircle } from "lucide-react";
+import * as HeroIcons from "@heroicons/react/24/outline";
+import { useToast } from "@/hooks/use-toast";
+import { TimeRangeSelect } from "./time-range-select";
 
 interface AddCardTemplateProps {
   page?: "dashboard" | "grade" | "subject";
 }
 
 type MainDataType = "grade" | "average" | "impact" | "text" | "custom";
+type CalculatorType =
+  | "globalAverage"
+  | "customAverage"
+  | "bestGrade"
+  | "worstGrade"
+  | "bestSubject"
+  | "worstSubject"
+  | "gradeImpact";
+
+type MainDataParams = {
+  timeRange: string;
+  customAverageId?: string;
+};
 
 export default function AddCardTemplate({
-  page: defaultPage,
+  page: defaultPage = "dashboard",
 }: AddCardTemplateProps) {
   const t = useTranslations("Dashboard.Components.AddCardTemplate");
   const [open, setOpen] = useState(false);
@@ -41,7 +57,8 @@ export default function AddCardTemplate({
     useCreateCardTemplate();
   const { mutate: updateLayout, isPending: isUpdatingLayout } =
     useUpdateCardLayout();
-  const { data: currentLayout } = useCardLayout(defaultPage || "dashboard");
+  const { data: currentLayout } = useCardLayout(defaultPage);
+  const { toast } = useToast();
 
   const [formData, setFormData] = useState({
     type: "custom" as const,
@@ -49,23 +66,44 @@ export default function AddCardTemplate({
     config: {
       title: "",
       description: {
-        template: "",
+        template: "Your performance is {growth} {timeRange}",
         variables: {},
       },
       mainData: {
         type: "average" as MainDataType,
-        calculator: "globalAverage",
-        params: {},
+        calculator: "globalAverage" as CalculatorType,
+        params: {
+          timeRange: "sinceStart",
+        } as MainDataParams,
       },
       icon: "ChartBarIcon",
     },
   });
 
+  const [step, setStep] = useState(1);
+  const totalSteps = 3;
+
   const handleSubmit = () => {
+    if (!formData.identifier) {
+      toast({
+        title: t("errorIdentifierRequired"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.config.title) {
+      toast({
+        title: t("errorTitleRequired"),
+        variant: "destructive",
+      });
+      return;
+    }
+
     createTemplate(formData, {
       onSuccess: (_data: unknown, _variables: unknown, _context: unknown) => {
         const data = _data as { template: CardTemplate };
-        const page = defaultPage || "dashboard";
+        const page = defaultPage;
 
         // Get existing cards from the layout
         const existingCards = currentLayout?.cards || [];
@@ -88,6 +126,9 @@ export default function AddCardTemplate({
           },
           {
             onSuccess: () => {
+              toast({
+                title: t("cardCreated"),
+              });
               setOpen(false);
               setFormData({
                 type: "custom",
@@ -95,17 +136,20 @@ export default function AddCardTemplate({
                 config: {
                   title: "",
                   description: {
-                    template: "",
+                    template: "Your performance is {growth} {timeRange}",
                     variables: {},
                   },
                   mainData: {
                     type: "average" as MainDataType,
-                    calculator: "globalAverage",
-                    params: {},
+                    calculator: "globalAverage" as CalculatorType,
+                    params: {
+                      timeRange: "sinceStart",
+                    } as MainDataParams,
                   },
                   icon: "ChartBarIcon",
                 },
               });
+              setStep(1);
             },
           }
         );
@@ -113,19 +157,50 @@ export default function AddCardTemplate({
     });
   };
 
-  return (
-    <>
-      <Button onClick={() => setOpen(true)} variant="outline">
-        <PlusCircle className="h-4 w-4 mr-2" />
-        {t("addCard")}
-      </Button>
+  const nextStep = () => {
+    if (step < totalSteps) {
+      setStep(step + 1);
+    } else {
+      handleSubmit();
+    }
+  };
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t("createNewCard")}</DialogTitle>
-          </DialogHeader>
+  const prevStep = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    }
+  };
 
+  const updateIcon = (iconName: string) => {
+    setFormData({
+      ...formData,
+      config: {
+        ...formData.config,
+        icon: iconName,
+      },
+    });
+  };
+
+  const updateTimeRange = (timeRange: string) => {
+    setFormData({
+      ...formData,
+      config: {
+        ...formData.config,
+        mainData: {
+          ...formData.config.mainData,
+          params: {
+            ...formData.config.mainData.params,
+            timeRange,
+          },
+        },
+      },
+    });
+  };
+
+  const renderStepContent = () => {
+    switch (step) {
+      case 1:
+        return (
           <div className="space-y-4">
             <div>
               <Label htmlFor="title">{t("title")}</Label>
@@ -138,6 +213,7 @@ export default function AddCardTemplate({
                     config: { ...formData.config, title: e.target.value },
                   })
                 }
+                placeholder={t("titlePlaceholder")}
               />
             </div>
 
@@ -152,55 +228,46 @@ export default function AddCardTemplate({
                     identifier: e.target.value,
                   })
                 }
+                placeholder={t("identifierPlaceholder")}
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                {t("identifierHelp")}
+              </p>
             </div>
-
-            {!defaultPage && (
-              <div>
-                <Label htmlFor="page">{t("page")}</Label>
-                <Select
-                  value={defaultPage || "dashboard"}
-                  onValueChange={(value: "dashboard" | "grade" | "subject") => {
-                    // We don't need to update formData since we're using defaultPage
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="dashboard">{t("dashboard")}</SelectItem>
-                    <SelectItem value="grade">{t("grades")}</SelectItem>
-                    <SelectItem value="subject">{t("subject")}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
 
             <div>
-              <Label htmlFor="description">{t("descriptionTemplate")}</Label>
-              <Textarea
-                id="description"
-                value={formData.config.description.template}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    config: {
-                      ...formData.config,
-                      description: {
-                        ...formData.config.description,
-                        template: e.target.value,
-                      },
-                    },
-                  })
-                }
-              />
+              <Label htmlFor="icon">{t("icon")}</Label>
+              <Select value={formData.config.icon} onValueChange={updateIcon}>
+                <SelectTrigger id="icon">
+                  <SelectValue placeholder={t("selectIcon")} />
+                </SelectTrigger>
+                <SelectContent className="h-[300px]">
+                  {Object.keys(HeroIcons)
+                    .filter((k) => k.endsWith("Icon"))
+                    .map((iconName) => {
+                      const IconComp = (HeroIcons as any)[iconName];
+                      return (
+                        <SelectItem key={iconName} value={iconName}>
+                          <div className="flex items-center gap-2">
+                            <IconComp className="h-5 w-5" />
+                            <span>{iconName.replace("Icon", "")}</span>
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
+                </SelectContent>
+              </Select>
             </div>
-
+          </div>
+        );
+      case 2:
+        return (
+          <div className="space-y-4">
             <div>
               <Label htmlFor="calculator">{t("calculator")}</Label>
               <Select
                 value={formData.config.mainData.calculator}
-                onValueChange={(value: string) =>
+                onValueChange={(value: CalculatorType) =>
                   setFormData({
                     ...formData,
                     config: {
@@ -235,6 +302,9 @@ export default function AddCardTemplate({
                   <SelectItem value="worstSubject">
                     {t("calculators.worstSubject")}
                   </SelectItem>
+                  <SelectItem value="gradeImpact">
+                    {t("calculators.gradeImpact")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -249,9 +319,8 @@ export default function AddCardTemplate({
                     config: {
                       ...formData.config,
                       mainData: {
+                        ...formData.config.mainData,
                         type: value,
-                        calculator: formData.config.mainData.calculator,
-                        params: {},
                       },
                     },
                   })
@@ -275,17 +344,180 @@ export default function AddCardTemplate({
                 </SelectContent>
               </Select>
             </div>
+
+            {formData.config.mainData.calculator === "globalAverage" && (
+              <div>
+                <Label htmlFor="timeRange">{t("timeRange")}</Label>
+                <TimeRangeSelect
+                  value={
+                    formData.config.mainData.params.timeRange || "sinceStart"
+                  }
+                  options={["sinceStart", "thisWeek", "thisMonth", "thisYear"]}
+                  onValueChange={updateTimeRange}
+                  translations={t}
+                />
+              </div>
+            )}
+
+            {formData.config.mainData.calculator === "customAverage" && (
+              <div>
+                <Label htmlFor="customAverageId">{t("customAverageId")}</Label>
+                <Input
+                  id="customAverageId"
+                  value={formData.config.mainData.params.customAverageId || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      config: {
+                        ...formData.config,
+                        mainData: {
+                          ...formData.config.mainData,
+                          params: {
+                            ...formData.config.mainData.params,
+                            customAverageId: e.target.value,
+                          } as MainDataParams,
+                        },
+                      },
+                    })
+                  }
+                  placeholder={t("customAverageIdPlaceholder")}
+                />
+              </div>
+            )}
+          </div>
+        );
+      case 3:
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="description">{t("descriptionTemplate")}</Label>
+              <Textarea
+                id="description"
+                value={formData.config.description.template}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    config: {
+                      ...formData.config,
+                      description: {
+                        ...formData.config.description,
+                        template: e.target.value,
+                      },
+                    },
+                  })
+                }
+                placeholder={t("descriptionTemplatePlaceholder")}
+                className="min-h-[100px]"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                {t("descriptionTemplateHelp")}
+              </p>
+            </div>
+
+            <div className="rounded-md bg-muted p-4">
+              <h3 className="font-medium mb-2">{t("availableVariables")}</h3>
+              <ul className="text-sm space-y-1">
+                <li className="flex justify-between">
+                  <code className="bg-secondary rounded px-1">
+                    {"{growth}"}
+                  </code>
+                  <span className="text-muted-foreground">
+                    {t("growthVariable")}
+                  </span>
+                </li>
+                <li className="flex justify-between">
+                  <code className="bg-secondary rounded px-1">
+                    {"{timeRange}"}
+                  </code>
+                  <span className="text-muted-foreground">
+                    {t("timeRangeVariable")}
+                  </span>
+                </li>
+                <li className="flex justify-between">
+                  <code className="bg-secondary rounded px-1">
+                    {"{subjectName}"}
+                  </code>
+                  <span className="text-muted-foreground">
+                    {t("subjectNameVariable")}
+                  </span>
+                </li>
+                <li className="flex justify-between">
+                  <code className="bg-secondary rounded px-1">
+                    {"{gradeName}"}
+                  </code>
+                  <span className="text-muted-foreground">
+                    {t("gradeNameVariable")}
+                  </span>
+                </li>
+                <li className="flex justify-between">
+                  <code className="bg-secondary rounded px-1">
+                    {"{comparisonValue}"}
+                  </code>
+                  <span className="text-muted-foreground">
+                    {t("comparisonValueVariable")}
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)} variant="outline">
+        <PlusCircle className="h-4 w-4 mr-2" />
+        {t("addCard")}
+      </Button>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("createNewCard")}</DialogTitle>
+          </DialogHeader>
+
+          <div className="mb-4">
+            <div className="flex justify-between mb-2">
+              {Array.from({ length: totalSteps }).map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-1 flex-1 mx-1 rounded-full ${
+                    index + 1 <= step ? "bg-primary" : "bg-muted"
+                  }`}
+                />
+              ))}
+            </div>
+            <p className="text-sm text-center text-muted-foreground">
+              {t("step")} {step} {t("of")} {totalSteps}:{" "}
+              {step === 1
+                ? t("basicInfo")
+                : step === 2
+                ? t("dataConfiguration")
+                : t("description")}
+            </p>
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>
-              {t("cancel")}
-            </Button>
+          {renderStepContent()}
+
+          <DialogFooter className="flex justify-between items-center mt-6">
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setOpen(false)}>
+                {t("cancel")}
+              </Button>
+              {step > 1 && (
+                <Button variant="outline" onClick={prevStep}>
+                  {t("back")}
+                </Button>
+              )}
+            </div>
             <Button
-              onClick={handleSubmit}
+              onClick={nextStep}
               disabled={isCreatingTemplate || isUpdatingLayout}
             >
-              {t("create")}
+              {step < totalSteps ? t("next") : t("create")}
             </Button>
           </DialogFooter>
         </DialogContent>

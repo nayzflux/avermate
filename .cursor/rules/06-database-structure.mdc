@@ -1,0 +1,43 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Database Structure
+
+The application uses Drizzle ORM with a Turso/LibSQL database.
+
+## Schema Location
+
+- Database schema is defined in [apps/api/src/db](mdc:apps/api/src/db)
+- Migrations are stored in [apps/api/drizzle](mdc:apps/api/drizzle)
+
+## Main Entities
+
+The database includes these key entities:
+
+1. **Users** - User accounts and authentication information
+2. **Subjects** - Academic subjects
+3. **Grades** - Student grades for assignments and exams
+4. **Periods** - Academic periods/terms
+5. **Settings** - User settings and preferences
+
+## Relationships
+
+- Users have many Subjects
+- Subjects have many Grades
+- Subjects belong to Periods
+- Grades belong to Subjects
+
+## Schema Management
+
+- Use Drizzle for schema definitions and migrations
+- Database changes should be made via Drizzle models
+- Run `npm run db:push` to apply schema changes
+- Use `npm run db:studio` to explore the database with Drizzle Studio
+
+## Development
+
+- Local development uses a SQLite database via `npm run db:dev`
+- Production uses Turso (LibSQL)
+

@@ -1,0 +1,55 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Code Conventions and Patterns
+
+## TypeScript
+
+- Use TypeScript for all new code
+- Define interfaces and types for all data structures
+- Use proper typing for API responses and requests
+
+## React & Next.js
+
+- Use function components with hooks
+- Use appropriate Next.js data fetching methods
+- Follow the App Router conventions for layouts and pages
+- Use server components when possible for improved performance
+
+## State Management
+
+- Use React Query for server state
+- Use React's built-in state hooks for local component state
+- Use context providers for shared state when needed
+
+## Styling
+
+- Use TailwindCSS for styling
+- Use the UI component library based on Radix UI
+- Follow consistent naming conventions for classes
+
+## API and Data Fetching
+
+- Use React Query for data fetching in the frontend
+- Use Zod for validation of API requests and responses
+- Handle loading, error and success states appropriately
+
+## Error Handling
+
+- Use try/catch blocks for error handling
+- Provide meaningful error messages
+- Use toast notifications for error feedback to users
+
+## Component Organization
+
+- Small, focused components with single responsibilities
+- Keep complex logic in custom hooks
+- Organize components by feature, not by type
+
+## Testing
+
+- Write tests for critical functionality
+- Test happy paths and edge cases
+- Mock external dependencies in tests

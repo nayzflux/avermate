@@ -1,0 +1,60 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# UI Component System
+
+The application uses shadcn/ui components based on Radix UI primitives and styled with TailwindCSS.
+
+## Component Library
+
+The UI components are located in [apps/client/src/components/ui](mdc:apps/client/src/components/ui) and include:
+
+- **Buttons** - Various button styles and variants
+- **Cards** - Content containers
+- **Dialogs** - Modal dialogs and popovers
+- **Forms** - Form controls and inputs
+- **Navigation** - Menus and navigation components
+- **Typography** - Text components
+- **Layout** - Layout components and containers
+- **Feedback** - Toast notifications and alerts
+- **Data Display** - Tables, lists, and other data visualization
+
+## shadcn/ui
+
+The project uses shadcn/ui, which is:
+- A collection of reusable components built with Radix UI and Tailwind CSS
+- Not a component library that you install as a dependency
+- Components are copied into your project and are fully customizable
+- Provides accessibility and styling best practices out of the box
+
+## Usage Patterns
+
+- Import components from the UI library: `import { Button } from "@/components/ui/button"`
+- Use the `cva` (class-variance-authority) pattern for component variants
+- Use `cn()` utility for merging Tailwind classes
+- Follow the shadcn/ui pattern for component composition
+
+## Styling
+
+- Use TailwindCSS for styling
+- Follow the design system color tokens and spacing
+- Use the provided design system variables for consistency
+- Use dark mode with `next-themes` for theme switching
+
+## Accessibility
+
+- All components should be accessible
+- Use proper ARIA attributes
+- Ensure keyboard navigation works
+- Support screen readers
+- Follow color contrast guidelines
+
+## Adding New Components
+
+1. Create a new file in the appropriate directory
+2. Use the existing patterns and conventions
+3. Export the component from an index file
+4. Document the component's props and usage
+

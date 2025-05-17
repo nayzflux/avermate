@@ -113,7 +113,7 @@ const calculators: Record<string, CalculatorFunction> = {
       periods,
       true
     );
-    
+
     type TimeRangeKeys = "sinceStart" | "thisWeek" | "thisMonth" | "thisYear";
 
     const timeRange = (params?.timeRange ?? "sinceStart") as TimeRangeKeys;
@@ -123,10 +123,16 @@ const calculators: Record<string, CalculatorFunction> = {
     if (averagesOverTime && averagesOverTime.length > 0) {
       const lastValue = averagesOverTime[averagesOverTime.length - 1];
       const firstValue = {
-        "sinceStart": averagesOverTime.find((v) => v !== null),
-        "thisWeek": averagesOverTime.find((v, i) => i >= averagesOverTime.length - 7 && v !== null),
-        "thisMonth": averagesOverTime.find((v, i) => i >= averagesOverTime.length - 30 && v !== null),
-        "thisYear": averagesOverTime.find((v, i) => i >= averagesOverTime.length - 365 && v !== null),
+        sinceStart: averagesOverTime.find((v) => v !== null),
+        thisWeek: averagesOverTime.find(
+          (v, i) => i >= averagesOverTime.length - 7 && v !== null
+        ),
+        thisMonth: averagesOverTime.find(
+          (v, i) => i >= averagesOverTime.length - 30 && v !== null
+        ),
+        thisYear: averagesOverTime.find(
+          (v, i) => i >= averagesOverTime.length - 365 && v !== null
+        ),
       };
       const firstValueTimeRange = firstValue[timeRange];
       if (
@@ -134,7 +140,8 @@ const calculators: Record<string, CalculatorFunction> = {
         lastValue !== null &&
         firstValueTimeRange !== null
       ) {
-        growthValue = ((lastValue - firstValueTimeRange) / firstValueTimeRange) * 100;
+        growthValue =
+          ((lastValue - firstValueTimeRange) / firstValueTimeRange) * 100;
       }
     }
 
@@ -607,10 +614,60 @@ export default function DynamicDataCard({
   // Get built-in card config if applicable
   const builtInConfig = isBuiltIn ? builtInCardConfigs[template.id] : undefined;
 
+  // Handle backwards compatibility between legacy DataCard and CardTemplate structures
+  const normalizeDescription = (desc: any) => {
+    if (!desc || typeof desc !== "object") {
+      return {
+        template: "",
+        variables: {},
+      };
+    }
+
+    // Handle formatter/params format (legacy DataCard)
+    if (desc.formatter !== undefined) {
+      return {
+        template: desc.formatter || "",
+        variables: desc.params || {},
+      };
+    }
+
+    // Handle template/variables format (CardTemplate)
+    return {
+      template: desc.template || "",
+      variables: desc.variables || {},
+    };
+  };
+
+  const normalizeMainData = (data: any) => {
+    if (!data || typeof data !== "object") {
+      return {
+        type: "average",
+        calculator: "globalAverage",
+        params: {},
+      };
+    }
+
+    return {
+      type: data.type || data.calculator || "average",
+      calculator: data.calculator || "globalAverage",
+      params: data.params || {},
+    };
+  };
+
   // Merge template config with customization
   const config = useMemo(() => {
     const baseConfig = template.config;
     const customization = layoutItem?.customization || {};
+
+    // Normalize description to work with both formats
+    const baseDescription = normalizeDescription(baseConfig.description);
+    const customDescription = customization.description
+      ? normalizeDescription(customization.description)
+      : { template: "", variables: {} };
+
+    // Normalize mainData to work with both formats
+    const baseMainData = normalizeMainData(baseConfig.mainData);
+    const customMainData = customization.mainData || {};
 
     // For built-in cards, respect the customization limitations
     if (builtInConfig) {
@@ -619,23 +676,20 @@ export default function DynamicDataCard({
           ? customization.title || baseConfig.title
           : baseConfig.title,
         description: {
-          template:
-            customization.description?.template ||
-            baseConfig.description.template,
+          template: customDescription.template || baseDescription.template,
           variables: {
-            ...baseConfig.description.variables,
-            ...(customization.description?.variables || {}),
+            ...baseDescription.variables,
+            ...(customDescription.variables || {}),
           },
         },
         mainData: {
-          type: baseConfig.mainData.type,
+          type: baseMainData.type,
           calculator: builtInConfig.allowCalculatorCustomization
-            ? customization.mainData?.calculator ||
-              baseConfig.mainData.calculator
-            : baseConfig.mainData.calculator,
+            ? customMainData.calculator || baseMainData.calculator
+            : baseMainData.calculator,
           params: {
-            ...(baseConfig.mainData.params || {}),
-            ...(customization.mainData?.params || {}),
+            ...(baseMainData.params || {}),
+            ...(customMainData.params || {}),
           },
         },
         icon: builtInConfig.allowIconCustomization
@@ -648,20 +702,18 @@ export default function DynamicDataCard({
     return {
       title: customization.title || baseConfig.title,
       description: {
-        template:
-          customization.description?.template ||
-          baseConfig.description.template,
+        template: customDescription.template || baseDescription.template,
         variables: {
-          ...baseConfig.description.variables,
-          ...(customization.description?.variables || {}),
+          ...baseDescription.variables,
+          ...(customDescription.variables || {}),
         },
       },
       mainData: {
-        type: baseConfig.mainData.type,
-        calculator: baseConfig.mainData.calculator,
+        type: baseMainData.type,
+        calculator: customMainData.calculator || baseMainData.calculator,
         params: {
-          ...(baseConfig.mainData.params || {}),
-          ...(customization.mainData?.params || {}),
+          ...(baseMainData.params || {}),
+          ...(customMainData.params || {}),
         },
       },
       icon: customization.icon || baseConfig.icon,
@@ -718,10 +770,21 @@ export default function DynamicDataCard({
       return descriptionFormatters.customAverage(mainData, t);
     }
 
-    // For other custom cards, use template
+    // For other custom cards, use template (handle both formats: formatter or template)
+    const descConfig = config.description;
+    // Use type assertion to safely access both potential structures
+    const template =
+      typeof descConfig === "object" && descConfig !== null
+        ? (descConfig as any).formatter || descConfig.template || ""
+        : "";
+    const params =
+      typeof descConfig === "object" && descConfig !== null
+        ? (descConfig as any).params || descConfig.variables || {}
+        : {};
+
     return processTemplate(
-      config.description.template,
-      config.description.variables,
+      template,
+      params,
       subjects,
       period,
       periods,
@@ -744,6 +807,10 @@ export default function DynamicDataCard({
 
   // Get the icon component
   const Icon = getIconComponent(config.icon);
+
+  // Check for mainData type or calculator to determine if this data is available
+  const mainDataType =
+    (config.mainData as any).type || config.mainData.calculator;
 
   // If no value is available, don't render the card
   if (mainData.value === null) {

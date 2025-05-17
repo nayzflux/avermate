@@ -27,8 +27,10 @@ import { useTranslations } from "next-intl";
 import ManageCardsButton from "@/components/dashboard/manage-cards-button";
 import CardLayout from "@/components/dashboard/card-layout";
 import {
-  DataCard,
-  DataCardLayout as CardLayoutType,
+  CardTemplate,
+  CardLayout as CardLayoutType,
+  useCardTemplates,
+  useCardLayout,
 } from "@/hooks/use-card-layouts";
 
 interface DataCardsProps {
@@ -36,7 +38,7 @@ interface DataCardsProps {
   period: Period;
   periods: Period[];
   customAverages?: Average[];
-  templates?: DataCard[];
+  templates?: CardTemplate[];
   layout?: CardLayoutType | null;
 }
 
@@ -45,11 +47,27 @@ export default function DataCards({
   period,
   periods,
   customAverages,
-  templates,
-  layout,
+  templates: propTemplates,
+  layout: propLayout,
 }: DataCardsProps) {
+  // Fetch templates and layout from the API if not provided through props
+  const { data: apiTemplates } = useCardTemplates();
+  const { data: apiLayout } = useCardLayout("dashboard");
+
+  // Use templates from props first, then from API
+  const templates = propTemplates && propTemplates.length > 0 
+    ? propTemplates 
+    : apiTemplates;
+
+  // Use layout from props first, then from API
+  const layout = propLayout || apiLayout;
+
   return (
-    <>      
+    <>
+      <div className="flex justify-end mb-4">
+        <ManageCardsButton />
+      </div>
+      
       <CardLayout
         page="dashboard"
         subjects={subjects}

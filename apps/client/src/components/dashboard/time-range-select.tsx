@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { type TimeRangeOption } from "./dynamic-data-card";
+import { TimeRangeOption } from "./dynamic-data-card";
 
 interface TimeRangeSelectProps {
   value: string;
@@ -16,6 +16,19 @@ interface TimeRangeSelectProps {
   className?: string;
 }
 
+// Helper function to get display name for time range options
+function getTimeRangeDisplayName(timeRange: string, translations: any): string {
+  const timeRangeMap: Record<string, string> = {
+    sinceStart: translations("sinceStart"),
+    thisWeek: translations("thisWeek"),
+    thisMonth: translations("thisMonth"),
+    thisYear: translations("thisYear"),
+    custom: translations("custom"),
+  };
+
+  return timeRangeMap[timeRange] || timeRange;
+}
+
 export function TimeRangeSelect({
   value,
   options,
@@ -23,33 +36,15 @@ export function TimeRangeSelect({
   translations,
   className,
 }: TimeRangeSelectProps) {
-  // Map time range options to display names
-  const getTimeRangeDisplayName = (option: string) => {
-    switch (option) {
-      case "sinceStart":
-        return translations("timeRanges.sinceStart");
-      case "thisWeek":
-        return translations("timeRanges.thisWeek");
-      case "thisMonth":
-        return translations("timeRanges.thisMonth");
-      case "thisYear":
-        return translations("timeRanges.thisYear");
-      case "custom":
-        return translations("timeRanges.custom");
-      default:
-        return option;
-    }
-  };
-
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className={cn(className)}>
+      <SelectTrigger className={cn("w-full", className)}>
         <SelectValue placeholder={translations("selectTimeRange")} />
       </SelectTrigger>
       <SelectContent>
         {options.map((option) => (
           <SelectItem key={option} value={option}>
-            {getTimeRangeDisplayName(option)}
+            {getTimeRangeDisplayName(option, translations)}
           </SelectItem>
         ))}
       </SelectContent>

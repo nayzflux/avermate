@@ -1,0 +1,49 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Backend API Structure
+
+The backend is a Hono API built with Bun and using Drizzle ORM with Turso/LibSQL.
+
+## Key Directories
+
+- [apps/api/src](mdc:apps/api/src) - API source code
+  - [routes](mdc:apps/api/src/routes) - API route handlers
+  - [db](mdc:apps/api/src/db) - Database models and connection
+  - [lib](mdc:apps/api/src/lib) - Utility functions and libraries
+  - [middlewares](mdc:apps/api/src/middlewares) - Hono middlewares
+
+- [apps/api/drizzle](mdc:apps/api/drizzle) - Drizzle ORM migrations and schema
+
+## Technologies
+
+- **Runtime**: Bun
+- **Framework**: Hono
+- **Database**: Turso/LibSQL with Drizzle ORM
+- **Cache**: Redis (required for API to function)
+- **Authentication**: better-auth
+- **Validation**: Zod
+- **Email**: Resend
+- **Package Manager**: Bun
+
+## API Structure
+
+The API follows a RESTful structure with routes organized by resource:
+
+- `GET /api/v1/resource` - List resources
+- `GET /api/v1/resource/:id` - Get a single resource
+- `POST /api/v1/resource` - Create a resource
+- `PUT /api/v1/resource/:id` - Update a resource
+- `DELETE /api/v1/resource/:id` - Delete a resource
+
+## Development
+
+- Redis must be running before starting the API: `sudo service redis-server start` (in WSL)
+- Start the API with `cd apps/api && bun dev`
+- Database schema changes should be made in Drizzle models
+- Run `bun db:push` to apply schema changes
+- Run `bun db:studio` to open Drizzle Studio for database exploration
+- Run `bun db:dev` to start a local Turso development database
+

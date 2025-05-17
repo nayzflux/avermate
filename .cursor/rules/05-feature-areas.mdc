@@ -1,0 +1,44 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Key Feature Areas
+
+## Authentication
+
+Authentication is handled using better-auth and implemented in:
+- [apps/client/src/app/auth](mdc:apps/client/src/app/auth) - Frontend auth pages
+- [apps/client/src/components/forms/auth](mdc:apps/client/src/components/forms/auth) - Auth form components
+- [apps/api/src/routes/auth](mdc:apps/api/src/routes/auth) - Backend auth routes
+
+## Dashboard
+
+The main application dashboard with grades, subjects, and analytics:
+- [apps/client/src/app/dashboard](mdc:apps/client/src/app/dashboard) - Dashboard pages
+- [apps/client/src/components/dashboard](mdc:apps/client/src/components/dashboard) - Dashboard components
+
+## Grades Management
+
+Track and manage student grades:
+- [apps/client/src/app/dashboard/grades](mdc:apps/client/src/app/dashboard/grades) - Grade management pages
+- [apps/client/src/components/buttons/dashboard/grade](mdc:apps/client/src/components/buttons/dashboard/grade) - Grade action buttons
+
+## Subjects Management
+
+Manage academic subjects:
+- [apps/client/src/app/dashboard/subjects](mdc:apps/client/src/app/dashboard/subjects) - Subject management pages
+- [apps/client/src/components/buttons/dashboard/subject](mdc:apps/client/src/components/buttons/dashboard/subject) - Subject action buttons
+
+## User Profile
+
+User profile management:
+- [apps/client/src/app/profile](mdc:apps/client/src/app/profile) - Profile pages
+- [apps/client/src/components/forms/profile](mdc:apps/client/src/components/forms/profile) - Profile form components
+
+## Onboarding
+
+User onboarding flow:
+- [apps/client/src/app/onboarding](mdc:apps/client/src/app/onboarding) - Onboarding pages
+- [apps/client/src/components/onboarding](mdc:apps/client/src/components/onboarding) - Onboarding components
+

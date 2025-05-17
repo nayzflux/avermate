@@ -1,0 +1,44 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Avermate Project Overview
+
+This is a monorepo project using a Next.js frontend and Hono API backend.
+
+## Repository Structure
+- `apps/client/` - Next.js frontend application
+- `apps/api/` - Hono API backend with Drizzle ORM and Turso/LibSQL database
+- `.github/workflows/` - GitHub Actions workflows
+- `patches/` - Patch files for dependencies
+
+## Key Technologies
+- Frontend: Next.js 15, React 19, TypeScript, Tailwind CSS, shadcn/ui components
+- Backend: Bun, Hono, Drizzle ORM, LibSQL/Turso, Redis
+- Authentication: better-auth
+- State Management: React Query, nanostores
+- Data Validation: Zod
+- Package Manager: Bun
+
+## Development Commands
+```bash
+# Start Redis (required for API)
+sudo service redis-server start  # Run this in WSL
+
+# Start the frontend development server
+cd apps/client && bun dev
+
+# Start the API development server
+cd apps/api && bun dev
+
+# Database commands
+cd apps/api && bun db:studio # Open Drizzle Studio
+cd apps/api && bun db:push # Push schema changes to database
+cd apps/api && bun db:dev # Start local Turso development database
+
+# Install dependencies
+bun install
+```
+
+

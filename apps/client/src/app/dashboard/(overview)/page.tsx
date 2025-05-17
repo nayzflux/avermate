@@ -28,7 +28,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import DataCards from "./data-cards";
 import { useTranslations } from "next-intl";
-import { useCardLayout, useCard } from "@/hooks/use-card-layouts";
+import { useCardLayout, useCardTemplates } from "@/hooks/use-card-layouts";
 import ManageCardsButton from "@/components/dashboard/manage-cards-button";
 import { Button } from "@/components/ui/button";
 import { LayoutGrid } from "lucide-react";
@@ -107,7 +107,7 @@ export default function OverviewPage() {
     data: templates,
     isLoading: isLoadingTemplates,
     isError: isErrorTemplates,
-  } = useCard();
+  } = useCardTemplates();
 
   const {
     data: layout,

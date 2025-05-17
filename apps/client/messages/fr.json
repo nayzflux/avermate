@@ -85,12 +85,12 @@
         "Charts": {
           "fullYear": "Toute l'année",
           "average": "Moyenne",
-          "noGradesYet": "Aucune note pour l'instant",
+          "noGradesTitle": "Aucune note pour l'instant",
           "addGradeToStartTracking": "Ajouter une nouvelle note pour commencer à suivre vos moyennes.",
           "addGrade": "Ajouter une note",
-          "overallAverage": "Moyenne Générale",
-          "visualizeOverallAverage": "Visualiser l'évolution de votre moyenne générale sur ce trimestre",
-          "visualizeAverageBySubject": "Visualiser votre moyenne par matière"
+          "globalAverageTitle": "Moyenne Générale",
+          "areaChartDescription": "Visualiser l'évolution de votre moyenne générale sur ce trimestre",
+          "radarChartDescription": "Visualiser votre moyenne par matière"
         }
       }
     },
@@ -679,7 +679,17 @@
         "globalAverage": "Moyenne globale",
         "subjectAverage": "Moyenne par matière",
         "customAverage": "Moyenne personnalisée",
-        "saving": "Enregistrement..."
+        "saving": "Enregistrement...",
+        "customAverageIdPlaceholder": "Entrez l'ID de la moyenne personnalisée",
+        "timeRange": "Plage de temps",
+        "selectIcon": "Sélectionner l'icône",
+        "icon": "Icônes",
+        "timeRanges": {
+          "sinceStart": "Depuis le début",
+          "thisWeek": "Cette semaine",
+          "thisMonth": "Ce mois-ci",
+          "thisYear": "Cette année"
+        }
       }
     },
     "Forms": {
@@ -978,7 +988,8 @@
           "bestGrade": "Meilleure note",
           "worstGrade": "Pire note",
           "bestSubject": "Meilleure matière",
-          "worstSubject": "Pire matière"
+          "worstSubject": "Pire matière",
+          "gradeImpact": "Impact de la note"
         },
         "dataTypes": {
           "grade": "Note",
@@ -992,7 +1003,33 @@
         "page": "Page",
         "dashboard": "Tableau de bord",
         "grades": "Notes",
-        "subject": "Matières"
+        "subject": "Matières",
+        "titlePlaceholder": "Entrez le titre de la carte",
+        "identifierPlaceholder": "Entrez un identifiant unique",
+        "identifierHelp": "Un identifiant unique utilisé pour référencer cette carte",
+        "icon": "Icône",
+        "selectIcon": "Sélectionner une icône",
+        "timeRange": "Plage de temps",
+        "customAverageId": "ID de la moyenne personnalisée",
+        "customAverageIdPlaceholder": "Entrez l'ID de la moyenne personnalisée",
+        "errorIdentifierRequired": "L'identifiant est requis",
+        "errorTitleRequired": "Le titre est requis",
+        "cardCreated": "Carte créée avec succès",
+        "step": "Étape",
+        "of": "sur",
+        "basicInfo": "Informations de base",
+        "dataConfiguration": "Configuration des données",
+        "description": "Description",
+        "next": "Suivant",
+        "back": "Retour",
+        "availableVariables": "Variables disponibles",
+        "growthVariable": "Montre la croissance/décroissance",
+        "timeRangeVariable": "Montre la plage de temps sélectionnée",
+        "subjectNameVariable": "Montre le nom de la matière",
+        "gradeNameVariable": "Montre le nom de la note",
+        "comparisonValueVariable": "Montre la valeur de comparaison",
+        "descriptionTemplatePlaceholder": "Entrez le modèle de description",
+        "descriptionTemplateHelp": "Utilisez des variables entre accolades comme {growth}"
       },
       "CustomizeCard": {
         "title": "Personnaliser la carte",
@@ -1111,72 +1148,72 @@
       "title": "Politique de Confidentialité",
       "lastUpdated": "Dernière mise à jour : 07 décembre 2024",
       "intro": {
-        "p1": "La présente Politique de Confidentialité décrit nos politiques et procédures concernant la collecte, l’utilisation et la divulgation de vos informations lorsque vous utilisez le Service, et vous informe de vos droits en matière de confidentialité ainsi que de la manière dont la loi vous protège.",
-        "p2": "Nous utilisons vos données personnelles pour fournir et améliorer le Service. En utilisant le Service, vous acceptez la collecte et l’utilisation d’informations conformément à cette Politique de Confidentialité."
+        "p1": "La présente Politique de Confidentialité décrit nos politiques et procédures concernant la collecte, l'utilisation et la divulgation de vos informations lorsque vous utilisez le Service, et vous informe de vos droits en matière de confidentialité ainsi que de la manière dont la loi vous protège.",
+        "p2": "Nous utilisons vos données personnelles pour fournir et améliorer le Service. En utilisant le Service, vous acceptez la collecte et l'utilisation d'informations conformément à cette Politique de Confidentialité."
       },
       "interpretationDefinitions": {
         "title": "Interprétation et Définitions",
         "interpretationTitle": "Interprétation",
-        "interpretationText": "Les mots dont la première lettre est en majuscule ont les significations définies dans les conditions suivantes. Les définitions suivantes ont la même signification, qu’elles apparaissent au singulier ou au pluriel.",
+        "interpretationText": "Les mots dont la première lettre est en majuscule ont les significations définies dans les conditions suivantes. Les définitions suivantes ont la même signification, qu'elles apparaissent au singulier ou au pluriel.",
         "definitionsTitle": "Définitions",
         "definitionsIntro": "Dans le cadre de la présente Politique de Confidentialité :",
         "list": {
-          "account": "<b>Compte</b> désigne un compte unique créé pour vous permettre d’accéder à notre Service ou à certaines parties de notre Service.",
-          "affiliate": "<b>Affilié</b> désigne toute entité qui contrôle, est contrôlée par ou est sous contrôle commun avec une partie, où « contrôle » signifie la détention de 50 % ou plus des actions, intérêts ou autres titres donnant droit de vote pour l’élection de directeurs ou toute autre autorité de gestion.",
+          "account": "<b>Compte</b> désigne un compte unique créé pour vous permettre d'accéder à notre Service ou à certaines parties de notre Service.",
+          "affiliate": "<b>Affilié</b> désigne toute entité qui contrôle, est contrôlée par ou est sous contrôle commun avec une partie, où « contrôle » signifie la détention de 50 % ou plus des actions, intérêts ou autres titres donnant droit de vote pour l'élection de directeurs ou toute autre autorité de gestion.",
           "application": "<b>Application</b> désigne Avermate, le programme logiciel fourni par la Société.",
           "company": "<b>Société</b> (désignée sous le nom de « la Société », « Nous », « Notre » ou « Nos » dans le présent Accord) fait référence à Avermate.",
           "country": "<b>Pays</b> fait référence à : France",
-          "device": "<b>Appareil</b> désigne tout appareil pouvant accéder au Service, tel qu’un ordinateur, un téléphone mobile ou une tablette numérique.",
+          "device": "<b>Appareil</b> désigne tout appareil pouvant accéder au Service, tel qu'un ordinateur, un téléphone mobile ou une tablette numérique.",
           "personalData": "<b>Données Personnelles</b> désigne toute information relative à une personne physique identifiée ou identifiable.",
-          "service": "<b>Service</b> désigne l’Application.",
-          "serviceProvider": "<b>Prestataire de Service</b> désigne toute personne physique ou morale qui traite les données pour le compte de la Société. Il s’agit d’entreprises tierces ou de particuliers engagés par la Société pour faciliter le Service, fournir le Service au nom de la Société, exécuter des services liés au Service ou aider la Société à analyser l’utilisation du Service.",
-          "usageData": "<b>Données d’Utilisation</b> désigne les données collectées automatiquement, générées par l’utilisation du Service ou provenant de l’infrastructure du Service elle-même (par exemple, la durée d’une visite de page).",
-          "you": "<b>Vous</b> désigne la personne physique accédant au Service ou l’utilisant, ou l’entreprise, ou toute autre entité juridique pour le compte de laquelle ladite personne accède ou utilise le Service, selon le cas."
+          "service": "<b>Service</b> désigne l'Application.",
+          "serviceProvider": "<b>Prestataire de Service</b> désigne toute personne physique ou morale qui traite les données pour le compte de la Société. Il s'agit d'entreprises tierces ou de particuliers engagés par la Société pour faciliter le Service, fournir le Service au nom de la Société, exécuter des services liés au Service ou aider la Société à analyser l'utilisation du Service.",
+          "usageData": "<b>Données d'Utilisation</b> désigne les données collectées automatiquement, générées par l'utilisation du Service ou provenant de l'infrastructure du Service elle-même (par exemple, la durée d'une visite de page).",
+          "you": "<b>Vous</b> désigne la personne physique accédant au Service ou l'utilisant, ou l'entreprise, ou toute autre entité juridique pour le compte de laquelle ladite personne accède ou utilise le Service, selon le cas."
         }
       },
       "collectingUsingData": {
         "title": "Collecte et Utilisation de Vos Données Personnelles",
         "typesDataCollectedTitle": "Types de Données Collectées",
         "personalDataTitle": "Données Personnelles",
-        "personalDataP1": "Pendant l’utilisation de Notre Service, Nous pouvons vous demander de nous fournir certaines informations personnellement identifiables pouvant être utilisées pour vous contacter ou vous identifier. Les informations personnellement identifiables peuvent inclure, sans s’y limiter :",
+        "personalDataP1": "Pendant l'utilisation de Notre Service, Nous pouvons vous demander de nous fournir certaines informations personnellement identifiables pouvant être utilisées pour vous contacter ou vous identifier. Les informations personnellement identifiables peuvent inclure, sans s'y limiter :",
         "listEmail": "Adresse e-mail",
         "listNames": "Prénom et nom",
-        "listUsageData": "Données d’Utilisation",
-        "usageDataTitle": "Données d’Utilisation",
-        "usageDataP1": "Les Données d’Utilisation sont collectées automatiquement lors de l’utilisation du Service.",
-        "usageDataP2": "Les Données d’Utilisation peuvent inclure des informations telles que l’adresse de protocole Internet (IP) de votre Appareil, le type de navigateur, la version du navigateur, les pages de notre Service que vous visitez, l’heure et la date de votre visite, le temps passé sur ces pages, les identifiants uniques de l’appareil et d’autres données de diagnostic.",
-        "usageDataP3": "Lorsque vous accédez au Service par ou via un appareil mobile, Nous pouvons collecter automatiquement certaines informations, notamment, mais sans s’y limiter, le type d’appareil mobile que vous utilisez, l’ID unique de votre appareil mobile, l’adresse IP de votre appareil mobile, votre système d’exploitation mobile, le type de navigateur Internet mobile que vous utilisez, des identifiants uniques d’appareil et d’autres données de diagnostic.",
+        "listUsageData": "Données d'Utilisation",
+        "usageDataTitle": "Données d'Utilisation",
+        "usageDataP1": "Les Données d'Utilisation sont collectées automatiquement lors de l'utilisation du Service.",
+        "usageDataP2": "Les Données d'Utilisation peuvent inclure des informations telles que l'adresse de protocole Internet (IP) de votre Appareil, le type de navigateur, la version du navigateur, les pages de notre Service que vous visitez, l'heure et la date de votre visite, le temps passé sur ces pages, les identifiants uniques de l'appareil et d'autres données de diagnostic.",
+        "usageDataP3": "Lorsque vous accédez au Service par ou via un appareil mobile, Nous pouvons collecter automatiquement certaines informations, notamment, mais sans s'y limiter, le type d'appareil mobile que vous utilisez, l'ID unique de votre appareil mobile, l'adresse IP de votre appareil mobile, votre système d'exploitation mobile, le type de navigateur Internet mobile que vous utilisez, des identifiants uniques d'appareil et d'autres données de diagnostic.",
         "usageDataP4": "Nous pouvons également collecter les informations que votre navigateur envoie chaque fois que vous visitez notre Service ou lorsque vous accédez au Service par ou via un appareil mobile."
       },
       "useOfPersonalData": {
         "title": "Utilisation de Vos Données Personnelles",
         "p1": "La Société peut utiliser les Données Personnelles aux fins suivantes :",
-        "list1": "<b>Fournir et maintenir notre Service</b>, y compris pour surveiller l’utilisation de notre Service.",
-        "list2": "<b>Gérer votre Compte :</b> gérer votre inscription en tant qu’utilisateur du Service. Les Données Personnelles que vous fournissez peuvent vous donner accès à différentes fonctionnalités du Service qui vous sont accessibles en tant qu’utilisateur enregistré.",
-        "list3": "<b>Pour l’exécution d’un contrat :</b> le développement, la conformité et l’exécution du contrat d’achat pour les produits, articles ou services que vous avez achetés ou de tout autre contrat avec Nous via le Service.",
-        "list4": "<b>Pour vous contacter :</b> vous contacter par e-mail, appels téléphoniques, SMS ou d’autres formes équivalentes de communication électronique, telles que les notifications push d’une application mobile, concernant les mises à jour ou les communications informatives relatives aux fonctionnalités, produits ou services souscrits, y compris les mises à jour de sécurité, lorsque cela est nécessaire ou raisonnable pour leur mise en œuvre.",
-        "list5": "<b>Pour vous fournir</b> des actualités, des offres spéciales et des informations générales sur d’autres biens, services et événements que Nous proposons, similaires à ceux que vous avez déjà achetés ou sur lesquels vous vous êtes renseignés, sauf si vous avez choisi de ne pas recevoir ces informations.",
+        "list1": "<b>Fournir et maintenir notre Service</b>, y compris pour surveiller l'utilisation de notre Service.",
+        "list2": "<b>Gérer votre Compte :</b> gérer votre inscription en tant qu'utilisateur du Service. Les Données Personnelles que vous fournissez peuvent vous donner accès à différentes fonctionnalités du Service qui vous sont accessibles en tant qu'utilisateur enregistré.",
+        "list3": "<b>Pour l'exécution d'un contrat :</b> le développement, la conformité et l'exécution du contrat d'achat pour les produits, articles ou services que vous avez achetés ou de tout autre contrat avec Nous via le Service.",
+        "list4": "<b>Pour vous contacter :</b> vous contacter par e-mail, appels téléphoniques, SMS ou d'autres formes équivalentes de communication électronique, telles que les notifications push d'une application mobile, concernant les mises à jour ou les communications informatives relatives aux fonctionnalités, produits ou services souscrits, y compris les mises à jour de sécurité, lorsque cela est nécessaire ou raisonnable pour leur mise en œuvre.",
+        "list5": "<b>Pour vous fournir</b> des actualités, des offres spéciales et des informations générales sur d'autres biens, services et événements que Nous proposons, similaires à ceux que vous avez déjà achetés ou sur lesquels vous vous êtes renseignés, sauf si vous avez choisi de ne pas recevoir ces informations.",
         "list6": "<b>Gérer vos demandes :</b> répondre et gérer vos demandes que vous nous adressez.",
-        "list7": "<b>Pour les transferts d’entreprise :</b> Nous pouvons utiliser vos informations pour évaluer ou réaliser une fusion, cession, restructuration, réorganisation, dissolution ou toute autre vente ou transfert de tout ou partie de Nos actifs, que ce soit dans le cadre d’une activité en cours ou dans le cadre d’une faillite, liquidation ou procédure similaire, dans laquelle les Données Personnelles détenues par Nous au sujet des utilisateurs de Notre Service font partie des actifs transférés.",
-        "list8": "<b>À d’autres fins</b> : Nous pouvons utiliser vos informations à d’autres fins, telles que l’analyse de données, l’identification des tendances d’utilisation, la détermination de l’efficacité de nos campagnes promotionnelles et pour évaluer et améliorer Notre Service, nos produits, nos services, notre marketing et votre expérience.",
+        "list7": "<b>Pour les transferts d'entreprise :</b> Nous pouvons utiliser vos informations pour évaluer ou réaliser une fusion, cession, restructuration, réorganisation, dissolution ou toute autre vente ou transfert de tout ou partie de Nos actifs, que ce soit dans le cadre d'une activité en cours ou dans le cadre d'une faillite, liquidation ou procédure similaire, dans laquelle les Données Personnelles détenues par Nous au sujet des utilisateurs de Notre Service font partie des actifs transférés.",
+        "list8": "<b>À d'autres fins</b> : Nous pouvons utiliser vos informations à d'autres fins, telles que l'analyse de données, l'identification des tendances d'utilisation, la détermination de l'efficacité de nos campagnes promotionnelles et pour évaluer et améliorer Notre Service, nos produits, nos services, notre marketing et votre expérience.",
         "p2": "Nous pouvons partager vos informations personnelles dans les situations suivantes :",
-        "listShare1": "<b>Avec des Prestataires de Service :</b> Nous pouvons partager vos informations personnelles avec des Prestataires de Service pour surveiller et analyser l’utilisation de Notre Service, pour vous contacter.",
-        "listShare2": "<b>Pour les transferts d’entreprise :</b> Nous pouvons partager ou transférer vos informations personnelles dans le cadre ou pendant des négociations de toute fusion, vente d’actifs de la Société, financement ou acquisition de tout ou partie de Notre entreprise par une autre société.",
-        "listShare3": "<b>Avec des Affiliés :</b> Nous pouvons partager vos informations avec Nos affiliés, auquel cas Nous exigerons de ces affiliés qu’ils respectent la présente Politique de Confidentialité. Les affiliés comprennent notre société mère et toute autre filiale, partenaires de coentreprise, ou autres sociétés que Nous contrôlons ou qui sont sous contrôle commun avec Nous.",
+        "listShare1": "<b>Avec des Prestataires de Service :</b> Nous pouvons partager vos informations personnelles avec des Prestataires de Service pour surveiller et analyser l'utilisation de Notre Service, pour vous contacter.",
+        "listShare2": "<b>Pour les transferts d'entreprise :</b> Nous pouvons partager ou transférer vos informations personnelles dans le cadre ou pendant des négociations de toute fusion, vente d'actifs de la Société, financement ou acquisition de tout ou partie de Notre entreprise par une autre société.",
+        "listShare3": "<b>Avec des Affiliés :</b> Nous pouvons partager vos informations avec Nos affiliés, auquel cas Nous exigerons de ces affiliés qu'ils respectent la présente Politique de Confidentialité. Les affiliés comprennent notre société mère et toute autre filiale, partenaires de coentreprise, ou autres sociétés que Nous contrôlons ou qui sont sous contrôle commun avec Nous.",
         "listShare4": "<b>Avec des partenaires commerciaux :</b> Nous pouvons partager vos informations avec Nos partenaires commerciaux pour vous proposer certains produits, services ou promotions.",
-        "listShare5": "<b>Avec d’autres utilisateurs :</b> lorsque vous partagez des informations personnelles ou interagissez autrement dans les espaces publics avec d’autres utilisateurs, ces informations peuvent être vues par tous les utilisateurs et peuvent être diffusées publiquement à l’extérieur.",
+        "listShare5": "<b>Avec d'autres utilisateurs :</b> lorsque vous partagez des informations personnelles ou interagissez autrement dans les espaces publics avec d'autres utilisateurs, ces informations peuvent être vues par tous les utilisateurs et peuvent être diffusées publiquement à l'extérieur.",
         "listShare6": "<b>Avec votre consentement :</b> Nous pouvons divulguer vos informations personnelles à toute autre fin avec votre consentement."
       },
       "retention": {
         "title": "Conservation de Vos Données Personnelles",
         "p1": "La Société conservera vos Données Personnelles uniquement aussi longtemps que nécessaire aux fins exposées dans la présente Politique de Confidentialité. Nous conserverons et utiliserons vos Données Personnelles dans la mesure nécessaire pour respecter nos obligations légales (par exemple, si nous sommes tenus de conserver vos données pour nous conformer aux lois applicables), résoudre les litiges et faire respecter nos accords et politiques légaux.",
-        "p2": "La Société conservera également les Données d’Utilisation à des fins d’analyse interne. Les Données d’Utilisation sont généralement conservées pendant une période plus courte, sauf lorsque ces données sont utilisées pour renforcer la sécurité ou améliorer la fonctionnalité de Notre Service, ou si Nous sommes légalement tenus de conserver ces données pendant des périodes plus longues."
+        "p2": "La Société conservera également les Données d'Utilisation à des fins d'analyse interne. Les Données d'Utilisation sont généralement conservées pendant une période plus courte, sauf lorsque ces données sont utilisées pour renforcer la sécurité ou améliorer la fonctionnalité de Notre Service, ou si Nous sommes légalement tenus de conserver ces données pendant des périodes plus longues."
       },
       "transfer": {
         "title": "Transfert de Vos Données Personnelles",
         "p1": "Vos informations, y compris vos Données Personnelles, sont traitées dans les bureaux de la Société et dans tout autre lieu où se trouvent les parties impliquées dans le traitement. Cela signifie que ces informations peuvent être transférées — et conservées — sur des ordinateurs situés en dehors de votre état, province, pays ou autre juridiction gouvernementale, où les lois sur la protection des données peuvent différer de celles de votre juridiction.",
         "p2": "Votre consentement à la présente Politique de Confidentialité suivi de votre soumission de ces informations représente votre accord à ce transfert.",
-        "p3": "La Société prendra toutes les mesures raisonnablement nécessaires pour s’assurer que vos données sont traitées de manière sécurisée et conformément à la présente Politique de Confidentialité, et aucun transfert de vos Données Personnelles n’aura lieu vers une organisation ou un pays à moins qu’un niveau de contrôle adéquat ne soit en place, y compris la sécurité de vos données et d’autres informations personnelles."
+        "p3": "La Société prendra toutes les mesures raisonnablement nécessaires pour s'assurer que vos données sont traitées de manière sécurisée et conformément à la présente Politique de Confidentialité, et aucun transfert de vos Données Personnelles n'aura lieu vers une organisation ou un pays à moins qu'un niveau de contrôle adéquat ne soit en place, y compris la sécurité de vos données et d'autres informations personnelles."
       },
       "deleteData": {
         "title": "Supprimer Vos Données Personnelles",
@@ -1188,36 +1225,36 @@
       "disclosure": {
         "title": "Divulgation de Vos Données Personnelles",
         "businessTitle": "Transactions Commerciales",
-        "businessText": "Si la Société est impliquée dans une fusion, acquisition ou vente d’actifs, vos Données Personnelles peuvent être transférées. Nous vous en informerons avant que vos Données Personnelles ne soient transférées et soumises à une Politique de Confidentialité différente.",
+        "businessText": "Si la Société est impliquée dans une fusion, acquisition ou vente d'actifs, vos Données Personnelles peuvent être transférées. Nous vous en informerons avant que vos Données Personnelles ne soient transférées et soumises à une Politique de Confidentialité différente.",
         "lawTitle": "Application de la loi",
-        "lawText": "Dans certaines circonstances, la Société peut être tenue de divulguer vos Données Personnelles si la loi l’exige ou en réponse à des demandes valides émanant d’autorités publiques (par exemple un tribunal ou une agence gouvernementale).",
+        "lawText": "Dans certaines circonstances, la Société peut être tenue de divulguer vos Données Personnelles si la loi l'exige ou en réponse à des demandes valides émanant d'autorités publiques (par exemple un tribunal ou une agence gouvernementale).",
         "otherTitle": "Autres exigences légales",
         "otherText": "La Société peut divulguer vos Données Personnelles en toute bonne foi si une telle action est nécessaire pour :",
         "otherList1": "Se conformer à une obligation légale",
         "otherList2": "Protéger et défendre les droits ou la propriété de la Société",
-        "otherList3": "Prévenir ou enquêter sur d’éventuels actes répréhensibles en rapport avec le Service",
+        "otherList3": "Prévenir ou enquêter sur d'éventuels actes répréhensibles en rapport avec le Service",
         "otherList4": "Protéger la sécurité personnelle des Utilisateurs du Service ou du public",
         "otherList5": "Se protéger contre toute responsabilité légale"
       },
       "security": {
         "title": "Sécurité de Vos Données Personnelles",
-        "p1": "La sécurité de vos Données Personnelles est importante pour Nous, mais n’oubliez pas qu’aucune méthode de transmission sur Internet ou de stockage électronique n’est sûre à 100 %. Bien que Nous mettions en œuvre des moyens commercialement acceptables pour protéger vos Données Personnelles, Nous ne pouvons garantir leur sécurité absolue."
+        "p1": "La sécurité de vos Données Personnelles est importante pour Nous, mais n'oubliez pas qu'aucune méthode de transmission sur Internet ou de stockage électronique n'est sûre à 100 %. Bien que Nous mettions en œuvre des moyens commercialement acceptables pour protéger vos Données Personnelles, Nous ne pouvons garantir leur sécurité absolue."
       },
       "children": {
         "title": "Confidentialité des Enfants",
-        "p1": "Notre Service ne s’adresse pas aux personnes de moins de 13 ans. Nous ne collectons pas sciemment d’informations personnellement identifiables auprès de quiconque âgé de moins de 13 ans. Si vous êtes un parent ou tuteur et que vous êtes conscient que votre enfant nous a fourni des Données Personnelles, veuillez nous contacter. Si nous découvrons que nous avons collecté des Données Personnelles d'une personne de moins de 13 ans sans vérification du consentement parental, nous prenons des mesures pour supprimer ces informations de nos serveurs.",
-        "p2": "Si Nous devons nous appuyer sur le consentement comme base légale pour traiter vos informations et que votre pays exige le consentement d’un parent, Nous pouvons exiger le consentement de votre parent avant de collecter et d’utiliser ces informations."
+        "p1": "Notre Service ne s'adresse pas aux personnes de moins de 13 ans. Nous ne collectons pas sciemment d'informations personnellement identifiables auprès de quiconque âgé de moins de 13 ans. Si vous êtes un parent ou tuteur et que vous êtes conscient que votre enfant nous a fourni des Données Personnelles, veuillez nous contacter. Si nous découvrons que nous avons collecté des Données Personnelles d'une personne de moins de 13 ans sans vérification du consentement parental, nous prenons des mesures pour supprimer ces informations de nos serveurs.",
+        "p2": "Si Nous devons nous appuyer sur le consentement comme base légale pour traiter vos informations et que votre pays exige le consentement d'un parent, Nous pouvons exiger le consentement de votre parent avant de collecter et d'utiliser ces informations."
       },
       "links": {
-        "title": "Liens vers d’Autres Sites Web",
-        "p1": "Notre Service peut contenir des liens vers d’autres sites Web qui ne sont pas exploités par Nous. Si vous cliquez sur un lien tiers, vous serez dirigé vers le site de ce tiers. Nous vous recommandons vivement de consulter la Politique de Confidentialité de chaque site que vous visitez.",
-        "p2": "Nous n’avons aucun contrôle sur et n’assumons aucune responsabilité quant au contenu, aux politiques de confidentialité ou aux pratiques de tout site ou service tiers."
+        "title": "Liens vers d'Autres Sites Web",
+        "p1": "Notre Service peut contenir des liens vers d'autres sites Web qui ne sont pas exploités par Nous. Si vous cliquez sur un lien tiers, vous serez dirigé vers le site de ce tiers. Nous vous recommandons vivement de consulter la Politique de Confidentialité de chaque site que vous visitez.",
+        "p2": "Nous n'avons aucun contrôle sur et n'assumons aucune responsabilité quant au contenu, aux politiques de confidentialité ou aux pratiques de tout site ou service tiers."
       },
       "changes": {
         "title": "Modifications de cette Politique de Confidentialité",
         "p1": "Nous pouvons mettre à jour Notre Politique de Confidentialité de temps à autre. Nous vous informerons de toute modification en publiant la nouvelle Politique de Confidentialité sur cette page.",
-        "p2": "Nous vous informerons via l’e-mail et/ou un avis visible sur Notre Service, avant que la modification ne prenne effet et nous mettrons à jour la date « Dernière mise à jour » en haut de la présente Politique de Confidentialité.",
-        "p3": "Nous vous conseillons de consulter périodiquement la présente Politique de Confidentialité pour prendre connaissance de toute modification. Les modifications apportées à cette Politique de Confidentialité entrent en vigueur lorsqu’elles sont publiées sur cette page."
+        "p2": "Nous vous informerons via l'e-mail et/ou un avis visible sur Notre Service, avant que la modification ne prenne effet et nous mettrons à jour la date « Dernière mise à jour » en haut de la présente Politique de Confidentialité.",
+        "p3": "Nous vous conseillons de consulter périodiquement la présente Politique de Confidentialité pour prendre connaissance de toute modification. Les modifications apportées à cette Politique de Confidentialité entrent en vigueur lorsqu'elles sont publiées sur cette page."
       },
       "contactUs": {
         "title": "Nous Contacter",
@@ -1227,96 +1264,96 @@
     },
     "Tos": {
       "backButton": "Retour",
-      "title": "Conditions Générales d’Utilisation",
+      "title": "Conditions Générales d'Utilisation",
       "lastUpdated": "Dernière mise à jour : 07 décembre 2024",
       "intro": {
-        "p1": "Veuillez lire attentivement ces conditions générales avant d’utiliser Notre Service."
+        "p1": "Veuillez lire attentivement ces conditions générales avant d'utiliser Notre Service."
       },
       "interpretationDefinitions": {
         "title": "Interprétation et Définitions",
         "interpretationTitle": "Interprétation",
-        "interpretationText": "Les mots dont la première lettre est en majuscule ont les significations définies dans les conditions suivantes. Les définitions suivantes auront la même signification qu’elles apparaissent au singulier ou au pluriel.",
+        "interpretationText": "Les mots dont la première lettre est en majuscule ont les significations définies dans les conditions suivantes. Les définitions suivantes auront la même signification qu'elles apparaissent au singulier ou au pluriel.",
         "definitionsTitle": "Définitions",
-        "definitionsIntro": "Aux fins des présentes Conditions Générales d’Utilisation :",
+        "definitionsIntro": "Aux fins des présentes Conditions Générales d'Utilisation :",
         "list": {
           "application": "<b>Application</b> désigne le programme logiciel fourni par la Société que vous avez téléchargé sur tout appareil électronique, nommé Avermate.",
-          "applicationStore": "<b>Store d’Applications</b> désigne le service de distribution numérique exploité et développé par Apple Inc. (Apple App Store) ou Google Inc. (Google Play Store) dans lequel l'Application a été téléchargée.",
-          "affiliate": "<b>Affilié</b> désigne toute entité qui contrôle, est contrôlée par, ou est sous le contrôle commun d’une partie, où « contrôle » signifie la possession de 50 % ou plus des actions, parts sociales, ou autres titres donnant droit de vote pour l’élection des administrateurs ou autre autorité de gestion.",
+          "applicationStore": "<b>Store d'Applications</b> désigne le service de distribution numérique exploité et développé par Apple Inc. (Apple App Store) ou Google Inc. (Google Play Store) dans lequel l'Application a été téléchargée.",
+          "affiliate": "<b>Affilié</b> désigne toute entité qui contrôle, est contrôlée par, ou est sous le contrôle commun d'une partie, où « contrôle » signifie la possession de 50 % ou plus des actions, parts sociales, ou autres titres donnant droit de vote pour l'élection des administrateurs ou autre autorité de gestion.",
           "country": "<b>Pays</b> fait référence à : France",
           "company": "<b>Société</b> (désignée sous le nom de « la Société », « Nous », « Notre » ou « Nos » dans le présent Accord) fait référence à Avermate.",
-          "device": "<b>Appareil</b> désigne tout appareil pouvant accéder au Service, tel qu’un ordinateur, un téléphone mobile ou une tablette numérique.",
-          "service": "<b>Service</b> désigne l’Application.",
-          "termsAndConditions": "<b>Conditions Générales d’Utilisation</b> (également appelées « Conditions ») désignent les présentes Conditions Générales d’Utilisation qui constituent l'intégralité de l'accord entre Vous et la Société concernant l'utilisation du Service.",
+          "device": "<b>Appareil</b> désigne tout appareil pouvant accéder au Service, tel qu'un ordinateur, un téléphone mobile ou une tablette numérique.",
+          "service": "<b>Service</b> désigne l'Application.",
+          "termsAndConditions": "<b>Conditions Générales d'Utilisation</b> (également appelées « Conditions ») désignent les présentes Conditions Générales d'Utilisation qui constituent l'intégralité de l'accord entre Vous et la Société concernant l'utilisation du Service.",
           "thirdPartySocial": "<b>Service de Réseaux Sociaux Tiers</b> désigne tout service ou contenu (y compris des données, informations, produits ou services) fourni par un tiers qui peut être affiché, inclus ou rendu disponible par le Service.",
-          "you": "<b>Vous</b> désigne la personne physique accédant au Service ou l’utilisant, ou l’entreprise, ou toute autre entité juridique pour le compte de laquelle ladite personne accède ou utilise le Service, selon le cas."
+          "you": "<b>Vous</b> désigne la personne physique accédant au Service ou l'utilisant, ou l'entreprise, ou toute autre entité juridique pour le compte de laquelle ladite personne accède ou utilise le Service, selon le cas."
         }
       },
       "acknowledgment": {
         "title": "Reconnaissance",
-        "p1": "Les présentes Conditions Générales d’Utilisation régissent l’utilisation de ce Service et l’accord conclu entre Vous et la Société. Ces Conditions définissent les droits et obligations de tous les utilisateurs concernant l’utilisation du Service.",
-        "p2": "Votre accès au Service et son utilisation sont subordonnés à votre acceptation et votre respect de ces Conditions. Ces Conditions s’appliquent à tous les visiteurs, utilisateurs et autres personnes qui accèdent au Service ou l’utilisent.",
-        "p3": "En accédant ou en utilisant le Service, vous acceptez d’être lié par ces Conditions Générales d’Utilisation. Si vous n’êtes pas d’accord avec une partie de ces Conditions, vous ne pouvez pas accéder au Service.",
-        "p4": "Vous déclarez avoir plus de 18 ans. La Société n’autorise pas les personnes de moins de 18 ans à utiliser le Service.",
-        "p5": "Votre accès au Service et son utilisation sont également subordonnés à votre acceptation et votre respect de la Politique de Confidentialité de la Société. Notre Politique de Confidentialité décrit Nos politiques et procédures concernant la collecte, l’utilisation et la divulgation de vos informations personnelles lorsque vous utilisez l’Application ou le Site Web, et vous informe de vos droits en matière de confidentialité et de la manière dont la loi vous protège. Veuillez lire attentivement Notre Politique de Confidentialité avant d’utiliser Notre Service."
+        "p1": "Les présentes Conditions Générales d'Utilisation régissent l'utilisation de ce Service et l'accord conclu entre Vous et la Société. Ces Conditions définissent les droits et obligations de tous les utilisateurs concernant l'utilisation du Service.",
+        "p2": "Votre accès au Service et son utilisation sont subordonnés à votre acceptation et votre respect de ces Conditions. Ces Conditions s'appliquent à tous les visiteurs, utilisateurs et autres personnes qui accèdent au Service ou l'utilisent.",
+        "p3": "En accédant ou en utilisant le Service, vous acceptez d'être lié par ces Conditions Générales d'Utilisation. Si vous n'êtes pas d'accord avec une partie de ces Conditions, vous ne pouvez pas accéder au Service.",
+        "p4": "Vous déclarez avoir plus de 18 ans. La Société n'autorise pas les personnes de moins de 18 ans à utiliser le Service.",
+        "p5": "Votre accès au Service et son utilisation sont également subordonnés à votre acceptation et votre respect de la Politique de Confidentialité de la Société. Notre Politique de Confidentialité décrit Nos politiques et procédures concernant la collecte, l'utilisation et la divulgation de vos informations personnelles lorsque vous utilisez l'Application ou le Site Web, et vous informe de vos droits en matière de confidentialité et de la manière dont la loi vous protège. Veuillez lire attentivement Notre Politique de Confidentialité avant d'utiliser Notre Service."
       },
       "links": {
-        "title": "Liens vers d’Autres Sites Web",
+        "title": "Liens vers d'Autres Sites Web",
         "p1": "Notre Service peut contenir des liens vers des sites Web ou des services tiers qui ne sont pas la propriété de la Société ni contrôlés par elle.",
-        "p2": "La Société n’a aucun contrôle sur, et n’assume aucune responsabilité quant au contenu, aux politiques de confidentialité ou aux pratiques de tout site Web ou service tiers. Vous reconnaissez et acceptez en outre que la Société ne peut être tenue responsable, directement ou indirectement, de tout dommage ou perte causé ou prétendument causé par ou en relation avec l’utilisation ou la confiance accordée à un tel contenu, bien ou service disponible sur ou via de tels sites ou services.",
+        "p2": "La Société n'a aucun contrôle sur, et n'assume aucune responsabilité quant au contenu, aux politiques de confidentialité ou aux pratiques de tout site Web ou service tiers. Vous reconnaissez et acceptez en outre que la Société ne peut être tenue responsable, directement ou indirectement, de tout dommage ou perte causé ou prétendument causé par ou en relation avec l'utilisation ou la confiance accordée à un tel contenu, bien ou service disponible sur ou via de tels sites ou services.",
         "p3": "Nous vous conseillons vivement de lire les conditions générales et les politiques de confidentialité de tout site Web ou service tiers que vous visitez."
       },
       "termination": {
         "title": "Résiliation",
-        "p1": "Nous pouvons résilier ou suspendre votre accès immédiatement, sans préavis ni responsabilité, pour quelque raison que ce soit, y compris, sans s’y limiter, si vous enfreignez les présentes Conditions Générales d’Utilisation.",
-        "p2": "À la résiliation, votre droit d’utiliser le Service cessera immédiatement."
+        "p1": "Nous pouvons résilier ou suspendre votre accès immédiatement, sans préavis ni responsabilité, pour quelque raison que ce soit, y compris, sans s'y limiter, si vous enfreignez les présentes Conditions Générales d'Utilisation.",
+        "p2": "À la résiliation, votre droit d'utiliser le Service cessera immédiatement."
       },
       "limitationOfLiability": {
         "title": "Limitation de Responsabilité",
-        "p1": "Nonobstant les dommages que vous pourriez subir, la responsabilité intégrale de la Société et de l’un de ses fournisseurs en vertu de toute disposition de ces Conditions et votre recours exclusif pour tout ce qui précède sera limitée au montant que vous avez effectivement payé via le Service ou à 100 USD si vous n’avez rien acheté via le Service.",
-        "p2": "Dans toute la mesure permise par la loi applicable, en aucun cas la Société ou ses fournisseurs ne pourront être tenus responsables de dommages spéciaux, accessoires, indirects ou consécutifs de quelque nature que ce soit (y compris, mais sans s’y limiter, les dommages pour perte de profits, perte de données ou d’autres informations, pour interruption d’activité, pour atteinte corporelle, perte de confidentialité découlant de ou liée de quelque manière que ce soit à l’utilisation ou à l’impossibilité d’utiliser le Service, les logiciels tiers et/ou le matériel tiers utilisé avec le Service, ou autrement en rapport avec toute disposition de ces Conditions), même si la Société ou tout fournisseur a été informé de la possibilité de tels dommages et même si le recours échoue à son objet essentiel.",
-        "p3": "Certains états n’autorisent pas l’exclusion des garanties implicites ou la limitation de responsabilité pour les dommages accessoires ou consécutifs, ce qui signifie que certaines des limitations ci-dessus peuvent ne pas s’appliquer. Dans ces états, la responsabilité de chaque partie sera limitée dans toute la mesure permise par la loi."
+        "p1": "Nonobstant les dommages que vous pourriez subir, la responsabilité intégrale de la Société et de l'un de ses fournisseurs en vertu de toute disposition de ces Conditions et votre recours exclusif pour tout ce qui précède sera limitée au montant que vous avez effectivement payé via le Service ou à 100 USD si vous n'avez rien acheté via le Service.",
+        "p2": "Dans toute la mesure permise par la loi applicable, en aucun cas la Société ou ses fournisseurs ne pourront être tenus responsables de dommages spéciaux, accessoires, indirects ou consécutifs de quelque nature que ce soit (y compris, mais sans s'y limiter, les dommages pour perte de profits, perte de données ou d'autres informations, pour interruption d'activité, pour atteinte corporelle, perte de confidentialité découlant de ou liée de quelque manière que ce soit à l'utilisation ou à l'impossibilité d'utiliser le Service, les logiciels tiers et/ou le matériel tiers utilisé avec le Service, ou autrement en rapport avec toute disposition de ces Conditions), même si la Société ou tout fournisseur a été informé de la possibilité de tels dommages et même si le recours échoue à son objet essentiel.",
+        "p3": "Certains états n'autorisent pas l'exclusion des garanties implicites ou la limitation de responsabilité pour les dommages accessoires ou consécutifs, ce qui signifie que certaines des limitations ci-dessus peuvent ne pas s'appliquer. Dans ces états, la responsabilité de chaque partie sera limitée dans toute la mesure permise par la loi."
       },
       "asIs": {
-        "title": "\"EN L’ÉTAT\" et \"TEL QUE DISPONIBLE\" – Clause de non-responsabilité",
-        "p1": "Le Service vous est fourni « EN L’ÉTAT » et « TEL QUE DISPONIBLE » avec tous les défauts et vices sans garantie d’aucune sorte. Dans toute la mesure permise en vertu de la loi applicable, la Société, en son nom et au nom de ses Affiliés ainsi que de leurs concédants respectifs et prestataires de services, décline expressément toute garantie, qu’elle soit expresse, implicite, légale ou autre, concernant le Service, y compris toutes les garanties implicites de qualité marchande, d’adéquation à un usage particulier, de titre et d’absence de contrefaçon, ainsi que les garanties pouvant découler d’un déroulement des transactions, d’une exécution ou d’une pratique commerciale. Sans limitation de ce qui précède, la Société ne garantit pas et ne fait aucune promesse ou déclaration d’aucune sorte que le Service répondra à vos exigences, obtiendra les résultats escomptés, sera compatible ou fonctionnera avec d’autres logiciels, applications, systèmes ou services, fonctionnera sans interruption, répondra à des normes de performance ou de fiabilité ou sera exempt d’erreurs, ou que les erreurs ou défauts pourront ou seront corrigés.",
-        "p2": "Sans limiter ce qui précède, ni la Société ni aucun fournisseur de la Société ne fait aucune déclaration ou garantie de quelque nature que ce soit, expresse ou implicite : (i) quant au fonctionnement ou à la disponibilité du Service, ou des informations, contenus et éléments ou produits qui y sont inclus ; (ii) que le Service sera ininterrompu ou exempt d’erreurs ; (iii) quant à l’exactitude, la fiabilité ou la mise à jour de toute information ou de tout contenu fourni via le Service ; ou (iv) que le Service, ses serveurs, le contenu ou les e-mails envoyés par ou pour le compte de la Société sont exempts de virus, de scripts, de chevaux de Troie, de vers, de logiciels malveillants, de bombes à retardement ou d’autres composants nuisibles.",
-        "p3": "Certaines juridictions n’autorisent pas l’exclusion de certains types de garanties ou de limitations sur les droits statutaires applicables d’un consommateur, de sorte que certaines ou toutes les exclusions et limitations ci-dessus peuvent ne pas s’appliquer à vous. Mais dans un tel cas, les exclusions et limitations énoncées dans cette section seront appliquées dans toute la mesure exécutoire en vertu de la loi applicable."
+        "title": "\"EN L'ÉTAT\" et \"TEL QUE DISPONIBLE\" – Clause de non-responsabilité",
+        "p1": "Le Service vous est fourni « EN L'ÉTAT » et « TEL QUE DISPONIBLE » avec tous les défauts et vices sans garantie d'aucune sorte. Dans toute la mesure permise en vertu de la loi applicable, la Société, en son nom et au nom de ses Affiliés ainsi que de leurs concédants respectifs et prestataires de services, décline expressément toute garantie, qu'elle soit expresse, implicite, légale ou autre, concernant le Service, y compris toutes les garanties implicites de qualité marchande, d'adéquation à un usage particulier, de titre et d'absence de contrefaçon, ainsi que les garanties pouvant découler d'un déroulement des transactions, d'une exécution ou d'une pratique commerciale. Sans limitation de ce qui précède, la Société ne garantit pas et ne fait aucune promesse ou déclaration d'aucune sorte que le Service répondra à vos exigences, obtiendra les résultats escomptés, sera compatible ou fonctionnera avec d'autres logiciels, applications, systèmes ou services, fonctionnera sans interruption, répondra à des normes de performance ou de fiabilité ou sera exempt d'erreurs, ou que les erreurs ou défauts pourront ou seront corrigés.",
+        "p2": "Sans limiter ce qui précède, ni la Société ni aucun fournisseur de la Société ne fait aucune déclaration ou garantie de quelque nature que ce soit, expresse ou implicite : (i) quant au fonctionnement ou à la disponibilité du Service, ou des informations, contenus et éléments ou produits qui y sont inclus ; (ii) que le Service sera ininterrompu ou exempt d'erreurs ; (iii) quant à l'exactitude, la fiabilité ou la mise à jour de toute information ou de tout contenu fourni via le Service ; ou (iv) que le Service, ses serveurs, le contenu ou les e-mails envoyés par ou pour le compte de la Société sont exempts de virus, de scripts, de chevaux de Troie, de vers, de logiciels malveillants, de bombes à retardement ou d'autres composants nuisibles.",
+        "p3": "Certaines juridictions n'autorisent pas l'exclusion de certains types de garanties ou de limitations sur les droits statutaires applicables d'un consommateur, de sorte que certaines ou toutes les exclusions et limitations ci-dessus peuvent ne pas s'appliquer à vous. Mais dans un tel cas, les exclusions et limitations énoncées dans cette section seront appliquées dans toute la mesure exécutoire en vertu de la loi applicable."
       },
       "governingLaw": {
         "title": "Droit Applicable",
-        "p1": "Les lois du Pays, à l’exclusion de ses règles de conflits de lois, régiront les présentes Conditions et votre utilisation du Service. Votre utilisation de l’Application peut également être soumise à d’autres lois locales, régionales, nationales ou internationales."
+        "p1": "Les lois du Pays, à l'exclusion de ses règles de conflits de lois, régiront les présentes Conditions et votre utilisation du Service. Votre utilisation de l'Application peut également être soumise à d'autres lois locales, régionales, nationales ou internationales."
       },
       "disputesResolution": {
         "title": "Règlement des Litiges",
-        "p1": "Si vous avez une préoccupation ou un litige concernant le Service, vous acceptez d’abord de tenter de résoudre le litige de manière informelle en contactant la Société."
+        "p1": "Si vous avez une préoccupation ou un litige concernant le Service, vous acceptez d'abord de tenter de résoudre le litige de manière informelle en contactant la Société."
       },
       "euUsers": {
-        "title": "Pour les Utilisateurs de l’Union Européenne (UE)",
-        "p1": "Si vous êtes un consommateur de l’Union Européenne, vous bénéficierez de toutes les dispositions impératives de la loi du pays dans lequel vous résidez."
+        "title": "Pour les Utilisateurs de l'Union Européenne (UE)",
+        "p1": "Si vous êtes un consommateur de l'Union Européenne, vous bénéficierez de toutes les dispositions impératives de la loi du pays dans lequel vous résidez."
       },
       "usCompliance": {
         "title": "Conformité Légale aux États-Unis",
-        "p1": "Vous déclarez et garantissez que (i) vous n’êtes pas situé dans un pays faisant l’objet d’un embargo du gouvernement des États-Unis, ou qui a été désigné par le gouvernement des États-Unis comme un pays « soutenant le terrorisme », et (ii) vous ne figurez sur aucune liste du gouvernement des États-Unis de parties interdites ou restreintes."
+        "p1": "Vous déclarez et garantissez que (i) vous n'êtes pas situé dans un pays faisant l'objet d'un embargo du gouvernement des États-Unis, ou qui a été désigné par le gouvernement des États-Unis comme un pays « soutenant le terrorisme », et (ii) vous ne figurez sur aucune liste du gouvernement des États-Unis de parties interdites ou restreintes."
       },
       "severability": {
         "title": "Divisibilité et Renonciation",
         "subTitle1": "Divisibilité",
         "p1": "Si une disposition de ces Conditions est jugée inapplicable ou invalide, ladite disposition sera modifiée et interprétée de manière à atteindre au mieux les objectifs de cette disposition dans toute la mesure permise par la loi applicable, et les autres dispositions resteront en vigueur et de plein effet.",
         "subTitle2": "Renonciation",
-        "p2": "Sauf disposition contraire dans les présentes, le fait de ne pas exercer un droit ou d’exiger l’exécution d’une obligation en vertu de ces Conditions n’affectera pas la capacité d’une partie à exercer ce droit ou d’exiger ladite exécution à tout moment par la suite, ni la renonciation à une violation ne constituera une renonciation à toute violation ultérieure."
+        "p2": "Sauf disposition contraire dans les présentes, le fait de ne pas exercer un droit ou d'exiger l'exécution d'une obligation en vertu de ces Conditions n'affectera pas la capacité d'une partie à exercer ce droit ou d'exiger ladite exécution à tout moment par la suite, ni la renonciation à une violation ne constituera une renonciation à toute violation ultérieure."
       },
       "translation": {
         "title": "Interprétation de la Traduction",
-        "p1": "Les présentes Conditions Générales d’Utilisation peuvent avoir été traduites si Nous les avons mises à votre disposition sur Notre Service. Vous convenez que le texte original en anglais prévaudra en cas de litige."
+        "p1": "Les présentes Conditions Générales d'Utilisation peuvent avoir été traduites si Nous les avons mises à votre disposition sur Notre Service. Vous convenez que le texte original en anglais prévaudra en cas de litige."
       },
       "changes": {
-        "title": "Modifications de ces Conditions Générales d’Utilisation",
-        "p1": "Nous nous réservons le droit, à Notre seule discrétion, de modifier ou de remplacer ces Conditions à tout moment. Si une révision est importante, Nous ferons des efforts raisonnables pour fournir un préavis d’au moins 30 jours avant l’entrée en vigueur des nouvelles conditions. Ce qui constitue un changement important sera déterminé à Notre seule discrétion.",
-        "p2": "En continuant d’accéder à Notre Service ou de l’utiliser après l’entrée en vigueur de ces révisions, vous acceptez d’être lié par les conditions révisées. Si vous n’êtes pas d’accord avec les nouvelles conditions, en totalité ou en partie, veuillez cesser d’utiliser le site Web et le Service."
+        "title": "Modifications de ces Conditions Générales d'Utilisation",
+        "p1": "Nous nous réservons le droit, à Notre seule discrétion, de modifier ou de remplacer ces Conditions à tout moment. Si une révision est importante, Nous ferons des efforts raisonnables pour fournir un préavis d'au moins 30 jours avant l'entrée en vigueur des nouvelles conditions. Ce qui constitue un changement important sera déterminé à Notre seule discrétion.",
+        "p2": "En continuant d'accéder à Notre Service ou de l'utiliser après l'entrée en vigueur de ces révisions, vous acceptez d'être lié par les conditions révisées. Si vous n'êtes pas d'accord avec les nouvelles conditions, en totalité ou en partie, veuillez cesser d'utiliser le site Web et le Service."
       },
       "contactUs": {
         "title": "Nous Contacter",
-        "text": "Si vous avez des questions concernant ces Conditions Générales d’Utilisation, vous pouvez nous contacter :",
+        "text": "Si vous avez des questions concernant ces Conditions Générales d'Utilisation, vous pouvez nous contacter :",
         "email": "Par e-mail : noreply@avermate.fr"
       }
     }

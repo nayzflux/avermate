@@ -1,0 +1,50 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Frontend Application Structure
+
+The frontend is a Next.js application with App Router structure.
+
+## Key Directories
+
+- [apps/client/src/app](mdc:apps/client/src/app) - Next.js app router routes
+  - [(landing)](mdc:apps/client/src/app/(landing) - Landing page and public routes
+  - [auth](mdc:apps/client/src/app/auth) - Authentication pages (sign-in, sign-up, etc.)
+  - [dashboard](mdc:apps/client/src/app/dashboard) - Main application dashboard
+  - [profile](mdc:apps/client/src/app/profile) - User profile pages
+  - [onboarding](mdc:apps/client/src/app/onboarding) - User onboarding flow
+
+- [apps/client/src/components](mdc:apps/client/src/components) - React components
+  - [ui](mdc:apps/client/src/components/ui) - UI component library based on shadcn/ui
+  - [buttons](mdc:apps/client/src/components/buttons) - Button components
+  - [forms](mdc:apps/client/src/components/forms) - Form components
+  - [dashboard](mdc:apps/client/src/components/dashboard) - Dashboard-specific components
+
+- [apps/client/src/hooks](mdc:apps/client/src/hooks) - Custom React hooks
+- [apps/client/src/lib](mdc:apps/client/src/lib) - Utility functions and libraries
+- [apps/client/src/providers](mdc:apps/client/src/providers) - React context providers
+
+## Routing Pattern
+
+The app uses Next.js App Router with file-based routing:
+- `page.tsx` - Page component for a route
+- `layout.tsx` - Layout wrapping pages
+- `loading.tsx` - Loading state
+- `error.tsx` - Error handling
+- `not-found.tsx` - 404 page
+
+## UI Components
+
+The application uses shadcn/ui components, which are built on top of Radix UI primitives and styled with Tailwind CSS. These components are customizable, accessible, and follow modern design patterns.
+
+## Code Conventions
+- TypeScript for type safety
+- React Hooks for state management
+- TailwindCSS for styling
+- React Query for data fetching
+- Zod for validation schemas
+- Bun for package management and running the application
+
+
