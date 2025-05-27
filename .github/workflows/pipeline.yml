@@ -39,8 +39,8 @@ jobs:
           file: ./apps/api/Dockerfile
           push: true
           tags: |
-            ghcr.io/Fefe-Nayz/avermate-web:latest
-            ghcr.io/Fefe-Nayz/avermate-web:${{ github.sha }}
+            ghcr.io/fefe-nayz/avermate-web:latest
+            ghcr.io/fefe-nayz/avermate-web:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
