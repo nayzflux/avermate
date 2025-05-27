@@ -272,7 +272,7 @@ export default function SubjectAverageChart({
               content={({ active, label }) => (
                 <CustomTooltipContent
                   active={active}
-                  label={label}
+                  label={label ? label.toString() : undefined}
                   chartData={chartData}
                   chartConfig={chartConfig}
                   formatDates={formatDates}
