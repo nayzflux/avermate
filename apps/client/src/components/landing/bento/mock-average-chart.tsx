@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from 'react';
+import { type TickProps } from "@/components/charts/global-average-chart";
 import AddGradeDialog from "@/components/dialogs/add-grade-dialog";
 import { SubjectEmptyState } from "@/components/empty-states/subject-empty-state";
 import { Button } from "@/components/ui/button";
@@ -12,14 +12,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  ChartTooltipContent as BaseChartTooltipContent,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent as BaseChartTooltipContent,
 } from "@/components/ui/chart";
 import { Separator } from "@/components/ui/separator";
 import { useLocalizedSubjects } from "@/data/mock";
 import { average, averageOverTime } from "@/utils/average";
+import { useFormatDates } from "@/utils/format";
 import { BookOpenIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import { useFormatter, useTranslations } from "next-intl";
+import * as React from "react";
 import {
   Area,
   AreaChart,
@@ -30,12 +33,7 @@ import {
   RadarChart,
   XAxis,
   YAxis,
-  ResponsiveContainer,
 } from "recharts";
-import { useTranslations } from "next-intl";
-import { useFormatDates } from "@/utils/format";
-import { useFormatter } from "next-intl";
-import { type TickProps } from '@/components/charts/global-average-chart';
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -55,7 +53,7 @@ const CustomTooltipContent: React.FC<CustomTooltipProps> = ({
   payload,
   label,
   className,
-  valueFormatter = (value) => value.toString()
+  valueFormatter = (value) => value.toString(),
 }) => {
   if (!active || !payload?.length) {
     return null;
@@ -64,9 +62,12 @@ const CustomTooltipContent: React.FC<CustomTooltipProps> = ({
   return (
     <BaseChartTooltipContent
       active={active}
-      payload={payload.map(item => ({
+      payload={payload.map((item) => ({
         name: item.name,
-        value: typeof item.value === 'number' ? valueFormatter(item.value) : item.value,
+        value:
+          typeof item.value === "number"
+            ? valueFormatter(item.value)
+            : item.value,
         color: item.color,
       }))}
       label={label}
@@ -80,7 +81,7 @@ const renderPolarAngleAxis = (props: TickProps) => {
   const y = Number(props.y ?? 0);
   const cx = Number(props.cx ?? 0);
   const cy = Number(props.cy ?? 0);
-  
+
   const radius = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
   const angle = Math.atan2(y - cy, x - cx);
 
@@ -95,10 +96,11 @@ const renderPolarAngleAxis = (props: TickProps) => {
       ? 9
       : 12;
 
-  const value = props.payload?.value ?? '';
-  const truncatedLabel = value.length > truncateLength
-    ? `${value.slice(0, truncateLength)}...`
-    : value;
+  const value = props.payload?.value ?? "";
+  const truncatedLabel =
+    value.length > truncateLength
+      ? `${value.slice(0, truncateLength)}...`
+      : value;
 
   const labelRadius = radius - truncatedLabel.length * 3 + 10;
   const nx = cx + labelRadius * Math.cos(angle);
@@ -267,6 +269,7 @@ export const MockAverageChart = () => {
                   content={(props) => (
                     <CustomTooltipContent
                       {...props}
+                      label={props.label ? props.label.toString() : undefined}
                       valueFormatter={(value) => value.toFixed(2)}
                     />
                   )}
@@ -317,6 +320,7 @@ export const MockAverageChart = () => {
                   content={(props) => (
                     <CustomTooltipContent
                       {...props}
+                      label={props.label ? props.label.toString() : undefined}
                       valueFormatter={(value) => value.toFixed(2)}
                     />
                   )}
