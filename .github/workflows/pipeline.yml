@@ -29,8 +29,8 @@ jobs:
           file: ./apps/api/Dockerfile
           push: true
           tags: |
-            ghcr.io/nayzflux/avermate-api:latest
-            ghcr.io/nayzflux/avermate-api:${{ github.sha }}
+            ghcr.io/Fefe-Nayz/avermate-api:latest
+            ghcr.io/Fefe-Nayz/avermate-api:${{ github.sha }}
 
       - name: Build and push Docker Web
         uses: docker/build-push-action@v6
@@ -39,8 +39,8 @@ jobs:
           file: ./apps/api/Dockerfile
           push: true
           tags: |
-            ghcr.io/nayzflux/avermate-web:latest
-            ghcr.io/nayzflux/avermate-web:${{ github.sha }}
+            ghcr.io/Fefe-Nayz/avermate-web:latest
+            ghcr.io/Fefe-Nayz/avermate-web:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -50,16 +50,31 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: create env file
-      run: |
-        echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
-
-    - name: Docker Stack Deploy
-      uses: cssnr/stack-deploy-action@v1
+    - name: Deploying docker compose
+      uses: appleboy/ssh-action@v1.0.0
+      env:
+        DIRECTORY: ${{ secrets.DIRECTORY }}
       with:
-        name: avermate
-        file: stack.yaml
-        host: nayz.fr
-        user: deploy
-        ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
-        env_file: ./envfile
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: 22
+        envs: DIRECTORY
+        script: |
+          cd $DIRECTORY
+          docker compose pull
+          docker compose up --no-deps -d api web
+
+    #- name: create env file
+    #  run: |
+    #    echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
+
+    #- name: Docker Stack Deploy
+    #  uses: cssnr/stack-deploy-action@v1
+    #  with:
+    #    name: avermate
+    #    file: stack.yaml
+    #    host: nayz.fr
+    #    user: deploy
+    #    ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+    #    env_file: ./envfile
