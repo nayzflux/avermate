@@ -25,7 +25,7 @@ jobs:
       - name: Build and push Docker API
         uses: docker/build-push-action@v6
         with:
-          context: ./apps/api/Dockerfile
+          context: apps/api/Dockerfile
           push: true
           tags: |
             ghcr.io/nayzflux/avermate-api:latest
@@ -34,7 +34,7 @@ jobs:
       - name: Build and push Docker Web
         uses: docker/build-push-action@v6
         with:
-          context: ./apps/client/Dockerfile
+          context: apps/client/Dockerfile
           push: true
           tags: |
             ghcr.io/nayzflux/avermate-web:latest
