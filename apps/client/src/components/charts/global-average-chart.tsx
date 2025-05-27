@@ -323,7 +323,7 @@ export default function GlobalAverageChart({
                   content={({ active, label }) => (
                     <CustomTooltipContent
                       active={active}
-                      label={label}
+                      label={label ? label.toString() : undefined}
                       chartData={chartData}
                       formatDates={formatDates}
                     />
