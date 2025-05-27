@@ -29,8 +29,8 @@ jobs:
           file: ./apps/api/Dockerfile
           push: true
           tags: |
-            ghcr.io/Fefe-Nayz/avermate-api:latest
-            ghcr.io/Fefe-Nayz/avermate-api:${{ github.sha }}
+            ghcr.io/fefe-nayz/avermate-api:latest
+            ghcr.io/fefe-nayz/avermate-api:${{ github.sha }}
 
       - name: Build and push Docker Web
         uses: docker/build-push-action@v6
