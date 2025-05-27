@@ -36,7 +36,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./apps/api/Dockerfile
+          file: ./apps/web/Dockerfile
           push: true
           tags: |
             ghcr.io/fefe-nayz/avermate-web:latest
