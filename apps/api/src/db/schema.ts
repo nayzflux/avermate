@@ -153,7 +153,7 @@ export const sessions = sqliteTable("sessions", {
     .primaryKey()
     .$defaultFn(() => generateId("ses", 32)),
 
-  token: text().notNull(),
+  token: text().unique().notNull(),
 
   expiresAt: integer({ mode: "timestamp" }).notNull(),
   createdAt: integer({ mode: "timestamp" }).notNull(),
