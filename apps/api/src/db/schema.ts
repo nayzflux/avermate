@@ -2,6 +2,7 @@ import { generateId } from "@/lib/nanoid";
 import { relations } from "drizzle-orm";
 import {
   foreignKey,
+  index,
   integer,
   sqliteTable,
   text,
@@ -40,7 +41,8 @@ export const subjects = sqliteTable(
     })
       .onDelete("cascade")
       .onUpdate("cascade"),
-  })
+    userIdIdx: index("user_id_idx").on(t.userId),
+  }),
 );
 
 export const subjectsRelations = relations(subjects, ({ one, many }) => ({
@@ -74,7 +76,9 @@ export const periods = sqliteTable("periods", {
   userId: text()
     .notNull()
     .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
-});
+}, (t) => ({
+  userIdIdx: index("user_id_idx").on(t.userId),
+}));
 
 
 export const grades = sqliteTable("grades", {
@@ -104,7 +108,10 @@ export const grades = sqliteTable("grades", {
   userId: text()
     .notNull()
     .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
-});
+}, (t) => ({
+  userIdIdx: index("user_id_idx").on(t.userId),
+  subjectIdIdx: index("subject_id_idx").on(t.subjectId),
+}));
 
 export const gradesRelations = relations(grades, ({ one }) => ({
   subject: one(subjects, {
@@ -199,7 +206,13 @@ export const accounts = sqliteTable("accounts", {
   updatedAt: integer({ mode: "timestamp" }).notNull(),
 
   password: text(),
-});
+}, (t) => ({
+  userIdIdx: index("user_id_idx").on(t.userId),
+  accountIdProviderIdIdx: index("account_id_provider_id_idx").on(
+    t.accountId,
+    t.providerId,
+  ),
+}));
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
   user: one(users, {
@@ -238,7 +251,9 @@ export const customAverages = sqliteTable("custom_averages", {
   isMainAverage: integer({ mode: "boolean" }).default(false).notNull(),
 
   createdAt: integer({ mode: "timestamp" }).notNull(),
-});
+}, (t) => ({
+  userIdIdx: index("user_id_idx").on(t.userId),
+}));
 
 export const cardTemplates = sqliteTable("card_templates", {
   id: text()
